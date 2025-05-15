@@ -22,7 +22,7 @@ public class Planet : MonoBehaviour
     private float initialScale;
 
     // How much this planet grows per pollen.
-    private float growthFactor = 0.01f;
+    private float growthFactor = 0.1f;
 
     // How long it takes for this planet to spawn stars
     public float starTime = 1f;
@@ -82,7 +82,7 @@ public class Planet : MonoBehaviour
     // Sets this planet's scale based off its current pollen count
     public void UpdateSize()
     {
-        float newScale = growthFactor * pollen;
+        float newScale = initialScale * (pollen * growthFactor);
         transform.localScale = new Vector3(newScale, newScale, newScale);
     }
 
@@ -100,8 +100,7 @@ public class Planet : MonoBehaviour
         }
         
         // Update size
-        float newScale = initialScale * (1 + (pollen * growthFactor));
-        transform.localScale = new Vector3(newScale, newScale, newScale);
+        UpdateSize();
         
         // Create visual feedback
         HitMarker.CreateDamageMarker(transform.position, damage);

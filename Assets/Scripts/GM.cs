@@ -15,7 +15,7 @@ public class GM : MonoBehaviour
     public Transform universe;
 
     // Our home
-    public GameObject home;
+    public Nebula home;
     
     // UI
     public UI ui;
@@ -43,7 +43,8 @@ public class GM : MonoBehaviour
     public int gameState = 0;
 
     // Current nebula
-    public string nebula = "unknown";
+    //public string nebula = "unknown";
+    public Nebula nebula;
 
     // Talents
     public Dictionary<string, Talent> talents = new Dictionary<string, Talent>();
@@ -76,7 +77,7 @@ public class GM : MonoBehaviour
     // States
 
     // Intensity
-    public int intensity = 1;
+    public int intensity = 0;
 
     // Polarity
     public int polarity = 1;
@@ -241,6 +242,13 @@ public class GM : MonoBehaviour
 
             bee.isBumpable = true;
         }
+
+        // Go through each worm hole
+        foreach(WormHole wormHole in wormHoles)
+        {
+            // Spawn an asteroid(?)
+            wormHole.SpawnAsteroid();
+        }
     }
 
     // Survive your flight to win!
@@ -334,8 +342,9 @@ public class GM : MonoBehaviour
     {
         // Go home
         spawnManager.DeactivateNebulas();
-        home.SetActive(true);
-        nebula = "Home";
+        home.gameObject.SetActive(true);
+        nebula = home;
+        //nebula = "Home";
         gameState = -1;
         
         // Deactivate all bees
@@ -354,11 +363,12 @@ public class GM : MonoBehaviour
 
     // Sets us up for a run.
     // Triggered by entering a black hole.
-    public void GoBig(string _nebula)
+    public void GoBig(string nebulaName)
     {
         // Leave home
-        home.SetActive(false);
+        home.gameObject.SetActive(false);
         player.transform.position = Vector3.zero;
+        familiar.transform.position = new Vector3(0, 1, 0);
 
         // Activate all bees
         foreach(Bee bee in bees)
@@ -370,7 +380,7 @@ public class GM : MonoBehaviour
         Song.InitializeSongs();
 
         // Set up nebula
-        spawnManager.SetUpNebula(_nebula);
+        spawnManager.SetUpNebula(nebulaName);
 
         //
         /////
@@ -404,7 +414,6 @@ public class GM : MonoBehaviour
         //ui.BeginGame();
 
         // Activate game start time
-        Debug.Log("Checkpoint C");
         Time.timeScale = 1f;
         gameState = 1;
 
@@ -490,7 +499,7 @@ public class GM : MonoBehaviour
         StartCoroutine(ShakeCameraCoroutine(scaledIntensity, duration, position));
     }
 
-    private System.Collections.IEnumerator ShakeCameraCoroutine(float intensity, float duration, Vector3 position)
+    private System.Collections.IEnumerator ShakeCameraCoroutine(float strength, float duration, Vector3 position)
     {
         /*
         Vector3 originalPos = player.mainCam.transform.localPosition;
@@ -504,8 +513,8 @@ public class GM : MonoBehaviour
         
         while (elapsed < duration)
         {
-            float xOffset = Random.Range(-1f, 1f) * intensity;
-            float yOffset = Random.Range(-1f, 1f) * intensity;
+            float xOffset = Random.Range(-1f, 1f) * strength;
+            float yOffset = Random.Range(-1f, 1f) * strength;
 
             
             player.mainCam.transform.localPosition = new Vector3(

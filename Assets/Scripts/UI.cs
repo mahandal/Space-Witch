@@ -10,6 +10,7 @@ public class UI : MonoBehaviour
     public TMP_Text xText;
     public TMP_Text yText;
     public TMP_Text starCount;
+    public TMP_Text planetCount;
     public TMP_Text songTimer;
     
     
@@ -198,7 +199,7 @@ public class UI : MonoBehaviour
             return; */
 
         // Hide top bar at home
-        if (GM.I.nebula == "Home")
+        if (GM.I.nebula.myName == "Home")
             top.SetActive(false);
         else
             top.SetActive(true);
@@ -208,6 +209,9 @@ public class UI : MonoBehaviour
 
         // Star count
         UpdateStarCount();
+
+        // Planet count
+        UpdatePlanetCount();
 
         // Song timer
         UpdateSongTimer();
@@ -244,6 +248,12 @@ public class UI : MonoBehaviour
     {
         // Set text
         starCount.text = Gatherer.starsGathered.ToString("0");
+    }
+
+    void UpdatePlanetCount()
+    {
+        // Set text
+        planetCount.text = GM.I.planets.Count.ToString();
     }
 
     void UpdateHealthBars()
@@ -873,7 +883,7 @@ public class UI : MonoBehaviour
     public void Meditate()
     {
         // Load character if we're at home cause we haven't done that yet
-        if (GM.I.nebula == "Home")
+        if (GM.I.nebula.myName == "Home")
             LoadCharacter();
             
         // First forget everything

@@ -3,6 +3,9 @@ using System.Collections.Generic;
 
 public class Nebula : MonoBehaviour
 {
+    // What's my name?
+    public string myName;
+    
     // List of planets, to be fed to GM on game start.
     // Note: Must be wired manually for each nebula! (except unknown)
     public List<Planet> planets;

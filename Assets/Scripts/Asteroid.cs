@@ -13,14 +13,12 @@ public class Asteroid : MonoBehaviour
     //public float velocity = 0f;
     public float previousFrameVelocity = 0f;
 
-    [Header("Automated Machinery")]
-    public bool exploding = false;
+    [Header("Manual Machinery")]
     public Rigidbody2D rb2d;
 
-    void Awake()
-    {
-        rb2d = GetComponent<Rigidbody2D>();
-    }
+    [Header("Automated Machinery")]
+    public bool exploding = false;
+    
 
     // Fixed update is for physiques & stuff.
     void FixedUpdate()
@@ -38,11 +36,11 @@ public class Asteroid : MonoBehaviour
         //velocity = rb2d.linearVelocity.magnitude;
 
         // Max distance
-        float distanceToPlayer = Vector3.Distance(transform.position, GM.I.player.transform.position);
+        /* float distanceToPlayer = Vector3.Distance(transform.position, GM.I.player.transform.position);
         if (distanceToPlayer > GM.I.spawnManager.despawnDistance)
         {
             Explode();
-        }
+        } */
 
         // Song end
         if (GM.I.songTimer < 1f)

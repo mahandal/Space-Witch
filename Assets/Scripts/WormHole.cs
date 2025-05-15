@@ -7,7 +7,7 @@ public class WormHole : MonoBehaviour
     public float asteroidSizeMultiplier = 1f; // Modifier for asteroid size
     public float asteroidSpeedMultiplier = 1f; // Modifier for asteroid speed
     
-    private float spawnTimer = 0f;
+    public float spawnTimer = 0f;
     
     void FixedUpdate()
     {
@@ -19,20 +19,20 @@ public class WormHole : MonoBehaviour
         spawnTimer -= Time.deltaTime;
         
         // Spawn asteroid when timer expires
-        if (spawnTimer <= 0)
+        if (spawnTimer <= 0 && GM.I.intensity > 0)
         {
             // Spawn asteroid
-            SpawnAsteroid();
+            //SpawnAsteroid();
             
-            // Reset timer (add randomness to make it less predictable)
-            spawnTimer = 1f / spawnRate + Random.Range(-0.2f, 0.2f);
+            // Reset timer
+            spawnTimer = 1f / (spawnRate * GM.I.intensity);
         }
         
         // Rotate
-        transform.Rotate(0, 0, 1f);
+        transform.Rotate(0, 0, spawnRate * GM.I.intensity);
     }
     
-    private void SpawnAsteroid()
+    public void SpawnAsteroid()
     {
         // Spawn asteroid at worm hole position
         GM.I.spawnManager.SpawnNewAsteroidFromWormHole(transform.position, asteroidSizeMultiplier, asteroidSpeedMultiplier);

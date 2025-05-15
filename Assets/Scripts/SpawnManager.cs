@@ -201,8 +201,10 @@ public class SpawnManager : MonoBehaviour
     }
 
     // --- Planets
-    public void SpawnPlanets(int numberToSpawn)
+    public List<Planet> SpawnPlanets(int numberToSpawn)
     {
+        List<Planet> returnList = new List<Planet>();
+
         for (int i = 0; i < numberToSpawn; i++)
         {
             // Spawn planet
@@ -213,18 +215,34 @@ public class SpawnManager : MonoBehaviour
 
             // Assign new planet to bee
             GM.I.bees[i].goal = newPlanet;
+
+            // Add to return list
+            returnList.Add(newPlanet);
         }
+
+        return returnList;
     }
 
     // Spawns a new planet in a random location.
     // Note: Delegates to SpawnPlanet(float x, float y), largely to help me understand the recursion.
     public Planet SpawnPlanet()
     {
-        // Set x position randomly
+        /* // Set x position randomly
         float x = Random.Range(-planetMaxDistance, planetMaxDistance);
 
         // Set y position randomly
-        float y = Random.Range(-planetMaxDistance, planetMaxDistance);
+        float y = Random.Range(-planetMaxDistance, planetMaxDistance); */
+
+        // Generate random angle
+        float angle = Random.Range(0f, 2f * Mathf.PI);
+
+        // For uniform distribution in a circle, we need to take square root of the random value
+        float randomValue = Random.value; // Returns value between 0 and 1
+        float radius = planetMaxDistance * Mathf.Sqrt(randomValue);
+
+        // Convert to Cartesian coordinates
+        float x = radius * Mathf.Cos(angle);
+        float y = radius * Mathf.Sin(angle);
 
         // Spawn new planet
         return SpawnPlanet(x, y);
@@ -436,102 +454,57 @@ public class SpawnManager : MonoBehaviour
         }
     }
 
-    // Sets up the current nebula.
-    // If nebula is known, activate the corresponding game object.
-    // Otherwise, spawn planets randomly.
-    /* public void SetUpNebula(string nebula = "Unknown")
+    // 
+    public void SetUpNebula(string nebulaName = "Unknown")
     {
-        // Set nebula in GM
-        GM.I.nebula = nebula;
-
         // First deactivate all nebulas
         DeactivateNebulas();
 
-        // Eldest Ring
-        if (nebula == "Eldest Ring")
+        // Then get the right nebula
+        if (nebulaName == "Eldest Ring")
         {
-            // Track planets
-            //GM.I.planets = eldest_ring.planets;
-            SetUpPlanets(eldest_ring.planets);
-
-            // Activate
-            eldest_ring.gameObject.SetActive(true);
+            GM.I.nebula = eldest_ring;
         }
-        // Unknown!
         else
         {
-            // Generate new random arrangement of planets
-            SpawnPlanets(GM.I.bees.Count);
+            // Unknown nebula
+            GM.I.nebula = unknown;
 
-            // Set up planets
-            SetUpPlanets(GM.I.planets);
+            // Generate new random arrangement of planets
+            GM.I.nebula.planets = SpawnPlanets(GM.I.bees.Count);
+            
+            // Generate new worm hole
+            //SpawnWormHoles(1);
+            SpawnWormHole(0,0);
         }
+        
+        // Track planets
+        SetUpPlanets(GM.I.nebula.planets);
+        
+        // Track worm holes
+        SetUpWormHoles(GM.I.nebula.wormHoles);
+
+        // Activate
+        GM.I.nebula.gameObject.SetActive(true);
 
         // Spawn Moon
         Gatherer.moonsGathered = 1;
         SpawnMoon();
-    } */
-
-    // TBD: Replace our weird nebula name system with just using the Nebula object
-    public void SetUpNebula(string nebula = "Unknown")
-{
-    // Set nebula in GM
-    GM.I.nebula = nebula;
-
-    // First deactivate all nebulas
-    DeactivateNebulas();
-    
-    // Clear existing worm holes
-    foreach (WormHole wormHole in GM.I.wormHoles)
-    {
-        if (wormHole != null)
-            Destroy(wormHole.gameObject);
     }
-    GM.I.wormHoles.Clear();
 
-    // Eldest Ring
-    if (nebula == "Eldest Ring")
+    // Set up worm holes from a nebula
+    public void SetUpWormHoles(List<WormHole> wormHoles)
     {
-        // Track planets
-        SetUpPlanets(eldest_ring.planets);
+        // Set GM's list of worm holes
+        GM.I.wormHoles = wormHoles;
         
-        // Track worm holes
-        SetUpWormHoles(eldest_ring.wormHoles);
-
-        // Activate
-        eldest_ring.gameObject.SetActive(true);
+        // Set up each worm hole
+        for (int i = 0; i < wormHoles.Count; i++)
+        {
+            // Set customized properties here if needed
+            //wormHoles[i].spawnRate = 0.2f + (GM.I.intensity * 0.1f);
+        }
     }
-    // Unknown!
-    else
-    {
-        // Generate new random arrangement of planets
-        SpawnPlanets(GM.I.bees.Count);
-
-        // Set up planets
-        SetUpPlanets(GM.I.planets);
-        
-        // Generate new random worm hole
-        SpawnWormHoles(1);
-    }
-
-    // Spawn Moon
-    Gatherer.moonsGathered = 1;
-    SpawnMoon();
-}
-
-// Set up worm holes from a nebula
-public void SetUpWormHoles(List<WormHole> wormHoles)
-{
-    // Set GM's list of worm holes
-    GM.I.wormHoles = wormHoles;
-    
-    // Set up each worm hole
-    for (int i = 0; i < wormHoles.Count; i++)
-    {
-        // Set customized properties here if needed
-        wormHoles[i].spawnRate = 0.2f + (GM.I.intensity * 0.1f);
-    }
-}
 
     // Initialize a list of planets for this game.
     public void SetUpPlanets(List<Planet> planets)
@@ -542,7 +515,6 @@ public void SetUpWormHoles(List<WormHole> wormHoles)
         // Set up each planet
         for (int i = 0; i < planets.Count; i++)
         {
-            Debug.Log("Setting up planet #" + i);
             // Set planet's index
             planets[i].index = i;
 
@@ -554,7 +526,7 @@ public void SetUpWormHoles(List<WormHole> wormHoles)
     // Deactivate all nebulas
     public void DeactivateNebulas()
     {
-        GM.I.home.SetActive(false);
+        GM.I.home.gameObject.SetActive(false);
         unknown.gameObject.SetActive(false);
         eldest_ring.gameObject.SetActive(false);
     }
@@ -586,9 +558,9 @@ public void SetUpWormHoles(List<WormHole> wormHoles)
         newWormHole.transform.position = desiredPosition;
         
         // Set properties (can be randomized)
-        newWormHole.spawnRate = Random.Range(0.2f, 0.5f) * GM.I.intensity;
-        newWormHole.asteroidSizeMultiplier = Random.Range(0.8f, 1.2f);
-        newWormHole.asteroidSpeedMultiplier = Random.Range(0.8f, 1.2f);
+        //newWormHole.spawnRate = Random.Range(0.2f, 0.5f) * GM.I.intensity;
+        //newWormHole.asteroidSizeMultiplier = Random.Range(0.8f, 1.2f);
+        //newWormHole.asteroidSpeedMultiplier = Random.Range(0.8f, 1.2f);
         
         // Add to GM's list
         GM.I.wormHoles.Add(newWormHole);
@@ -627,6 +599,9 @@ public void SetUpWormHoles(List<WormHole> wormHoles)
         // Set speed (modified by worm hole)
         newAsteroid.acceleration = Random.Range(0.5f, Mathf.Sqrt(GM.I.intensity)) * speedMultiplier;
         newAsteroid.maxSpeed = Random.Range(0.5f, Mathf.Sqrt(GM.I.intensity)) * speedMultiplier;
+
+        // Start at max speed
+        newAsteroid.rb2d.linearVelocity = newAsteroid.direction * newAsteroid.maxSpeed;
         
         // Set size (modified by worm hole)
         newAsteroid.size = Random.Range(0.5f, Mathf.Sqrt(GM.I.intensity)) * sizeMultiplier;
