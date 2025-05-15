@@ -103,10 +103,10 @@ TextureImporter:
       name: Ship - Enchantress_0
       rect:
         serializedVersion: 2
-        x: 76
-        y: 80
-        width: 1846
-        height: 1797
+        x: 66
+        y: 93
+        width: 1864
+        height: 1802
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}

@@ -10566,6 +10566,7 @@ GameObject:
   - component: {fileID: 185765119}
   - component: {fileID: 185765118}
   - component: {fileID: 185765116}
+  - component: {fileID: 185765120}
   m_Layer: 0
   m_Name: Planet (12)
   m_TagString: Untagged
@@ -10698,6 +10699,23 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!114 &185765120
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 185765115}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: eb90ac3a355662548b4cf517c92734f8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  myName: Gas Planet
+  description: Dame mas gasolina.
+  specialImage: {fileID: 0}
+  specialImageFileName: 
+  sprite: {fileID: 0}
 --- !u!1 &187569041
 GameObject:
   m_ObjectHideFlags: 0
@@ -12809,6 +12827,7 @@ GameObject:
   - component: {fileID: 278615016}
   - component: {fileID: 278615015}
   - component: {fileID: 278615014}
+  - component: {fileID: 278615017}
   m_Layer: 0
   m_Name: Planet (5)
   m_TagString: Untagged
@@ -12941,6 +12960,23 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!114 &278615017
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 278615012}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: eb90ac3a355662548b4cf517c92734f8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  myName: Gas Planet
+  description: Dame mas gasolina.
+  specialImage: {fileID: 0}
+  specialImageFileName: 
+  sprite: {fileID: 0}
 --- !u!1 &286785863
 GameObject:
   m_ObjectHideFlags: 0
@@ -16062,6 +16098,7 @@ MonoBehaviour:
   gameState: 0
   nebula: Eldest Ring
   planets: []
+  wormHoles: []
   bees:
   - {fileID: 887961206}
   - {fileID: 1793365070}
@@ -16172,6 +16209,7 @@ MonoBehaviour:
   progenitor_Planet: {fileID: 1986061134}
   progenitor_Moon: {fileID: 1310050902}
   progenitor_Asteroid: {fileID: 41954081}
+  progenitor_WormHole: {fileID: 936576413}
   progenitor_HealingPotion: {fileID: 1700944895}
   progenitor_ManaPotion: {fileID: 1548544630}
   progenitor_ExplosionPotion: {fileID: 301616399}
@@ -17926,6 +17964,7 @@ GameObject:
   - component: {fileID: 485298636}
   - component: {fileID: 485298635}
   - component: {fileID: 485298634}
+  - component: {fileID: 485298637}
   m_Layer: 0
   m_Name: Planet (1)
   m_TagString: Untagged
@@ -18058,6 +18097,23 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!114 &485298637
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 485298632}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: eb90ac3a355662548b4cf517c92734f8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  myName: Gas Planet
+  description: "Dame m\xE1s gasolina."
+  specialImage: {fileID: 0}
+  specialImageFileName: 
+  sprite: {fileID: 0}
 --- !u!1 &486007182
 GameObject:
   m_ObjectHideFlags: 0
@@ -19019,7 +19075,7 @@ SpriteRenderer:
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
-  m_Size: {x: 18.46, y: 17.97}
+  m_Size: {x: 18.64, y: 18.02}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
@@ -21270,6 +21326,7 @@ GameObject:
   - component: {fileID: 623625396}
   - component: {fileID: 623625395}
   - component: {fileID: 623625394}
+  - component: {fileID: 623625397}
   m_Layer: 0
   m_Name: Planet (2)
   m_TagString: Untagged
@@ -21402,6 +21459,23 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!114 &623625397
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 623625392}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: eb90ac3a355662548b4cf517c92734f8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  myName: Gas Planet
+  description: Dame mas gasolina.
+  specialImage: {fileID: 0}
+  specialImageFileName: 
+  sprite: {fileID: 0}
 --- !u!1 &629810780
 GameObject:
   m_ObjectHideFlags: 0
@@ -22503,6 +22577,7 @@ GameObject:
   - component: {fileID: 651135556}
   - component: {fileID: 651135555}
   - component: {fileID: 651135554}
+  - component: {fileID: 651135557}
   m_Layer: 0
   m_Name: Planet (6)
   m_TagString: Untagged
@@ -22635,6 +22710,23 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!114 &651135557
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 651135552}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: eb90ac3a355662548b4cf517c92734f8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  myName: Gas Planet
+  description: Dame mas gasolina.
+  specialImage: {fileID: 0}
+  specialImageFileName: 
+  sprite: {fileID: 0}
 --- !u!1 &653405380
 GameObject:
   m_ObjectHideFlags: 0
@@ -24218,6 +24310,7 @@ GameObject:
   - component: {fileID: 723874242}
   - component: {fileID: 723874241}
   - component: {fileID: 723874240}
+  - component: {fileID: 723874243}
   m_Layer: 0
   m_Name: Planet (8)
   m_TagString: Untagged
@@ -24350,6 +24443,23 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!114 &723874243
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 723874238}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: eb90ac3a355662548b4cf517c92734f8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  myName: Gas Planet
+  description: Dame mas gasolina.
+  specialImage: {fileID: 0}
+  specialImageFileName: 
+  sprite: {fileID: 0}
 --- !u!1 &731616176
 GameObject:
   m_ObjectHideFlags: 0
@@ -26448,6 +26558,7 @@ GameObject:
   - component: {fileID: 829564957}
   - component: {fileID: 829564956}
   - component: {fileID: 829564955}
+  - component: {fileID: 829564958}
   m_Layer: 0
   m_Name: Planet (9)
   m_TagString: Untagged
@@ -26580,6 +26691,23 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!114 &829564958
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 829564953}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: eb90ac3a355662548b4cf517c92734f8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  myName: Gas Planet
+  description: Dame mas gasolina.
+  specialImage: {fileID: 0}
+  specialImageFileName: 
+  sprite: {fileID: 0}
 --- !u!1 &831263013
 GameObject:
   m_ObjectHideFlags: 0
@@ -27006,6 +27134,7 @@ GameObject:
   - component: {fileID: 848629776}
   - component: {fileID: 848629775}
   - component: {fileID: 848629774}
+  - component: {fileID: 848629777}
   m_Layer: 0
   m_Name: Planet (10)
   m_TagString: Untagged
@@ -27138,6 +27267,23 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!114 &848629777
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 848629772}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: eb90ac3a355662548b4cf517c92734f8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  myName: Gas Planet
+  description: Dame mas gasolina.
+  specialImage: {fileID: 0}
+  specialImageFileName: 
+  sprite: {fileID: 0}
 --- !u!1 &849260465
 GameObject:
   m_ObjectHideFlags: 0
@@ -28669,6 +28815,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   planets: []
+  wormHoles: []
 --- !u!1 &900735705
 GameObject:
   m_ObjectHideFlags: 0
@@ -29136,6 +29283,165 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 935726461}
   m_CullTransparentMesh: 1
+--- !u!1 &936576409
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 936576410}
+  - component: {fileID: 936576412}
+  - component: {fileID: 936576411}
+  - component: {fileID: 936576413}
+  - component: {fileID: 936576414}
+  m_Layer: 0
+  m_Name: Worm Hole
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 0
+--- !u!4 &936576410
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 936576409}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 0.1, y: 0.1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1217901298}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!58 &936576411
+CircleCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 936576409}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_ForceSendLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ForceReceiveLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ContactCaptureLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_CallbackLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_IsTrigger: 1
+  m_UsedByEffector: 0
+  m_CompositeOperation: 0
+  m_CompositeOrder: 0
+  m_Offset: {x: 0, y: 0}
+  m_Radius: 7
+--- !u!212 &936576412
+SpriteRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 936576409}
+  m_Enabled: 1
+  m_CastShadows: 0
+  m_ReceiveShadows: 0
+  m_DynamicOccludee: 1
+  m_StaticShadowCaster: 0
+  m_MotionVectors: 1
+  m_LightProbeUsage: 1
+  m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 0
+  m_RayTraceProcedural: 0
+  m_RayTracingAccelStructBuildFlagsOverride: 0
+  m_RayTracingAccelStructBuildFlags: 1
+  m_SmallMeshCulling: 1
+  m_RenderingLayerMask: 1
+  m_RendererPriority: 0
+  m_Materials:
+  - {fileID: 2100000, guid: a97c105638bdf8b4a8650670310a4cd3, type: 2}
+  m_StaticBatchInfo:
+    firstSubMesh: 0
+    subMeshCount: 0
+  m_StaticBatchRoot: {fileID: 0}
+  m_ProbeAnchor: {fileID: 0}
+  m_LightProbeVolumeOverride: {fileID: 0}
+  m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
+  m_PreserveUVs: 0
+  m_IgnoreNormalsForChartDetection: 0
+  m_ImportantGI: 0
+  m_StitchLightmapSeams: 1
+  m_SelectedEditorRenderState: 0
+  m_MinimumChartSize: 4
+  m_AutoUVMaxDistance: 0.5
+  m_AutoUVMaxAngle: 89
+  m_LightmapParameters: {fileID: 0}
+  m_SortingLayerID: 0
+  m_SortingLayer: 0
+  m_SortingOrder: 4
+  m_Sprite: {fileID: -6019417969091788575, guid: 07354c880b830404bb2e1843bb255cd8, type: 3}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_FlipX: 0
+  m_FlipY: 0
+  m_DrawMode: 0
+  m_Size: {x: 5.86, y: 5.5}
+  m_AdaptiveModeThreshold: 0.5
+  m_SpriteTileMode: 0
+  m_WasSpriteAssigned: 1
+  m_MaskInteraction: 0
+  m_SpriteSortPoint: 0
+--- !u!114 &936576413
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 936576409}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a57618d2db761aa4991b675923b9ee67, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  spawnRate: 1
+  asteroidSizeMultiplier: 1
+  asteroidSpeedMultiplier: 1
+--- !u!114 &936576414
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 936576409}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: eb90ac3a355662548b4cf517c92734f8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  myName: Worm Hole
+  description: Worm holes are exits to black holes. There's no tellin' what can come
+    out of one of those things, watch yourself.
+  specialImage: {fileID: 0}
+  specialImageFileName: 
+  sprite: {fileID: 0}
 --- !u!1 &938579353
 GameObject:
   m_ObjectHideFlags: 0
@@ -33704,7 +34010,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &1156778404
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -33718,6 +34024,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   planets: []
+  wormHoles: []
 --- !u!4 &1156778405
 Transform:
   m_ObjectHideFlags: 0
@@ -34303,6 +34610,7 @@ GameObject:
   - component: {fileID: 1195096093}
   - component: {fileID: 1195096092}
   - component: {fileID: 1195096091}
+  - component: {fileID: 1195096094}
   m_Layer: 0
   m_Name: Planet (7)
   m_TagString: Untagged
@@ -34435,6 +34743,23 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!114 &1195096094
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1195096089}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: eb90ac3a355662548b4cf517c92734f8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  myName: Gas Planet
+  description: Dame mas gasolina.
+  specialImage: {fileID: 0}
+  specialImageFileName: 
+  sprite: {fileID: 0}
 --- !u!1 &1196090657
 GameObject:
   m_ObjectHideFlags: 0
@@ -34702,6 +35027,7 @@ GameObject:
   - component: {fileID: 1203450719}
   - component: {fileID: 1203450718}
   - component: {fileID: 1203450717}
+  - component: {fileID: 1203450720}
   m_Layer: 0
   m_Name: Planet (3)
   m_TagString: Untagged
@@ -34834,6 +35160,23 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!114 &1203450720
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1203450715}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: eb90ac3a355662548b4cf517c92734f8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  myName: Gas Planet
+  description: Dame mas gasolina.
+  specialImage: {fileID: 0}
+  specialImageFileName: 
+  sprite: {fileID: 0}
 --- !u!1 &1204809603
 GameObject:
   m_ObjectHideFlags: 0
@@ -35239,6 +35582,7 @@ Transform:
   m_Children:
   - {fileID: 1995629075}
   - {fileID: 1986061133}
+  - {fileID: 936576410}
   - {fileID: 1310050898}
   - {fileID: 41954080}
   - {fileID: 225495245}
@@ -35989,6 +36333,165 @@ MonoBehaviour:
   id: 2
   currentTalent: 
   levelText: {fileID: 2132027420}
+--- !u!1 &1239858382
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1239858383}
+  - component: {fileID: 1239858386}
+  - component: {fileID: 1239858385}
+  - component: {fileID: 1239858384}
+  - component: {fileID: 1239858387}
+  m_Layer: 0
+  m_Name: Worm Hole (1)
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1239858383
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1239858382}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 0.1, y: 0.1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1575807295}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1239858384
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1239858382}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a57618d2db761aa4991b675923b9ee67, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  spawnRate: 1
+  asteroidSizeMultiplier: 1
+  asteroidSpeedMultiplier: 1
+--- !u!58 &1239858385
+CircleCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1239858382}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_ForceSendLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ForceReceiveLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ContactCaptureLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_CallbackLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_IsTrigger: 1
+  m_UsedByEffector: 0
+  m_CompositeOperation: 0
+  m_CompositeOrder: 0
+  m_Offset: {x: 0, y: 0}
+  m_Radius: 7
+--- !u!212 &1239858386
+SpriteRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1239858382}
+  m_Enabled: 1
+  m_CastShadows: 0
+  m_ReceiveShadows: 0
+  m_DynamicOccludee: 1
+  m_StaticShadowCaster: 0
+  m_MotionVectors: 1
+  m_LightProbeUsage: 1
+  m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 0
+  m_RayTraceProcedural: 0
+  m_RayTracingAccelStructBuildFlagsOverride: 0
+  m_RayTracingAccelStructBuildFlags: 1
+  m_SmallMeshCulling: 1
+  m_RenderingLayerMask: 1
+  m_RendererPriority: 0
+  m_Materials:
+  - {fileID: 2100000, guid: a97c105638bdf8b4a8650670310a4cd3, type: 2}
+  m_StaticBatchInfo:
+    firstSubMesh: 0
+    subMeshCount: 0
+  m_StaticBatchRoot: {fileID: 0}
+  m_ProbeAnchor: {fileID: 0}
+  m_LightProbeVolumeOverride: {fileID: 0}
+  m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
+  m_PreserveUVs: 0
+  m_IgnoreNormalsForChartDetection: 0
+  m_ImportantGI: 0
+  m_StitchLightmapSeams: 1
+  m_SelectedEditorRenderState: 0
+  m_MinimumChartSize: 4
+  m_AutoUVMaxDistance: 0.5
+  m_AutoUVMaxAngle: 89
+  m_LightmapParameters: {fileID: 0}
+  m_SortingLayerID: 0
+  m_SortingLayer: 0
+  m_SortingOrder: 4
+  m_Sprite: {fileID: -6019417969091788575, guid: 07354c880b830404bb2e1843bb255cd8, type: 3}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_FlipX: 0
+  m_FlipY: 0
+  m_DrawMode: 0
+  m_Size: {x: 5.86, y: 5.5}
+  m_AdaptiveModeThreshold: 0.5
+  m_SpriteTileMode: 0
+  m_WasSpriteAssigned: 1
+  m_MaskInteraction: 0
+  m_SpriteSortPoint: 0
+--- !u!114 &1239858387
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1239858382}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: eb90ac3a355662548b4cf517c92734f8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  myName: Worm Hole
+  description: Worm holes are exits to black holes. There's no tellin' what can come
+    out of one of those things, watch yourself.
+  specialImage: {fileID: 0}
+  specialImageFileName: 
+  sprite: {fileID: 0}
 --- !u!1 &1246340128
 GameObject:
   m_ObjectHideFlags: 0
@@ -38549,6 +39052,7 @@ GameObject:
   - component: {fileID: 1369285342}
   - component: {fileID: 1369285341}
   - component: {fileID: 1369285340}
+  - component: {fileID: 1369285343}
   m_Layer: 0
   m_Name: Planet (4)
   m_TagString: Untagged
@@ -38681,6 +39185,23 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!114 &1369285343
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1369285338}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: eb90ac3a355662548b4cf517c92734f8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  myName: Gas Planet
+  description: Dame mas gasolina.
+  specialImage: {fileID: 0}
+  specialImageFileName: 
+  sprite: {fileID: 0}
 --- !u!1 &1369438354
 GameObject:
   m_ObjectHideFlags: 0
@@ -49712,6 +50233,38 @@ MonoBehaviour:
   image: {fileID: 1571052311}
   myName: Jump
   isSpell: 0
+--- !u!1 &1575807294
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1575807295}
+  m_Layer: 0
+  m_Name: Worm Holes
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1575807295
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1575807294}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 1239858383}
+  m_Father: {fileID: 1593529512}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1576250192
 GameObject:
   m_ObjectHideFlags: 0
@@ -50154,7 +50707,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &1593529512
 Transform:
   m_ObjectHideFlags: 0
@@ -50169,6 +50722,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1694013849}
+  - {fileID: 1575807295}
   m_Father: {fileID: 530615785}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1593529513
@@ -50196,6 +50750,8 @@ MonoBehaviour:
   - {fileID: 829564955}
   - {fileID: 848629774}
   - {fileID: 1842752917}
+  wormHoles:
+  - {fileID: 1239858384}
 --- !u!1 &1596872272
 GameObject:
   m_ObjectHideFlags: 0
@@ -57650,6 +58206,7 @@ GameObject:
   - component: {fileID: 1842752919}
   - component: {fileID: 1842752918}
   - component: {fileID: 1842752917}
+  - component: {fileID: 1842752920}
   m_Layer: 0
   m_Name: Planet (11)
   m_TagString: Untagged
@@ -57782,6 +58339,23 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!114 &1842752920
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1842752915}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: eb90ac3a355662548b4cf517c92734f8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  myName: Gas Planet
+  description: Dame mas gasolina.
+  specialImage: {fileID: 0}
+  specialImageFileName: 
+  sprite: {fileID: 0}
 --- !u!1 &1846291590
 GameObject:
   m_ObjectHideFlags: 0

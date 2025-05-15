@@ -5,7 +5,7 @@ public class Druid : Talent
 {
     public Druid() : base("Druid", "Druid", "Common", 
                                 "Druids commune with nature to follow the natural flow of life.", 
-                                0, 0, 4, 0, 2, 4, 6, 0)
+                                1, 1, 6, 0, 1, 2, 3, 0)
     {
     }
 }
@@ -18,7 +18,7 @@ public class RecallTraining : Talent
     
     public RecallTraining() : base("Recall Training", "Druid", "Common", 
                                 "Your familiar moves faster when moving toward you.", 
-                                0, 0, 1, 0, 2, 1, 2, 0)
+                                0, 0, 1, 0, 2, 4, 6, 0)
     {
     }
 

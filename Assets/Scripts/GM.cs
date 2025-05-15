@@ -51,6 +51,9 @@ public class GM : MonoBehaviour
     // Planets
     public List<Planet> planets;
 
+    // Worm holes
+    public List<WormHole> wormHoles = new List<WormHole>();
+
     // Bees
     public List<Bee> bees;
 
