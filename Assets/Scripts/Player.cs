@@ -667,12 +667,18 @@ public class Player : Gatherer
 
         // Open UI
         GM.I.ui.Meditate();
+
+        // Stop time
+        GM.I.StopTime();
     }
 
     public void EndMeditation()
     {
         // Close UI
         GM.I.ui.EndMeditation();
+
+        // Start time
+        GM.I.StartTime();
     }
 
 

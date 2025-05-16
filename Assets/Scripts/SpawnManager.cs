@@ -5,12 +5,9 @@ public class SpawnManager : MonoBehaviour
 {
     [Header("Stats")]
     // Planets
+    public float planetMinDistance;
     public float planetMaxDistance;
     public float despawnDistance;
-    public float asteroidMinSpeed;
-    public float asteroidMaxSpeed;
-    public float asteroidMinSpawnRange;
-    public float asteroidMaxSpawnRange;
 
     [Header("Manual Machinery")]
 
@@ -238,7 +235,8 @@ public class SpawnManager : MonoBehaviour
 
         // For uniform distribution in a circle, we need to take square root of the random value
         float randomValue = Random.value; // Returns value between 0 and 1
-        float radius = planetMaxDistance * Mathf.Sqrt(randomValue);
+        float radius = planetMinDistance + (planetMaxDistance - planetMinDistance) * Mathf.Sqrt(randomValue);
+
 
         // Convert to Cartesian coordinates
         float x = radius * Mathf.Cos(angle);
@@ -278,40 +276,11 @@ public class SpawnManager : MonoBehaviour
 
     // --- Asteroids
 
-    // - Spawn a number of asteroids randomly positioned around the player
-    public void SpawnAsteroids(int numberToSpawn)
-    {
-        for (int i = 0; i < numberToSpawn; i++)
-        {
-            SpawnNewAsteroid();
-        }
-    }
-
-    // - Spawn a new asteroid at a random location between asteroidMinSpawnRange and asteroidMaxSpawnRange.
-    public void SpawnNewAsteroid()
-    {
-        // Set x position randomly
-        //float x = player.transform.position.x + Random.Range(-spawnDistance, spawnDistance);
-        float x = player.transform.position.x - Random.Range(asteroidMinSpawnRange, asteroidMaxSpawnRange);
-
-        // Set y position randomly
-        //float y = player.transform.position.y + Random.Range(-spawnDistance, spawnDistance);
-        float y = player.transform.position.y + Random.Range(asteroidMinSpawnRange, asteroidMaxSpawnRange);
-
-        // Spawn new asteroid
-        SpawnNewAsteroid(x, y);
-    }
-
     // - Spawn a new asteroid at the given location
     void SpawnNewAsteroid(float x, float y)
     {
         // Initialize desired position
         Vector3 desiredPosition = new Vector3(x, y, 0);
-
-        // Avoid spawning asteroids too close to the player
-        float distance = Vector3.Distance(desiredPosition, player.transform.position);
-        if (distance < asteroidMinSpawnRange)
-            return;
         
 
         // Instantiate new asteroid
@@ -475,8 +444,12 @@ public class SpawnManager : MonoBehaviour
             
             // Generate new worm hole
             //SpawnWormHoles(1);
-            SpawnWormHole(0,0);
+            GM.I.nebula.wormHoles = new List<WormHole>();
+            GM.I.nebula.wormHoles.Add(SpawnWormHole(0,0));
         }
+
+        // Activate
+        GM.I.nebula.gameObject.SetActive(true);
         
         // Track planets
         SetUpPlanets(GM.I.nebula.planets);
@@ -484,12 +457,9 @@ public class SpawnManager : MonoBehaviour
         // Track worm holes
         SetUpWormHoles(GM.I.nebula.wormHoles);
 
-        // Activate
-        GM.I.nebula.gameObject.SetActive(true);
-
         // Spawn Moon
         Gatherer.moonsGathered = 1;
-        SpawnMoon();
+        //SpawnMoon();
     }
 
     // Set up worm holes from a nebula
@@ -536,7 +506,7 @@ public class SpawnManager : MonoBehaviour
         for (int i = 0; i < numberToSpawn; i++)
         {
             // Spawn worm hole at a distance from the origin(?)
-            float distance = Random.Range(asteroidMaxSpawnRange * 1.5f, planetMaxDistance * 0.7f);
+            float distance = Random.Range(planetMinDistance, planetMaxDistance);
             float angle = Random.Range(0f, 360f) * Mathf.Deg2Rad;
             
             float x = Mathf.Cos(angle) * distance;
@@ -581,30 +551,45 @@ public class SpawnManager : MonoBehaviour
         newAsteroid.transform.position = position;
 
         // Choose a random planet as target
-        int randomIndex = Random.Range(0, GM.I.planets.Count);
-        Planet targetPlanet = GM.I.planets[randomIndex];
-        
-        // Go toward planet, unless it's home.
-        if (randomIndex != 0)
+        int randomIndex = Random.Range(0, GM.I.planets.Count + 1);
+
+        // Target player
+        if (randomIndex == GM.I.planets.Count)
         {
-            // Target planet.
-            newAsteroid.direction = (targetPlanet.transform.position - position).normalized;
+            newAsteroid.direction = (GM.I.player.transform.position - position).normalized;
         }
         else
         {
-            // Target player instead of home.
-            newAsteroid.direction = (GM.I.player.transform.position - position).normalized;
+            // Target planet
+            Planet targetPlanet = GM.I.planets[randomIndex];
+            newAsteroid.direction = (targetPlanet.transform.position - position).normalized;
         }
         
         // Set speed (modified by worm hole)
-        newAsteroid.acceleration = Random.Range(0.5f, Mathf.Sqrt(GM.I.intensity)) * speedMultiplier;
-        newAsteroid.maxSpeed = Random.Range(0.5f, Mathf.Sqrt(GM.I.intensity)) * speedMultiplier;
+        /* newAsteroid.acceleration = Random.Range(0.5f, Mathf.Sqrt(GM.I.intensity)) * speedMultiplier;
+        newAsteroid.maxSpeed = Random.Range(0.5f, Mathf.Sqrt(GM.I.intensity)) * speedMultiplier; */
+
+        // Base values that scale directly with intensity
+        float baseAcceleration = 0.5f + (0.01f * GM.I.intensity);
+        float baseSpeed = 0.5f + (0.02f * GM.I.intensity);
+        float baseSize = 0.5f + (0.05f * GM.I.intensity);
+
+        // Add small random variation (±50%)
+        float randomVariation = Random.Range(0.5f, 1.5f);
+
+        // Get inverse of random variation, so speed and size will scale inverse to each other.
+        float inverseVariation = 2f - randomVariation;
+
+        // Set speed with controlled scaling
+        newAsteroid.acceleration = baseAcceleration * speedMultiplier * randomVariation;
+        newAsteroid.maxSpeed = baseSpeed * speedMultiplier * randomVariation;
+
 
         // Start at max speed
         newAsteroid.rb2d.linearVelocity = newAsteroid.direction * newAsteroid.maxSpeed;
         
-        // Set size (modified by worm hole)
-        newAsteroid.size = Random.Range(0.5f, Mathf.Sqrt(GM.I.intensity)) * sizeMultiplier;
+        // Set size
+        newAsteroid.size = baseSize * sizeMultiplier * inverseVariation;
         float newScale = progenitor_Asteroid.transform.localScale.x * newAsteroid.size;
         newAsteroid.transform.localScale = new Vector3(newScale, newScale, newScale);
         

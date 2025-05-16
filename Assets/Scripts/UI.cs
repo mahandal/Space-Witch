@@ -11,9 +11,13 @@ public class UI : MonoBehaviour
     public TMP_Text yText;
     public TMP_Text starCount;
     public TMP_Text planetCount;
+    public GameObject planetsParent;
+    public TMP_Text credits;
+    public GameObject creditsParent;
     public TMP_Text songTimer;
-    
-    
+    public GameObject timerParent;
+
+
     [Header("Middle")]
     public GameObject tooltip;
     public TMP_Text tooltipName;
@@ -106,6 +110,7 @@ public class UI : MonoBehaviour
     public GameObject levelUpScreen;
     public GameObject mySelf;
     public GameObject growth;
+    public GameObject persistentGrowth;
     public GameObject postGame;
     public GameObject winBackground;
     public GameObject lossBackground;
@@ -188,7 +193,7 @@ public class UI : MonoBehaviour
     public void LoadSpellImage(string spellName)
     {
         string fileName = spellName + " (Spell)";
-        
+
         Utility.LoadImage(CD_Circle, fileName);
     }
 
@@ -198,20 +203,17 @@ public class UI : MonoBehaviour
         /* if (GM.I.gameState < 1)
             return; */
 
-        // Hide top bar at home
-        if (GM.I.nebula.myName == "Home")
-            top.SetActive(false);
-        else
-            top.SetActive(true);
-            
         // Coordinates
         UpdateCoordinates();
 
         // Star count
-        UpdateStarCount();
+        //UpdateStarCount();
 
         // Planet count
         UpdatePlanetCount();
+
+        // Credits
+        UpdateCredits();
 
         // Song timer
         UpdateSongTimer();
@@ -250,10 +252,18 @@ public class UI : MonoBehaviour
         starCount.text = Gatherer.starsGathered.ToString("0");
     }
 
+    // TBD: Optimize
     void UpdatePlanetCount()
     {
         // Set text
         planetCount.text = GM.I.planets.Count.ToString();
+    }
+
+    // TBD: Optimize
+    void UpdateCredits()
+    {
+        // Set text
+        credits.text = Gatherer.credits.ToString();
     }
 
     void UpdateHealthBars()
@@ -261,7 +271,7 @@ public class UI : MonoBehaviour
         // Get actual health percentages
         float playerHealthPercent = GM.I.player.currentHealth / GM.I.player.maxHealth;
         float familiarHealthPercent = GM.I.familiar.currentHealth / GM.I.familiar.maxHealth;
-        
+
         // PLAYER HEALTH UPDATES
         if (playerHealthPercent != currentDisplayHealth && !healthChanging)
         {
@@ -270,28 +280,28 @@ public class UI : MonoBehaviour
             targetHealthValue = playerHealthPercent;
             healthFlashTimer = 0f;
         }
-        
+
         // Handle health animation effect
         if (healthChanging)
         {
             // Flash the player health bar with appropriate color
             healthFlashTimer += Time.deltaTime;
             float flashIntensity = Mathf.PingPong(healthFlashTimer * 12f, 1f);
-            
+
             // Red for damage, green for healing
-            Color flashColor = targetHealthValue < currentDisplayHealth ? 
-                            Color.Lerp(Color.red, Color.white, flashIntensity) : 
+            Color flashColor = targetHealthValue < currentDisplayHealth ?
+                            Color.Lerp(Color.red, Color.white, flashIntensity) :
                             Color.Lerp(Color.green, Color.white, flashIntensity);
-                            
+
             playerHealthBar.fillRect.GetComponent<Image>().color = flashColor;
-            
+
             // Adjust health bar at appropriate speed
-            float animationSpeed = targetHealthValue < currentDisplayHealth ? 
+            float animationSpeed = targetHealthValue < currentDisplayHealth ?
                                 healthDrainSpeed : healthDrainSpeed * 0.8f; // Healing slightly slower
-                                
+
             currentDisplayHealth = Mathf.Lerp(currentDisplayHealth, targetHealthValue, Time.deltaTime * animationSpeed);
             playerHealthBar.value = currentDisplayHealth;
-            
+
             // Check if effect should end
             if (Mathf.Abs(currentDisplayHealth - targetHealthValue) < 0.01f && healthFlashTimer >= healthFlashDuration)
             {
@@ -303,7 +313,7 @@ public class UI : MonoBehaviour
                 playerHealthBar.fillRect.GetComponent<Image>().color = Color.red;
             }
         }
-        
+
         // FAMILIAR HEALTH UPDATES
         if (familiarHealthPercent != currentDisplayFamiliarHealth && !familiarHealthChanging)
         {
@@ -312,28 +322,28 @@ public class UI : MonoBehaviour
             targetFamiliarHealthValue = familiarHealthPercent;
             familiarHealthFlashTimer = 0f;
         }
-        
+
         // Handle familiar health animation
         if (familiarHealthChanging)
         {
             // Flash the familiar health bar with appropriate color
             familiarHealthFlashTimer += Time.deltaTime;
             float flashIntensity = Mathf.PingPong(familiarHealthFlashTimer * 12f, 1f);
-            
+
             // Red for damage, green for healing
-            Color flashColor = targetFamiliarHealthValue < currentDisplayFamiliarHealth ? 
-                            Color.Lerp(Color.red, Color.white, flashIntensity) : 
+            Color flashColor = targetFamiliarHealthValue < currentDisplayFamiliarHealth ?
+                            Color.Lerp(Color.red, Color.white, flashIntensity) :
                             Color.Lerp(Color.green, Color.white, flashIntensity);
-                            
+
             familiarHealthBar.fillRect.GetComponent<Image>().color = flashColor;
-            
+
             // Adjust health bar at appropriate speed
-            float animationSpeed = targetFamiliarHealthValue < currentDisplayFamiliarHealth ? 
+            float animationSpeed = targetFamiliarHealthValue < currentDisplayFamiliarHealth ?
                                 healthDrainSpeed : healthDrainSpeed * 0.8f; // Healing slightly slower
-                                
+
             currentDisplayFamiliarHealth = Mathf.Lerp(currentDisplayFamiliarHealth, targetFamiliarHealthValue, Time.deltaTime * animationSpeed);
             familiarHealthBar.value = currentDisplayFamiliarHealth;
-            
+
             // Check if effect should end
             if (Mathf.Abs(currentDisplayFamiliarHealth - targetFamiliarHealthValue) < 0.01f && familiarHealthFlashTimer >= healthFlashDuration)
             {
@@ -355,13 +365,13 @@ public class UI : MonoBehaviour
         // Get actual mana percentages
         float playerManaPercent = GM.I.player.currentMana / GM.I.player.maxMana;
         float familiarManaPercent = GM.I.familiar.currentMana / GM.I.familiar.maxMana;
-        
+
         // PLAYER MANA UPDATES
         // Always update the target, not just when we detect a change
         if (playerManaPercent != targetManaValue || !manaChanging)
         {
             targetManaValue = playerManaPercent;
-            
+
             // Only start the flash effect for significant changes
             if (Mathf.Abs(currentDisplayMana - targetManaValue) > 0.01f && !manaChanging)
             {
@@ -369,25 +379,25 @@ public class UI : MonoBehaviour
                 manaFlashTimer = 0f;
             }
         }
-        
+
         // Handle mana animation effect - always smoothly move toward target
         currentDisplayMana = Mathf.Lerp(currentDisplayMana, targetManaValue, Time.deltaTime * manaDrainSpeed);
         playerManaBar.value = currentDisplayMana;
-        
+
         // Handle flashing only when in "changing" state
         if (manaChanging)
         {
             // Flash the player mana bar with appropriate color
             manaFlashTimer += Time.deltaTime;
             float flashIntensity = Mathf.PingPong(manaFlashTimer, 1f);
-            
+
             // Blue for loss, brighter blue for gain
-            Color flashColor = targetManaValue < currentDisplayMana ? 
-                            Color.Lerp(normalColor, Color.white, flashIntensity) : 
+            Color flashColor = targetManaValue < currentDisplayMana ?
+                            Color.Lerp(normalColor, Color.white, flashIntensity) :
                             Color.Lerp(normalColor, Color.blue, flashIntensity);
-                            
+
             playerManaBar.fillRect.GetComponent<Image>().color = flashColor;
-            
+
             // Check if effect should end
             if (Mathf.Abs(currentDisplayMana - targetManaValue) < 0.005f && manaFlashTimer >= manaFlashDuration)
             {
@@ -397,35 +407,35 @@ public class UI : MonoBehaviour
                 playerManaBar.fillRect.GetComponent<Image>().color = normalColor;
             }
         }
-        
+
         // FAMILIAR MANA UPDATES - Same concept as player
         if (familiarManaPercent != targetFamiliarManaValue || !familiarManaChanging)
         {
             targetFamiliarManaValue = familiarManaPercent;
-            
+
             if (Mathf.Abs(currentDisplayFamiliarMana - targetFamiliarManaValue) > 0.01f && !familiarManaChanging)
             {
                 familiarManaChanging = true;
                 familiarManaFlashTimer = 0f;
             }
         }
-        
+
         // Always smoothly update
         currentDisplayFamiliarMana = Mathf.Lerp(currentDisplayFamiliarMana, targetFamiliarManaValue, Time.deltaTime * manaDrainSpeed);
         familiarManaBar.value = currentDisplayFamiliarMana;
-        
+
         if (familiarManaChanging)
         {
             // Flash the familiar mana bar with appropriate color
             familiarManaFlashTimer += Time.deltaTime;
             float flashIntensity = Mathf.PingPong(familiarManaFlashTimer, 1f);
-            
-            Color flashColor = targetFamiliarManaValue < currentDisplayFamiliarMana ? 
-                            Color.Lerp(normalColor, Color.white, flashIntensity) : 
+
+            Color flashColor = targetFamiliarManaValue < currentDisplayFamiliarMana ?
+                            Color.Lerp(normalColor, Color.white, flashIntensity) :
                             Color.Lerp(normalColor, Color.blue, flashIntensity);
-                            
+
             familiarManaBar.fillRect.GetComponent<Image>().color = flashColor;
-            
+
             if (Mathf.Abs(currentDisplayFamiliarMana - targetFamiliarManaValue) < 0.005f && familiarManaFlashTimer >= manaFlashDuration)
             {
                 familiarManaChanging = false;
@@ -434,17 +444,17 @@ public class UI : MonoBehaviour
             }
         }
 
-        
-        
+
+
         // Insufficient mana flash
         if (flashManaBar)
         {
             // Flash the player mana bar
             manaFlashTimer += Time.deltaTime;
-            
+
             float flashIntensity = Mathf.PingPong(manaFlashTimer * 10f, 1f);
             playerManaBar.fillRect.GetComponent<Image>().color = Color.Lerp(normalColor, Color.white, flashIntensity);
-            
+
             if (manaFlashTimer >= manaFlashDuration)
             {
                 flashManaBar = false;
@@ -472,10 +482,10 @@ public class UI : MonoBehaviour
 
         // Get current spell's cooldown
         string currentSpell = GM.I.player.currentSpell;
-        float cooldownTime = GM.I.player.spellCooldowns.ContainsKey(currentSpell) ? 
+        float cooldownTime = GM.I.player.spellCooldowns.ContainsKey(currentSpell) ?
                             GM.I.player.spellCooldowns[currentSpell] : 0f;
         float maxCooldown = GM.I.talents[currentSpell].cooldown;
-    
+
         // Fill amount shows remaining cooldown (1 = ready, 0 = just used)
         CD_Circle.fillAmount = 1 - (cooldownTime / maxCooldown);
 
@@ -484,11 +494,11 @@ public class UI : MonoBehaviour
         {
             // Flash the circle red
             cooldownFlashTimer += Time.deltaTime;
-            
+
             // Make the color pulse between normal and red
             float flashIntensity = Mathf.PingPong(cooldownFlashTimer * 10f, 1f);
             CD_Circle.color = Color.Lerp(Color.red, Color.white, flashIntensity);
-            
+
             // End the flash effect after duration
             if (cooldownFlashTimer >= cooldownFlashDuration)
             {
@@ -516,10 +526,10 @@ public class UI : MonoBehaviour
     {
         xpBar.fillAmount = GM.I.player.xp / (GM.I.player.level * 100);
         levelText.text = GM.I.player.level.ToString("0");
-        
+
         // Check if player can level up
         canLevelUp = GM.I.player.xp >= GM.I.player.level * 100;
-        
+
         // Make the XP bar flash when ready to level up
         if (canLevelUp)
         {
@@ -527,7 +537,7 @@ public class UI : MonoBehaviour
             flashTimer += Time.deltaTime * flashSpeed;
             Color flashColor = new Color(originalXPColor.g, originalXPColor.b, originalXPColor.r, Mathf.PingPong(flashTimer, 1f));
             xpBar.color = flashColor;
-            
+
             // Show and animate level up text
             levelUpText.gameObject.SetActive(true);
             levelUpText.color = flashColor;
@@ -545,8 +555,11 @@ public class UI : MonoBehaviour
 
     public void OpenLevelUpScreen()
     {
+        // Stop time
+        GM.I.StopTime();
+
         // Pause universe
-        GM.I.universe.gameObject.SetActive(false);
+        //GM.I.universe.gameObject.SetActive(false);
 
         // Note: We don't just open the level up screen like so:
         //levelUpScreen.SetActive(true);
@@ -572,9 +585,12 @@ public class UI : MonoBehaviour
         // Deactivate level up screen
         mySelf.SetActive(false);
         growth.SetActive(false);
-        
+
+        // Start time
+        GM.I.StartTime();
+
         // Resume universe
-        GM.I.universe.gameObject.SetActive(true);
+        //GM.I.universe.gameObject.SetActive(true);
 
         // Start the game if we just chose our first talent
         if (GM.I.player.level == 1)
@@ -632,20 +648,20 @@ public class UI : MonoBehaviour
 
         // Set class color
         if (talent.myClass == "Alchemist")
-            GM.I.ui.detail_class.color = new Color (0.78f, 0.42f, 0.69f, 0.5f);
-        
+            GM.I.ui.detail_class.color = new Color(0.78f, 0.42f, 0.69f, 0.5f);
+
         if (talent.myClass == "Enchantress")
-            GM.I.ui.detail_class.color = new Color (0.69f, 0.78f, 0.42f, 0.5f);
-            
+            GM.I.ui.detail_class.color = new Color(0.69f, 0.78f, 0.42f, 0.5f);
+
         if (talent.myClass == "Engineer")
-            GM.I.ui.detail_class.color = new Color (0.78f, 0.78f, 0.78f, 0.5f);
-        
+            GM.I.ui.detail_class.color = new Color(0.78f, 0.78f, 0.78f, 0.5f);
+
         if (talent.myClass == "Druid")
-            GM.I.ui.detail_class.color = new Color (0.42f, 0.78f, 0.69f, 0.5f);
-        
+            GM.I.ui.detail_class.color = new Color(0.42f, 0.78f, 0.69f, 0.5f);
+
         if (talent.myClass == "Oracle")
-            GM.I.ui.detail_class.color = new Color (0.42f, 0.69f, 0.78f, 0.5f);
-            
+            GM.I.ui.detail_class.color = new Color(0.42f, 0.69f, 0.78f, 0.5f);
+
         detail_description.text = talent.description;
         detail_witchMind.text = "+" + talent.witchMind.ToString();
         detail_witchBody.text = "+" + talent.witchBody.ToString();
@@ -703,15 +719,15 @@ public class UI : MonoBehaviour
             int soulCost = GM.I.player.talentsBought + 1;
             int netSoulChange = soulGain - soulCost;
             int newSoul = player.soul + netSoulChange;
-            
+
             newWitchSoul.text = newSoul.ToString();
-            
+
             // If we're losing soul overall (cost > gain), show red
             if (netSoulChange <= 0)
                 newWitchSoul.color = Color.red;
             else
                 newWitchSoul.color = Color.green;
-                
+
             newWitchSoul.gameObject.SetActive(true);
         }
         // Normal witch soul
@@ -813,7 +829,7 @@ public class UI : MonoBehaviour
         // - Talents
 
         // First disable all
-        foreach(KnownTalent knownTalent in knownTalents)
+        foreach (KnownTalent knownTalent in knownTalents)
         {
             knownTalent.gameObject.SetActive(false);
         }
@@ -822,14 +838,14 @@ public class UI : MonoBehaviour
         int numTalents = 0;
 
         // Go through each of the player's talents
-        foreach(string talentName in player.talents.Keys)
+        foreach (string talentName in player.talents.Keys)
         {
             // Get KnownTalent
             KnownTalent knownTalent = knownTalents[numTalents];
-            
+
             // Load talent
             knownTalent.LoadTalent(talentName);
-            
+
             // Activate
             knownTalent.gameObject.SetActive(true);
 
@@ -885,7 +901,7 @@ public class UI : MonoBehaviour
         // Load character if we're at home cause we haven't done that yet
         if (GM.I.nebula.myName == "Home")
             LoadCharacter();
-            
+
         // First forget everything
         foreach (WheelChoice spell in spells)
         {
@@ -906,11 +922,13 @@ public class UI : MonoBehaviour
             {
                 // If it is our current spell, highlight it!
                 spells[i].Highlight();
-            } else {
+            }
+            else
+            {
                 // If it's not our current spell, reset it.
                 spells[i].Unhighlight();
             }
-                
+
             // Activate
             spells[i].gameObject.SetActive(true);
         }
@@ -923,7 +941,7 @@ public class UI : MonoBehaviour
         CD_Circle.color = new Color(1, 1, 1, 1);
 
         // Hide the universe
-        GM.I.universe.gameObject.SetActive(false);
+        //GM.I.universe.gameObject.SetActive(false);
     }
 
     public void EndMeditation()
@@ -938,7 +956,7 @@ public class UI : MonoBehaviour
         CD_Circle.color = new Color(0.5f, 0.5f, 0.5f, 0.5f);
 
         // Reveal the universe
-        GM.I.universe.gameObject.SetActive(true);
+        //GM.I.universe.gameObject.SetActive(true);
     }
 
     public void OpenWheelOfTalents(Talent relatedTalent)
@@ -993,10 +1011,10 @@ public class UI : MonoBehaviour
 
             return;
         }
-        
+
         blackHoleChannelTimer += Time.deltaTime;
         float progress = blackHoleChannelTimer / blackHoleChannelTime;
-        
+
         // Screen vignette effect
         if (blackHoleVignette == null)
         {
@@ -1007,65 +1025,64 @@ public class UI : MonoBehaviour
             blackHoleVignette.rectTransform.sizeDelta = Vector2.zero;
             blackHoleVignette.color = new Color(0, 0, 0, 0);
         }
-        
+
         // Darken screen edges
         blackHoleVignette.color = new Color(0, 0, 0, progress * 0.8f);
-        
+
         // Rotate and scale player
         GM.I.player.transform.Rotate(0, 0, progress * 360 * Time.deltaTime);
         GM.I.player.transform.localScale = GM.I.player.originalScale * (1 - progress * 0.5f);
-        
+
         // Camera zoom effect
         if (GM.I.player.mainCam != null)
         {
             GM.I.player.mainCam.orthographicSize = Mathf.Lerp(5, 0.1f, progress);
         }
-        
+
         // Execute transition when complete
         if (blackHoleChannelTimer >= blackHoleChannelTime)
         {
             // Clean up effects
             if (blackHoleVignette != null)
                 Destroy(blackHoleVignette.gameObject);
-                
+
             // Reset camera and player
             GM.I.player.mainCam.orthographicSize = 5;
             GM.I.player.transform.localScale = GM.I.player.originalScale;
-                
+
             // Transition complete
             EndMeditation();
             //inBlackHoleTransition = false;
             blackHoleChannelTimer = 0f;
-            
+
             // Begin the run
             GM.I.GoBig(GM.I.player.currentBlackHole.destination);
         }
     }
 
-    // Load tooltip
-    /* public void LoadTooltip(string myName, string description, Sprite sprite)
+    // Set up our home UI
+    public void GoHome()
     {
-        tooltip.SetActive(true);
-        tooltipName.text = myName;
-        tooltipDescription.text = description;
-        tooltipImage.sprite = sprite;
-    } */
+        // Deactivate planets
+        planetsParent.SetActive(false);
 
-    /* public void LoadTooltip(Tooltip tt)
+        // Deactivate timer
+        timerParent.SetActive(false);
+
+        // Activate credits
+        creditsParent.SetActive(true);
+    }
+
+    // Set up our outside UI
+    public void GoOut()
     {
-        // activate
-        tooltip.SetActive(true);
+        // Activate planets
+        planetsParent.SetActive(true);
 
-        // load name
-        tooltipName.text = tt.myName;
+        // Activate timer
+        timerParent.SetActive(true);
 
-        // load description
-        tooltipDescription.text = tt.description;
-
-        // Check if we should use our special tooltip
-        if (tt.specialImage != null && GM.I.player.isCalm)
-            tooltipImage.sprite = tt.specialImage.sprite;
-        else
-            tooltipImage.sprite = tt.sprite;
-    } */
+        // Deactivate credits
+        creditsParent.SetActive(false);
+    }
 }

@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using System.Collections.Generic;
+using System.IO;
 
 public class GM : MonoBehaviour
 {
@@ -41,6 +42,10 @@ public class GM : MonoBehaviour
 
     // Game state
     public int gameState = 0;
+
+    // Saved data for persistence
+    // (credits, unlocked talents, etc...)
+    public SaveData saveData = new SaveData();
 
     // Current nebula
     //public string nebula = "unknown";
@@ -103,7 +108,9 @@ public class GM : MonoBehaviour
         if (I != null)
         {
             Destroy(this);
-        } else {
+        }
+        else
+        {
             I = this;
         }
 
@@ -115,8 +122,11 @@ public class GM : MonoBehaviour
         // Enable stuff that should be
         //ui.levelUpScreen.SetActive(true);
 
+        // Load our saved data
+        LoadGame();
+
         // Load settings
-        LoadSettings();
+        //LoadSettings();
     }
 
     void Start()
@@ -132,19 +142,69 @@ public class GM : MonoBehaviour
         Utility.PreloadImages();
 
         GoHome();
-        
-        /* // Initialize songs
-        Song.InitializeSongs();
+    }
 
-        // Set up nebula
-        spawnManager.SetUpNebula();
+    public void StopTime()
+    {
+        // Time scale
+        Time.timeScale = 0f;
 
-        // Spawn Moon
-        Gatherer.moonsGathered = 1;
-        spawnManager.SpawnMoon();
+        // Music
+        dj.musicSource.Pause();
+    }
 
-        // Pregame
-        PreGame(); */
+    public void StartTime()
+    {
+        // Time scale
+        Time.timeScale = 1f;
+
+        // Music
+        dj.musicSource.Play();
+    }
+    
+    private string SavePath => Path.Combine(Application.persistentDataPath, "gamedata.json");
+
+    // Save our progress.
+    public void SaveGame()
+    {
+        // Update save data with current values
+        saveData.credits = Gatherer.credits;
+
+        // Convert to JSON and write to file
+        string json = JsonUtility.ToJson(saveData, true);
+        File.WriteAllText(SavePath, json);
+    }
+
+    // Load our progress.
+    public void LoadGame()
+    {
+        // Settings are handled in player prefs
+        LoadSettings();
+
+        // Load saved data from json
+        try
+        {
+            if (File.Exists(SavePath))
+            {
+                string json = File.ReadAllText(SavePath);
+                saveData = JsonUtility.FromJson<SaveData>(json);
+
+                // Apply loaded data to game
+                Gatherer.credits = saveData.credits;
+            }
+            else
+            {
+                Debug.Log("No save file found. Starting with default values.");
+                saveData = new SaveData();
+                Gatherer.credits = 0;
+            }
+        }
+        catch (System.Exception e)
+        {
+            Debug.LogError("Failed to load game: " + e.Message);
+            saveData = new SaveData();
+            Gatherer.credits = 0;
+        }
     }
 
     // Load settings stored in player prefs.
@@ -152,6 +212,7 @@ public class GM : MonoBehaviour
     // Note: UIButton handles visuals and actual button presses.
     public void LoadSettings()
     {
+        // Screen shake
         screenShakeEnabled = PlayerPrefs.GetInt("ScreenShakeEnabled", 1) == 1;
     }
 
@@ -243,6 +304,10 @@ public class GM : MonoBehaviour
             bee.isBumpable = true;
         }
 
+        // wait for it to get intense
+        if (intensity <= 0)
+            return;
+        
         // Go through each worm hole
         foreach(WormHole wormHole in wormHoles)
         {
@@ -261,12 +326,37 @@ public class GM : MonoBehaviour
         ui.winBackground.SetActive(true);
         ui.lossBackground.SetActive(false);
 
+        // Award credits
+        int score = CalculateScore();
+        Gatherer.credits += score;
+        SaveGame();
+
+
         // sfx
         dj.PlayEffect("victory", player.transform.position, 1f, true);
 
         // Check for high score
-        int score = (int)(Gatherer.starsGathered);
         scoreboard.CheckForHighScore(score);
+    }
+
+    public int CalculateScore()
+    {
+        // Base score = total stars gathered
+        float score = Gatherer.starsGathered;
+
+        // Count # of lost planets
+        int lostPlanets = bees.Count - planets.Count;
+
+        // Divide score by # of lost planets
+        if (lostPlanets > 0)
+            score = score / lostPlanets;
+        else
+            score = score * 2f; // Double score for no losses
+
+        // Gain bonus score per moon
+        score *= 1f + (0.5f * Gatherer.moonsGathered);
+
+        return (int)score;
     }
 
     // Dying results in loss...
@@ -292,11 +382,7 @@ public class GM : MonoBehaviour
         gameState = 2;
 
         // Stop time
-        Time.timeScale = 0f;
-
-        /* // Check for high score
-        int score = (int)(Gatherer.starsGathered);
-        scoreboard.CheckForHighScore(score); */
+        StopTime();
 
         // Display high scores
         scoreboard.DisplayHighScores();
@@ -344,11 +430,13 @@ public class GM : MonoBehaviour
         spawnManager.DeactivateNebulas();
         home.gameObject.SetActive(true);
         nebula = home;
-        //nebula = "Home";
         gameState = -1;
-        
+
+        // Load home UI
+        ui.GoHome();
+
         // Deactivate all bees
-        foreach(Bee bee in bees)
+        foreach (Bee bee in bees)
         {
             bee.gameObject.SetActive(false);
         }
@@ -358,7 +446,7 @@ public class GM : MonoBehaviour
         player.level = 1;
 
         // Turn time back on
-        Time.timeScale = 1f;
+        StartTime();
     }
 
     // Sets us up for a run.
@@ -370,8 +458,11 @@ public class GM : MonoBehaviour
         player.transform.position = Vector3.zero;
         familiar.transform.position = new Vector3(0, 1, 0);
 
+        // Set up outside UI
+        ui.GoOut();
+
         // Activate all bees
-        foreach(Bee bee in bees)
+        foreach (Bee bee in bees)
         {
             bee.gameObject.SetActive(true);
         }
@@ -388,7 +479,7 @@ public class GM : MonoBehaviour
 
 
         // Stop time
-        Time.timeScale = 0f;
+        StopTime();
 
         // Set up bees
         spawnManager.SetUpBees();
@@ -414,7 +505,7 @@ public class GM : MonoBehaviour
         //ui.BeginGame();
 
         // Activate game start time
-        Time.timeScale = 1f;
+        StartTime();
         gameState = 1;
 
         // Start playing first song!
@@ -461,9 +552,7 @@ public class GM : MonoBehaviour
         isPaused = false;
 
         // Unfreeze time
-        Time.timeScale = 1f;
-        dj.musicSource.Play();
-        //universe.SetActive(true);
+        StartTime();
 
         // UI
         ui.Unpause();
@@ -475,22 +564,20 @@ public class GM : MonoBehaviour
         isPaused = true;
 
         // Freeze time
-        Time.timeScale = 0f;
-        dj.musicSource.Pause();
-        //universe.SetActive(false);
+        StopTime();
 
         // UI
         ui.Pause();
     }
 
-    public void ShakeCamera(float intensity, float duration, Vector3 position)
+    public void ShakeCamera(float strength, float duration, Vector3 position)
     {
         // Early return if shake is disabled
         if (!screenShakeEnabled)
             return;
         
         // Apply a maximum cap to the intensity
-        float cappedIntensity = Mathf.Min(intensity, 0.5f);
+        float cappedIntensity = Mathf.Min(strength, 0.5f);
         
         // Optional: Apply a curve to make scaling more pleasing
         // This will make smaller damage feel responsive while keeping larger damage manageable

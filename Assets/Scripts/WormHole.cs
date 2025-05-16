@@ -29,7 +29,7 @@ public class WormHole : MonoBehaviour
         }
         
         // Rotate
-        transform.Rotate(0, 0, spawnRate * GM.I.intensity);
+        transform.Rotate(0, 0, spawnRate * (1 + GM.I.intensity));
     }
     
     public void SpawnAsteroid()

@@ -72,6 +72,10 @@ public class Planet : MonoBehaviour
 
     public void Pollinate(int amount = 1)
     {
+        // cap?
+        if (pollen >= 13 * GM.I.planets.Count)
+            return;
+        
         // Increase pollen
         pollen += amount;
 
@@ -113,6 +117,9 @@ public class Planet : MonoBehaviour
     {
         // Remove from list of planets
         GM.I.planets.Remove(this);
+
+        // Not my bee!?
+        GM.I.bees[index].gameObject.SetActive(false);
 
         // GG?
         if (GM.I.planets.Count == 0)

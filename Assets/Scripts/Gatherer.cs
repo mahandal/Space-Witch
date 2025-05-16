@@ -8,6 +8,7 @@ public class Gatherer : MonoBehaviour
     public static int starComboIndex = 0;
     //private int starComboIndex = 0;
     public static int moonsGathered = 1;
+    public static int credits = 0;
 
     [Header("Attributes")]
     public int mind = 1;

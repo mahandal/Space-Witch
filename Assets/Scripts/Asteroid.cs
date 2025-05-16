@@ -18,11 +18,25 @@ public class Asteroid : MonoBehaviour
 
     [Header("Automated Machinery")]
     public bool exploding = false;
+    public bool isFirstFrame = true;
     
 
     // Fixed update is for physiques & stuff.
     void FixedUpdate()
     {
+
+        // First frame special handling
+        if (isFirstFrame)
+        {
+            // Force velocity directly and skip acceleration
+            rb2d.linearVelocity = direction.normalized * maxSpeed;
+            isFirstFrame = false;
+            
+            // Skip the rest of the method for this frame
+            LateFixedUpdate();
+            return;
+        }
+
         // Accelerate
         rb2d.AddForce(direction.normalized * acceleration);
 
@@ -36,11 +50,11 @@ public class Asteroid : MonoBehaviour
         //velocity = rb2d.linearVelocity.magnitude;
 
         // Max distance
-        /* float distanceToPlayer = Vector3.Distance(transform.position, GM.I.player.transform.position);
-        if (distanceToPlayer > GM.I.spawnManager.despawnDistance)
+        float distanceFromOrigin = Vector3.Distance(transform.position, Vector3.zero);
+        if (distanceFromOrigin > 35f)
         {
             Explode();
-        } */
+        }
 
         // Song end
         if (GM.I.songTimer < 1f)
