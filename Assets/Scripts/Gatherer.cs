@@ -302,7 +302,7 @@ public class Gatherer : MonoBehaviour
     }
 
     // Collisions are for asteroids and also bumping into your familiar and/or bees.
-    void OnCollisionEnter2D(Collision2D col)
+    public void OnCollisionEnter2D(Collision2D col)
     {
         //Debug.Log(name + " just collided with " + col.gameObject.name);
 

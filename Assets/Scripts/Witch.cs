@@ -1,9 +1,43 @@
 using UnityEngine;
+using System.Collections.Generic;
 
 public class Witch : Gatherer
 {
+    [Header("Talents")]
+    public List<string> teachableTalents = new List<string>();
+    public int baseTalentCost = 100;
+
     [Header("Automated Machinery")]
     public Vector3 destination = Vector3.zero;
+    
+
+    // Super collision to train 
+    new void OnCollisionEnter2D(Collision2D col)
+    {
+        // Base gatherer collision handling
+        base.OnCollisionEnter2D(col);
+        
+        // Check if player
+        if (col.gameObject.GetComponent<Player>() != null)
+        {
+            BeginTraining();
+        }
+    }
+
+    public void BeginTraining()
+    {
+        // SFX
+        string soundFileName = "witch_" + Random.Range(1, 14);
+        GM.I.dj.PlayEffect(soundFileName, transform.position);
+
+        // Set current witch
+        GM.I.currentWitch = this;
+
+        WheelChoice.LoadWheelOfTraining(this);
+        
+        // Open talent wheel
+        GM.I.ui.OpenTrainingScreen();
+    }
 
     new void Start()
     {

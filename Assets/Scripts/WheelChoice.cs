@@ -85,6 +85,14 @@ public class WheelChoice : MonoBehaviour, IPointerEnterHandler, IPointerExitHand
         {
             talent.gameObject.SetActive(false);
         }
+    }
+    
+    public static void HideTrainingTalents()
+    {
+        foreach (WheelChoice talent in GM.I.ui.trainingTalents)
+        {
+            talent.gameObject.SetActive(false);
+        }
     } 
 
     // Chooses this spell as the player's currentSpell
@@ -99,6 +107,55 @@ public class WheelChoice : MonoBehaviour, IPointerEnterHandler, IPointerExitHand
 
     // Chooses this talent as the player's new talent for this level
     public void ChooseTalent()
+    {
+        // Check if we're at home and should unlock a new talent, or if we're outside and should learn that talent instead.
+        if (GM.I.nebula.myName == "Home")
+        {
+            UnlockTalent();
+        }
+        else
+        {
+            LearnTalent();
+        }
+    }
+
+    public void UnlockTalent()
+    {
+        int cost = GM.I.currentWitch.baseTalentCost;
+        
+        // Check if enough credits
+        if (Gatherer.credits >= cost)
+        {
+            // Spend credits
+            Gatherer.credits -= cost;
+            
+            // Add to unlocked talents
+            GM.I.saveData.unlockedTalents.Add(myName);
+            
+            // Add to known spells if it's a spell
+            Talent talent = GM.I.talents[myName];
+            if (talent.isSpell && !GM.I.player.knownSpells.Contains(myName))
+            {
+                GM.I.player.knownSpells.Add(myName);
+            }
+            
+            // Visual feedback
+            HitMarker.CreateLearnMarker(GM.I.player.transform.position, "Unlocked: " + myName);
+            
+            // Save game
+            GM.I.SaveGame();
+            
+            // Close wheel
+            GM.I.ui.CloseWheelOfTalents();
+        }
+        else
+        {
+            // Not enough
+            HitMarker.CreateLearnMarker(GM.I.player.transform.position, "Not enough credits!");
+        }
+    }
+
+    public void LearnTalent()
     {
         // Count talents bought
         GM.I.player.talentsBought++;
@@ -116,7 +173,9 @@ public class WheelChoice : MonoBehaviour, IPointerEnterHandler, IPointerExitHand
         if (GM.I.player.xp >= GM.I.player.level * 100)
         {
             GM.I.player.LevelUp();
-        } else {
+        }
+        else
+        {
             GM.I.ui.CloseLevelUpScreen();
         }
     }
@@ -127,7 +186,7 @@ public class WheelChoice : MonoBehaviour, IPointerEnterHandler, IPointerExitHand
         // Check if we're already good
         if (myName == spellName)
             return;
-        
+
         // Set name
         myName = spellName;
 
@@ -151,6 +210,37 @@ public class WheelChoice : MonoBehaviour, IPointerEnterHandler, IPointerExitHand
         // Load image
         Utility.LoadImage(image, myName);
     }
+    
+    // 
+    public static void LoadWheelOfTraining(Witch witch)
+    {
+        // First unhighlight and hide all
+        HideTrainingTalents();
+
+        // Track available slots
+        int slotIndex = 0;
+
+        // Loop through teachable talents
+        foreach (string talentName in witch.teachableTalents)
+        {
+            // Skip if already unlocked
+            if (GM.I.saveData.unlockedTalents.Contains(talentName))
+                continue;
+
+            // Load talent into slot
+            GM.I.ui.trainingTalents[slotIndex].LoadTalent(talentName);
+
+            // Activate
+            GM.I.ui.trainingTalents[slotIndex].gameObject.SetActive(true);
+
+            // Next slot
+            slotIndex++;
+
+            // Stop if we've filled all slots
+            if (slotIndex >= GM.I.ui.talents.Count)
+                break;
+        }
+    }
 
     // Load in all the related talents to the wheel of talents.
     // (related talents are talents that share a class and rarity)
@@ -158,7 +248,7 @@ public class WheelChoice : MonoBehaviour, IPointerEnterHandler, IPointerExitHand
     {
         // - Get list
         List<string> talentList = TalentManager.commonAlchemistTalents;
-        
+
         // Alchemist
         if (relatedTalent.myClass == "Alchemist")
         {

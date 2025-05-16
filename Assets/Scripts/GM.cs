@@ -89,6 +89,9 @@ public class GM : MonoBehaviour
 
     public bool isPaused = false;
 
+    // The current witch we are learning from, while training.
+    public Witch currentWitch;
+
 
     // Timers
     public float gameTimer = 180f;

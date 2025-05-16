@@ -3,8 +3,8 @@ guid: 108f5f6aec376e54b8072246e7af1693
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: 6683615111705859281
-    second: Bee_0
+      213: 6737142329169032314
+    second: Ship - Bee_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -100,13 +100,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: Bee_0
+      name: Ship - Bee_0
       rect:
         serializedVersion: 2
-        x: 478
-        y: 447
-        width: 1046
-        height: 1285
+        x: 136
+        y: 151
+        width: 1728
+        height: 1699
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -115,8 +115,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 1d419a46888f0cc50800000000000000
-      internalID: 6683615111705859281
+      spriteID: a743e53e0432f7d50800000000000000
+      internalID: 6737142329169032314
       vertices: []
       indices: 
       edges: []

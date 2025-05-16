@@ -14,6 +14,7 @@ public class UI : MonoBehaviour
     public GameObject planetsParent;
     public TMP_Text credits;
     public GameObject creditsParent;
+    public TMP_Text trainingCredits;
     public TMP_Text songTimer;
     public GameObject timerParent;
 
@@ -29,6 +30,9 @@ public class UI : MonoBehaviour
     //public List<SpellChoice> spells;
     public List<WheelChoice> spells;
     public List<WheelChoice> talents;
+
+    public GameObject trainingWheel;
+    public List<WheelChoice> trainingTalents;
 
     [Header("Bottom")]
     public Slider playerHealthBar;
@@ -103,14 +107,18 @@ public class UI : MonoBehaviour
     public Slider sfxVolume;
     public Slider gatherVolume;
 
-    [Header("Full")]
-    public GameObject pauseMenu;
-    //public GameObject preGame;
-    public GameObject scoreboard;
+    [Header("Growth")]
     public GameObject levelUpScreen;
     public GameObject mySelf;
     public GameObject growth;
     public GameObject persistentGrowth;
+    public GameObject talentCostParent;
+    public TMP_Text talentCost;
+
+    [Header("Full")]
+    public GameObject pauseMenu;
+    //public GameObject preGame;
+    public GameObject scoreboard;
     public GameObject postGame;
     public GameObject winBackground;
     public GameObject lossBackground;
@@ -262,8 +270,11 @@ public class UI : MonoBehaviour
     // TBD: Optimize
     void UpdateCredits()
     {
-        // Set text
+        // Set main text
         credits.text = Gatherer.credits.ToString();
+
+        // Set training text
+        trainingCredits.text = Gatherer.credits.ToString();
     }
 
     void UpdateHealthBars()
@@ -553,6 +564,29 @@ public class UI : MonoBehaviour
         }
     }
 
+    public void OpenTrainingScreen()
+    {
+        // Stop time.
+        GM.I.StopTime();
+
+        // Open training screen.
+        mySelf.SetActive(true);
+        persistentGrowth.SetActive(true);
+
+        // Load the left side of the level up screen.
+        LoadCharacter();
+    }
+
+    public void CloseTrainingScreen()
+    {
+        // Start time.
+        GM.I.StartTime();
+
+        // Close training screen.
+        mySelf.SetActive(false);
+        persistentGrowth.SetActive(false);
+    }
+
     public void OpenLevelUpScreen()
     {
         // Stop time
@@ -579,7 +613,7 @@ public class UI : MonoBehaviour
 
     public void CloseLevelUpScreen()
     {
-        // Reload character
+        // Reload character to show new talent when meditating.
         LoadCharacter();
 
         // Deactivate level up screen
@@ -675,6 +709,21 @@ public class UI : MonoBehaviour
         // Load image
         string fileName = talent.myName;
         Utility.LoadImage(detail_image, fileName);
+
+        // Load cost at home
+        if (GM.I.nebula.myName == "Home")
+        {
+            // Activate
+            talentCostParent.SetActive(true);
+
+            // Load text
+            talentCost.text = "100";
+        }
+        else
+        {
+            // Disable credit cost out in the world
+            talentCostParent.SetActive(false);
+        }
     }
 
     public void PreviewStats(Talent talent, bool costYourSoul = false)
@@ -834,11 +883,51 @@ public class UI : MonoBehaviour
             knownTalent.gameObject.SetActive(false);
         }
 
+        // If we're at home, load unlocked talents.
+        if (GM.I.nebula.myName == "Home")
+        {
+            LoadUnlockedTalents();
+        }
+        else
+        {
+            // If we're outside, load currently known talents.
+            LoadKnownTalents();
+        }
+    }
+
+    // Load our currently known talents.
+    // (for in-game)
+    public void LoadKnownTalents()
+    {
         // Keep track of how many talents we have
         int numTalents = 0;
 
         // Go through each of the player's talents
         foreach (string talentName in player.talents.Keys)
+        {
+            // Get KnownTalent
+            KnownTalent knownTalent = knownTalents[numTalents];
+
+            // Load talent
+            knownTalent.LoadTalent(talentName);
+
+            // Activate
+            knownTalent.gameObject.SetActive(true);
+
+            // Increment num talents
+            numTalents++;
+        }
+    }
+
+    // Load our unlocked talents.
+    // (for home)
+    public void LoadUnlockedTalents()
+    {
+        // Keep track of how many talents we have
+        int numTalents = 0;
+
+        // Go through each of our unlocked talents
+        foreach (string talentName in GM.I.saveData.unlockedTalents)
         {
             // Get KnownTalent
             KnownTalent knownTalent = knownTalents[numTalents];
@@ -1019,6 +1108,7 @@ public class UI : MonoBehaviour
         if (blackHoleVignette == null)
         {
             blackHoleVignette = new GameObject("BlackHoleVignette").AddComponent<Image>();
+            blackHoleVignette.raycastTarget = false; 
             blackHoleVignette.transform.SetParent(transform, false);
             blackHoleVignette.rectTransform.anchorMin = Vector2.zero;
             blackHoleVignette.rectTransform.anchorMax = Vector2.one;
