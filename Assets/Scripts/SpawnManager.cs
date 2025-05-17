@@ -459,7 +459,7 @@ public class SpawnManager : MonoBehaviour
 
         // Spawn Moon
         Gatherer.moonsGathered = 1;
-        //SpawnMoon();
+        SpawnMoon();
     }
 
     // Set up worm holes from a nebula

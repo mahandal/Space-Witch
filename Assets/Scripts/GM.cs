@@ -192,22 +192,26 @@ public class GM : MonoBehaviour
                 string json = File.ReadAllText(SavePath);
                 saveData = JsonUtility.FromJson<SaveData>(json);
 
-                // Apply loaded data to game
-                Gatherer.credits = saveData.credits;
+                // Clear ooold saves
+                if (saveData.unlockedTalents.Count < 5)
+                    saveData = new SaveData();
             }
             else
             {
                 Debug.Log("No save file found. Starting with default values.");
                 saveData = new SaveData();
-                Gatherer.credits = 0;
+                //Gatherer.credits = 0;
             }
         }
         catch (System.Exception e)
         {
             Debug.LogError("Failed to load game: " + e.Message);
             saveData = new SaveData();
-            Gatherer.credits = 0;
+            //Gatherer.credits = 0;
         }
+
+        // Apply loaded data to game
+        Gatherer.credits = saveData.credits;
     }
 
     // Load settings stored in player prefs.
@@ -331,9 +335,8 @@ public class GM : MonoBehaviour
 
         // Award credits
         int score = CalculateScore();
-        Gatherer.credits += score;
+        Gatherer.credits += score / 10;
         SaveGame();
-
 
         // sfx
         dj.PlayEffect("victory", player.transform.position, 1f, true);
@@ -481,8 +484,9 @@ public class GM : MonoBehaviour
         //
 
 
-        // Stop time
-        StopTime();
+        // Stop time?
+        // Or handled in player level up?
+        //StopTime();
 
         // Set up bees
         spawnManager.SetUpBees();

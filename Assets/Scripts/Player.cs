@@ -569,6 +569,9 @@ public class Player : Gatherer
     // Level up!
     public void LevelUp()
     {
+        // Stop time.
+        GM.I.StopTime();
+
         // Spend xp
         xp -= level * 100;
 

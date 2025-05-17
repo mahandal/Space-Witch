@@ -29,7 +29,9 @@ public class KnownTalent : MonoBehaviour
         Utility.LoadImage(image, talentName);
 
         // Get level
-        int level = GM.I.player.talents[talentName];
+        int level = 1;
+        if (GM.I.nebula.myName != "Home")
+            level = GM.I.player.talents[talentName];
 
         // Set level
         levelText.text = "Level: " + level.ToString();

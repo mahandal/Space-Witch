@@ -160,7 +160,96 @@ public class TalentManager : MonoBehaviour
     // Return the name of a random talent, with the given class and rarity.
     public static string GetRandomTalent(string subclass, string rarity = "Common")
     {
+        // Get full list for class and rarity
+        List<string> fullTalentList = new List<string>();
+
         // Alchemist
+        if (subclass == "Alchemist")
+        {
+            // Common
+            if (rarity == "Common")
+                fullTalentList = commonAlchemistTalents;
+
+            // Uncommon
+            if (rarity == "Uncommon")
+                fullTalentList = uncommonAlchemistTalents;
+
+            // Rare
+            if (rarity == "Rare")
+                fullTalentList = rareAlchemistTalents;
+        }
+        else if (subclass == "Enchantress")
+        {
+            // Common
+            if (rarity == "Common")
+                fullTalentList = commonEnchantressTalents;
+
+            // Uncommon
+            if (rarity == "Uncommon")
+                fullTalentList = uncommonEnchantressTalents;
+
+            // Rare
+            if (rarity == "Rare")
+                fullTalentList = rareEnchantressTalents;
+        }
+        else if (subclass == "Engineer")
+        {
+            // Common
+            if (rarity == "Common")
+                fullTalentList = commonEngineerTalents;
+
+            // Uncommon
+            if (rarity == "Uncommon")
+                fullTalentList = uncommonEngineerTalents;
+
+            // Rare
+            if (rarity == "Rare")
+                fullTalentList = rareEngineerTalents;
+        }
+        else if (subclass == "Druid")
+        {
+            // Common
+            if (rarity == "Common")
+                fullTalentList = commonDruidTalents;
+
+            // Uncommon
+            if (rarity == "Uncommon")
+                fullTalentList = uncommonDruidTalents;
+
+            // Rare
+            if (rarity == "Rare")
+                fullTalentList = rareDruidTalents;
+        }
+        else if (subclass == "Oracle")
+        {
+            // Common
+            if (rarity == "Common")
+                fullTalentList = commonOracleTalents;
+
+            // Uncommon
+            if (rarity == "Uncommon")
+                fullTalentList = uncommonOracleTalents;
+
+            // Rare
+            if (rarity == "Rare")
+                fullTalentList = rareOracleTalents;
+        }
+
+        // Track available talents
+        List<string> availableTalents = new List<string>();
+
+        // Go through full list
+        foreach (string talent in fullTalentList)
+        {
+            // Check if it's unlocked
+            if (GM.I.saveData.unlockedTalents.Contains(talent))
+            {
+                availableTalents.Add(talent);
+            }
+        }
+
+        return Shuffle(availableTalents);
+        /* // Alchemist
         if (subclass == "Alchemist")
         {
             // Common
@@ -235,20 +324,24 @@ public class TalentManager : MonoBehaviour
         Debug.Log("Invalid subclass (or maybe rarity?) submitted when pulling talents : " + subclass);
 
         return null;
+        */
     }
 
-    //private static Random rng = new Random();  
+    //private static Random rng = new Random();
+    
+    // Shuffle a given list and return the first element from its new order.
     public static string Shuffle(List<string> shufflee)
     {
-        int n = shufflee.Count;  
-        while (n > 1) {  
-            n--;  
+        int n = shufflee.Count;
+        while (n > 1)
+        {
+            n--;
             //int k = rng.Next(n + 1);
-            int k = Random.Range(0, n+1); 
-            string value = shufflee[k];  
-            shufflee[k] = shufflee[n];  
-            shufflee[n] = value;  
-        }  
+            int k = Random.Range(0, n + 1);
+            string value = shufflee[k];
+            shufflee[k] = shufflee[n];
+            shufflee[n] = value;
+        }
 
         return shufflee[0];
     }

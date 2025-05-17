@@ -122,36 +122,36 @@ public class WheelChoice : MonoBehaviour, IPointerEnterHandler, IPointerExitHand
     public void UnlockTalent()
     {
         int cost = GM.I.currentWitch.baseTalentCost;
-        
+
         // Check if enough credits
         if (Gatherer.credits >= cost)
         {
             // Spend credits
             Gatherer.credits -= cost;
-            
+
             // Add to unlocked talents
             GM.I.saveData.unlockedTalents.Add(myName);
-            
+
             // Add to known spells if it's a spell
             Talent talent = GM.I.talents[myName];
             if (talent.isSpell && !GM.I.player.knownSpells.Contains(myName))
             {
                 GM.I.player.knownSpells.Add(myName);
             }
-            
+
             // Visual feedback
-            HitMarker.CreateLearnMarker(GM.I.player.transform.position, "Unlocked: " + myName);
-            
+            //HitMarker.CreateLearnMarker(GM.I.player.transform.position, "Unlocked: " + myName);
+
             // Save game
             GM.I.SaveGame();
-            
-            // Close wheel
-            GM.I.ui.CloseWheelOfTalents();
+
+            // Reload
+            GM.I.currentWitch.BeginTraining();
         }
         else
         {
             // Not enough
-            HitMarker.CreateLearnMarker(GM.I.player.transform.position, "Not enough credits!");
+            //HitMarker.CreateLearnMarker(GM.I.player.transform.position, "Not enough credits!");
         }
     }
 
@@ -359,12 +359,23 @@ public class WheelChoice : MonoBehaviour, IPointerEnterHandler, IPointerExitHand
             }
         }
 
+        // Curate talentList to unlocked talents
+        List<string> fullTalentList = talentList;
+        talentList = new List<string>();
+        foreach (string talentName in fullTalentList)
+        {
+            if (GM.I.saveData.unlockedTalents.Contains(talentName))
+            {
+                talentList.Add(talentName);
+            }
+        }
+
         // Ok whew got the talentList
 
-        // Now use it!
+            // Now use it!
 
-        // First unhighlight everything else
-        HideTalents();
+            // First unhighlight everything else
+            HideTalents();
 
         // Then loop through talentList to fill the wheel of talents
         for (int i = 0; i < talentList.Count; i++)

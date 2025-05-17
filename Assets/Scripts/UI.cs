@@ -575,6 +575,9 @@ public class UI : MonoBehaviour
 
         // Load the left side of the level up screen.
         LoadCharacter();
+
+        // Load credits
+        trainingCredits.text = Gatherer.credits.ToString();
     }
 
     public void CloseTrainingScreen()
@@ -589,9 +592,6 @@ public class UI : MonoBehaviour
 
     public void OpenLevelUpScreen()
     {
-        // Stop time
-        GM.I.StopTime();
-
         // Pause universe
         //GM.I.universe.gameObject.SetActive(false);
 

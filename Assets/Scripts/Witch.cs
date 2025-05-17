@@ -33,8 +33,9 @@ public class Witch : Gatherer
         // Set current witch
         GM.I.currentWitch = this;
 
+        // Load this witch's talents
         WheelChoice.LoadWheelOfTraining(this);
-        
+
         // Open talent wheel
         GM.I.ui.OpenTrainingScreen();
     }
