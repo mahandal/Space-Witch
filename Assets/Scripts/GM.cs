@@ -497,7 +497,7 @@ public class GM : MonoBehaviour
         // Level 1
         // (game starts from there)
         player.level = 0;
-        player.LevelUp();
+        player.BeginLevelUp();
         player.xp = 0;
         //BeginRun();
     }
@@ -543,14 +543,30 @@ public class GM : MonoBehaviour
     // Toggles the pause menu
     public void TogglePause()
     {
-        // Already paused, so we should unpause.
-        if (isPaused)
+        // If we're training, stop training
+        if (ui.persistentGrowth.activeSelf)
         {
-            Unpause();
-        } else {
-            // Game is unpaused, so pause.
-            Pause();
+            ui.CloseTrainingScreen();
+            return;
         }
+
+        // If we're leveling up, stop
+        if (ui.growth.activeSelf)
+        {
+            ui.CloseLevelUpScreen();
+            return;
+        }
+
+        // Already paused, so we should unpause.
+            if (isPaused)
+            {
+                Unpause();
+            }
+            else
+            {
+                // Game is unpaused, so pause.
+                Pause();
+            }
     }
 
     public void Unpause()

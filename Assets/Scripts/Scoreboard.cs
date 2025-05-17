@@ -50,16 +50,11 @@ public class Scoreboard : MonoBehaviour
     private HighScoreList highScores = new HighScoreList();
     
     // File path for storing scores
-    private string SavePath => Path.Combine(Application.persistentDataPath, "highscores.json");
+    //private string savePath => Path.Combine(Application.persistentDataPath, "highscores.json");
     
     // Current score pending name entry
     private int currentScore;
     private bool hasNewHighScore = false;
-    
-    void Awake()
-    {
-        LoadHighScores();
-    }
     
     void Start()
     {
@@ -71,6 +66,10 @@ public class Scoreboard : MonoBehaviour
     // Call this when the game ends to check for a new high score
     public void CheckForHighScore(int score)
     {
+        // Load high scores?
+        //LoadHighScores();
+
+        // Store current score for some Claude reason
         currentScore = score;
         
         // Check if this is a high score
@@ -164,6 +163,9 @@ public class Scoreboard : MonoBehaviour
     // Display high scores in the UI
     public void DisplayHighScores()
     {
+        // Load high scores
+        LoadHighScores();
+
         // Disable rank 13 in pre-game
         if (Gatherer.starsGathered <= 0)
             rankThirteen.gameObject.SetActive(false);
@@ -187,10 +189,13 @@ public class Scoreboard : MonoBehaviour
     // Save high scores to a file
     private void SaveHighScores()
     {
+        // Get save path
+        string savePath = Path.Combine(Application.persistentDataPath, "highscores_" + GM.I.nebula.myName + ".json");
+
         try
         {
             string json = JsonUtility.ToJson(highScores, true);
-            File.WriteAllText(SavePath, json);
+            File.WriteAllText(savePath, json);
         }
         catch (System.Exception e)
         {
@@ -201,11 +206,14 @@ public class Scoreboard : MonoBehaviour
     // Load high scores from file
     private void LoadHighScores()
     {
+        // Get save path
+        string savePath = Path.Combine(Application.persistentDataPath, "highscores_" + GM.I.nebula.myName + ".json");
+        
         try
         {
-            if (File.Exists(SavePath))
+            if (File.Exists(savePath))
             {
-                string json = File.ReadAllText(SavePath);
+                string json = File.ReadAllText(savePath);
                 highScores = JsonUtility.FromJson<HighScoreList>(json);
             }
             else

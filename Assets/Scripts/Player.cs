@@ -566,11 +566,22 @@ public class Player : Gatherer
         xp += xpGained;
     }
 
+    // Start leveling up!
+    // Called when petting your familiar with enough xp.
+    public void BeginLevelUp()
+    {
+        // Stop time
+        GM.I.StopTime();
+
+        // Open talent screen
+        GM.I.ui.OpenLevelUpScreen();
+    }
+
     // Level up!
     public void LevelUp()
     {
         // Stop time.
-        GM.I.StopTime();
+        //GM.I.StopTime();
 
         // Spend xp
         xp -= level * 100;
@@ -586,12 +597,15 @@ public class Player : Gatherer
         Asteroid.Explosion(level, transform.position);
 
         // Open talent screen
-        GM.I.ui.OpenLevelUpScreen();
+        //GM.I.ui.OpenLevelUpScreen();
     }
 
     // Learn a new talent
     public void LearnTalent(string talentName)
     {
+        // Actually level up upon learning a talent.
+        LevelUp();
+
         // Check if talent exists
         if (!GM.I.talents.ContainsKey(talentName))
         {

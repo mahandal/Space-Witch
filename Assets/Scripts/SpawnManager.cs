@@ -277,7 +277,7 @@ public class SpawnManager : MonoBehaviour
     // --- Asteroids
 
     // - Spawn a new asteroid at the given location
-    void SpawnNewAsteroid(float x, float y)
+    /* void SpawnNewAsteroid(float x, float y)
     {
         // Initialize desired position
         Vector3 desiredPosition = new Vector3(x, y, 0);
@@ -306,7 +306,7 @@ public class SpawnManager : MonoBehaviour
 
         // Activate new asteroid
         newAsteroid.gameObject.SetActive(true);
-    }
+    } */
 
 /*
     public void SetUpBees()
@@ -565,16 +565,14 @@ public class SpawnManager : MonoBehaviour
             newAsteroid.direction = (targetPlanet.transform.position - position).normalized;
         }
         
-        // Set speed (modified by worm hole)
-        /* newAsteroid.acceleration = Random.Range(0.5f, Mathf.Sqrt(GM.I.intensity)) * speedMultiplier;
-        newAsteroid.maxSpeed = Random.Range(0.5f, Mathf.Sqrt(GM.I.intensity)) * speedMultiplier; */
+        // Set speed & size
 
         // Base values that scale directly with intensity
-        float baseAcceleration = 0.5f + (0.01f * GM.I.intensity);
-        float baseSpeed = 0.5f + (0.02f * GM.I.intensity);
-        float baseSize = 0.5f + (0.05f * GM.I.intensity);
+        float baseAcceleration = 0.5f + (0.07f * GM.I.intensity);
+        float baseSpeed = 0.5f + (0.07f * GM.I.intensity);
+        float baseSize = 0.5f + (0.13f * GM.I.intensity);
 
-        // Add small random variation (±50%)
+        // Add some random variation (±50%)
         float randomVariation = Random.Range(0.5f, 1.5f);
 
         // Get inverse of random variation, so speed and size will scale inverse to each other.

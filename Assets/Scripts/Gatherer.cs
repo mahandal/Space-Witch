@@ -317,7 +317,7 @@ public class Gatherer : MonoBehaviour
                 if (GM.I.player.xp >= GM.I.player.level * 100)
                 {
                     // Level up!
-                    GM.I.player.LevelUp();
+                    GM.I.player.BeginLevelUp();
 
                     // Play sfx!
                     string soundFileName = "big_purr";

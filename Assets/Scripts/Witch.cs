@@ -9,6 +9,11 @@ public class Witch : Gatherer
 
     [Header("Automated Machinery")]
     public Vector3 destination = Vector3.zero;
+
+    public float trainingCooldown = 2f;
+    public float trainingCooldownTimer = 0f;
+
+    public bool canTrain = true;
     
 
     // Super collision to train 
@@ -16,7 +21,7 @@ public class Witch : Gatherer
     {
         // Base gatherer collision handling
         base.OnCollisionEnter2D(col);
-        
+
         // Check if player
         if (col.gameObject.GetComponent<Player>() != null)
         {
@@ -26,6 +31,8 @@ public class Witch : Gatherer
 
     public void BeginTraining()
     {
+        if (!canTrain) return;
+        
         // SFX
         string soundFileName = "witch_" + Random.Range(1, 14);
         GM.I.dj.PlayEffect(soundFileName, transform.position);
@@ -55,6 +62,9 @@ public class Witch : Gatherer
         // Gatherer shared homeostasis
         Homeostasis();
 
+        // Timers
+        Timers();
+
         // Navigation
         Navigate();
         
@@ -63,6 +73,19 @@ public class Witch : Gatherer
 
         // Gatherer shared late fixed update
         LateFixedUpdate();
+    }
+
+    public void Timers()
+    {
+        if (trainingCooldownTimer > 0f)
+        {
+            trainingCooldownTimer -= Time.deltaTime;
+            canTrain = false;
+        }
+        else
+        {
+            canTrain = true;
+        }
     }
 
     public void Navigate()
@@ -74,11 +97,11 @@ public class Witch : Gatherer
             // Pick a new random destination nearby
             float randomRadius = Random.Range(1f, 2f); // Random distance from current position
             float randomAngle = Random.Range(0f, 360f) * Mathf.Deg2Rad; // Random direction
-            
+
             // Calculate new position
             float newX = transform.position.x + randomRadius * Mathf.Cos(randomAngle);
             float newY = transform.position.y + randomRadius * Mathf.Sin(randomAngle);
-            
+
             // Set new destination
             destination = new Vector3(newX, newY, 0);
         }

@@ -588,13 +588,16 @@ public class UI : MonoBehaviour
         // Close training screen.
         mySelf.SetActive(false);
         persistentGrowth.SetActive(false);
+
+        // Set cooldown so we don't immediately train again
+        GM.I.currentWitch.trainingCooldownTimer = GM.I.currentWitch.trainingCooldown;
+
+        // Clear current witch?
+        GM.I.currentWitch = null;
     }
 
     public void OpenLevelUpScreen()
     {
-        // Pause universe
-        //GM.I.universe.gameObject.SetActive(false);
-
         // Note: We don't just open the level up screen like so:
         //levelUpScreen.SetActive(true);
         // because we want the character and details sections of it to be available when meditating.

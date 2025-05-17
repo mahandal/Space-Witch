@@ -35,7 +35,7 @@ public class Choice : MonoBehaviour, IPointerClickHandler
         // Check if we should level again
         if (GM.I.player.xp >= GM.I.player.level * 100)
         {
-            GM.I.player.LevelUp();
+            GM.I.player.BeginLevelUp();
         } else {
             GM.I.ui.CloseLevelUpScreen();
         }

@@ -20192,8 +20192,8 @@ MonoBehaviour:
   currentMana: 100
   maxMana: 100
   manaRegenDelay: 1
-  acceleration: 0.1
-  maxSpeed: 2
+  acceleration: 0.2
+  maxSpeed: 0.5
   isDying: 0
   deathSpinSpeed: 720
   recoveryTime: 3
@@ -20214,6 +20214,9 @@ MonoBehaviour:
   - Star Dance
   baseTalentCost: 100
   destination: {x: 0, y: 0, z: 0}
+  trainingCooldown: 2
+  trainingCooldownTimer: 0
+  canTrain: 1
 --- !u!114 &529172953
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -38826,8 +38829,8 @@ MonoBehaviour:
   currentMana: 100
   maxMana: 100
   manaRegenDelay: 1
-  acceleration: 0.1
-  maxSpeed: 2
+  acceleration: 0.2
+  maxSpeed: 0.5
   isDying: 0
   deathSpinSpeed: 720
   recoveryTime: 3
@@ -38850,6 +38853,9 @@ MonoBehaviour:
   - Explosion Potion
   baseTalentCost: 100
   destination: {x: 0, y: 0, z: 0}
+  trainingCooldown: 2
+  trainingCooldownTimer: 0
+  canTrain: 1
 --- !u!114 &1246606699
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -41929,8 +41935,8 @@ MonoBehaviour:
   currentMana: 100
   maxMana: 100
   manaRegenDelay: 1
-  acceleration: 0.1
-  maxSpeed: 2
+  acceleration: 0.2
+  maxSpeed: 0.5
   isDying: 0
   deathSpinSpeed: 720
   recoveryTime: 3
@@ -41953,6 +41959,9 @@ MonoBehaviour:
   - The Tower
   baseTalentCost: 100
   destination: {x: 0, y: 0, z: 0}
+  trainingCooldown: 2
+  trainingCooldownTimer: 0
+  canTrain: 1
 --- !u!114 &1370975978
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -50916,8 +50925,8 @@ MonoBehaviour:
   currentMana: 100
   maxMana: 100
   manaRegenDelay: 1
-  acceleration: 0.1
-  maxSpeed: 2
+  acceleration: 0.2
+  maxSpeed: 0.5
   isDying: 0
   deathSpinSpeed: 720
   recoveryTime: 3
@@ -50943,6 +50952,9 @@ MonoBehaviour:
   - Laser Satellite
   baseTalentCost: 100
   destination: {x: 0, y: 0, z: 0}
+  trainingCooldown: 2
+  trainingCooldownTimer: 0
+  canTrain: 1
 --- !u!114 &1517455260
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -67126,8 +67138,8 @@ MonoBehaviour:
   currentMana: 100
   maxMana: 100
   manaRegenDelay: 1
-  acceleration: 0.1
-  maxSpeed: 2
+  acceleration: 0.2
+  maxSpeed: 0.5
   isDying: 0
   deathSpinSpeed: 720
   recoveryTime: 3
@@ -67149,6 +67161,9 @@ MonoBehaviour:
   - Summon Crow
   baseTalentCost: 100
   destination: {x: 0, y: 0, z: 0}
+  trainingCooldown: 2
+  trainingCooldownTimer: 0
+  canTrain: 1
 --- !u!114 &1869087685
 MonoBehaviour:
   m_ObjectHideFlags: 0
