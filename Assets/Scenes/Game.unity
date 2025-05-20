@@ -9580,7 +9580,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &149991645
 RectTransform:
   m_ObjectHideFlags: 0
@@ -18525,6 +18525,7 @@ MonoBehaviour:
   healthRegenTimer: 0
   goalIndex: 0
   goal: {fileID: 0}
+  previousPlanet: {fileID: 0}
   pollinationRange: 1
   timeSinceLastBump: 0
   bumpStarMultiplier: 0.14
@@ -23934,6 +23935,7 @@ MonoBehaviour:
   healthRegenTimer: 0
   goalIndex: 0
   goal: {fileID: 0}
+  previousPlanet: {fileID: 0}
   pollinationRange: 1
   timeSinceLastBump: 0
   bumpStarMultiplier: 0.18
@@ -30298,6 +30300,7 @@ MonoBehaviour:
   healthRegenTimer: 0
   goalIndex: 0
   goal: {fileID: 0}
+  previousPlanet: {fileID: 0}
   pollinationRange: 1
   timeSinceLastBump: 0
   bumpStarMultiplier: 0.21
@@ -31234,6 +31237,9 @@ MonoBehaviour:
   spawnRate: 1
   asteroidSizeMultiplier: 1
   asteroidSpeedMultiplier: 1
+  repulsionRange: 8
+  repulsionStrength: 5
+  minimumRepulsion: 0.5
   spawnTimer: 0
 --- !u!114 &936576414
 MonoBehaviour:
@@ -35098,6 +35104,7 @@ MonoBehaviour:
   healthRegenTimer: 0
   goalIndex: 0
   goal: {fileID: 0}
+  previousPlanet: {fileID: 0}
   pollinationRange: 1
   timeSinceLastBump: 0
   bumpStarMultiplier: 0.17
@@ -37204,6 +37211,7 @@ MonoBehaviour:
   healthRegenTimer: 0
   goalIndex: 0
   goal: {fileID: 0}
+  previousPlanet: {fileID: 0}
   pollinationRange: 1
   timeSinceLastBump: 0
   bumpStarMultiplier: 0.13
@@ -38630,6 +38638,9 @@ MonoBehaviour:
   spawnRate: 1
   asteroidSizeMultiplier: 4
   asteroidSpeedMultiplier: 1
+  repulsionRange: 8
+  repulsionStrength: 5
+  minimumRepulsion: 0.5
   spawnTimer: 0
 --- !u!58 &1239858385
 CircleCollider2D:
@@ -49296,6 +49307,7 @@ MonoBehaviour:
   healthRegenTimer: 0
   goalIndex: 0
   goal: {fileID: 0}
+  previousPlanet: {fileID: 0}
   pollinationRange: 1
   timeSinceLastBump: 0
   bumpStarMultiplier: 0.19
@@ -55375,6 +55387,7 @@ MonoBehaviour:
   healthRegenTimer: 0
   goalIndex: 0
   goal: {fileID: 0}
+  previousPlanet: {fileID: 0}
   pollinationRange: 1
   timeSinceLastBump: 0
   bumpStarMultiplier: 0.1
@@ -57279,6 +57292,7 @@ MonoBehaviour:
   healthRegenTimer: 0
   goalIndex: 0
   goal: {fileID: 0}
+  previousPlanet: {fileID: 0}
   pollinationRange: 1
   timeSinceLastBump: 0
   bumpStarMultiplier: 0.15
@@ -64822,6 +64836,7 @@ MonoBehaviour:
   healthRegenTimer: 0
   goalIndex: 0
   goal: {fileID: 0}
+  previousPlanet: {fileID: 0}
   pollinationRange: 1
   timeSinceLastBump: 0
   bumpStarMultiplier: 0.2
@@ -69602,6 +69617,7 @@ MonoBehaviour:
   healthRegenTimer: 0
   goalIndex: 0
   goal: {fileID: 0}
+  previousPlanet: {fileID: 0}
   pollinationRange: 1
   timeSinceLastBump: 0
   bumpStarMultiplier: 0.11
@@ -70235,6 +70251,7 @@ MonoBehaviour:
   healthRegenTimer: 0
   goalIndex: 0
   goal: {fileID: 0}
+  previousPlanet: {fileID: 0}
   pollinationRange: 1
   timeSinceLastBump: 0
   bumpStarMultiplier: 0.16
@@ -75049,6 +75066,7 @@ MonoBehaviour:
   healthRegenTimer: 0
   goalIndex: 0
   goal: {fileID: 0}
+  previousPlanet: {fileID: 0}
   pollinationRange: 1
   timeSinceLastBump: 0
   bumpStarMultiplier: 0.12

@@ -5,6 +5,7 @@ public class Bee : Gatherer
     [Header("Bee")]
     public int goalIndex;
     public Planet goal;
+    public Planet previousPlanet;
     //public float starTime = 1f;
     public float pollinationRange = 1f;
 
@@ -191,11 +192,21 @@ public class Bee : Gatherer
         if (distance < pollinationRange)
         {
             // Pollinate!
-            //goal.pollen++;
-            goal.Pollinate();
+            //goal.Pollinate();
 
-            // Roll a random index
-            //int index = Random.Range(0, GM.I.planets.Count);
+            int pollenAmount = 1;
+            if (previousPlanet != null)
+            {
+                float planetDistance = Vector3.Distance(previousPlanet.transform.position, goal.transform.position);
+                // Scale pollen amount based on distance (adjust multiplier as needed)
+                pollenAmount = Mathf.Max(1, Mathf.FloorToInt(planetDistance / 5));
+            }
+
+            // Pollinate with calculated amount
+            goal.Pollinate(pollenAmount);
+            
+            // Remember this planet
+            previousPlanet = goal;
             
             // Increment index
             goalIndex++;
