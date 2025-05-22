@@ -372,7 +372,7 @@ public class Gatherer : MonoBehaviour
             asteroid.Explode();
 
             // SFX
-            GM.I.dj.PlayEffect("asteroid_collision", transform.position);
+            //GM.I.dj.PlayEffect("asteroid_collision", transform.position);
         }
     }
 

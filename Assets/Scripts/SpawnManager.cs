@@ -221,7 +221,7 @@ public class SpawnManager : MonoBehaviour
     }
 
     // Spawns a new planet in a random location.
-    // Note: Delegates to SpawnPlanet(float x, float y), largely to help me understand the recursion.
+    // Note: Delegates to SpawnPlanet(float x, float y) to actually spawn the planet.
     public Planet SpawnPlanet()
     {
         /* // Set x position randomly
@@ -568,15 +568,15 @@ public class SpawnManager : MonoBehaviour
         // Set speed & size
 
         // Base values that scale directly with intensity
-        float baseAcceleration = 0.5f + (0.07f * GM.I.intensity);
-        float baseSpeed = 0.5f + (0.07f * GM.I.intensity);
-        float baseSize = 0.5f + (0.13f * GM.I.intensity);
+        float baseAcceleration = 0.5f + (0.05f * GM.I.intensity);
+        float baseSpeed = 0.5f + (0.05f * GM.I.intensity);
+        float baseSize = 1f + (0.1f * GM.I.intensity);
 
-        // Add some random variation (±50%)
-        float randomVariation = Random.Range(0.5f, 1.5f);
+        // Add some random variation
+        float randomVariation = Random.Range(0.1f, 2.9f);
 
         // Get inverse of random variation, so speed and size will scale inverse to each other.
-        float inverseVariation = 2f - randomVariation;
+        float inverseVariation = 3f - randomVariation;
 
         // Set speed with controlled scaling
         newAsteroid.acceleration = baseAcceleration * speedMultiplier * randomVariation;

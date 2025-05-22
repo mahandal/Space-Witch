@@ -20,8 +20,8 @@ public class WormHole : MonoBehaviour
     void FixedUpdate()
     {
         // Only spawn when game is active
-        if (GM.I.gameState != 1)
-            return;
+        /* if (GM.I.gameState != 1)
+            return; */
 
         // Timers
         Timers();

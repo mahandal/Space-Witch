@@ -13,11 +13,15 @@ public class Bee : Gatherer
     public float timeSinceLastBump = 0f;
 
     // How many stars to generate per second unbumped
-    public float bumpStarMultiplier = 0.5f; 
+    public float bumpStarMultiplier = 0.5f;
+
+    [Header("Nectar")]
+    public int nectar = 0;
 
     // Timers
     //public float starTimer = 0f;
 
+    [Header("Machinery")]
     // States
     public bool isBumpable = true;
 
@@ -198,12 +202,13 @@ public class Bee : Gatherer
             if (previousPlanet != null)
             {
                 float planetDistance = Vector3.Distance(previousPlanet.transform.position, goal.transform.position);
-                // Scale pollen amount based on distance (adjust multiplier as needed)
+                // Scale pollen amount based on distance
                 pollenAmount = Mathf.Max(1, Mathf.FloorToInt(planetDistance / 5));
             }
 
             // Pollinate with calculated amount
-            goal.Pollinate(pollenAmount);
+            //goal.Pollinate(pollenAmount);
+            Pollinate(goal, pollenAmount);
             
             // Remember this planet
             previousPlanet = goal;
@@ -220,6 +225,15 @@ public class Bee : Gatherer
         }
     }
 
+    public void Pollinate(Planet planet, int pollenAmount)
+    {
+        // Planet pollen
+        planet.Pollinate(pollenAmount);
+
+        // Nectar
+        nectar += pollenAmount;
+    }
+
     public void Ambulate()
     {
         // Face goal
@@ -233,9 +247,9 @@ public class Bee : Gatherer
         rb2d.AddForce(direction * acceleration);
 
         // Max speed
-        if(rb2d.linearVelocity.magnitude > maxSpeed)
+        if (rb2d.linearVelocity.magnitude > maxSpeed)
         {
-               rb2d.linearVelocity = rb2d.linearVelocity.normalized * maxSpeed;
+            rb2d.linearVelocity = rb2d.linearVelocity.normalized * maxSpeed;
         }
     }
 

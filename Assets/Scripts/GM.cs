@@ -8,7 +8,7 @@ public class GM : MonoBehaviour
     [Header("Manual Machinery")]
     // Our hero!
     public Player player;
-    
+
     // Our trusty sidekick!
     public Familiar familiar;
 
@@ -17,7 +17,7 @@ public class GM : MonoBehaviour
 
     // Our home
     public Nebula home;
-    
+
     // UI
     public UI ui;
 
@@ -34,7 +34,7 @@ public class GM : MonoBehaviour
 
     // Spawn manager
     public SpawnManager spawnManager;
-    
+
 
     [Header("Automated Machinery")]
     // Singleton
@@ -65,13 +65,13 @@ public class GM : MonoBehaviour
 
 
     // - Songs
-    
+
     // The current bpm
     public float bpm;
 
     // A list of all the songs available to be played.
     public List<Song> songs = new List<Song>();
-    
+
     // The index of the song currently being played.
     public int songIndex = 0;
 
@@ -164,7 +164,7 @@ public class GM : MonoBehaviour
         // Music
         dj.musicSource.Play();
     }
-    
+
     private string SavePath => Path.Combine(Application.persistentDataPath, "gamedata.json");
 
     // Save our progress.
@@ -229,7 +229,7 @@ public class GM : MonoBehaviour
         // Wait for game to start
         /* if (gameState < 1)
             return; */
-        
+
         // Update timers
         Timers();
         player.Timers();
@@ -241,7 +241,7 @@ public class GM : MonoBehaviour
         // Wait for game to start
         if (gameState < 1)
             return;
-        
+
         // - Intensity
 
         // Decrement intensity timer
@@ -299,11 +299,11 @@ public class GM : MonoBehaviour
     public void BeePM()
     {
         // Pause beepm while leveling up
-        if (!universe.gameObject.activeSelf)
-            return;
+        /* if (!universe.gameObject.activeSelf)
+            return; */
 
         // Go through each bee
-        foreach(Bee bee in bees)
+        foreach (Bee bee in bees)
         {
             if (!bee.isDying)
                 bee.SpawnStar();
@@ -314,11 +314,11 @@ public class GM : MonoBehaviour
         // wait for it to get intense
         if (intensity <= 0)
             return;
-        
+
         // Go through each worm hole
-        foreach(WormHole wormHole in wormHoles)
+        foreach (WormHole wormHole in wormHoles)
         {
-            // Spawn an asteroid(?)
+            // Spawn an asteroid
             wormHole.SpawnAsteroid();
         }
     }
@@ -535,9 +535,9 @@ public class GM : MonoBehaviour
         Vector3 v1 = new Vector3(player.transform.position.x, player.transform.position.y + 5.5f, 0f);
         Vector3 v2 = new Vector3(player.transform.position.x, player.transform.position.y + 5f, 0f);
         Vector3 v3 = new Vector3(player.transform.position.x, player.transform.position.y + 4.5f, 0f);
-        HitMarker.CreateNarrativeMarker(v1, "Go gather the stars");
-        HitMarker.CreateNarrativeMarker(v2, "Make haste, the hour is late");
-        HitMarker.CreateNarrativeMarker(v3, "It all counts on this");
+        HitMarker.CreateNarrativeMarker(v1, "Protect the planets!");
+        HitMarker.CreateNarrativeMarker(v2, "Make haste, the hour is late.");
+        HitMarker.CreateNarrativeMarker(v3, "Good folk need your help.");
     }
 
     // Toggles the pause menu
@@ -558,15 +558,15 @@ public class GM : MonoBehaviour
         }
 
         // Already paused, so we should unpause.
-            if (isPaused)
-            {
-                Unpause();
-            }
-            else
-            {
-                // Game is unpaused, so pause.
-                Pause();
-            }
+        if (isPaused)
+        {
+            Unpause();
+        }
+        else
+        {
+            // Game is unpaused, so pause.
+            Pause();
+        }
     }
 
     public void Unpause()
@@ -598,10 +598,10 @@ public class GM : MonoBehaviour
         // Early return if shake is disabled
         if (!screenShakeEnabled)
             return;
-        
+
         // Apply a maximum cap to the intensity
         float cappedIntensity = Mathf.Min(strength, 0.5f);
-        
+
         // Optional: Apply a curve to make scaling more pleasing
         // This will make smaller damage feel responsive while keeping larger damage manageable
         float scaledIntensity = 0.1f + (0.4f * (1 - Mathf.Exp(-cappedIntensity * 3f)));
@@ -620,23 +620,65 @@ public class GM : MonoBehaviour
         originalPos.z = player.mainCam.transform.localPosition.z;
         player.isShaking = true;
         float elapsed = 0f;
-        
+
         while (elapsed < duration)
         {
             float xOffset = Random.Range(-1f, 1f) * strength;
             float yOffset = Random.Range(-1f, 1f) * strength;
 
-            
+
             player.mainCam.transform.localPosition = new Vector3(
-                originalPos.x + xOffset, 
-                originalPos.y + yOffset, 
+                originalPos.x + xOffset,
+                originalPos.y + yOffset,
                 originalPos.z);
-            
-                
+
+
             elapsed += Time.deltaTime;
             yield return null;
         }
-        
+
         player.isShaking = false;
+    }
+
+    // Collect all the nectar our bees have gathered, at the end of a victory.
+    public void CollectNectar()
+    {
+        // Go through each bee
+        for (int i = 0; i < bees.Count; i++)
+        {
+            // Get bee
+            Bee bee = bees[i];
+
+            // Check if it's alive
+            if (!bee.gameObject.activeSelf)
+                continue;
+
+            if (i < 9) // Bees 1-9 to their planet
+            {
+                home.planets[i].nectar += bee.nectar;
+            }
+            else if (i == 9) // Bee 10 - Friendship
+            {
+                int nectarPerPlanet = bee.nectar / home.planets.Count;
+                foreach (Planet planet in home.planets)
+                    planet.nectar += nectarPerPlanet;
+            }
+            else if (i == 10) // Bee 11 - Curiosity  
+            {
+                int randomIndex = Random.Range(0, home.planets.Count);
+                home.planets[randomIndex].nectar += bee.nectar;
+            }
+            else if (i == 11) // Bee 12 - Patience
+            {
+                // TBD: Give to each planet in sequence
+                /* int planetIndex = bee.goalIndex % home.planets.Count;
+                home.planets[planetIndex].nectar += bee.nectar; */
+                int randomIndex = Random.Range(0, home.planets.Count);
+                home.planets[randomIndex].nectar += bee.nectar;
+            }
+            
+            // Reset bee's pollen
+            bee.nectar = 0;
+        }
     }
 }

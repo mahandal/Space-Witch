@@ -30,21 +30,58 @@ public class Planet : MonoBehaviour
     // Timers
     public float starTimer = 0f;
 
+    [Header("Nectar")]
+    public int nectar = 0;
+
+    [Header("Orbital Mechanics")]
+    public Transform sun; // Reference to the sun
+    public float orbitSpeed = 10f; // degrees per second
+    private float orbitRadius = 10f; // distance from sun
+    
+    private float currentAngle = 0f;
+    private Vector3 sunPosition;
+
     void Awake()
     {
         radius = GetComponent<CircleCollider2D>().radius;
         initialScale = transform.localScale.x;
         pollen = 13f;
+
+        // Set random starting angle for variety
+        currentAngle = Random.Range(0f, 360f);
+
+        // Cache sun position (assuming sun doesn't move)
+        if (sun != null)
+            sunPosition = sun.position;
+        else
+            sunPosition = Vector3.zero; // Default to origin if no sun assigned
+
+        // Set orbit radius
+        orbitRadius = transform.position.x;
     }
     
     void FixedUpdate()
     {
-        // Timers
-        //Timers();
-
-        // Rotate
-        transform.Rotate(0,0, -0.01f * pollen);
+        // Orbital movement
+        UpdateOrbit();
+        
+        // Original planet rotation
+        transform.Rotate(0, 0, -0.01f * pollen);
         moonMama.Rotate(0, 0, -1f);
+    }
+    
+    void UpdateOrbit()
+    {
+        // Update orbital angle (scaled arbitrarily)
+        currentAngle += orbitSpeed / 10f * Time.deltaTime;
+        if (currentAngle >= 360f) currentAngle -= 360f;
+        
+        // Calculate new position around sun
+        float x = sunPosition.x + Mathf.Cos(currentAngle * Mathf.Deg2Rad) * orbitRadius;
+        float y = sunPosition.y + Mathf.Sin(currentAngle * Mathf.Deg2Rad) * orbitRadius;
+        
+        // Update position
+        transform.position = new Vector3(x, y, 0);
     }
 
     // Timers
