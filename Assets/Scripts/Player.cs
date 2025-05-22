@@ -32,7 +32,7 @@ public class Player : Gatherer
 
     // Familiar
     public Familiar familiar;
-    
+
     [Header("Automated Machinery")]
     // Rigid body
     //public Rigidbody2D rb2d;
@@ -123,7 +123,7 @@ public class Player : Gatherer
             Cast_Action.performed -= CastPerformed;
             Cast_Action.canceled -= CastCanceled;
         }
-        
+
         if (Pause_Action != null)
         {
             Pause_Action.performed -= PausePerformed;
@@ -135,7 +135,7 @@ public class Player : Gatherer
             Sprint_Action.performed -= SprintPerformed;
             Sprint_Action.canceled -= SprintCanceled;
         }
-        
+
         if (Meditate_Action != null)
         {
             Meditate_Action.performed -= MeditatePerformed;
@@ -213,7 +213,9 @@ public class Player : Gatherer
         if (MoveUp_Action.IsPressed())
         {
             isMovingUp = true;
-        } else {
+        }
+        else
+        {
             isMovingUp = false;
         }
 
@@ -221,15 +223,19 @@ public class Player : Gatherer
         if (MoveDown_Action.IsPressed())
         {
             isMovingDown = true;
-        } else {
+        }
+        else
+        {
             isMovingDown = false;
         }
-        
+
         // Move left
         if (MoveLeft_Action.IsPressed())
         {
             isMovingLeft = true;
-        } else {
+        }
+        else
+        {
             isMovingLeft = false;
         }
 
@@ -237,7 +243,9 @@ public class Player : Gatherer
         if (MoveRight_Action.IsPressed())
         {
             isMovingRight = true;
-        } else {
+        }
+        else
+        {
             isMovingRight = false;
         }
 
@@ -253,7 +261,9 @@ public class Player : Gatherer
         if (Stay_Action.IsPressed())
         {
             Stay();
-        } else {
+        }
+        else
+        {
             // Check if we just released the button
             if (familiar.isStaying)
                 Come();
@@ -303,11 +313,13 @@ public class Player : Gatherer
             if (currentMana < manaCost)
             {
                 EndSprint();
-            } else {
+            }
+            else
+            {
                 SpendMana(manaCost);
             }
         }
-            
+
 
         // Cursor
 
@@ -320,7 +332,7 @@ public class Player : Gatherer
         angle -= 90;
 
         // angle is now aligned, could set rotation directly like so:
-		//transform.rotation = Quaternion.Euler(new Vector3(0, 0, angle));
+        //transform.rotation = Quaternion.Euler(new Vector3(0, 0, angle));
         // but instead we wanna use rotationSpeed!
 
         // So we get to use quaternions!
@@ -386,14 +398,14 @@ public class Player : Gatherer
         if (movementDirection.magnitude > 0)
         {
             movementDirection.Normalize();
-            
+
             // Calculate forward direction (where player is facing)
             Vector2 facingDirection = transform.up;
-            
+
             // Calculate the dot product to determine alignment
             // Dot product gives 1 when perfectly aligned, -1 when opposite, 0 when perpendicular
             float alignmentFactor = Vector2.Dot(movementDirection, facingDirection);
-            
+
             // Only apply bonus when movement is somewhat aligned with facing (positive dot product)
             float speedMultiplier = 1.0f;
             if (alignmentFactor > 0)
@@ -404,16 +416,16 @@ public class Player : Gatherer
                 // Boost speed by up to 200% when perfectly aligned
                 speedMultiplier = 1.0f + (alignmentFactor * 2f);
             }
-            
+
             // Apply movement forces with alignment boost
             rb2d.AddForce(movementDirection * acceleration * speedMultiplier);
         }
 
 
         // Max speed
-        if(rb2d.linearVelocity.magnitude > maxSpeed)
+        if (rb2d.linearVelocity.magnitude > maxSpeed)
         {
-               rb2d.linearVelocity = rb2d.linearVelocity.normalized * maxSpeed;
+            rb2d.linearVelocity = rb2d.linearVelocity.normalized * maxSpeed;
         }
     }
 
@@ -437,15 +449,15 @@ public class Player : Gatherer
     {
         // Create a temporary list of spell names that need cooldown updates
         List<string> spellsToUpdate = new List<string>(spellCooldowns.Keys);
-        
+
         // Iterate through our copy of the keys
-        foreach(string spellName in spellsToUpdate)
+        foreach (string spellName in spellsToUpdate)
         {
             // Update the cooldown in the original dictionary
             spellCooldowns[spellName] -= Time.deltaTime;
-            
+
             // If cooldown complete, remove from original dictionary
-            if(spellCooldowns[spellName] <= 0f)
+            if (spellCooldowns[spellName] <= 0f)
                 spellCooldowns.Remove(spellName);
         }
     }
@@ -456,12 +468,12 @@ public class Player : Gatherer
         // Mana Check
         if (familiar.currentMana < goManaCost * Time.deltaTime)
             return;
-        
+
         // Spend mana
         familiar.SpendMana(goManaCost * Time.deltaTime);
 
         // Tell familiar to move toward our cursor.
-        familiar.destination = new Vector3(cursorPosition.x, cursorPosition.y, 0); 
+        familiar.destination = new Vector3(cursorPosition.x, cursorPosition.y, 0);
 
         // Give familiar a lil boost
         familiar.BasicMovement();
@@ -476,7 +488,9 @@ public class Player : Gatherer
             // Can't stay without mana!
             Come();
             return;
-        } else {
+        }
+        else
+        {
             // Drain mana
             familiar.SpendMana(familiar.stayCost * Time.deltaTime);
         }
@@ -513,42 +527,42 @@ public class Player : Gatherer
     {
         // Get talent
         Talent talent = GM.I.talents[currentSpell];
-        
+
         // Check cooldown for this specific spell
         if (spellCooldowns.ContainsKey(currentSpell) && spellCooldowns[currentSpell] > 0f)
         {
             // VFX
             GM.I.ui.TriggerCooldownFlash();
-            
+
             // SFX
             GM.I.dj.PlayEffect("no", transform.position);
-            
+
             // return
             return;
         }
-        
+
         // Check mana cost
         if (currentMana < talent.manaCost)
         {
             // VFX
             GM.I.ui.TriggerManaFlash();
-            
+
             // SFX
             GM.I.dj.PlayEffect("no", transform.position);
-            
+
             // return
             return;
         }
-        
+
         // Spend mana
         SpendMana(talent.manaCost);
-        
+
         // Set cooldown for this specific spell
         spellCooldowns[currentSpell] = talent.cooldown;
-        
+
         // Store for UI (will need updating later)
         //GM.I.ui.lastSpellCastCooldown = talent.cooldown;
-        
+
         // Call OnCast
         talent.OnCast();
     }
@@ -556,7 +570,7 @@ public class Player : Gatherer
     // Called when the 'cast spell' button is released.
     public void ReleaseSpell()
     {
-        
+
     }
 
     // Gain xp
@@ -615,7 +629,7 @@ public class Player : Gatherer
 
         // Get the talent
         Talent talent = GM.I.talents[talentName];
-        
+
         // Check if it's new
         if (!talents.ContainsKey(talentName))
         {
@@ -647,13 +661,13 @@ public class Player : Gatherer
 
         GM.I.player.CalculateStats();
         GM.I.familiar.CalculateStats();
-        
+
         // Call the talent's OnLearn method
         talent.OnLearn();
-        
+
         // Visual feedback
         HitMarker.CreateLearnMarker(transform.position, "Learned: " + talentName);
-        
+
         // Sound effect
         GM.I.dj.PlayEffect(talent.myClass, transform.position);
     }
@@ -723,7 +737,7 @@ public class Player : Gatherer
     {
         // Reset to base
         rotationSpeed = baseRotationSpeed;
-        
+
         // Apply all rotation modifiers
         foreach (float multiplier in rotationModifiers.Values)
         {
@@ -731,47 +745,142 @@ public class Player : Gatherer
         }
     }
 
-    // Track if we're in a black hole
+    // Track if we're in a black hole.
     public BlackHole currentBlackHole;
+
+    // Track if we're flying over a planet.
+    public Planet currentPlanet;
 
     new void OnTriggerEnter2D(Collider2D col)
     {
         // base gatherer
         base.OnTriggerEnter2D(col);
 
+        // Enter a black hole
         BlackHole blackHole = col.GetComponent<BlackHole>();
         if (blackHole != null)
-        {
             EnterBlackHole(blackHole);
-        }
+
+        // Enter a planet
+        Planet planet = col.GetComponent<Planet>();
+        if (planet != null)
+            EnterPlanet(planet);
     }
 
+    // Enter a black hole, beginning its dilation effects.
     public void EnterBlackHole(BlackHole blackHole)
     {
-        // Set current black hole;
+        // Set current black hole.
         currentBlackHole = blackHole;
-
-        // Increase particle emission when player enters
-        //var emission = blackHole.GetComponent<ParticleSystem>().emission;
-        //emission.rateOverTime = 150f;
     }
 
+    // Exit a black hole, ending its dilation effects.
     public void ExitBlackHole(BlackHole blackHole)
     {
-        // Set current black hole
+        // Reset current black hole.
         currentBlackHole = null;
+    }
 
-        // Reset particle emission
-        //var emission = blackHole.GetComponent<ParticleSystem>().emission;
-        //emission.rateOverTime = 50f;
+    // Enter a planet, beginning harvesting nectar if it has any.
+    public void EnterPlanet(Planet planet)
+    {
+        // Set current planet.
+        currentPlanet = planet;
+    }
+
+    public void ExitPlanet(Planet planet)
+    {
+        // Reset current planet.
+        currentPlanet = null;
     }
 
     void OnTriggerExit2D(Collider2D col)
     {
+        // Exit a black hole.
         BlackHole blackHole = col.GetComponent<BlackHole>();
-        if (blackHole != null && blackHole == currentBlackHole)
+        if (blackHole != null)
         {
             ExitBlackHole(blackHole);
         }
+
+        // Exit a planet.
+        Planet planet = col.GetComponent<Planet>();
+        if (planet != null)
+        {
+            ExitPlanet(planet);
+        }
     }
+
+    void OnTriggerStay2D(Collider2D col)
+    {
+        if (GM.I.nebula.myName != "Home") return;
+        
+        Planet planet = col.GetComponent<Planet>();
+        if (planet != null && planet.nectar > 0)
+        {
+            if (currentPlanet != planet)
+            {
+                EnterPlanet(planet);
+            }
+            
+            planet.harvestTimer += Time.deltaTime;
+
+            if (planet.harvestTimer >= planet.harvestTime)
+            {
+                // Harvest complete
+                planet.Harvest();
+                /* int credits = planet.nectar;
+                Gatherer.credits += credits;
+                planet.nectar = 0;
+                planet.harvestTimer = 0f;
+                
+                // Visual feedback
+                HitMarker.CreateHitMarker(planet.transform.position, "+" + credits + " credits"); */
+            }
+        }
+    }
+    
+    /*
+
+    void OnTriggerStay2D(Collider2D col)
+    {
+        if (GM.I.nebula.myName != "Home") return;
+        
+        Planet planet = col.GetComponent<Planet>();
+        if (planet != null && planet.nectar > 0)
+        {
+            if (harvestPlanet != planet)
+            {
+                harvestPlanet = planet;
+                harvestTimer = 0f;
+            }
+            
+            harvestTimer += Time.deltaTime;
+            
+            if (harvestTimer >= harvestTime)
+            {
+                // Harvest complete
+                int credits = Mathf.FloorToInt(planet.nectar);
+                Gatherer.credits += credits;
+                planet.nectar = 0f;
+                harvestPlanet = null;
+                harvestTimer = 0f;
+                
+                // Visual feedback
+                HitMarker.CreateHitMarker(planet.transform.position, "+" + credits + " credits");
+            }
+        }
+    }
+
+    void OnTriggerExit2D(Collider2D col)
+    {
+        Planet planet = col.GetComponent<Planet>();
+        if (planet == harvestPlanet)
+        {
+            harvestPlanet = null;
+            harvestTimer = 0f;
+        }
+    }
+
+    */
 }

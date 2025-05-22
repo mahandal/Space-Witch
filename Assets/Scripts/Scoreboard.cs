@@ -76,22 +76,10 @@ public class Scoreboard : MonoBehaviour
         if (score > highScores.scores.Min(s => s.score))
         {
             NewHighScore();
-            /* hasNewHighScore = true;
-            
-            // Show name input panel
-            if (newHighScorePanel != null)
-                newHighScorePanel.SetActive(true);
-
-            // Disable rank thirteen
-            rankThirteen.gameObject.SetActive(false); */
         }
         else
         {
-            RankThirteen();
-            // Not a high score this time, just rank #13 again...
-            /* rankThirteen.gameObject.SetActive(true);
-            HighScore lowScore = new HighScore("Space Witch", score);
-            SetRanking(rankThirteen, lowScore); */
+            RankThirteen(score);
         }
     }
 
@@ -107,11 +95,11 @@ public class Scoreboard : MonoBehaviour
         rankThirteen.gameObject.SetActive(false);
     }
 
-    public void RankThirteen()
+    public void RankThirteen(int score)
     {
         // Not a high score this time, just rank #13 again...
         rankThirteen.gameObject.SetActive(true);
-        int score = (int)(Gatherer.starsGathered);
+        //int score = (int)(Gatherer.starsGathered);
         HighScore lowScore = new HighScore("Space Witch", score);
         SetRanking(rankThirteen, lowScore);
     }

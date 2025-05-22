@@ -32,12 +32,14 @@ public class Planet : MonoBehaviour
 
     [Header("Nectar")]
     public int nectar = 0;
+    public float harvestTime = 1f;
+    public float harvestTimer = 0f;
 
     [Header("Orbital Mechanics")]
     public Transform sun; // Reference to the sun
     public float orbitSpeed = 10f; // degrees per second
     private float orbitRadius = 10f; // distance from sun
-    
+
     private float currentAngle = 0f;
     private Vector3 sunPosition;
 
@@ -59,27 +61,28 @@ public class Planet : MonoBehaviour
         // Set orbit radius
         orbitRadius = transform.position.x;
     }
-    
+
     void FixedUpdate()
     {
-        // Orbital movement
-        UpdateOrbit();
-        
         // Original planet rotation
         transform.Rotate(0, 0, -0.01f * pollen);
         moonMama.Rotate(0, 0, -1f);
+
+        // Orbital movement
+        if (sun != null)
+            UpdateOrbit();
     }
-    
+
     void UpdateOrbit()
     {
         // Update orbital angle (scaled arbitrarily)
         currentAngle += orbitSpeed / 10f * Time.deltaTime;
         if (currentAngle >= 360f) currentAngle -= 360f;
-        
+
         // Calculate new position around sun
         float x = sunPosition.x + Mathf.Cos(currentAngle * Mathf.Deg2Rad) * orbitRadius;
         float y = sunPosition.y + Mathf.Sin(currentAngle * Mathf.Deg2Rad) * orbitRadius;
-        
+
         // Update position
         transform.position = new Vector3(x, y, 0);
     }
@@ -98,10 +101,12 @@ public class Planet : MonoBehaviour
                 // Spawn
                 float size = Random.Range(1f, Mathf.Sqrt(pollen));
                 GM.I.spawnManager.SpawnStar(transform.position.x, transform.position.y, radius, size);
-            } else {
+            }
+            else
+            {
                 stars++;
             }
-            
+
             // Reset
             starTimer = starTime;
         }
@@ -112,7 +117,7 @@ public class Planet : MonoBehaviour
         // cap?
         if (pollen >= 13 * GM.I.planets.Count)
             return;
-        
+
         // Increase pollen
         pollen += amount;
 
@@ -132,20 +137,20 @@ public class Planet : MonoBehaviour
     {
         // Reduce pollen based on damage
         pollen -= damage / 100f;
-        
+
         // Death
         if (pollen <= 0)
         {
             Death();
             return;
         }
-        
+
         // Update size
         UpdateSize();
-        
+
         // Create visual feedback
         HitMarker.CreateDamageMarker(transform.position, damage);
-        
+
         // SFX
         GM.I.dj.PlayEffect("asteroid_hit", transform.position);
     }
@@ -164,5 +169,19 @@ public class Planet : MonoBehaviour
 
         // Clean up game object
         Object.Destroy(gameObject);
+    }
+
+    public void Harvest()
+    {
+        int credits = nectar;
+        Gatherer.credits += credits;
+        nectar = 0;
+        harvestTimer = 0f;
+
+        // Visual feedback
+        HitMarker.CreateHitMarker(transform.position, "+" + credits + " credits");
+
+        // Save
+        GM.I.SaveGame();
     }
 }

@@ -17230,7 +17230,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8a83dcd5d2ecb2142a168a7ccfb79690, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  planetMinDistance: 7
+  planetMinDistance: 5
   planetMaxDistance: 25
   despawnDistance: 10
   unknown: {fileID: 893226646}
@@ -40975,7 +40975,16 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   myName: Home
-  planets: []
+  planets:
+  - {fileID: 1333144370}
+  - {fileID: 2029705317}
+  - {fileID: 2098951358}
+  - {fileID: 433000076}
+  - {fileID: 1939275679}
+  - {fileID: 414400096}
+  - {fileID: 99346146}
+  - {fileID: 1751796560}
+  - {fileID: 1344408808}
   wormHoles: []
 --- !u!4 &1156778405
 Transform:

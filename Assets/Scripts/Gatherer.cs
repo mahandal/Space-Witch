@@ -134,8 +134,9 @@ public class Gatherer : MonoBehaviour
     {
         currentHealth = maxHealth;
         currentMana = maxMana;
-                
+
         // Exit dying state
+        recoveryTimer = 0f;
         isDying = false;
         rb2d.angularVelocity = 0f;
     }
@@ -221,8 +222,8 @@ public class Gatherer : MonoBehaviour
         isDying = true;
 
         // Set recovery time
-        //recoveryTimer = recoveryTime;
-        recoveryTimer = GM.I.intensity;
+        recoveryTimer = recoveryTime;
+        //recoveryTimer = GM.I.intensity;
 
         // Calculate direction away from the asteroid
         Vector2 knockbackDirection = (transform.position - killer.transform.position).normalized;
@@ -253,7 +254,7 @@ public class Gatherer : MonoBehaviour
 
         // Apply spin manually to ensure it keeps spinning
         transform.Rotate(0, 0, deathSpinSpeed * Time.deltaTime);
-        
+
         // Apply drag to slow down
         rb2d.linearVelocity *= 0.98f;
 
@@ -263,7 +264,7 @@ public class Gatherer : MonoBehaviour
             // Gradually heal while spinning
             float healRate = maxHealth / recoveryTime;
             currentHealth += healRate * Time.deltaTime;
-            
+
             // Ensure health doesn't exceed max
             if (currentHealth > maxHealth)
                 currentHealth = maxHealth;
@@ -278,26 +279,39 @@ public class Gatherer : MonoBehaviour
                 // (of this life...)
                 bee.FirstWords();
             }
-        } 
-        
+        }
+
         // Check fail state
-        else if (this is Player || this is Familiar) {
+        else if (this is Player || this is Familiar)
+        {
             // Check if we've recovered
-            float timeDead = GM.I.intensity - recoveryTimer;
+            if (recoveryTimer <= 0)
+            {
+                // Heal up
+                FullRestore();
+            }
+            /* float timeDead = GM.I.intensity - recoveryTimer;
             if (recoveryTimer <= 0 || timeDead > recoveryTime)
             {
-                // GG
+                // GG?
                 GM.I.Lose();
-            }
+            } */
         }
         // Crows(?)
-        else if (this is Crow) {
+        else if (this is Crow)
+        {
             // get crow!
             Crow crow = GetComponent<Crow>();
 
             if (recoveryTimer < 0)
                 crow.Death();
-                
+
+        }
+        // Misc
+        else
+        {
+            if (recoveryTimer < 0)
+                gameObject.SetActive(false);
         }
     }
 

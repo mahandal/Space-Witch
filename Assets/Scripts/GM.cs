@@ -173,6 +173,13 @@ public class GM : MonoBehaviour
         // Update save data with current values
         saveData.credits = Gatherer.credits;
 
+        // Save planet nectar
+        saveData.planetNectar.Clear();
+        foreach (Planet planet in home.planets)
+        {
+            saveData.planetNectar.Add(planet.nectar);
+        }
+
         // Convert to JSON and write to file
         string json = JsonUtility.ToJson(saveData, true);
         File.WriteAllText(SavePath, json);
@@ -193,6 +200,7 @@ public class GM : MonoBehaviour
                 saveData = JsonUtility.FromJson<SaveData>(json);
 
                 // Clear ooold saves
+                // (literally just for Evan and Nate I think?)
                 if (saveData.unlockedTalents.Count < 5)
                     saveData = new SaveData();
             }
@@ -210,8 +218,16 @@ public class GM : MonoBehaviour
             //Gatherer.credits = 0;
         }
 
-        // Apply loaded data to game
+        // - Apply loaded data to game
+
+        // Credits
         Gatherer.credits = saveData.credits;
+
+        // Nectar
+        for (int i = 0; i < saveData.planetNectar.Count; i++)
+        {
+            home.planets[i].nectar = saveData.planetNectar[i];
+        }
     }
 
     // Load settings stored in player prefs.
@@ -305,7 +321,7 @@ public class GM : MonoBehaviour
         // Go through each bee
         foreach (Bee bee in bees)
         {
-            if (!bee.isDying)
+            if (!bee.isDying && bee.gameObject.activeSelf)
                 bee.SpawnStar();
 
             bee.isBumpable = true;
@@ -332,6 +348,9 @@ public class GM : MonoBehaviour
         // Activate background
         ui.winBackground.SetActive(true);
         ui.lossBackground.SetActive(false);
+
+        // Collect nectar
+        CollectNectar();
 
         // Award credits
         int score = CalculateScore();
@@ -379,7 +398,8 @@ public class GM : MonoBehaviour
         dj.PlayEffect("defeat", player.transform.position, 1f, true);
 
         // Rank 13
-        scoreboard.RankThirteen();
+        int score = CalculateScore();
+        scoreboard.RankThirteen(score);
     }
 
     public void GameOver()

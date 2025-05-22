@@ -237,7 +237,6 @@ public class SpawnManager : MonoBehaviour
         float randomValue = Random.value; // Returns value between 0 and 1
         float radius = planetMinDistance + (planetMaxDistance - planetMinDistance) * Mathf.Sqrt(randomValue);
 
-
         // Convert to Cartesian coordinates
         float x = radius * Mathf.Cos(angle);
         float y = radius * Mathf.Sin(angle);

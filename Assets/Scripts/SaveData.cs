@@ -9,6 +9,9 @@ public class SaveData
     // Remember our talents.
     public List<string> unlockedTalents = new List<string>();
 
+    // Nectar
+    public List<int> planetNectar = new List<int>();
+
     public SaveData()
     {
         // Start with no money
