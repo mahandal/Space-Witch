@@ -206,16 +206,14 @@ public class GM : MonoBehaviour
             }
             else
             {
-                Debug.Log("No save file found. Starting with default values.");
+                // No save found, make a new one.
                 saveData = new SaveData();
-                //Gatherer.credits = 0;
             }
         }
         catch (System.Exception e)
         {
             Debug.LogError("Failed to load game: " + e.Message);
             saveData = new SaveData();
-            //Gatherer.credits = 0;
         }
 
         // - Apply loaded data to game

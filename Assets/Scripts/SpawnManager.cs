@@ -275,56 +275,34 @@ public class SpawnManager : MonoBehaviour
 
     // --- Asteroids
 
-    // - Spawn a new asteroid at the given location
-    /* void SpawnNewAsteroid(float x, float y)
-    {
-        // Initialize desired position
-        Vector3 desiredPosition = new Vector3(x, y, 0);
-        
 
-        // Instantiate new asteroid
-        Asteroid newAsteroid = Object.Instantiate(progenitor_Asteroid, GM.I.universe);
+    // --- Bees
 
-        // Set new asteroid's position
-        newAsteroid.transform.position = desiredPosition;
 
-        // Set new asteroid's direction
-        newAsteroid.direction = new Vector2(Random.Range(-1f, 1f), Random.Range(-1f, 1f));
-
-        // Set new asteroid's speed
-        newAsteroid.acceleration = Random.Range(0.5f, Mathf.Sqrt(GM.I.intensity));
-        newAsteroid.maxSpeed = Random.Range(0.5f, Mathf.Sqrt(GM.I.intensity));
-
-        // Set new asteroid's size
-        newAsteroid.size = Random.Range(0.5f, Mathf.Sqrt(GM.I.intensity));
-        float newScale = progenitor_Asteroid.transform.localScale.x * newAsteroid.size;
-        newAsteroid.transform.localScale = new Vector3(newScale, newScale, newScale);
-
-        // Set new asteroid's damage
-        //newAsteroid.damage = progenitor_Asteroid.damage * newAsteroid.acceleration * newAsteroid.size;
-
-        // Activate new asteroid
-        newAsteroid.gameObject.SetActive(true);
-    } */
-
-/*
-    public void SetUpBees()
-    {
-        // Loop through each bee
-        for (int i = 0; i < GM.I.bees.Count; i++)
+    /*
+        public void SetUpBees()
         {
-            // Get bee
-            Bee bee = GM.I.bees[i];
+            // Loop through each bee
+            for (int i = 0; i < GM.I.bees.Count; i++)
+            {
+                // Get bee
+                Bee bee = GM.I.bees[i];
 
-            Invoke("SetupBeeDelays", 0.1f);
+                Invoke("SetupBeeDelays", 0.1f);
+            }
+
+            ShuffleBeePositions();
         }
-
-        ShuffleBeePositions();
-    }
-*/
+    */
 
     public void SetUpBees()
     {
+        // Shuffle starting locations.
+        ShuffleBeePositions();
+
+        // Then get bee starting planet.
+        // (slightly complicated to keep a clean break)
+
         // First, categorize planets by quadrant
         Dictionary<int, List<Planet>> planetsByQuadrant = new Dictionary<int, List<Planet>>();
         // Initialize dictionary with 4 quadrants
@@ -345,14 +323,14 @@ public class SpawnManager : MonoBehaviour
         {
             Bee bee = GM.I.bees[i];
             int beeQuadrant = GetQuadrant(bee.transform.position);
-            
+
             // Get a planet from the bee's quadrant if available
             if (planetsByQuadrant[beeQuadrant].Count > 0)
             {
                 // Use the first planet in this quadrant
                 bee.goal = planetsByQuadrant[beeQuadrant][0];
                 bee.goalIndex = GM.I.planets.IndexOf(bee.goal);
-                
+
                 // Remove the planet from the available list
                 planetsByQuadrant[beeQuadrant].RemoveAt(0);
             }
@@ -372,7 +350,7 @@ public class SpawnManager : MonoBehaviour
             }
         }
 
-        // Set up the spinning effect and delays
+        // Set up the spinning effect and delays.
         Invoke("SetupBeeDelays", 0.1f);
     }
 
@@ -422,7 +400,9 @@ public class SpawnManager : MonoBehaviour
         }
     }
 
-    // 
+    // --- Misc
+    
+    // Nebula
     public void SetUpNebula(string nebulaName = "Unknown")
     {
         // First deactivate all nebulas
@@ -440,19 +420,19 @@ public class SpawnManager : MonoBehaviour
 
             // Generate new random arrangement of planets
             GM.I.nebula.planets = SpawnPlanets(GM.I.bees.Count);
-            
+
             // Generate new worm hole
             //SpawnWormHoles(1);
             GM.I.nebula.wormHoles = new List<WormHole>();
-            GM.I.nebula.wormHoles.Add(SpawnWormHole(0,0));
+            GM.I.nebula.wormHoles.Add(SpawnWormHole(0, 0));
         }
 
         // Activate
         GM.I.nebula.gameObject.SetActive(true);
-        
+
         // Track planets
         SetUpPlanets(GM.I.nebula.planets);
-        
+
         // Track worm holes
         SetUpWormHoles(GM.I.nebula.wormHoles);
 
@@ -540,12 +520,13 @@ public class SpawnManager : MonoBehaviour
         return newWormHole;
     }
 
-    // Spawn asteroid from a worm hole
-    public void SpawnNewAsteroidFromWormHole(Vector3 position, float sizeMultiplier, float speedMultiplier)
+    // Spawn an asteroid.
+    // Generally from a worm hole?
+    public void SpawnAsteroid(Vector3 position, float sizeMultiplier, float speedMultiplier)
     {
         // Instantiate new asteroid
         Asteroid newAsteroid = Object.Instantiate(progenitor_Asteroid, GM.I.universe);
-        
+
         // Set position
         newAsteroid.transform.position = position;
 
@@ -563,13 +544,13 @@ public class SpawnManager : MonoBehaviour
             Planet targetPlanet = GM.I.planets[randomIndex];
             newAsteroid.direction = (targetPlanet.transform.position - position).normalized;
         }
-        
+
         // Set speed & size
 
         // Base values that scale directly with intensity
         float baseAcceleration = 0.5f + (0.05f * GM.I.intensity);
         float baseSpeed = 0.5f + (0.05f * GM.I.intensity);
-        float baseSize = 1f + (0.1f * GM.I.intensity);
+        float baseSize = 0.1f + (0.1f * GM.I.intensity);
 
         // Add some random variation
         float randomVariation = Random.Range(0.1f, 2.9f);
@@ -584,12 +565,12 @@ public class SpawnManager : MonoBehaviour
 
         // Start at max speed
         newAsteroid.rb2d.linearVelocity = newAsteroid.direction * newAsteroid.maxSpeed;
-        
+
         // Set size
         newAsteroid.size = baseSize * sizeMultiplier * inverseVariation;
         float newScale = progenitor_Asteroid.transform.localScale.x * newAsteroid.size;
         newAsteroid.transform.localScale = new Vector3(newScale, newScale, newScale);
-        
+
         // Activate
         newAsteroid.gameObject.SetActive(true);
     }

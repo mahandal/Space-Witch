@@ -114,6 +114,7 @@ public class UI : MonoBehaviour
     public GameObject persistentGrowth;
     public GameObject talentCostParent;
     public TMP_Text talentCost;
+    public Button exitButton;
 
     [Header("Full")]
     public GameObject pauseMenu;
@@ -1036,13 +1037,15 @@ public class UI : MonoBehaviour
         //GM.I.universe.gameObject.SetActive(false);
     }
 
-    public void EndMeditation()
+    public void CloseMeditationUI()
     {
         // Stop the wheel
         meditationWheel.SetActive(false);
 
+        // Check if we are leveling up.
+        // (so we don't cancel that early)
         if (!growth.activeSelf)
-            mySelf.SetActive(false);
+            mySelf.SetActive(false); // Turn off UI for self reflection.
 
         // Fade current spell
         CD_Circle.color = new Color(0.5f, 0.5f, 0.5f, 0.5f);
@@ -1111,7 +1114,7 @@ public class UI : MonoBehaviour
         if (blackHoleVignette == null)
         {
             blackHoleVignette = new GameObject("BlackHoleVignette").AddComponent<Image>();
-            blackHoleVignette.raycastTarget = false; 
+            blackHoleVignette.raycastTarget = false;
             blackHoleVignette.transform.SetParent(transform, false);
             blackHoleVignette.rectTransform.anchorMin = Vector2.zero;
             blackHoleVignette.rectTransform.anchorMax = Vector2.one;
@@ -1144,7 +1147,7 @@ public class UI : MonoBehaviour
             GM.I.player.transform.localScale = GM.I.player.originalScale;
 
             // Transition complete
-            EndMeditation();
+            CloseMeditationUI();
             //inBlackHoleTransition = false;
             blackHoleChannelTimer = 0f;
 
@@ -1177,5 +1180,26 @@ public class UI : MonoBehaviour
 
         // Deactivate credits
         creditsParent.SetActive(false);
+    }
+
+    // Called when the little red x in the top right gets pressed, either while meditating or training.
+    public void GameExitButtonPressed()
+    {
+        // Check if we're leveling up
+        if (GM.I.player.isLeveling)
+        {
+            CloseLevelUpScreen();
+        }
+        // Check if we're meditating
+        else if (GM.I.player.isMeditating)
+        {
+            // Close meditation UI, but keep time frozen so you can look around and think.
+            CloseMeditationUI();
+        }
+        else
+        {
+            // Close training screen.
+            CloseTrainingScreen();
+        }
     }
 }

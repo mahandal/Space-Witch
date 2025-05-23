@@ -153,7 +153,7 @@ public class TalentManager : MonoBehaviour
         }
         else
         {
-            Debug.Log("Error! Confused talent ain't got no class : " + talent.myName);
+            Debug.LogWarning("Error! Confused talent ain't got no class : " + talent.myName);
         }
     }
 
@@ -249,82 +249,6 @@ public class TalentManager : MonoBehaviour
         }
 
         return Shuffle(availableTalents);
-        /* // Alchemist
-        if (subclass == "Alchemist")
-        {
-            // Common
-            if (rarity == "Common")
-                return Shuffle(commonAlchemistTalents);
-
-            // Uncommon
-            if (rarity == "Uncommon")
-                return Shuffle(uncommonAlchemistTalents);
-
-            // Rare
-            if (rarity == "Rare")
-                return Shuffle(rareAlchemistTalents);
-        }
-        else if (subclass == "Enchantress")
-        {
-            // Common
-            if (rarity == "Common")
-                return Shuffle(commonEnchantressTalents);
-
-            // Uncommon
-            if (rarity == "Uncommon")
-                return Shuffle(uncommonEnchantressTalents);
-
-            // Rare
-            if (rarity == "Rare")
-                return Shuffle(rareEnchantressTalents);
-        }
-        else if (subclass == "Engineer")
-        {
-            // Common
-            if (rarity == "Common")
-                return Shuffle(commonEngineerTalents);
-
-            // Uncommon
-            if (rarity == "Uncommon")
-                return Shuffle(uncommonEngineerTalents);
-
-            // Rare
-            if (rarity == "Rare")
-                return Shuffle(rareEngineerTalents);
-        }
-        else if (subclass == "Druid")
-        {
-            // Common
-            if (rarity == "Common")
-                return Shuffle(commonDruidTalents);
-
-            // Uncommon
-            if (rarity == "Uncommon")
-                return Shuffle(uncommonDruidTalents);
-
-            // Rare
-            if (rarity == "Rare")
-                return Shuffle(rareDruidTalents);
-        }
-        else if (subclass == "Oracle")
-        {
-            // Common
-            if (rarity == "Common")
-                return Shuffle(commonOracleTalents);
-
-            // Uncommon
-            if (rarity == "Uncommon")
-                return Shuffle(uncommonOracleTalents);
-
-            // Rare
-            if (rarity == "Rare")
-                return Shuffle(rareOracleTalents);
-        }
-
-        Debug.Log("Invalid subclass (or maybe rarity?) submitted when pulling talents : " + subclass);
-
-        return null;
-        */
     }
 
     //private static Random rng = new Random();

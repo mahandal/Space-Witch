@@ -43,7 +43,7 @@ public class KnownTalent : MonoBehaviour
         // Null check
         if (!GM.I.talents.ContainsKey(currentTalent))
         {
-            Debug.Log("Error! NULL talent!");
+            Debug.LogWarning("Error! NULL talent!");
             return;
         }
 

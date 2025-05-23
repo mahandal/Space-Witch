@@ -54,8 +54,6 @@ public class UIButton : MonoBehaviour
         // Shared toggling
         ToggleButton();
 
-        Debug.Log("Toggling screen shake to " + isToggled);
-
         // Update GM setting
         if (GM.I != null)
             GM.I.screenShakeEnabled = isToggled;

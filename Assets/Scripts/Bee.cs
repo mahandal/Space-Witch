@@ -203,10 +203,9 @@ public class Bee : Gatherer
             if (previousPlanet != null)
             {
                 float planetDistance = Vector3.Distance(previousPlanet.transform.position, goal.transform.position);
-                Debug.Log("Planet distance: " + planetDistance + ". Time - " + Time.time);
+                
                 // Scale pollen amount based on distance
                 pollenAmount = Mathf.Max(1, Mathf.FloorToInt(planetDistance / 5));
-                Debug.Log("Pollen gained: " + pollenAmount + ". Time - " + Time.time);
             }
 
             // Pollinate with calculated amount

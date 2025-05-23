@@ -12,9 +12,6 @@ public class Planet : MonoBehaviour
     // How much pollen this planet currently has.
     public float pollen = 1;
 
-    // How many stars this planet has stored up.
-    public int stars = 0;
-
     // How big this planet is mechanically
     private float radius;
 
@@ -24,11 +21,6 @@ public class Planet : MonoBehaviour
     // How much this planet grows per pollen.
     private float growthFactor = 0.1f;
 
-    // How long it takes for this planet to spawn stars
-    public float starTime = 1f;
-
-    // Timers
-    public float starTimer = 0f;
 
     [Header("Nectar")]
     public int nectar = 0;
@@ -85,31 +77,6 @@ public class Planet : MonoBehaviour
 
         // Update position
         transform.position = new Vector3(x, y, 0);
-    }
-
-    // Timers
-    void Timers()
-    {
-        // Spawn
-        starTimer -= Time.deltaTime;
-        if (starTimer <= 0f)
-        {
-            // Check if player is close enough to spawn stars
-            float distance = Vector3.Distance(transform.position, GM.I.player.transform.position);
-            if (distance < radius && stars > 0)
-            {
-                // Spawn
-                float size = Random.Range(1f, Mathf.Sqrt(pollen));
-                GM.I.spawnManager.SpawnStar(transform.position.x, transform.position.y, radius, size);
-            }
-            else
-            {
-                stars++;
-            }
-
-            // Reset
-            starTimer = starTime;
-        }
     }
 
     public void Pollinate(int amount = 1)

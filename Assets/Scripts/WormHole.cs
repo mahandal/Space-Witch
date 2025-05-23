@@ -52,7 +52,7 @@ public class WormHole : MonoBehaviour
     public void SpawnAsteroid()
     {
         // Spawn asteroid at worm hole position
-        GM.I.spawnManager.SpawnNewAsteroidFromWormHole(transform.position, asteroidSizeMultiplier, asteroidSpeedMultiplier);
+        GM.I.spawnManager.SpawnAsteroid(transform.position, asteroidSizeMultiplier, asteroidSpeedMultiplier);
     }
 
     public void AntiGravity()

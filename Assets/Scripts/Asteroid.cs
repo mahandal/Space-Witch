@@ -167,7 +167,7 @@ public class Asteroid : MonoBehaviour
 
     public float CalculateDamage()
     {
-        return damage * size * previousFrameVelocity * previousAngularVelocity;
+        return damage * size * previousFrameVelocity * Mathf.Log(Mathf.Abs(previousAngularVelocity) + 1);
     }
 
     void OnCollisionEnter2D(Collision2D collision)
@@ -192,7 +192,8 @@ public class Asteroid : MonoBehaviour
         prey.exploding = true;
 
         // Roll size efficiency
-        float sizeEfficiency = Random.Range(0f, 1f);
+        //float sizeEfficiency = Random.Range(0f, 1f);
+        float sizeEfficiency = Random.Range(0.1f, 0.2f);
 
         // Gain size proportional to the consumed asteroid
         size += prey.size * sizeEfficiency;

@@ -47,7 +47,7 @@ public class Choice : MonoBehaviour, IPointerClickHandler
         // Null check
         if (!GM.I.talents.ContainsKey(myName))
         {
-            Debug.Log("Error! NULL talent!");
+            Debug.LogWarning("Error! NULL talent!");
             return;
         }
 

@@ -56,6 +56,8 @@ public class Player : Gatherer
     public bool isMovingRight;
 
     public bool isSprinting;
+    public bool isMeditating;
+    public bool isLeveling;
 
     // Cursor
 
@@ -590,6 +592,9 @@ public class Player : Gatherer
         // Stop time
         GM.I.StopTime();
 
+        // Set bool
+        isLeveling = true;
+
         // Open talent screen
         GM.I.ui.OpenLevelUpScreen();
     }
@@ -613,6 +618,9 @@ public class Player : Gatherer
         // Explode nearby asteroids
         Asteroid.Explosion(level, transform.position);
 
+        // set bool
+        isLeveling = false;
+
         // Open talent screen
         //GM.I.ui.OpenLevelUpScreen();
     }
@@ -626,7 +634,7 @@ public class Player : Gatherer
         // Check if talent exists
         if (!GM.I.talents.ContainsKey(talentName))
         {
-            Debug.Log("Error! talent not found : " + talentName);
+            Debug.LogWarning("Error! talent not found : " + talentName);
             return;
         }
 
@@ -696,7 +704,8 @@ public class Player : Gatherer
 
     public void Meditate()
     {
-        // Set bool
+        // Set bools
+        isMeditating = true;
         isCalm = true;
 
         // Open UI
@@ -708,8 +717,11 @@ public class Player : Gatherer
 
     public void EndMeditation()
     {
+        // Set bool
+        isMeditating = false;
+
         // Close UI
-        GM.I.ui.EndMeditation();
+        GM.I.ui.CloseMeditationUI();
 
         // Start time
         GM.I.StartTime();

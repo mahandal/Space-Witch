@@ -116,7 +116,7 @@ public class AudioManager : MonoBehaviour
     {
         if (!musicClips.ContainsKey(songName))
         {
-            Debug.Log("Song not found: " + songName);
+            Debug.LogWarning("Song not found: " + songName);
             return;
         }
 

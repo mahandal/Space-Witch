@@ -206,7 +206,7 @@ public class Scoreboard : MonoBehaviour
             }
             else
             {
-                Debug.Log("No high score file found. Creating new list.");
+                // No high score list found, make a new one.
                 highScores = new HighScoreList();
             }
         }
