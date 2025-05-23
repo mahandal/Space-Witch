@@ -5,6 +5,7 @@ public class Bee : Gatherer
     [Header("Bee")]
     public int goalIndex;
     public Planet goal;
+    public Vector3 destination;
     public Planet previousPlanet;
     //public float starTime = 1f;
     private float sprintManaCost = 25f;
@@ -187,51 +188,73 @@ public class Bee : Gatherer
         timeSinceLastBump += Time.deltaTime;
     }
 
-    // Check if we're close enough to our goal to find a new planet.
-    // If so, roll a random new planet for now.
+    // Seek out witches in need, or find our next planet otherwise.
     public void Navigate()
     {
-        // Set default goal if our goal is gone.
+        // First priority: dying witches
+        Transform dyingTarget = null;
+        float closestDistance = float.MaxValue;
+        
+        // Check if player is dying
+        if (GM.I.player.isDying)
+        {
+            float playerDistance = Vector3.Distance(transform.position, GM.I.player.transform.position);
+            if (playerDistance < closestDistance)
+            {
+                dyingTarget = GM.I.player.transform;
+                closestDistance = playerDistance;
+            }
+        }
+        
+        // Check if familiar is dying
+        if (GM.I.familiar.isDying)
+        {
+            float familiarDistance = Vector3.Distance(transform.position, GM.I.familiar.transform.position);
+            if (familiarDistance < closestDistance)
+            {
+                dyingTarget = GM.I.familiar.transform;
+                closestDistance = familiarDistance;
+            }
+        }
+        
+        // Normal planet navigation for when no one is dying
         if (goal == null)
             goal = GM.I.planets[0];
 
-        // Get the distance to our goal
-        float distance = Vector3.Distance(transform.position, goal.transform.position);
+        float goalDistance = Vector3.Distance(transform.position, goal.transform.position);
 
-        // Check if we're close enough to pollinate and move on
-        if (distance < pollinationRange && !isPollinating)
+        if (goalDistance < pollinationRange && !isPollinating)
         {
-            // Start pollinating!
             isPollinating = true;
-
+            
             int pollenAmount = 1;
             if (previousPlanet != null)
             {
                 float planetDistance = Vector3.Distance(previousPlanet.transform.position, goal.transform.position);
-                
-                // Scale pollen amount based on distance
                 pollenAmount = Mathf.Max(1, Mathf.FloorToInt(planetDistance / 5));
             }
 
-            // Pollinate with calculated amount
-            //goal.Pollinate(pollenAmount);
             Pollinate(goal, pollenAmount);
-
-            // Remember this planet
             previousPlanet = goal;
-
-            // Increment index
+            
             goalIndex++;
-
-            // Loop index back to 0 if it's out of range
             if (goalIndex >= GM.I.planets.Count)
                 goalIndex = 0;
-
-            // Set that planet as our new goal
+                
             goal = GM.I.planets[goalIndex];
-            
-            // Stop pollinating!
             isPollinating = false;
+        }
+
+        // - Destination
+        // Finally, actually set our destination.
+        // If we have a dying witch to help, go there.
+        // Otherwise, go to our goal planet.
+        if (dyingTarget != null)
+        {
+            // Move toward dying witch
+            destination = dyingTarget.position;
+        } else {
+            destination = goal.transform.position;
         }
     }
 
@@ -247,13 +270,13 @@ public class Bee : Gatherer
     public void Ambulate()
     {
         // Face goal
-        Vector3 targ = goal.transform.position - transform.position;
+        Vector3 targ = destination - transform.position;
         float angle = Mathf.Atan2(targ.y, targ.x) * Mathf.Rad2Deg;
         angle -= 90;
         transform.rotation = Quaternion.Euler(new Vector3(0, 0, angle));
 
         // Move toward goal
-        Vector2 direction = (goal.transform.position - transform.position).normalized;
+        Vector2 direction = (destination - transform.position).normalized;
         rb2d.AddForce(direction * acceleration);
 
         // Max speed
@@ -293,12 +316,12 @@ public class Bee : Gatherer
         // Check bumpability
         if (!isBumpable && !isDying)
             return;
-        
-        // Recover dying bees
+
+        // Bee friendly!
         if (isDying)
         {
             // Heal up.
-            FullRestore();
+            //FullRestore();
 
             // Bee grateful!
             SayThanks();
@@ -307,11 +330,21 @@ public class Bee : Gatherer
             SayHi();
         }
         
-        // Set bumpable
-        isBumpable = false;
+        // Get whoever bumped us
+        Gatherer bumper = GetBumper();
+
+        // Heal up
+        //FullRestore(bumper.gameObject, true);
+        float healYouAmount = soul;
+        bumper.Heal(healYouAmount, gameObject);
+        float healMeAmount = bumper.soul;
+        Heal(healMeAmount, bumper.gameObject);
 
         // Spawn some stars!
-        SpawnStars();
+        BumpStars(bumper);
+        
+        // Set bumpable
+        isBumpable = false;
 
         // Reset timer
         timeSinceLastBump = 0f;
@@ -327,7 +360,7 @@ public class Bee : Gatherer
     }
 
     // Spawn stars around this bee when bumped.
-    public void SpawnStars()
+    public void BumpStars(Gatherer bumper)
     {
         // Base amount
         float baseStars = 1f;
@@ -336,7 +369,7 @@ public class Bee : Gatherer
         float beeVelocityFactor = Mathf.Min(rb2d.linearVelocity.magnitude * 0.5f, 5f);
         
         // Get the player or familiar that bumped this bee
-        Gatherer bumper = GetBumper();
+        //Gatherer bumper = GetBumper();
         float bumperVelocityFactor = bumper != null ? 
             Mathf.Min(bumper.previousFrameVelocity * 0.5f, 5f) : 0f;
         

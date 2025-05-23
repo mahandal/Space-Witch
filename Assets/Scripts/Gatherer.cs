@@ -131,9 +131,17 @@ public class Gatherer : MonoBehaviour
     }
 
     // Fully heals this gatherer for both health and mana.
-    public void FullRestore()
+    public void FullRestore(GameObject healer = null, bool shouldShow = false)
     {
-        currentHealth = maxHealth;
+        //currentHealth = maxHealth;
+
+        // Get missing health
+        float missingHealth = maxHealth - currentHealth;
+
+        // Heal missing health
+        Heal(missingHealth, healer, shouldShow);
+
+        // Set mana to full
         currentMana = maxMana;
 
         // Exit dying state
@@ -222,6 +230,16 @@ public class Gatherer : MonoBehaviour
         // Set bool
         isDying = true;
 
+        // If this is the player, all bees come to help
+        if (this is Player)
+        {
+            foreach (Bee b in GM.I.bees)
+            {
+                if (b.gameObject.activeSelf)
+                    b.destination = transform.position;
+            }
+        }
+
         // Set recovery time
         //recoveryTimer = recoveryTime;
         //recoveryTimer = GM.I.intensity;
@@ -265,6 +283,9 @@ public class Gatherer : MonoBehaviour
         // Count down recovery timer
         //recoveryTimer -= Time.deltaTime;
 
+        // Set baby time
+        babyTime = timeAlive + 7f;
+
         // Apply spin manually to ensure it keeps spinning
         transform.Rotate(0, 0, deathSpinSpeed * Time.deltaTime);
 
@@ -296,62 +317,6 @@ public class Gatherer : MonoBehaviour
                     GM.I.Lose();
             }
         }
-
-/*
-        Bee bee = GetComponent<Bee>();
-        if (bee != null)
-        {
-            // Gradually heal while spinning
-            float healRate = maxHealth / recoveryTime;
-            currentHealth += healRate * Time.deltaTime;
-
-            // Ensure health doesn't exceed max
-            if (currentHealth > maxHealth)
-                currentHealth = maxHealth;
-
-            // Check if we've recovered
-            if (recoveryTimer <= 0)
-            {
-                // Heal up
-                bee.FullRestore();
-
-                // Say our first words!
-                // (of this life...)
-                bee.FirstWords();
-            }
-        }
-
-        // Check fail state
-        else if (this is Player || this is Familiar)
-        {
-            // Check if it's our time
-            if (recoveryTimer <= 0)
-            {
-
-                // Recover if we have lives remaining, or lose if we don't.
-                if (GM.I.player.livesRemaining <= 0)
-                    GM.I.Lose(); // GG
-                else
-                    FullRestore(); // Heal up
-            }
-        }
-        // Crows(?)
-        else if (this is Crow)
-        {
-            // get crow!
-            Crow crow = GetComponent<Crow>();
-
-            if (recoveryTimer < 0)
-                crow.Death();
-
-        }
-        // Misc
-        else
-        {
-            if (recoveryTimer < 0)
-                gameObject.SetActive(false);
-        }
-        */
     }
 
     // Collisions are for asteroids and also bumping into your familiar and/or bees.
@@ -360,6 +325,8 @@ public class Gatherer : MonoBehaviour
         // Avoid collisions while dying?
         // if (isDying)
         //     return;
+
+        // --- Specific
 
         // - Player
         if (this is Player)
@@ -659,16 +626,27 @@ public class Gatherer : MonoBehaviour
     // Heal health!
     public void Heal(float healing, GameObject healer = null, bool shouldShow = true)
     {
+        // Create healing marker
+        if (healing > 0 && shouldShow && currentHealth < maxHealth)
+            HitMarker.CreateHealMarker(transform.position, healing);
+
+        // Stop dying
+        if (healing > 0 && isDying && shouldShow)
+            isDying = false;
+
+        // Reset health regen timer
+        if (healing > 0 && shouldShow)
+            healthRegenTimer = 0f;
+
         // Change health
         currentHealth += healing;
 
-        // Create healing marker
-        if (healing > 0 && shouldShow)
-            HitMarker.CreateHealMarker(transform.position, healing);
-
         // Check minimum health
-        if (currentHealth <= 0)
+        if (healing < 0 && currentHealth <= 0)
         {
+            // Enforce minimum
+            currentHealth = 0f;
+
             // Death camera shake
             if (this is Player || this is Familiar)
             {
@@ -676,7 +654,7 @@ public class Gatherer : MonoBehaviour
                 GM.I.ShakeCamera(shakeIntensity, 2f, this.transform.position);
             }
 
-            // TBD: Bees?
+            // Enter dying state
             Asteroid asteroid = healer.GetComponent<Asteroid>();
             EnterDyingState(asteroid);
         }

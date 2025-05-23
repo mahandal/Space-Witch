@@ -13476,7 +13476,7 @@ MonoBehaviour:
   gravityMinimum: 0.01
   stayCost: 50
   stayPower: 2
-  stayDelay: 1
+  stayDelay: 2
   destination: {x: 0, y: 0, z: 0}
   player: {fileID: 0}
   isStaying: 0
@@ -18908,10 +18908,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6b92b8513cf21c04eba227816eeb8494, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  mind: 13
-  body: 13
-  soul: 13
-  luck: 13
+  mind: 17
+  body: 17
+  soul: 18
+  luck: 0
   currentHealth: 100
   maxHealth: 100
   healthRegenDelay: 6
@@ -24329,10 +24329,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6b92b8513cf21c04eba227816eeb8494, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  mind: 13
-  body: 13
-  soul: 13
-  luck: 13
+  mind: 6
+  body: 30
+  soul: 6
+  luck: 10
   currentHealth: 100
   maxHealth: 100
   healthRegenDelay: 6
@@ -34663,8 +34663,8 @@ MonoBehaviour:
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4284141540
-  m_fontColor: {r: 0.8930817, g: 0.8126907, b: 0.35105404, a: 1}
+    rgba: 4283211192
+  m_fontColor: {r: 0.72327036, g: 0.61412656, b: 0.29795095, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
@@ -35477,10 +35477,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6b92b8513cf21c04eba227816eeb8494, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  mind: 13
+  mind: 1
   body: 13
-  soul: 13
-  luck: 13
+  soul: 19
+  luck: 19
   currentHealth: 100
   maxHealth: 100
   healthRegenDelay: 6
@@ -40295,10 +40295,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6b92b8513cf21c04eba227816eeb8494, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  mind: 13
-  body: 13
-  soul: 13
-  luck: 13
+  mind: 1
+  body: 1
+  soul: 1
+  luck: 49
   currentHealth: 100
   maxHealth: 100
   healthRegenDelay: 6
@@ -42418,10 +42418,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6b92b8513cf21c04eba227816eeb8494, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  mind: 13
-  body: 13
-  soul: 13
-  luck: 13
+  mind: 25
+  body: 7
+  soul: 20
+  luck: 0
   currentHealth: 100
   maxHealth: 100
   healthRegenDelay: 6
@@ -43344,8 +43344,8 @@ MonoBehaviour:
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 2852126719
-  m_fontColor: {r: 1, g: 1, b: 1, a: 0.6627451}
+    rgba: 4283211192
+  m_fontColor: {r: 0.72327036, g: 0.61412656, b: 0.29795095, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
@@ -61062,10 +61062,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6b92b8513cf21c04eba227816eeb8494, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  mind: 13
-  body: 13
-  soul: 13
-  luck: 13
+  mind: 15
+  body: 15
+  soul: 15
+  luck: 7
   currentHealth: 100
   maxHealth: 100
   healthRegenDelay: 6
@@ -63133,10 +63133,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6b92b8513cf21c04eba227816eeb8494, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  mind: 13
-  body: 13
-  soul: 13
-  luck: 13
+  mind: 50
+  body: 1
+  soul: 1
+  luck: 0
   currentHealth: 100
   maxHealth: 100
   healthRegenDelay: 6
@@ -70731,10 +70731,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6b92b8513cf21c04eba227816eeb8494, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  mind: 13
-  body: 13
-  soul: 13
-  luck: 13
+  mind: 25
+  body: 2
+  soul: 25
+  luck: 0
   currentHealth: 100
   maxHealth: 100
   healthRegenDelay: 6
@@ -70816,7 +70816,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   myName: Bianca
-  description: Bianca was cursed with immortality from dancing with the devil.
+  description: Bianca was cursed with immortality for dancing with the devil.
   specialImage: {fileID: 0}
   specialImageFileName: 
   sprite: {fileID: 0}
@@ -80145,10 +80145,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6b92b8513cf21c04eba227816eeb8494, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  mind: 13
-  body: 13
-  soul: 13
-  luck: 13
+  mind: 12
+  body: 12
+  soul: 14
+  luck: 14
   currentHealth: 100
   maxHealth: 100
   healthRegenDelay: 6
@@ -80915,10 +80915,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6b92b8513cf21c04eba227816eeb8494, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  mind: 13
-  body: 13
-  soul: 13
-  luck: 13
+  mind: 10
+  body: 5
+  soul: 16
+  luck: 21
   currentHealth: 100
   maxHealth: 100
   healthRegenDelay: 6
@@ -85916,10 +85916,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6b92b8513cf21c04eba227816eeb8494, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  mind: 13
-  body: 13
-  soul: 13
-  luck: 13
+  mind: 31
+  body: 7
+  soul: 7
+  luck: 7
   currentHealth: 100
   maxHealth: 100
   healthRegenDelay: 6

@@ -307,6 +307,10 @@ public class Player : Gatherer
 
     public void BasicMovement()
     {
+        // Ignore movement inputs while dying.
+        if (isDying)
+            return;
+
         // Spend mana while sprinting
         if (isSprinting)
         {
