@@ -78,6 +78,10 @@ public class GM : MonoBehaviour
     // The index of the deepest song unlocked so far.
     public int unlockedSongIndex = 0;
 
+    // - Time
+    public float timeElapsed = 0f;
+    public float totalTime = 0f;
+
 
     // States
 
@@ -256,6 +260,9 @@ public class GM : MonoBehaviour
         if (gameState < 1)
             return;
 
+        // - Time elapsed
+        timeElapsed += Time.deltaTime;
+
         // - Intensity
 
         // Decrement intensity timer
@@ -302,20 +309,29 @@ public class GM : MonoBehaviour
         // Next beat?
         if (beatTimer < 0)
         {
-            // Beepm
-            BeePM();
+            // Beat
+            Beat();
 
             // Reset
             beatTimer = 60f / bpm;
         }
     }
 
-    public void BeePM()
+    // New beat!
+    void Beat()
     {
-        // Pause beepm while leveling up
-        /* if (!universe.gameObject.activeSelf)
-            return; */
+        // BeePM!
+        BeePM();
 
+        // UI Beat
+        ui.Beat();
+
+        // Astarax
+        Astarax();
+    }
+
+    void BeePM()
+    {
         // Go through each bee
         foreach (Bee bee in bees)
         {
@@ -324,7 +340,13 @@ public class GM : MonoBehaviour
 
             bee.isBumpable = true;
         }
+    }
 
+    // Astarax the Asteroid Demon.
+    // Responsible for all the nefarious deeds done throughout the universe.
+    // Known by many names, including The Devil.
+    void Astarax()
+    {
         // wait for it to get intense
         if (intensity <= 0)
             return;
@@ -348,7 +370,7 @@ public class GM : MonoBehaviour
         ui.lossBackground.SetActive(false);
 
         // Collect nectar
-        CollectNectar();
+        //CollectNectar();
 
         // Award credits
         int score = CalculateScore();
@@ -362,21 +384,59 @@ public class GM : MonoBehaviour
         scoreboard.CheckForHighScore(score);
     }
 
-    public int CalculateScore()
+    // Calculate the player's live score each beat.
+    // (used by UI)
+    // V similar to the total score, but keeps some things secret.
+    public int CalculatePreScore()
     {
-        // Base score = total stars gathered
+        // Initialize score.
         float score = Gatherer.starsGathered;
 
-        // Count # of lost planets
+        // Count # of lost lives.
+        int lostLives = 9 - GM.I.player.livesRemaining;
+
+        // Divide score by # of lost lives.
+        if (lostLives > 0)
+            score = score / lostLives;
+
+        // Count # of lost planets.
         int lostPlanets = bees.Count - planets.Count;
 
-        // Divide score by # of lost planets
+        // Divide score by # of lost planets.
+        if (lostPlanets > 0)
+            score = score / lostPlanets;
+
+        // Gain bonus score per moon.
+        score *= 1f + (0.5f * Gatherer.moonsGathered);
+
+        return (int)score;
+    }
+
+    // Calculate the player's total score at the end of a run.
+    public int CalculateScore()
+    {
+        // Initialize score.
+        float score = Gatherer.starsGathered;
+
+        // Count # of lost lives.
+        int lostLives = 9 - GM.I.player.livesRemaining;
+
+        // Divide score by # of lost lives.
+        if (lostLives > 0)
+            score = score / lostLives;
+        else
+            score = score * 2f; // Double score for not losing any lives.
+
+        // Count # of lost planets.
+        int lostPlanets = bees.Count - planets.Count;
+
+        // Divide score by # of lost planets.
         if (lostPlanets > 0)
             score = score / lostPlanets;
         else
-            score = score * 2f; // Double score for no losses
+            score = score * 2f; // Double score for not losing any planets.
 
-        // Gain bonus score per moon
+        // Gain bonus score per moon.
         score *= 1f + (0.5f * Gatherer.moonsGathered);
 
         return (int)score;
@@ -400,7 +460,7 @@ public class GM : MonoBehaviour
         scoreboard.RankThirteen(score);
     }
 
-    public void GameOver()
+    void GameOver()
     {
         // Set gamestate
         gameState = 2;
@@ -416,22 +476,10 @@ public class GM : MonoBehaviour
 
         // Music
         dj.StopMusic();
+
+        // Collect nectar?
+        CollectNectar();
     }
-
-    // Go big!
-    /* public void GoBigPressed()
-    {
-        //SceneManager.LoadScene("Game");
-
-        // Les go!
-        BeginGame();
-    } */
-
-    // Or go home...
-    /* public void GoHomePressed()
-    {
-        SceneManager.LoadScene("Menu");
-    } */
 
     // Go to the main menu
     public void MainMenu()
@@ -469,8 +517,20 @@ public class GM : MonoBehaviour
         player.xp = 0f;
         player.level = 1;
 
+        // Give each planet some nectar
+        GiveEachPlanetNectar();
+
         // Turn time back on
         StartTime();
+    }
+
+    // Give each home planet some nectar.
+    public void GiveEachPlanetNectar(int amount = 1)
+    {
+        foreach (Planet planet in home.planets)
+        {
+            planet.nectar++;
+        }
     }
 
     // Sets us up for a run.
@@ -537,6 +597,7 @@ public class GM : MonoBehaviour
         dj.StartSong(Random.Range(0, 7));
         unlockedSongIndex = songIndex;
         gameTimer = songs[songIndex].duration;
+        totalTime = songs[songIndex].duration;
 
         // Hit marker
         HitMarker.CreateSongMarker(player.transform.position, songs[songIndex].myName + " (1/7)");

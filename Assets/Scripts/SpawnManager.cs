@@ -367,9 +367,10 @@ public class SpawnManager : MonoBehaviour
     {
         for (int i = 0; i < GM.I.bees.Count; i++)
         {
-            // Override the default state that was set in Start()
+            // Override the default state that was set in Start() so they start spinning!
+            GM.I.bees[i].currentHealth = 0f;
             GM.I.bees[i].isDying = true;
-            GM.I.bees[i].recoveryTimer = GM.I.bees[i].maxSpeed;
+            //GM.I.bees[i].recoveryTimer = GM.I.bees[i].maxSpeed;
             GM.I.bees[i].deathSpinSpeed = (i % 2 == 0) ? 720f : -720f;
             GM.I.bees[i].deathSpinSpeed *= GM.I.bees[i].acceleration;
         }

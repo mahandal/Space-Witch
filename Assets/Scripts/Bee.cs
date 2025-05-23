@@ -7,6 +7,7 @@ public class Bee : Gatherer
     public Planet goal;
     public Planet previousPlanet;
     //public float starTime = 1f;
+    private float sprintManaCost = 25f;
     public float pollinationRange = 1f;
 
     // How long since we've been bumped
@@ -25,6 +26,7 @@ public class Bee : Gatherer
     // States
     public bool isBumpable = true;
     public bool isPollinating = false;
+    public bool isSprinting = false;
 
     private string[] deathMessages = new string[] {
         "Bzz bzz!",
@@ -158,14 +160,17 @@ public class Bee : Gatherer
 
     void FixedUpdate()
     {
-        // Homeostasis
-        Homeostasis();
-
         // Timers
         Timers();
 
+        // Homeostasis
+        Homeostasis();
+
         if (isDying)
             return;
+
+        // Handle sprinting
+        HandleSprint();
 
         // Navigate
         Navigate();
@@ -321,18 +326,7 @@ public class Bee : Gatherer
         GM.I.spawnManager.SpawnStar(transform.position.x, transform.position.y, value);
     }
 
-    /* public void SpawnStars()
-    {
-        // Get number of stars to spawn
-        int numberToSpawn = (int)(rb2d.linearVelocity.magnitude + recoveryTimer);
-
-        // Multiply by bump timer
-        numberToSpawn *= (int)(timeSinceLastBump * bumpStarMultiplier);
-
-        // Spawn em!
-        GM.I.spawnManager.SpawnStars(transform.position, numberToSpawn);
-    } */
-
+    // Spawn stars around this bee when bumped.
     public void SpawnStars()
     {
         // Base amount
@@ -350,14 +344,14 @@ public class Bee : Gatherer
         float timeFactor = Mathf.Min(timeSinceLastBump, 10f) * 0.3f;
         
         // Recovery bonus
-        float recoveryBonus = isDying ? recoveryTimer * 1.5f : 0f;
+        // TBD: re-implement. could use health percent?
+        //float recoveryBonus = isDying ? recoveryTimer * 1.5f : 0f;
         
         // Calculate total with additive bonuses rather than multiplication
         int numberToSpawn = Mathf.RoundToInt(baseStars + 
                                             beeVelocityFactor + 
                                             bumperVelocityFactor + 
-                                            timeFactor + 
-                                            recoveryBonus);
+                                            timeFactor);
         
         // Spawn stars
         GM.I.spawnManager.SpawnStars(transform.position, numberToSpawn);
@@ -373,5 +367,31 @@ public class Bee : Gatherer
         if (playerDist < 1.5f) return GM.I.player;
         if (familiarDist < 1.5f) return GM.I.familiar;
         return null;
+    }
+
+    // Handle sprinting, mechanically and emotionally.
+    void HandleSprint()
+    {
+        // Start sprinting when at full mana
+        if (!isSprinting && currentMana >= maxMana)
+        {
+            isSprinting = true;
+            AddSpeedModifier("sprint", 2f);
+        }
+        
+        // Continue sprinting until out of mana
+        if (isSprinting)
+        {
+            float manaCost = sprintManaCost * Time.deltaTime;
+            if (currentMana < manaCost)
+            {
+                isSprinting = false;
+                RemoveSpeedModifier("sprint");
+            }
+            else
+            {
+                SpendMana(manaCost);
+            }
+        }
     }
 }

@@ -146,7 +146,10 @@ public class Planet : MonoBehaviour
         harvestTimer = 0f;
 
         // Visual feedback
-        HitMarker.CreateHitMarker(transform.position, "+" + credits + " credits");
+        if (credits == 1)
+            HitMarker.CreateHitMarker(transform.position, "+1 credit");
+        else
+            HitMarker.CreateHitMarker(transform.position, "+" + credits + " credits");
 
         // Save
         GM.I.SaveGame();

@@ -37,15 +37,16 @@ public class Gatherer : MonoBehaviour
 
     
     [Header("Death and Recovery")]
+    public bool diesPermanently = false;
     public bool isDying = false;
     public float deathSpinSpeed = 720f; // Degrees per second
 
     // How long it takes before the game ends after the player dies.
     // Weird name cause it was something else. Should prolly be refactored.
-    public float recoveryTime = 3f;
+    //public float recoveryTime = 3f;
 
     // How long this gatherer will need to recover.
-    public float recoveryTimer = 0f;
+    //public float recoveryTimer = 0f;
 
     [Header("Baby Time Effects")]
     public bool isInBabyTime = false;
@@ -136,7 +137,7 @@ public class Gatherer : MonoBehaviour
         currentMana = maxMana;
 
         // Exit dying state
-        recoveryTimer = 0f;
+        //recoveryTimer = 0f;
         isDying = false;
         rb2d.angularVelocity = 0f;
     }
@@ -148,7 +149,7 @@ public class Gatherer : MonoBehaviour
         if (isDying)
         {
             HandleDying();
-            return;
+            //return;
         }
 
         // Star time visual effect
@@ -222,7 +223,7 @@ public class Gatherer : MonoBehaviour
         isDying = true;
 
         // Set recovery time
-        recoveryTimer = recoveryTime;
+        //recoveryTimer = recoveryTime;
         //recoveryTimer = GM.I.intensity;
 
         // Calculate direction away from the asteroid
@@ -240,8 +241,20 @@ public class Gatherer : MonoBehaviour
         float force = killer.size * killer.previousFrameVelocity;
         rb2d.AddForce(knockbackDirection * force, ForceMode2D.Impulse);
 
-        // Last words
+        // - Witches
+        if (this is Player || this is Familiar)
+        {
+            // Lose a life, unless we're at home.
+            if (GM.I.nebula.myName != "Home")
+                GM.I.player.livesRemaining--;
+        }
+
+
+
+        // - Bees
         Bee bee = GetComponent<Bee>();
+
+        // Last words
         if (bee != null)
             bee.LastWords();
     }
@@ -250,7 +263,7 @@ public class Gatherer : MonoBehaviour
     private void HandleDying()
     {
         // Count down recovery timer
-        recoveryTimer -= Time.deltaTime;
+        //recoveryTimer -= Time.deltaTime;
 
         // Apply spin manually to ensure it keeps spinning
         transform.Rotate(0, 0, deathSpinSpeed * Time.deltaTime);
@@ -258,6 +271,33 @@ public class Gatherer : MonoBehaviour
         // Apply drag to slow down
         rb2d.linearVelocity *= 0.98f;
 
+        // Check if we've recovered
+        if (currentHealth >= maxHealth)
+        {
+            // Handle real death
+            if (diesPermanently)
+            {
+                Object.Destroy(gameObject);
+                return;
+            }
+
+            // Fully restore and exit dying state
+            FullRestore();
+
+            // Bee-specific recovery messages
+            Bee bee = GetComponent<Bee>();
+            if (bee != null)
+                bee.FirstWords();
+
+            // Check if it's the end.
+            if (this is Player || this is Familiar)
+            {
+                if (GM.I.player.livesRemaining <= 0)
+                    GM.I.Lose();
+            }
+        }
+
+/*
         Bee bee = GetComponent<Bee>();
         if (bee != null)
         {
@@ -284,18 +324,16 @@ public class Gatherer : MonoBehaviour
         // Check fail state
         else if (this is Player || this is Familiar)
         {
-            // Check if we've recovered
+            // Check if it's our time
             if (recoveryTimer <= 0)
             {
-                // Heal up
-                FullRestore();
+
+                // Recover if we have lives remaining, or lose if we don't.
+                if (GM.I.player.livesRemaining <= 0)
+                    GM.I.Lose(); // GG
+                else
+                    FullRestore(); // Heal up
             }
-            /* float timeDead = GM.I.intensity - recoveryTimer;
-            if (recoveryTimer <= 0 || timeDead > recoveryTime)
-            {
-                // GG?
-                GM.I.Lose();
-            } */
         }
         // Crows(?)
         else if (this is Crow)
@@ -313,11 +351,16 @@ public class Gatherer : MonoBehaviour
             if (recoveryTimer < 0)
                 gameObject.SetActive(false);
         }
+        */
     }
 
     // Collisions are for asteroids and also bumping into your familiar and/or bees.
     public void OnCollisionEnter2D(Collision2D col)
     {
+        // Avoid collisions while dying?
+        // if (isDying)
+        //     return;
+
         // - Player
         if (this is Player)
         {
@@ -364,7 +407,7 @@ public class Gatherer : MonoBehaviour
         // null check asteroid
         if (asteroid != null && !asteroid.exploding)
         {
-            // Check if we're a baby!
+            // Check if we're a baby (and not a star!)
             if (timeAlive < babyTime && timeAlive > starTime)
                 return;
             
@@ -461,8 +504,9 @@ public class Gatherer : MonoBehaviour
                 if (GM.I.unlockedSongIndex >= GM.I.songs.Count)
                     GM.I.unlockedSongIndex = 0;
                 
-                // Increase game timer
+                // Increase game timer & total time
                 GM.I.gameTimer += GM.I.songs[GM.I.unlockedSongIndex].duration;
+                GM.I.totalTime += GM.I.songs[GM.I.unlockedSongIndex].duration;
 
                 // Hit marker
                 HitMarker.CreateSongMarker(moon.transform.position, GM.I.songs[GM.I.unlockedSongIndex].myName + " (" + moonsGathered.ToString() + "/7)");
@@ -625,11 +669,11 @@ public class Gatherer : MonoBehaviour
         // Check minimum health
         if (currentHealth <= 0)
         {
-            // Death
+            // Death camera shake
             if (this is Player || this is Familiar)
             {
-                GM.I.ShakeCamera(0.5f, recoveryTime, this.transform.position);
-                //GM.I.Lose();
+                float shakeIntensity = 9.5f - GM.I.player.livesRemaining;
+                GM.I.ShakeCamera(shakeIntensity, 2f, this.transform.position);
             }
 
             // TBD: Bees?

@@ -7,16 +7,21 @@ public class UI : MonoBehaviour
 {
     [Header("Top")]
     public GameObject top;
+    public GameObject topGameParent;
     public TMP_Text xText;
     public TMP_Text yText;
-    public TMP_Text starCount;
+    //public TMP_Text starCount;
+    public TMP_Text score;
     public TMP_Text planetCount;
     public GameObject planetsParent;
+    public TMP_Text livesCount;
+    public GameObject livesParent;
     public TMP_Text credits;
     public GameObject creditsParent;
     public TMP_Text trainingCredits;
     public TMP_Text songTimer;
     public GameObject timerParent;
+    public Image progressBar;
 
 
     [Header("Middle")]
@@ -185,6 +190,7 @@ public class UI : MonoBehaviour
         // (mostly unnecessary, just makes building easier)
         meditationWheel.SetActive(false);
         CloseWheelOfTalents();
+        mySelf.SetActive(false);
     }
 
     void Start()
@@ -218,6 +224,9 @@ public class UI : MonoBehaviour
         // Star count
         //UpdateStarCount();
 
+        // Lives count
+        UpdateLivesCount();
+
         // Planet count
         UpdatePlanetCount();
 
@@ -243,6 +252,23 @@ public class UI : MonoBehaviour
         UpdateBlackHole();
     }
 
+    // Called once each beat.
+    // Used to update UI elements that stay on beat.
+    public void Beat()
+    {
+        UpdateProgressBar();
+        UpdateScore();
+    }
+
+    void UpdateProgressBar()
+    {
+        // Get percent
+        float progressPercent = GM.I.timeElapsed / GM.I.totalTime;
+
+        // Set fill
+        progressBar.fillAmount = 1 - progressPercent;
+    }
+
     void UpdateSongTimer()
     {
         int minutes = (int)GM.I.gameTimer / 60;
@@ -255,10 +281,22 @@ public class UI : MonoBehaviour
         songTimer.text = currentTimeString;
     }
 
-    void UpdateStarCount()
+    // void UpdateStarCount()
+    // {
+    //     // Set text
+    //     starCount.text = Gatherer.starsGathered.ToString("0");
+    // }
+
+    void UpdateScore()
+    {
+        score.text = GM.I.CalculatePreScore().ToString();
+    }
+
+    // TBD: Optimize
+    void UpdateLivesCount()
     {
         // Set text
-        starCount.text = Gatherer.starsGathered.ToString("0");
+        livesCount.text = GM.I.player.livesRemaining.ToString();
     }
 
     // TBD: Optimize
@@ -631,7 +669,7 @@ public class UI : MonoBehaviour
         //GM.I.universe.gameObject.SetActive(true);
 
         // Start the game if we just chose our first talent
-        if (GM.I.player.level == 1)
+        if (GM.I.player.level <= 1)
             GM.I.BeginRun();
 
         // Close level up screen
@@ -1159,27 +1197,45 @@ public class UI : MonoBehaviour
     // Set up our home UI
     public void GoHome()
     {
+        // Deactivate lives
+        //livesParent.SetActive(false);
+
         // Deactivate planets
-        planetsParent.SetActive(false);
+        //planetsParent.SetActive(false);
 
         // Deactivate timer
-        timerParent.SetActive(false);
+        //timerParent.SetActive(false);
+
+        // Deactivate progress bar
+        //progressBar.gameObject.SetActive(false);
+
+        // Deactivate top stuff
+        topGameParent.SetActive(false);
 
         // Activate credits
-        creditsParent.SetActive(true);
+        //creditsParent.SetActive(true);
     }
 
     // Set up our outside UI
     public void GoOut()
     {
+        // Activate lives
+        //livesParent.SetActive(true);
+
         // Activate planets
-        planetsParent.SetActive(true);
+        //planetsParent.SetActive(true);
 
         // Activate timer
-        timerParent.SetActive(true);
+        //timerParent.SetActive(true);
+
+        // Activate progress bar
+        //progressBar.gameObject.SetActive(true);
+
+        // Activate top stuff
+        topGameParent.SetActive(true);
 
         // Deactivate credits
-        creditsParent.SetActive(false);
+        //creditsParent.SetActive(false);
     }
 
     // Called when the little red x in the top right gets pressed, either while meditating or training.

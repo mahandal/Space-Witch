@@ -42,6 +42,7 @@ public class Player : Gatherer
     public Dictionary<string, float> spellCooldowns = new Dictionary<string, float>();
 
     [Header("States")]
+    public int livesRemaining = 9;
     public bool isShaking = false;
     public bool isCalm = true;
 
@@ -467,6 +468,10 @@ public class Player : Gatherer
     // Go!
     public void Go()
     {
+        // Check familiar is alive
+        if (familiar.isDying)
+            return;
+        
         // Mana Check
         if (familiar.currentMana < goManaCost * Time.deltaTime)
             return;
@@ -484,6 +489,10 @@ public class Player : Gatherer
     // Tell your familiar to stay still, enhancing the power of its Gravity.
     public void Stay()
     {
+        // Check familiar is alive
+        if (familiar.isDying)
+            return;
+
         // Check mana
         if (familiar.currentMana < familiar.stayCost * Time.deltaTime)
         {
@@ -518,6 +527,9 @@ public class Player : Gatherer
     {
         // Set bool
         familiar.isStaying = false;
+
+        // Stop rotation spin from staying
+        familiar.rb2d.angularVelocity = 0f;
 
         // Set destination
         familiar.destination = transform.position;
