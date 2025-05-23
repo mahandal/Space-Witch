@@ -24,6 +24,7 @@ public class Bee : Gatherer
     [Header("Machinery")]
     // States
     public bool isBumpable = true;
+    public bool isPollinating = false;
 
     private string[] deathMessages = new string[] {
         "Bzz bzz!",
@@ -193,26 +194,28 @@ public class Bee : Gatherer
         float distance = Vector3.Distance(transform.position, goal.transform.position);
 
         // Check if we're close enough to pollinate and move on
-        if (distance < pollinationRange)
+        if (distance < pollinationRange && !isPollinating)
         {
-            // Pollinate!
-            //goal.Pollinate();
+            // Start pollinating!
+            isPollinating = true;
 
             int pollenAmount = 1;
             if (previousPlanet != null)
             {
                 float planetDistance = Vector3.Distance(previousPlanet.transform.position, goal.transform.position);
+                Debug.Log("Planet distance: " + planetDistance + ". Time - " + Time.time);
                 // Scale pollen amount based on distance
                 pollenAmount = Mathf.Max(1, Mathf.FloorToInt(planetDistance / 5));
+                Debug.Log("Pollen gained: " + pollenAmount + ". Time - " + Time.time);
             }
 
             // Pollinate with calculated amount
             //goal.Pollinate(pollenAmount);
             Pollinate(goal, pollenAmount);
-            
+
             // Remember this planet
             previousPlanet = goal;
-            
+
             // Increment index
             goalIndex++;
 
@@ -222,6 +225,9 @@ public class Bee : Gatherer
 
             // Set that planet as our new goal
             goal = GM.I.planets[goalIndex];
+            
+            // Stop pollinating!
+            isPollinating = false;
         }
     }
 

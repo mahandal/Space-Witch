@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: 097242df98fa7a74d8b5ecc41b435299
+guid: c4d0fd3e6fe31b742a7ddafde8929725
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -1839377291145181718
-    second: Asteroid_0
+      213: -4159354363944019351
+    second: Planet - Pluto_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -100,13 +100,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: Asteroid_0
+      name: Planet - Pluto_0
       rect:
         serializedVersion: 2
-        x: 135
-        y: 159
-        width: 751
-        height: 751
+        x: 126
+        y: 136
+        width: 771
+        height: 769
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -115,8 +115,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: ae50f5169183976e0800000000000000
-      internalID: -1839377291145181718
+      spriteID: 96a55224e310746c0800000000000000
+      internalID: -4159354363944019351
       vertices: []
       indices: 
       edges: []

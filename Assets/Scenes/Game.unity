@@ -6121,7 +6121,7 @@ CircleCollider2D:
   m_CompositeOperation: 0
   m_CompositeOrder: 0
   m_Offset: {x: 0, y: 0}
-  m_Radius: 2.93
+  m_Radius: 3.65
 --- !u!212 &41954084
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -6166,7 +6166,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 13
-  m_Sprite: {fileID: -4055590878293644509, guid: 46f85ebef914f8f4da16945fae0ebfc5, type: 3}
+  m_Sprite: {fileID: -1839377291145181718, guid: 097242df98fa7a74d8b5ecc41b435299, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -8256,6 +8256,8 @@ MonoBehaviour:
   starTime: 1
   starTimer: 0
   nectar: 0
+  harvestTime: 1
+  harvestTimer: 0
   sun: {fileID: 67689602}
   orbitSpeed: 40
 --- !u!58 &99346147
@@ -8293,7 +8295,7 @@ CircleCollider2D:
   m_CompositeOperation: 0
   m_CompositeOrder: 0
   m_Offset: {x: 0, y: 0}
-  m_Radius: 7
+  m_Radius: 3.87
 --- !u!212 &99346148
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -8338,7 +8340,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 4
-  m_Sprite: {fileID: 4524577638686834310, guid: 51a7f1d6ec61d0c4fb3f7b2a48fe4591, type: 3}
+  m_Sprite: {fileID: 8426135891405659104, guid: 3b46666ddf419dd45ad3a7955f03ae73, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -11025,6 +11027,8 @@ MonoBehaviour:
   starTime: 1
   starTimer: 0
   nectar: 0
+  harvestTime: 1
+  harvestTimer: 0
   sun: {fileID: 0}
   orbitSpeed: 10
 --- !u!4 &185765117
@@ -11078,7 +11082,7 @@ CircleCollider2D:
   m_CompositeOperation: 0
   m_CompositeOrder: 0
   m_Offset: {x: 0, y: 0}
-  m_Radius: 7
+  m_Radius: 3.81
 --- !u!212 &185765119
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -11123,7 +11127,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 4
-  m_Sprite: {fileID: 8016960355062802271, guid: 90b42150485e67a4eba78aa6f8e69225, type: 3}
+  m_Sprite: {fileID: -8380064801531137111, guid: 63b9c04bea790ed4daf2453f9d25e528, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -11146,8 +11150,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: eb90ac3a355662548b4cf517c92734f8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  myName: Gas Planet
-  description: Dame mas gasolina.
+  myName: Planet - Mystery
+  description: This planet is veiled in a shroud of mystery. Best leave it bee.
   specialImage: {fileID: 0}
   specialImageFileName: 
   sprite: {fileID: 0}
@@ -13515,6 +13519,8 @@ MonoBehaviour:
   starTime: 1
   starTimer: 0
   nectar: 0
+  harvestTime: 1
+  harvestTimer: 0
   sun: {fileID: 0}
   orbitSpeed: 10
 --- !u!58 &278615015
@@ -13552,7 +13558,7 @@ CircleCollider2D:
   m_CompositeOperation: 0
   m_CompositeOrder: 0
   m_Offset: {x: 0, y: 0}
-  m_Radius: 7
+  m_Radius: 3.81
 --- !u!212 &278615016
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -13597,7 +13603,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 4
-  m_Sprite: {fileID: 8016960355062802271, guid: 90b42150485e67a4eba78aa6f8e69225, type: 3}
+  m_Sprite: {fileID: -8380064801531137111, guid: 63b9c04bea790ed4daf2453f9d25e528, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -13620,8 +13626,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: eb90ac3a355662548b4cf517c92734f8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  myName: Gas Planet
-  description: Dame mas gasolina.
+  myName: Planet - Mystery
+  description: This planet is veiled in a shroud of mystery. Best leave it bee.
   specialImage: {fileID: 0}
   specialImageFileName: 
   sprite: {fileID: 0}
@@ -16992,6 +16998,8 @@ MonoBehaviour:
   starTime: 1
   starTimer: 0
   nectar: 0
+  harvestTime: 1
+  harvestTimer: 0
   sun: {fileID: 67689602}
   orbitSpeed: 30
 --- !u!58 &414400097
@@ -17632,6 +17640,8 @@ MonoBehaviour:
   starTime: 1
   starTimer: 0
   nectar: 0
+  harvestTime: 1
+  harvestTimer: 0
   sun: {fileID: 67689602}
   orbitSpeed: 12
 --- !u!58 &433000077
@@ -19399,6 +19409,8 @@ MonoBehaviour:
   starTime: 1
   starTimer: 0
   nectar: 0
+  harvestTime: 1
+  harvestTimer: 0
   sun: {fileID: 0}
   orbitSpeed: 10
 --- !u!58 &485298635
@@ -19436,7 +19448,7 @@ CircleCollider2D:
   m_CompositeOperation: 0
   m_CompositeOrder: 0
   m_Offset: {x: 0, y: 0}
-  m_Radius: 7
+  m_Radius: 3.81
 --- !u!212 &485298636
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -19481,7 +19493,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 4
-  m_Sprite: {fileID: 8016960355062802271, guid: 90b42150485e67a4eba78aa6f8e69225, type: 3}
+  m_Sprite: {fileID: -8380064801531137111, guid: 63b9c04bea790ed4daf2453f9d25e528, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -19504,8 +19516,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: eb90ac3a355662548b4cf517c92734f8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  myName: Gas Planet
-  description: "Dame m\xE1s gasolina."
+  myName: Planet - Mystery
+  description: This planet is veiled in a shroud of mystery. Best leave it bee.
   specialImage: {fileID: 0}
   specialImageFileName: 
   sprite: {fileID: 0}
@@ -23144,6 +23156,8 @@ MonoBehaviour:
   starTime: 1
   starTimer: 0
   nectar: 0
+  harvestTime: 1
+  harvestTimer: 0
   sun: {fileID: 0}
   orbitSpeed: 10
 --- !u!58 &623625395
@@ -23181,7 +23195,7 @@ CircleCollider2D:
   m_CompositeOperation: 0
   m_CompositeOrder: 0
   m_Offset: {x: 0, y: 0}
-  m_Radius: 7
+  m_Radius: 3.81
 --- !u!212 &623625396
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -23226,7 +23240,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 4
-  m_Sprite: {fileID: 8016960355062802271, guid: 90b42150485e67a4eba78aa6f8e69225, type: 3}
+  m_Sprite: {fileID: -8380064801531137111, guid: 63b9c04bea790ed4daf2453f9d25e528, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -23249,8 +23263,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: eb90ac3a355662548b4cf517c92734f8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  myName: Gas Planet
-  description: Dame mas gasolina.
+  myName: Planet - Mystery
+  description: This planet is veiled in a shroud of mystery. Best leave it bee.
   specialImage: {fileID: 0}
   specialImageFileName: 
   sprite: {fileID: 0}
@@ -24401,6 +24415,8 @@ MonoBehaviour:
   starTime: 1
   starTimer: 0
   nectar: 0
+  harvestTime: 1
+  harvestTimer: 0
   sun: {fileID: 0}
   orbitSpeed: 10
 --- !u!58 &651135555
@@ -24438,7 +24454,7 @@ CircleCollider2D:
   m_CompositeOperation: 0
   m_CompositeOrder: 0
   m_Offset: {x: 0, y: 0}
-  m_Radius: 7
+  m_Radius: 3.81
 --- !u!212 &651135556
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -24483,7 +24499,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 4
-  m_Sprite: {fileID: 8016960355062802271, guid: 90b42150485e67a4eba78aa6f8e69225, type: 3}
+  m_Sprite: {fileID: -8380064801531137111, guid: 63b9c04bea790ed4daf2453f9d25e528, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -24506,8 +24522,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: eb90ac3a355662548b4cf517c92734f8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  myName: Gas Planet
-  description: Dame mas gasolina.
+  myName: Planet - Mystery
+  description: This planet is veiled in a shroud of mystery. Best leave it bee.
   specialImage: {fileID: 0}
   specialImageFileName: 
   sprite: {fileID: 0}
@@ -26096,6 +26112,8 @@ MonoBehaviour:
   starTime: 1
   starTimer: 0
   nectar: 0
+  harvestTime: 1
+  harvestTimer: 0
   sun: {fileID: 0}
   orbitSpeed: 10
 --- !u!58 &723874241
@@ -26133,7 +26151,7 @@ CircleCollider2D:
   m_CompositeOperation: 0
   m_CompositeOrder: 0
   m_Offset: {x: 0, y: 0}
-  m_Radius: 7
+  m_Radius: 3.81
 --- !u!212 &723874242
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -26178,7 +26196,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 4
-  m_Sprite: {fileID: 8016960355062802271, guid: 90b42150485e67a4eba78aa6f8e69225, type: 3}
+  m_Sprite: {fileID: -8380064801531137111, guid: 63b9c04bea790ed4daf2453f9d25e528, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -26201,8 +26219,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: eb90ac3a355662548b4cf517c92734f8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  myName: Gas Planet
-  description: Dame mas gasolina.
+  myName: Planet - Mystery
+  description: This planet is veiled in a shroud of mystery. Best leave it bee.
   specialImage: {fileID: 0}
   specialImageFileName: 
   sprite: {fileID: 0}
@@ -33435,6 +33453,8 @@ MonoBehaviour:
   starTime: 1
   starTimer: 0
   nectar: 0
+  harvestTime: 1
+  harvestTimer: 0
   sun: {fileID: 0}
   orbitSpeed: 10
 --- !u!58 &829564956
@@ -33472,7 +33492,7 @@ CircleCollider2D:
   m_CompositeOperation: 0
   m_CompositeOrder: 0
   m_Offset: {x: 0, y: 0}
-  m_Radius: 7
+  m_Radius: 3.81
 --- !u!212 &829564957
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -33517,7 +33537,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 4
-  m_Sprite: {fileID: 8016960355062802271, guid: 90b42150485e67a4eba78aa6f8e69225, type: 3}
+  m_Sprite: {fileID: -8380064801531137111, guid: 63b9c04bea790ed4daf2453f9d25e528, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -33540,8 +33560,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: eb90ac3a355662548b4cf517c92734f8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  myName: Gas Planet
-  description: Dame mas gasolina.
+  myName: Planet - Mystery
+  description: This planet is veiled in a shroud of mystery. Best leave it bee.
   specialImage: {fileID: 0}
   specialImageFileName: 
   sprite: {fileID: 0}
@@ -34045,6 +34065,8 @@ MonoBehaviour:
   starTime: 1
   starTimer: 0
   nectar: 0
+  harvestTime: 1
+  harvestTimer: 0
   sun: {fileID: 0}
   orbitSpeed: 10
 --- !u!58 &848629775
@@ -34082,7 +34104,7 @@ CircleCollider2D:
   m_CompositeOperation: 0
   m_CompositeOrder: 0
   m_Offset: {x: 0, y: 0}
-  m_Radius: 7
+  m_Radius: 3.81
 --- !u!212 &848629776
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -34127,7 +34149,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 4
-  m_Sprite: {fileID: 8016960355062802271, guid: 90b42150485e67a4eba78aa6f8e69225, type: 3}
+  m_Sprite: {fileID: -8380064801531137111, guid: 63b9c04bea790ed4daf2453f9d25e528, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -34150,8 +34172,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: eb90ac3a355662548b4cf517c92734f8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  myName: Gas Planet
-  description: Dame mas gasolina.
+  myName: Planet - Mystery
+  description: This planet is veiled in a shroud of mystery. Best leave it bee.
   specialImage: {fileID: 0}
   specialImageFileName: 
   sprite: {fileID: 0}
@@ -35762,6 +35784,8 @@ MonoBehaviour:
   starTime: 1
   starTimer: 0
   nectar: 0
+  harvestTime: 1
+  harvestTimer: 0
   sun: {fileID: 67689602}
   orbitSpeed: 10
 --- !u!58 &894465474
@@ -41783,6 +41807,8 @@ MonoBehaviour:
   starTime: 1
   starTimer: 0
   nectar: 0
+  harvestTime: 1
+  harvestTimer: 0
   sun: {fileID: 0}
   orbitSpeed: 10
 --- !u!58 &1195096092
@@ -41820,7 +41846,7 @@ CircleCollider2D:
   m_CompositeOperation: 0
   m_CompositeOrder: 0
   m_Offset: {x: 0, y: 0}
-  m_Radius: 7
+  m_Radius: 3.81
 --- !u!212 &1195096093
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -41865,7 +41891,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 4
-  m_Sprite: {fileID: 8016960355062802271, guid: 90b42150485e67a4eba78aa6f8e69225, type: 3}
+  m_Sprite: {fileID: -8380064801531137111, guid: 63b9c04bea790ed4daf2453f9d25e528, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -41888,8 +41914,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: eb90ac3a355662548b4cf517c92734f8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  myName: Gas Planet
-  description: Dame mas gasolina.
+  myName: Planet - Mystery
+  description: This planet is veiled in a shroud of mystery. Best leave it bee.
   specialImage: {fileID: 0}
   specialImageFileName: 
   sprite: {fileID: 0}
@@ -42281,6 +42307,8 @@ MonoBehaviour:
   starTime: 1
   starTimer: 0
   nectar: 0
+  harvestTime: 1
+  harvestTimer: 0
   sun: {fileID: 0}
   orbitSpeed: 10
 --- !u!58 &1203450718
@@ -42318,7 +42346,7 @@ CircleCollider2D:
   m_CompositeOperation: 0
   m_CompositeOrder: 0
   m_Offset: {x: 0, y: 0}
-  m_Radius: 7
+  m_Radius: 3.81
 --- !u!212 &1203450719
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -42363,7 +42391,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 4
-  m_Sprite: {fileID: 8016960355062802271, guid: 90b42150485e67a4eba78aa6f8e69225, type: 3}
+  m_Sprite: {fileID: -8380064801531137111, guid: 63b9c04bea790ed4daf2453f9d25e528, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -42386,8 +42414,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: eb90ac3a355662548b4cf517c92734f8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  myName: Gas Planet
-  description: Dame mas gasolina.
+  myName: Planet - Mystery
+  description: This planet is veiled in a shroud of mystery. Best leave it bee.
   specialImage: {fileID: 0}
   specialImageFileName: 
   sprite: {fileID: 0}
@@ -45945,6 +45973,8 @@ MonoBehaviour:
   starTime: 1
   starTimer: 0
   nectar: 0
+  harvestTime: 1
+  harvestTimer: 0
   sun: {fileID: 67689602}
   orbitSpeed: 3
 --- !u!58 &1333144371
@@ -46385,6 +46415,8 @@ MonoBehaviour:
   starTime: 1
   starTimer: 0
   nectar: 0
+  harvestTime: 1
+  harvestTimer: 0
   sun: {fileID: 67689602}
   orbitSpeed: 65
 --- !u!58 &1344408809
@@ -46422,7 +46454,7 @@ CircleCollider2D:
   m_CompositeOperation: 0
   m_CompositeOrder: 0
   m_Offset: {x: 0, y: 0}
-  m_Radius: 7
+  m_Radius: 3.74
 --- !u!212 &1344408810
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -46467,7 +46499,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 4
-  m_Sprite: {fileID: 4524577638686834310, guid: 51a7f1d6ec61d0c4fb3f7b2a48fe4591, type: 3}
+  m_Sprite: {fileID: -4159354363944019351, guid: c4d0fd3e6fe31b742a7ddafde8929725, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -46817,6 +46849,8 @@ MonoBehaviour:
   starTime: 1
   starTimer: 0
   nectar: 0
+  harvestTime: 1
+  harvestTimer: 0
   sun: {fileID: 0}
   orbitSpeed: 10
 --- !u!58 &1369285341
@@ -46854,7 +46888,7 @@ CircleCollider2D:
   m_CompositeOperation: 0
   m_CompositeOrder: 0
   m_Offset: {x: 0, y: 0}
-  m_Radius: 7
+  m_Radius: 3.81
 --- !u!212 &1369285342
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -46899,7 +46933,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 4
-  m_Sprite: {fileID: 8016960355062802271, guid: 90b42150485e67a4eba78aa6f8e69225, type: 3}
+  m_Sprite: {fileID: -8380064801531137111, guid: 63b9c04bea790ed4daf2453f9d25e528, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -46922,8 +46956,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: eb90ac3a355662548b4cf517c92734f8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  myName: Gas Planet
-  description: Dame mas gasolina.
+  myName: Planet - Mystery
+  description: This planet is veiled in a shroud of mystery. Best leave it bee.
   specialImage: {fileID: 0}
   specialImageFileName: 
   sprite: {fileID: 0}
@@ -61716,6 +61750,8 @@ MonoBehaviour:
   starTime: 1
   starTimer: 0
   nectar: 0
+  harvestTime: 1
+  harvestTimer: 0
   sun: {fileID: 67689602}
   orbitSpeed: 10
 --- !u!58 &1683302987
@@ -63804,6 +63840,8 @@ MonoBehaviour:
   starTime: 1
   starTimer: 0
   nectar: 0
+  harvestTime: 1
+  harvestTimer: 0
   sun: {fileID: 67689602}
   orbitSpeed: 50
 --- !u!58 &1751796561
@@ -63841,7 +63879,7 @@ CircleCollider2D:
   m_CompositeOperation: 0
   m_CompositeOrder: 0
   m_Offset: {x: 0, y: 0}
-  m_Radius: 7
+  m_Radius: 3.84
 --- !u!212 &1751796562
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -63886,7 +63924,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 4
-  m_Sprite: {fileID: 4524577638686834310, guid: 51a7f1d6ec61d0c4fb3f7b2a48fe4591, type: 3}
+  m_Sprite: {fileID: -8053238429288107099, guid: f154cdbf44e68cc468ad818fd1fa6a83, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -71250,6 +71288,8 @@ MonoBehaviour:
   starTime: 1
   starTimer: 0
   nectar: 0
+  harvestTime: 1
+  harvestTimer: 0
   sun: {fileID: 0}
   orbitSpeed: 10
 --- !u!58 &1842752918
@@ -71287,7 +71327,7 @@ CircleCollider2D:
   m_CompositeOperation: 0
   m_CompositeOrder: 0
   m_Offset: {x: 0, y: 0}
-  m_Radius: 7
+  m_Radius: 3.81
 --- !u!212 &1842752919
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -71332,7 +71372,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 4
-  m_Sprite: {fileID: 8016960355062802271, guid: 90b42150485e67a4eba78aa6f8e69225, type: 3}
+  m_Sprite: {fileID: -8380064801531137111, guid: 63b9c04bea790ed4daf2453f9d25e528, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -71355,8 +71395,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: eb90ac3a355662548b4cf517c92734f8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  myName: Gas Planet
-  description: Dame mas gasolina.
+  myName: Planet - Mystery
+  description: This planet is veiled in a shroud of mystery. Best leave it bee.
   specialImage: {fileID: 0}
   specialImageFileName: 
   sprite: {fileID: 0}
@@ -73354,7 +73394,7 @@ MonoBehaviour:
   mainCam: {fileID: 519420031}
   familiar: {fileID: 255450497}
   isShaking: 0
-  isCalm: 1
+  isCalm: 0
   isMovingUp: 0
   isMovingDown: 0
   isMovingLeft: 0
@@ -73362,6 +73402,7 @@ MonoBehaviour:
   isSprinting: 0
   cursorPosition: {x: 0, y: 0, z: 0}
   currentBlackHole: {fileID: 0}
+  currentPlanet: {fileID: 0}
 --- !u!114 &1906942311
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -79768,6 +79809,8 @@ MonoBehaviour:
   starTime: 1
   starTimer: 0
   nectar: 0
+  harvestTime: 1
+  harvestTimer: 0
   sun: {fileID: 67689602}
   orbitSpeed: 20
 --- !u!58 &1939275680
@@ -81623,6 +81666,8 @@ MonoBehaviour:
   starTime: 1
   starTimer: 0
   nectar: 0
+  harvestTime: 1
+  harvestTimer: 0
   sun: {fileID: 0}
   orbitSpeed: 10
 --- !u!58 &1986061136
@@ -81660,7 +81705,7 @@ CircleCollider2D:
   m_CompositeOperation: 0
   m_CompositeOrder: 0
   m_Offset: {x: 0, y: 0}
-  m_Radius: 7
+  m_Radius: 3.81
 --- !u!212 &1986061137
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -81705,7 +81750,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 4
-  m_Sprite: {fileID: 8016960355062802271, guid: 90b42150485e67a4eba78aa6f8e69225, type: 3}
+  m_Sprite: {fileID: -8380064801531137111, guid: 63b9c04bea790ed4daf2453f9d25e528, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -81728,9 +81773,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: eb90ac3a355662548b4cf517c92734f8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  myName: Gas Planet
-  description: Gas planets are full of valuable resources, which we can harvest in
-    the form of stars.
+  myName: Planet - Mystery
+  description: This planet is veiled in a shroud of mystery. Best leave it bee.
   specialImage: {fileID: 0}
   specialImageFileName: 
   sprite: {fileID: 0}
@@ -83066,6 +83110,8 @@ MonoBehaviour:
   starTime: 1
   starTimer: 0
   nectar: 0
+  harvestTime: 1
+  harvestTimer: 0
   sun: {fileID: 67689602}
   orbitSpeed: 10
 --- !u!58 &2006206351
@@ -83545,6 +83591,8 @@ MonoBehaviour:
   starTime: 1
   starTimer: 0
   nectar: 0
+  harvestTime: 1
+  harvestTimer: 0
   sun: {fileID: 67689602}
   orbitSpeed: 5
 --- !u!58 &2029705318
@@ -86110,6 +86158,8 @@ MonoBehaviour:
   starTime: 1
   starTimer: 0
   nectar: 0
+  harvestTime: 1
+  harvestTimer: 0
   sun: {fileID: 67689602}
   orbitSpeed: 8
 --- !u!58 &2098951359

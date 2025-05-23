@@ -372,9 +372,10 @@ public class Gatherer : MonoBehaviour
             
             // Set exploding
             asteroid.exploding = true;
-            
+
             // Calculate damage
-            float damage = asteroid.damage * asteroid.size * asteroid.previousFrameVelocity;
+            //float damage = asteroid.damage * asteroid.size * asteroid.previousFrameVelocity * asteroid.previousAngularVelocity;
+            float damage = asteroid.CalculateDamage();
 
             // Do damage, unless we're a star?!
             if (timeAlive > starTime)

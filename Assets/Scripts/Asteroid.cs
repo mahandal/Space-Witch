@@ -12,6 +12,7 @@ public class Asteroid : MonoBehaviour
     public Vector2 direction = Vector2.zero;
     //public float velocity = 0f;
     public float previousFrameVelocity = 0f;
+    public float previousAngularVelocity = 0f;
 
     [Header("Manual Machinery")]
     public Rigidbody2D rb2d;
@@ -31,6 +32,9 @@ public class Asteroid : MonoBehaviour
             // Force velocity directly and skip acceleration
             rb2d.linearVelocity = direction.normalized * maxSpeed;
             isFirstFrame = false;
+
+            // Start spinning
+            rb2d.angularVelocity = Random.Range(-180f, 180f);
 
             // Skip the rest of the method for this frame
             LateFixedUpdate();
@@ -69,6 +73,7 @@ public class Asteroid : MonoBehaviour
     {
         // Store previous frame velocity
         previousFrameVelocity = rb2d.linearVelocity.magnitude;
+        previousAngularVelocity = rb2d.angularVelocity;
     }
 
     public void Explode()
@@ -76,7 +81,7 @@ public class Asteroid : MonoBehaviour
         // - Spawn stars
 
         // Start with our size
-        float numStars = size * previousFrameVelocity + size + previousFrameVelocity;
+        float numStars = size * previousFrameVelocity + size * Mathf.Log(previousAngularVelocity);
 
         // Multiply based on luck?
         float ourLuck = (GM.I.player.luck + GM.I.familiar.luck) / 2;
@@ -111,15 +116,15 @@ public class Asteroid : MonoBehaviour
         }
     }
 
-    public void ReceiveDamage(float damage, GameObject attacker = null)
+    public void ReceiveDamage(float damageReceived, GameObject attacker = null)
     {
         // Spawn stars based on damage
-        int numberOfStars = (int)(damage / 20f);
-        float spreadRadius = Mathf.Log(damage + 1) * 0.1f;
+        int numberOfStars = (int)(damageReceived / 20f);
+        float spreadRadius = Mathf.Log(damageReceived + 1) * 0.1f;
         GM.I.spawnManager.SpawnStars(transform.position, numberOfStars, spreadRadius);
 
         // Reduce size based on damage
-        size -= damage / 100f;
+        size -= damageReceived / 100f;
 
         // If size is too small, destroy the asteroid
         if (size <= 0.2f)
@@ -147,7 +152,8 @@ public class Asteroid : MonoBehaviour
             exploding = true;
 
             // Calculate damage based on asteroid properties
-            float totalDamage = damage * size * previousFrameVelocity;
+            //float totalDamage = damage * size * previousFrameVelocity;
+            float totalDamage = CalculateDamage();
 
             // Apply damage to planet
             planet.ReceiveDamage(totalDamage);
@@ -157,6 +163,11 @@ public class Asteroid : MonoBehaviour
 
             return;
         }
+    }
+
+    public float CalculateDamage()
+    {
+        return damage * size * previousFrameVelocity * previousAngularVelocity;
     }
 
     void OnCollisionEnter2D(Collision2D collision)
@@ -198,6 +209,7 @@ public class Asteroid : MonoBehaviour
         maxSpeed += prey.maxSpeed * speedEfficiency;
         acceleration += prey.acceleration * speedEfficiency;
         rb2d.linearVelocity += prey.rb2d.linearVelocity.magnitude * rb2d.linearVelocity.normalized;
+        rb2d.angularVelocity += prey.rb2d.angularVelocity;
 
         // Explode
         prey.Explode();

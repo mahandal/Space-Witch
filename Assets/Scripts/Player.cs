@@ -501,7 +501,10 @@ public class Player : Gatherer
             // Set bool
             familiar.isStaying = true;
 
-            // Disable familiar movement
+            // Stop rotation
+            familiar.rb2d.angularVelocity = 0f;
+
+            // Disable linear movement
             familiar.AddAccelerationModifier("stay", 0f);
         }
     }

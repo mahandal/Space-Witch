@@ -31,7 +31,11 @@ public class Witch : Gatherer
 
     public void BeginTraining()
     {
+        // Avoid immediately training again.
         if (!canTrain) return;
+
+        // You learn best when you're relaxed.
+        if (!GM.I.player.isCalm) return;
         
         // SFX
         string soundFileName = "witch_" + Random.Range(1, 14);

@@ -211,7 +211,7 @@ public class WheelChoice : MonoBehaviour, IPointerEnterHandler, IPointerExitHand
         Utility.LoadImage(image, myName);
     }
     
-    // 
+    // Load the wheel of training!
     public static void LoadWheelOfTraining(Witch witch)
     {
         // First unhighlight and hide all

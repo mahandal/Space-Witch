@@ -79,12 +79,14 @@ public class Familiar : Gatherer
             // Increment timer
             stayTimer += Time.deltaTime;
 
-            // Check percentage
+            // Get percent
             float percent = stayTimer / stayDelay;
-            if (percent > 1f)
-                percent = 1f;
+
+            // Enforce minimum(?)
+            if (percent < 0.2f)
+                percent = 0.2f;
             
-            //
+            // Scale up stay power with charging percent
             AddStayPowerModifier("Charging", percent);
         } else {
             // Reset
@@ -139,23 +141,22 @@ public class Familiar : Gatherer
         // Rotate?
         if (isStaying)
         {
-            float stayTorque = (gravityStrength + gravityRange + gravityMinimum) * stayPower / 100f;
+            float stayTorque = (gravityStrength + gravityRange + gravityMinimum) * stayPower / 13f;
+            if (rb2d.angularVelocity < 1f)
+                stayTorque *= 13f;
             rb2d.AddTorque(stayTorque, ForceMode2D.Force);
         } else {
-            float moveTorque = (gravityStrength + gravityRange + gravityMinimum) / stayPower;
-            //rb2d.AddTorque(-moveTorque, ForceMode2D.Force);
-        }
-
-        if (rb2d.linearVelocity.magnitude > 0.1f && !isStaying)
-        {
+            // Face the direction we're moving.
             float angle = Mathf.Atan2(rb2d.linearVelocity.y, rb2d.linearVelocity.x) * Mathf.Rad2Deg;
             transform.rotation = Quaternion.Euler(0, 0, angle - 90);
         }
+
         
-        // Max speed
+        
+        // Enforce speed limit.
         if(rb2d.linearVelocity.magnitude > maxSpeed)
         {
-               rb2d.linearVelocity = rb2d.linearVelocity.normalized * maxSpeed;
+            rb2d.linearVelocity = rb2d.linearVelocity.normalized * maxSpeed;
         }
     }
 

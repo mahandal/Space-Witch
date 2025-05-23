@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: 097242df98fa7a74d8b5ecc41b435299
+guid: f154cdbf44e68cc468ad818fd1fa6a83
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -1839377291145181718
-    second: Asteroid_0
+      213: -8053238429288107099
+    second: Planet - Neptune_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -100,13 +100,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: Asteroid_0
+      name: Planet - Neptune_0
       rect:
         serializedVersion: 2
-        x: 135
-        y: 159
-        width: 751
-        height: 751
+        x: 125
+        y: 138
+        width: 774
+        height: 776
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -115,8 +115,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: ae50f5169183976e0800000000000000
-      internalID: -1839377291145181718
+      spriteID: 5a3f1c201562d3090800000000000000
+      internalID: -8053238429288107099
       vertices: []
       indices: 
       edges: []
