@@ -29,6 +29,7 @@ public class UI : MonoBehaviour
     public TMP_Text tooltipName;
     public TMP_Text tooltipDescription;
     public Image tooltipImage;
+    public Image harvestingCircle;
     public Image CD_Circle;
     public GameObject meditationWheel;
     public GameObject wheelOfTalents;

@@ -83,8 +83,8 @@ public class Familiar : Gatherer
             float percent = stayTimer / stayDelay;
 
             // Enforce minimum(?)
-            if (percent < 0.2f)
-                percent = 0.2f;
+            // if (percent < 0.2f)
+            //     percent = 0.2f;
             
             // Scale up stay power with charging percent
             AddStayPowerModifier("Charging", percent);
