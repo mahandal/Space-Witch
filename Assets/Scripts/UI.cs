@@ -29,7 +29,7 @@ public class UI : MonoBehaviour
     public TMP_Text tooltipName;
     public TMP_Text tooltipDescription;
     public Image tooltipImage;
-    public Image harvestingCircle;
+    public Image harvestCircle;
     public Image CD_Circle;
     public GameObject meditationWheel;
     public GameObject wheelOfTalents;
@@ -236,6 +236,9 @@ public class UI : MonoBehaviour
 
         // Song timer
         UpdateSongTimer();
+
+        // Harvesting circle
+        UpdateHarvestCircle();
 
         // Cooldown circle
         UpdateCDCircle();
@@ -521,6 +524,20 @@ public class UI : MonoBehaviour
     {
         flashManaBar = true;
         manaFlashTimer = 0f;
+    }
+
+    void UpdateHarvestCircle()
+    {
+        if (player.currentPlanet != null && player.currentPlanet.harvestTimer > 0)
+        {
+            float harvestPercent = player.currentPlanet.harvestTimer / player.currentPlanet.harvestTime;
+            harvestCircle.fillAmount = harvestPercent;
+            harvestCircle.gameObject.SetActive(true);
+        }
+        else
+        {
+            harvestCircle.gameObject.SetActive(false);
+        }
     }
 
     void UpdateCDCircle()
