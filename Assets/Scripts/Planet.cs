@@ -25,7 +25,6 @@ public class Planet : MonoBehaviour
     [Header("Nectar")]
     public int nectar = 0;
     public float harvestTime = 1f;
-    public float harvestTimer = 0f;
 
     [Header("Orbital Mechanics")]
     public Transform sun; // Reference to the sun
@@ -34,6 +33,9 @@ public class Planet : MonoBehaviour
 
     private float currentAngle = 0f;
     private Vector3 sunPosition;
+
+    [Header("Machinery")]
+    public float harvestTimer = 0f;
 
     void Awake()
     {
@@ -51,7 +53,8 @@ public class Planet : MonoBehaviour
             sunPosition = Vector3.zero; // Default to origin if no sun assigned
 
         // Set orbit radius
-        orbitRadius = transform.position.x;
+        // orbitRadius = transform.position.x;
+        orbitRadius = transform.position.y;
     }
 
     void FixedUpdate()
@@ -67,9 +70,18 @@ public class Planet : MonoBehaviour
 
     void UpdateOrbit()
     {
-        // Update orbital angle (scaled arbitrarily)
+        // Update orbital angle (scaled so orbit speeds use whole numbers)
         currentAngle += orbitSpeed / 10f * Time.deltaTime;
-        if (currentAngle >= 360f) currentAngle -= 360f;
+
+        // Check if we've completed a loop
+        if (currentAngle >= 360f) 
+        {
+            // Reset angle
+            currentAngle -= 360f;
+
+            // Collect 200$ for passing Go!
+            nectar++;
+        }
 
         // Calculate new position around sun
         float x = sunPosition.x + Mathf.Cos(currentAngle * Mathf.Deg2Rad) * orbitRadius;

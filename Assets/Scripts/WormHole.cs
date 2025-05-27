@@ -19,34 +19,11 @@ public class WormHole : MonoBehaviour
 
     void FixedUpdate()
     {
-        // Only spawn when game is active
-        /* if (GM.I.gameState != 1)
-            return; */
-
-        // Timers
-        Timers();
-
         // Anti-gravity
         AntiGravity();
 
         // Rotate
-        transform.Rotate(0, 0, spawnRate * (1 + GM.I.intensity));
-    }
-
-    public void Timers()
-    {
-        // Count down timer
-        spawnTimer -= Time.deltaTime;
-
-        // Spawn asteroid when timer expires
-        if (spawnTimer <= 0 && GM.I.intensity > 0)
-        {
-            // Spawn asteroid
-            //SpawnAsteroid();
-
-            // Reset timer
-            spawnTimer = 1f / (spawnRate * GM.I.intensity);
-        }
+        transform.Rotate(0, 0, spawnRate * (1 + GM.I.hype));
     }
 
     public void SpawnAsteroid()

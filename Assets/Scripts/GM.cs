@@ -85,8 +85,9 @@ public class GM : MonoBehaviour
 
     // States
 
-    // Intensity
-    public int intensity = 0;
+    // Hype
+    public int hype = 0;
+    public int passiveHype = 0;
 
     // Polarity
     public int polarity = 1;
@@ -101,8 +102,8 @@ public class GM : MonoBehaviour
     public float gameTimer = 180f;
     public float songTimer = 180f;
     public float beatTimer = 0.5f;
-    public float intensityTime = 30f;
-    public float intensityTimer = 0f;
+    public float hypeTime = 60f;
+    public float hypeTimer = 60f;
 
     // --- Settings
 
@@ -263,19 +264,19 @@ public class GM : MonoBehaviour
         // - Time elapsed
         timeElapsed += Time.deltaTime;
 
-        // - Intensity
+        // - Hype
 
-        // Decrement intensity timer
-        intensityTimer -= Time.deltaTime;
+        // Decrement hype timer
+        hypeTimer -= Time.deltaTime;
 
-        // Intensity grows...
-        if (intensityTimer < 0f)
+        // Hype grows...
+        if (hypeTimer < 0f)
         {
-            // Increment intensity
-            intensity++;
+            // Increment hype
+            passiveHype++;
 
             // Reset
-            intensityTimer = intensityTime;
+            hypeTimer = hypeTime;
         }
 
         // - Game timer
@@ -323,6 +324,9 @@ public class GM : MonoBehaviour
         // BeePM!
         BeePM();
 
+        // DJ beat
+        dj.Beat();
+
         // UI Beat
         ui.Beat();
 
@@ -348,7 +352,7 @@ public class GM : MonoBehaviour
     void Astarax()
     {
         // wait for it to get intense
-        if (intensity <= 0)
+        if (dj.songHype <= 0)
             return;
 
         // Go through each worm hole
@@ -491,7 +495,7 @@ public class GM : MonoBehaviour
     public void GoHomePressed()
     {
         SceneManager.LoadScene("Game");
-        GoHome();
+        //GoHome();
     }
 
     // Go home.
@@ -504,8 +508,11 @@ public class GM : MonoBehaviour
         nebula = home;
         gameState = -1;
 
-        // Load home UI
+        // UI go home
         ui.GoHome();
+
+        // DJ go home
+        dj.GoHome();
 
         // Deactivate all bees
         foreach (Bee bee in bees)
@@ -544,6 +551,9 @@ public class GM : MonoBehaviour
 
         // Set up outside UI
         ui.GoOut();
+
+        // Set up outside audio
+        dj.GoOut();
 
         // Activate all bees
         foreach (Bee bee in bees)
@@ -595,6 +605,7 @@ public class GM : MonoBehaviour
 
         // Start playing first song!
         dj.StartSong(Random.Range(0, 7));
+        //dj.StartSong(0);
         unlockedSongIndex = songIndex;
         gameTimer = songs[songIndex].duration;
         totalTime = songs[songIndex].duration;
@@ -678,14 +689,14 @@ public class GM : MonoBehaviour
         if (!screenShakeEnabled)
             return;
 
-        // Apply a maximum cap to the intensity
-        float cappedIntensity = Mathf.Min(strength, 0.5f);
+        // Apply a maximum cap to the strength
+        float cappedStrength = Mathf.Min(strength, 0.5f);
 
         // Optional: Apply a curve to make scaling more pleasing
         // This will make smaller damage feel responsive while keeping larger damage manageable
-        float scaledIntensity = 0.1f + (0.4f * (1 - Mathf.Exp(-cappedIntensity * 3f)));
+        float scaledStrength = 0.1f + (0.4f * (1 - Mathf.Exp(-cappedStrength * 3f)));
 
-        StartCoroutine(ShakeCameraCoroutine(scaledIntensity, duration, position));
+        StartCoroutine(ShakeCameraCoroutine(scaledStrength, duration, position));
     }
 
     private System.Collections.IEnumerator ShakeCameraCoroutine(float strength, float duration, Vector3 position)

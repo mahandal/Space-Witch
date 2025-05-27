@@ -242,7 +242,6 @@ public class Gatherer : MonoBehaviour
 
         // Set recovery time
         //recoveryTimer = recoveryTime;
-        //recoveryTimer = GM.I.intensity;
 
         // Calculate direction away from the asteroid
         Vector2 knockbackDirection = (transform.position - killer.transform.position).normalized;
@@ -650,8 +649,8 @@ public class Gatherer : MonoBehaviour
             // Death camera shake
             if (this is Player || this is Familiar)
             {
-                float shakeIntensity = 9.5f - GM.I.player.livesRemaining;
-                GM.I.ShakeCamera(shakeIntensity, 2f, this.transform.position);
+                float shakeStrength = 9.5f - GM.I.player.livesRemaining;
+                GM.I.ShakeCamera(shakeStrength, 2f, this.transform.position);
             }
 
             // Enter dying state

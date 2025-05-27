@@ -112,6 +112,7 @@ public class UI : MonoBehaviour
     public Slider musicVolume;
     public Slider sfxVolume;
     public Slider gatherVolume;
+    public Slider ambienceVolume;
 
     [Header("Growth")]
     public GameObject levelUpScreen;
@@ -532,6 +533,8 @@ public class UI : MonoBehaviour
         {
             float harvestPercent = player.currentPlanet.harvestTimer / player.currentPlanet.harvestTime;
             harvestCircle.fillAmount = harvestPercent;
+            // TBD: Optimize
+            harvestCircle.sprite = player.currentPlanet.GetComponent<SpriteRenderer>().sprite;
             harvestCircle.gameObject.SetActive(true);
         }
         else

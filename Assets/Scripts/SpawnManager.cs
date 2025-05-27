@@ -67,29 +67,8 @@ public class SpawnManager : MonoBehaviour
         // Pause spawning while leveling up
         if (!GM.I.universe.gameObject.activeSelf)
             return;
-        
-        // - Spawn
-        /* spawnTimer -= Time.deltaTime;
-        if (spawnTimer < 0)
-        {
-            // Spawn new set of asteroids;
-            SpawnAsteroids(GM.I.intensity);
-
-            // Reset spawnTimer
-            spawnTimer = 1f;
-        } */
     }
 
-/*
-    // Spawn stars around the given coordinates
-    public void SpawnStars(Vector3 coordinates, int numberToSpawn, float offsetLimit = 1f)
-    {
-        for (int i = 0; i < numberToSpawn; i++)
-        {
-            SpawnStar(coordinates.x, coordinates.y, offsetLimit, 1);
-        }
-    }
-*/
 
     public void SpawnStars(Vector3 coordinates, int numberToSpawn, float offsetLimit = 1f)
     {
@@ -447,13 +426,6 @@ public class SpawnManager : MonoBehaviour
     {
         // Set GM's list of worm holes
         GM.I.wormHoles = wormHoles;
-        
-        // Set up each worm hole
-        for (int i = 0; i < wormHoles.Count; i++)
-        {
-            // Set customized properties here if needed
-            //wormHoles[i].spawnRate = 0.2f + (GM.I.intensity * 0.1f);
-        }
     }
 
     // Initialize a list of planets for this game.
@@ -507,11 +479,6 @@ public class SpawnManager : MonoBehaviour
         // Set new worm hole's position
         newWormHole.transform.position = desiredPosition;
         
-        // Set properties (can be randomized)
-        //newWormHole.spawnRate = Random.Range(0.2f, 0.5f) * GM.I.intensity;
-        //newWormHole.asteroidSizeMultiplier = Random.Range(0.8f, 1.2f);
-        //newWormHole.asteroidSpeedMultiplier = Random.Range(0.8f, 1.2f);
-        
         // Add to GM's list
         GM.I.wormHoles.Add(newWormHole);
         
@@ -532,9 +499,10 @@ public class SpawnManager : MonoBehaviour
         newAsteroid.transform.position = position;
 
         // Choose a random planet as target
-        int randomIndex = Random.Range(0, GM.I.planets.Count + 1);
+        // int randomIndex = Random.Range(0, GM.I.planets.Count + 1);
+        int randomIndex = Random.Range(0, GM.I.planets.Count);
 
-        // Target player
+        // Target player?
         if (randomIndex == GM.I.planets.Count)
         {
             newAsteroid.direction = (GM.I.player.transform.position - position).normalized;
@@ -546,12 +514,15 @@ public class SpawnManager : MonoBehaviour
             newAsteroid.direction = (targetPlanet.transform.position - position).normalized;
         }
 
+        // Get hype
+        //float hype = GM.I.passiveHype + GM.I.dj.songHype;
+
         // Set speed & size
 
-        // Base values that scale directly with intensity
-        float baseAcceleration = 0.5f + (0.05f * GM.I.intensity);
-        float baseSpeed = 0.5f + (0.05f * GM.I.intensity);
-        float baseSize = 0.1f + (0.1f * GM.I.intensity);
+        // Base values that scale directly with hype
+        float baseAcceleration = 0.05f + (0.005f * GM.I.hype);
+        float baseSpeed = 0.05f + (0.005f * GM.I.hype);
+        float baseSize = 0.1f + (0.01f * GM.I.hype);
 
         // Add some random variation
         float randomVariation = Random.Range(0.1f, 2.9f);

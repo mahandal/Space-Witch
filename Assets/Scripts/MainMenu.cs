@@ -13,6 +13,7 @@ public class MainMenu : MonoBehaviour
     public Slider musicVolume;
     public Slider sfxVolume;
     public Slider gatherVolume;
+    public Slider ambienceVolume;
 
     [Header("Automated Machinery")]
     // Singleton

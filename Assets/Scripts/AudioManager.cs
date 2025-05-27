@@ -3,33 +3,52 @@ using System.Collections.Generic;
 
 public class AudioManager : MonoBehaviour
 {
+    [Header("Hype")]
+    // How hype is the song currently?
+    public float songHype = 0;
+
     [Header("Volume")]
     public float masterVolume;
     public float musicVolume;
     public float sfxVolume;
     public float gatherVolume;
+    public float ambienceVolume;
 
     [Header("Audio Manager nonsemse")]
-    // Audio sources for playing music
+    // Audio sources for playing music.
     public AudioSource musicSource;
     private Dictionary<string, AudioSource> musicSources = new Dictionary<string, AudioSource>();
+
+    // Audio source for playing ambience
+    public AudioSource ambienceSource;
     
-    // Dictionary to store audio clips by name
+    // Dictionary to store audio clips by name.
     private Dictionary<string, AudioClip> musicClips = new Dictionary<string, AudioClip>();
     private Dictionary<string, AudioClip> effectClips = new Dictionary<string, AudioClip>(); 
 
+    // Track pre-loading songs.
     public bool nextSongPreloaded = false;
+
+    // Track current song part.
+    public int currentPartIndex = 0;
+    public float currentPartTimer = 0f;
     
     void Awake()
     {
         // Load saved volume settings (or use defaults if none exist)
-        masterVolume = PlayerPrefs.GetFloat("MasterVolume", 1.0f);
-        musicVolume = PlayerPrefs.GetFloat("MusicVolume", 1.0f);
-        sfxVolume = PlayerPrefs.GetFloat("EffectVolume", 1.0f);
-        gatherVolume = PlayerPrefs.GetFloat("GatherVolume", 1.0f);
+        masterVolume = PlayerPrefs.GetFloat("MasterVolume", 0.78f);
+        musicVolume = PlayerPrefs.GetFloat("MusicVolume", 0.69f);
+        sfxVolume = PlayerPrefs.GetFloat("EffectVolume", 0.92f);
+        gatherVolume = PlayerPrefs.GetFloat("GatherVolume", 0.13f);
+        ambienceVolume = PlayerPrefs.GetFloat("AmbienceVolume", 1.0f);
 
-        // Add music AudioSource
+        // Set up music source
         musicSource = gameObject.AddComponent<AudioSource>();
+
+        // Set up ambience source
+        ambienceSource = gameObject.AddComponent<AudioSource>();
+        ambienceSource.loop = true;
+        ambienceSource.playOnAwake = false;
         
         // Load clips
         LoadMusicClips();
@@ -48,6 +67,7 @@ public class AudioManager : MonoBehaviour
             MainMenu.I.musicVolume.value = musicVolume;
             MainMenu.I.sfxVolume.value = sfxVolume;
             MainMenu.I.gatherVolume.value = gatherVolume;
+            MainMenu.I.ambienceVolume.value = ambienceVolume;
         } 
         else 
         {
@@ -56,7 +76,33 @@ public class AudioManager : MonoBehaviour
             GM.I.ui.musicVolume.value = musicVolume;
             GM.I.ui.sfxVolume.value = sfxVolume;
             GM.I.ui.gatherVolume.value = gatherVolume;
+            GM.I.ui.ambienceVolume.value = ambienceVolume;
         }
+    }
+
+    // Called once per beat, by GM.
+    public void Beat()
+    {
+        // Get current song
+        Song currentSong = GM.I.songs[GM.I.songIndex];
+
+        // Increment song hype
+        songHype += currentSong.parts[currentPartIndex].growingHype;
+        GM.I.hype = (int)(GM.I.passiveHype * songHype);
+    }
+
+    // What does the DJ do when we go home?
+    public void GoHome()
+    {
+        // Play some ambience!
+        PlayAmbience("ambience_home");
+    }
+
+    // What does the DJ do when we go outside?
+    public void GoOut()
+    {
+        // Stop ambience for now?
+        StopAmbience();
     }
 
     void Update()
@@ -77,6 +123,42 @@ public class AudioManager : MonoBehaviour
         // Reset nextSongPreloaded
         if (GM.I.songTimer > 69 && nextSongPreloaded)
             nextSongPreloaded = false;
+
+        // Handle song parts
+        HandleSongParts();
+    }
+
+    void HandleSongParts()
+    {
+        // - Song parts
+        if (GM.I.songIndex < GM.I.songs.Count)
+        {
+            Song currentSong = GM.I.songs[GM.I.songIndex];
+
+            currentPartTimer += Time.deltaTime;
+            
+            // Check if current part is finished
+            if (currentPartTimer >= currentSong.parts[currentPartIndex].duration)
+            {
+                // Reset part tracking
+                currentPartIndex++;
+                currentPartTimer = 0f;
+
+                // Get new song part
+                SongPart part = currentSong.parts[currentPartIndex];
+
+                // Reset to new base hype
+                songHype = part.baseHype;
+
+                // Set bpm?
+                if (part.bpm > 0)
+                    GM.I.bpm = part.bpm;
+                
+                // If we've gone through all parts...
+                // if (currentPartIndex >= currentSong.parts.Count)
+                //     currentPartIndex = 0;
+            }
+        }
     }
 
     private void LoadMusicClips()
@@ -270,6 +352,10 @@ public class AudioManager : MonoBehaviour
         // Set songTimer
         GM.I.songTimer = GM.I.songs[index].duration;
 
+        // Set song part
+        currentPartIndex = 0;
+        currentPartTimer = 0f;
+
         // Set bpm
         GM.I.bpm = GM.I.songs[index].bpm;
 
@@ -299,5 +385,33 @@ public class AudioManager : MonoBehaviour
         // Loop to 0 if it overflows
         if (GM.I.songIndex >= GM.I.songs.Count)
             GM.I.songIndex = 0;
+    }
+
+
+    // - Ambience
+
+    // Play ambience
+    public void PlayAmbience(string clipName)
+    {
+        if (!effectClips.ContainsKey(clipName)) return;
+        
+        ambienceSource.clip = effectClips[clipName];
+        ambienceSource.volume = ambienceVolume * masterVolume;
+        ambienceSource.Play();
+    }
+
+    // Stop current ambience
+    public void StopAmbience()
+    {
+        ambienceSource.Stop();
+    }
+
+    // Set ambience volume
+    public void SetAmbienceVolume(float volume)
+    {
+        ambienceVolume = volume;
+        ambienceSource.volume = ambienceVolume * masterVolume;
+        PlayerPrefs.SetFloat("AmbienceVolume", volume);
+        PlayerPrefs.Save();
     }
 }
