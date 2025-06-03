@@ -63,6 +63,9 @@ public class GM : MonoBehaviour
     // Bees
     public List<Bee> bees;
 
+    // Beacons
+    public List<Beacon> beacons = new List<Beacon>();
+
 
     // - Songs
 

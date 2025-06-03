@@ -18,6 +18,7 @@ public class SpawnManager : MonoBehaviour
     // --- Progenitors
 
     // - Misc
+    public Beacon progenitor_Beacon;
     public HitMarker progenitor_HitMarker;
 
     // - Universe
@@ -419,6 +420,31 @@ public class SpawnManager : MonoBehaviour
         // Spawn Moon
         Gatherer.moonsGathered = 1;
         SpawnMoon();
+
+        // Spawn beacons
+        SpawnBeacons(2);
+    }
+
+    public void SpawnBeacons(int count)
+    {
+        GM.I.beacons.Clear();
+        
+        for (int i = 0; i < count; i++)
+        {
+            // Spawn between planets and origin
+            float distance = planetMinDistance * 0.7f;
+            float angle = (360f / count) * i; // Spread them evenly
+            
+            float x = Mathf.Cos(angle * Mathf.Deg2Rad) * distance;
+            float y = Mathf.Sin(angle * Mathf.Deg2Rad) * distance;
+            
+            Beacon newBeacon = Object.Instantiate(progenitor_Beacon, GM.I.universe);
+            newBeacon.transform.position = new Vector3(x, y, 0);
+            newBeacon.index = i;
+            
+            GM.I.beacons.Add(newBeacon);
+            newBeacon.gameObject.SetActive(true);
+        }
     }
 
     // Set up worm holes from a nebula
@@ -500,16 +526,31 @@ public class SpawnManager : MonoBehaviour
 
         // Choose a random planet as target
         // int randomIndex = Random.Range(0, GM.I.planets.Count + 1);
-        int randomIndex = Random.Range(0, GM.I.planets.Count);
+        // int randomIndex = Random.Range(0, GM.I.planets.Count);
 
-        // Target player?
-        if (randomIndex == GM.I.planets.Count)
+        // // Target player?
+        // if (randomIndex == GM.I.planets.Count)
+        // {
+        //     newAsteroid.direction = (GM.I.player.transform.position - position).normalized;
+        // }
+        // else
+        // {
+        //     // Target planet
+        //     Planet targetPlanet = GM.I.planets[randomIndex];
+        //     newAsteroid.direction = (targetPlanet.transform.position - position).normalized;
+        // }
+
+        // Set initial target to first beacon
+        if (GM.I.beacons.Count > 0)
         {
-            newAsteroid.direction = (GM.I.player.transform.position - position).normalized;
+            Beacon firstBeacon = GM.I.beacons[0];
+            newAsteroid.direction = (firstBeacon.transform.position - position).normalized;
+            newAsteroid.currentBeaconIndex = 0;
         }
         else
         {
-            // Target planet
+            // No beacons, target planets directly
+            int randomIndex = Random.Range(0, GM.I.planets.Count);
             Planet targetPlanet = GM.I.planets[randomIndex];
             newAsteroid.direction = (targetPlanet.transform.position - position).normalized;
         }

@@ -108,7 +108,7 @@ public class AudioManager : MonoBehaviour
     void Update()
     {
         // wait for game
-        if (GM.I == null)
+        if (GM.I == null || GM.I.gameState != 1)
             return;
         
         // Check if current song is almost over

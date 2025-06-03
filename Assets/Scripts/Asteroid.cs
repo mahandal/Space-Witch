@@ -20,6 +20,8 @@ public class Asteroid : MonoBehaviour
     [Header("Automated Machinery")]
     public bool exploding = false;
     public bool isFirstFrame = true;
+    public int currentBeaconIndex = 0;
+    public Planet targetPlanet;
 
 
     // Fixed update is for physiques & stuff.
@@ -40,6 +42,8 @@ public class Asteroid : MonoBehaviour
             LateFixedUpdate();
             return;
         }
+
+        Navigate();
 
         // Accelerate
         rb2d.AddForce(direction.normalized * acceleration);
@@ -74,6 +78,29 @@ public class Asteroid : MonoBehaviour
         // Store previous frame velocity
         previousFrameVelocity = rb2d.linearVelocity.magnitude;
         previousAngularVelocity = rb2d.angularVelocity;
+    }
+
+    public void Navigate()
+    {
+        // Check if we're still chasing beacons.
+        bool hasCompletedBeacons = currentBeaconIndex >= GM.I.beacons.Count;
+
+        // Beacon
+        if (!hasCompletedBeacons && GM.I.beacons.Count > 0)
+        {
+            // Target current beacon
+            if (currentBeaconIndex < GM.I.beacons.Count)
+            {
+                Beacon targetBeacon = GM.I.beacons[currentBeaconIndex];
+                direction = (targetBeacon.transform.position - transform.position).normalized;
+            }
+        }
+        // Planet
+        else if (hasCompletedBeacons)
+        {
+            // Go toward our target planet
+            direction = (targetPlanet.transform.position - transform.position).normalized;
+        }
     }
 
     public void Explode()
@@ -172,6 +199,8 @@ public class Asteroid : MonoBehaviour
 
     void OnCollisionEnter2D(Collision2D collision)
     {
+        // - Asteroids
+
         // Get the other asteroid
         Asteroid otherAsteroid = collision.gameObject.GetComponent<Asteroid>();
 
@@ -182,6 +211,30 @@ public class Asteroid : MonoBehaviour
             if (size > otherAsteroid.size)
             {
                 ConsumeAsteroid(otherAsteroid);
+            }
+        }
+
+        // - Beacons
+
+        // Get beacon
+        Beacon beacon = collision.gameObject.GetComponent<Beacon>();
+        if (beacon != null && beacon.index == currentBeaconIndex)
+        {
+            // Move to next beacon
+            currentBeaconIndex++;
+            
+            if (currentBeaconIndex >= GM.I.beacons.Count)
+            {
+                // Completed all beacons, now target planets
+                int randomIndex = Random.Range(0, GM.I.planets.Count);
+                targetPlanet = GM.I.planets[randomIndex];
+                direction = (targetPlanet.transform.position - transform.position).normalized;
+            }
+            else
+            {
+                // Target next beacon
+                Beacon nextBeacon = GM.I.beacons[currentBeaconIndex];
+                direction = (nextBeacon.transform.position - transform.position).normalized;
             }
         }
     }
