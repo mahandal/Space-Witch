@@ -346,6 +346,8 @@ public class AudioManager : MonoBehaviour
     // Sets songIndex, songTimer, and bpm.
     public void StartSong(int index)
     {
+        Debug.Log("Starting new song!");
+
         // Set songIndex
         GM.I.songIndex = index;
 
@@ -369,6 +371,8 @@ public class AudioManager : MonoBehaviour
     // Starts playing the next song.
     public void PlayNextSong()
     {
+        Debug.Log("Playing the next song...");
+        
         // Increment song index
         IncrementSongIndex();
 

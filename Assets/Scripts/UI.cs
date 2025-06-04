@@ -22,6 +22,7 @@ public class UI : MonoBehaviour
     public TMP_Text songTimer;
     public GameObject timerParent;
     public Image progressBar;
+    public GameObject startButton;
 
 
     [Header("Middle")]
@@ -691,7 +692,8 @@ public class UI : MonoBehaviour
 
         // Start the game if we just chose our first talent
         if (GM.I.player.level <= 1)
-            GM.I.BeginRun();
+            GM.I.PreGame();
+            //GM.I.BeginRun();
 
         // Close level up screen
         //levelUpScreen.SetActive(false);
@@ -1237,26 +1239,25 @@ public class UI : MonoBehaviour
         //creditsParent.SetActive(true);
     }
 
-    // Set up our outside UI
+    // Set up our initial outside UI.
+    // AKA Pre-game
     public void GoOut()
     {
-        // Activate lives
-        //livesParent.SetActive(true);
+        // Enable the start button
+        startButton.SetActive(true);
+    }
 
-        // Activate planets
-        //planetsParent.SetActive(true);
+    // Begin game.
+    public void BeginGame()
+    {
+        // Disable the start button
+        startButton.SetActive(false);
 
-        // Activate timer
-        //timerParent.SetActive(true);
-
-        // Activate progress bar
-        //progressBar.gameObject.SetActive(true);
-
-        // Activate top stuff
+        // Enable the top row
         topGameParent.SetActive(true);
 
-        // Deactivate credits
-        //creditsParent.SetActive(false);
+        // Stop meditating(?)
+        //CloseMeditationUI();
     }
 
     // Called when the little red x in the top right gets pressed, either while meditating or training.

@@ -3,8 +3,12 @@ using UnityEngine;
 public class Beacon : MonoBehaviour
 {
     [Header("Beacon")]
-    public int index = 0; // Which beacon in the sequence (0, 1, 2...)
-    public float spinSpeed = 720f;
+    // Which beacon this is.
+    // Note: Beacons are 1-indexed!
+    public int index = 1; 
+
+    // How fast beacons spin, multiplied by their index.
+    private float baseSpinSpeed = 60f;
     
     [Header("Physics")]
     public Rigidbody2D rb2d;
@@ -17,7 +21,8 @@ public class Beacon : MonoBehaviour
     
     void FixedUpdate()
     {
-        // Always spin like a dying bee
-        transform.Rotate(0, 0, spinSpeed * Time.deltaTime);
+        // Spin like a dying bee
+        float spinSpeed = baseSpinSpeed * index;
+        transform.Rotate(0, 0, -spinSpeed * Time.deltaTime);
     }
 }

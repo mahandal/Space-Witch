@@ -41,7 +41,12 @@ public class GM : MonoBehaviour
     public static GM I;
 
     // Game state
-    public int gameState = 0;
+    // Key:
+    // -1 : home
+    //  0 : pre-game
+    //  1 : game
+    //  2 : post-game
+    public int gameState = -1;
 
     // Saved data for persistence
     // (credits, unlocked talents, etc...)
@@ -170,7 +175,8 @@ public class GM : MonoBehaviour
         Time.timeScale = 1f;
 
         // Music
-        dj.musicSource.Play();
+        //dj.musicSource.Play();
+        dj.musicSource.UnPause();
     }
 
     private string SavePath => Path.Combine(Application.persistentDataPath, "gamedata.json");
@@ -558,11 +564,11 @@ public class GM : MonoBehaviour
         // Set up outside audio
         dj.GoOut();
 
-        // Activate all bees
-        foreach (Bee bee in bees)
-        {
-            bee.gameObject.SetActive(true);
-        }
+        // // Activate all bees
+        // foreach (Bee bee in bees)
+        // {
+        //     bee.gameObject.SetActive(true);
+        // }
 
         // Initialize songs
         Song.InitializeSongs();
@@ -579,8 +585,8 @@ public class GM : MonoBehaviour
         // Or handled in player level up?
         //StopTime();
 
-        // Set up bees
-        spawnManager.SetUpBees();
+        // // Set up bees
+        // spawnManager.SetUpBees();
 
         // Reset star count
         Gatherer.starsGathered = 0;
@@ -593,17 +599,39 @@ public class GM : MonoBehaviour
         //BeginRun();
     }
 
+    // Enter the planning phase of a run.
+    public void PreGame()
+    {
+        // Set game state.
+        gameState = 0;
+
+        // Time to start.
+        StartTime();
+    }
+
     // Start a run.
     public void BeginRun()
     {
+        Debug.Log("Beginning a new run!");
         // Hide pre-game
         //ui.preGame.SetActive(false);
 
         // Close pre-game
         //ui.BeginGame();
 
-        // Activate game start time
-        StartTime();
+        // Set up game UI
+        ui.BeginGame();
+
+        // Set up bees
+        spawnManager.SetUpBees();
+
+        // Activate the beacons
+        foreach (Beacon beacon in beacons)
+        {
+            beacon.rb2d.bodyType = RigidbodyType2D.Static;
+        }
+
+        // Set game state
         gameState = 1;
 
         // Start playing first song!
@@ -616,8 +644,16 @@ public class GM : MonoBehaviour
         // Hit marker
         HitMarker.CreateSongMarker(player.transform.position, songs[songIndex].myName + " (1/7)");
 
+        // Spawn Moon
+        Gatherer.moonsGathered = 1;
+        spawnManager.SpawnMoon();
+
+        // Stop meditating
+        // Note: Time is started here!
+        player.EndMeditation();
+
         // Hrm?
-        IntroHaiku();
+        //IntroHaiku();
 
         // Level 1!
         //player.LevelUp();

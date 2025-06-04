@@ -20,7 +20,7 @@ public class Asteroid : MonoBehaviour
     [Header("Automated Machinery")]
     public bool exploding = false;
     public bool isFirstFrame = true;
-    public int currentBeaconIndex = 0;
+    public int currentBeaconIndex = 1;
     public Planet targetPlanet;
 
 
@@ -83,15 +83,15 @@ public class Asteroid : MonoBehaviour
     public void Navigate()
     {
         // Check if we're still chasing beacons.
-        bool hasCompletedBeacons = currentBeaconIndex >= GM.I.beacons.Count;
+        bool hasCompletedBeacons = currentBeaconIndex > GM.I.beacons.Count;
 
         // Beacon
         if (!hasCompletedBeacons && GM.I.beacons.Count > 0)
         {
             // Target current beacon
-            if (currentBeaconIndex < GM.I.beacons.Count)
+            if (currentBeaconIndex <= GM.I.beacons.Count)
             {
-                Beacon targetBeacon = GM.I.beacons[currentBeaconIndex];
+                Beacon targetBeacon = GM.I.beacons[currentBeaconIndex-1];
                 direction = (targetBeacon.transform.position - transform.position).normalized;
             }
         }
@@ -223,7 +223,7 @@ public class Asteroid : MonoBehaviour
             // Move to next beacon
             currentBeaconIndex++;
             
-            if (currentBeaconIndex >= GM.I.beacons.Count)
+            if (currentBeaconIndex > GM.I.beacons.Count)
             {
                 // Completed all beacons, now target planets
                 int randomIndex = Random.Range(0, GM.I.planets.Count);
@@ -233,7 +233,8 @@ public class Asteroid : MonoBehaviour
             else
             {
                 // Target next beacon
-                Beacon nextBeacon = GM.I.beacons[currentBeaconIndex];
+                // Note: At this point I regret making currentBeaconIndex 1-indexed, and wish I could just take it back. But I'm afraid of breaking things even worse so I'm just gonna stumble forward for now.
+                Beacon nextBeacon = GM.I.beacons[currentBeaconIndex-1];
                 direction = (nextBeacon.transform.position - transform.position).normalized;
             }
         }

@@ -258,25 +258,14 @@ public class SpawnManager : MonoBehaviour
 
     // --- Bees
 
-
-    /*
-        public void SetUpBees()
-        {
-            // Loop through each bee
-            for (int i = 0; i < GM.I.bees.Count; i++)
-            {
-                // Get bee
-                Bee bee = GM.I.bees[i];
-
-                Invoke("SetupBeeDelays", 0.1f);
-            }
-
-            ShuffleBeePositions();
-        }
-    */
-
     public void SetUpBees()
     {
+        // Activate all bees
+        foreach (Bee bee in GM.I.bees)
+        {
+            bee.gameObject.SetActive(true);
+        }
+
         // Shuffle starting locations.
         ShuffleBeePositions();
 
@@ -418,31 +407,45 @@ public class SpawnManager : MonoBehaviour
         SetUpWormHoles(GM.I.nebula.wormHoles);
 
         // Spawn Moon
-        Gatherer.moonsGathered = 1;
-        SpawnMoon();
+        //Gatherer.moonsGathered = 1;
+        //SpawnMoon();
 
         // Spawn beacons
-        SpawnBeacons(2);
+        int numBeaconsToSpawn = Random.Range(2, 7);
+        SpawnBeacons(numBeaconsToSpawn);
     }
 
     public void SpawnBeacons(int count)
     {
         GM.I.beacons.Clear();
         
-        for (int i = 0; i < count; i++)
+        for (int i = 1; i <= count; i++)
         {
             // Spawn between planets and origin
-            float distance = planetMinDistance * 0.7f;
+            float distance = planetMinDistance * 1f;
             float angle = (360f / count) * i; // Spread them evenly
             
+            // Calculate position
             float x = Mathf.Cos(angle * Mathf.Deg2Rad) * distance;
             float y = Mathf.Sin(angle * Mathf.Deg2Rad) * distance;
             
+            // Instantiate
             Beacon newBeacon = Object.Instantiate(progenitor_Beacon, GM.I.universe);
+
+            // Set position
             newBeacon.transform.position = new Vector3(x, y, 0);
+
+            // Set index
             newBeacon.index = i;
             
+            // Track beacon
             GM.I.beacons.Add(newBeacon);
+
+            // Set tooltip name
+            Tooltip tooltip = newBeacon.GetComponent<Tooltip>();
+            tooltip.myName = "Beacon " + i;
+
+            // Activate
             newBeacon.gameObject.SetActive(true);
         }
     }
@@ -545,7 +548,7 @@ public class SpawnManager : MonoBehaviour
         {
             Beacon firstBeacon = GM.I.beacons[0];
             newAsteroid.direction = (firstBeacon.transform.position - position).normalized;
-            newAsteroid.currentBeaconIndex = 0;
+            newAsteroid.currentBeaconIndex = 1;
         }
         else
         {
@@ -561,9 +564,9 @@ public class SpawnManager : MonoBehaviour
         // Set speed & size
 
         // Base values that scale directly with hype
-        float baseAcceleration = 0.05f + (0.005f * GM.I.hype);
-        float baseSpeed = 0.05f + (0.005f * GM.I.hype);
-        float baseSize = 0.1f + (0.01f * GM.I.hype);
+        float baseAcceleration = 0.2f + (0.02f * GM.I.hype);
+        float baseSpeed = 0.2f + (0.02f * GM.I.hype);
+        float baseSize = 0.2f + (0.02f * GM.I.hype);
 
         // Add some random variation
         float randomVariation = Random.Range(0.1f, 2.9f);

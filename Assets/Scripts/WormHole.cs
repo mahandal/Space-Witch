@@ -40,6 +40,7 @@ public class WormHole : MonoBehaviour
         
         foreach (Collider2D col in colliders)
         {
+            // Gatherers
             Gatherer gatherer = col.GetComponent<Gatherer>();
             if (gatherer != null)
             {
@@ -47,7 +48,9 @@ public class WormHole : MonoBehaviour
                 float distance = Vector3.Distance(transform.position, gatherer.transform.position);
                 Vector3 direction = (gatherer.transform.position - transform.position).normalized;
                 
-                // Calculate force - stronger when closer
+                // Calculate force:
+
+                // - stronger when closer
                 float force = minimumRepulsion;
                 if (distance <= repulsionRange)
                 {
@@ -57,6 +60,31 @@ public class WormHole : MonoBehaviour
                 
                 // Apply force
                 gatherer.transform.position += direction * force * Time.deltaTime;
+            }
+
+            // Beacons
+            Beacon beacon = col.GetComponent<Beacon>();
+            if (beacon != null)
+            {
+                // Calculate distance and direction
+                float distance = Vector3.Distance(transform.position, beacon.transform.position);
+                Vector3 direction = (beacon.transform.position - transform.position).normalized;
+                
+                // Calculate force:
+
+                // - stronger when closer
+                float force = minimumRepulsion;
+                if (distance <= repulsionRange)
+                {
+                    // Full strength when close
+                    force = repulsionStrength * (1 - (distance / repulsionRange)) + minimumRepulsion;
+                }
+
+                // beacons are stronger
+                force *= 2;
+                
+                // Apply force
+                beacon.transform.position += direction * force * Time.deltaTime;
             }
         }
     }
