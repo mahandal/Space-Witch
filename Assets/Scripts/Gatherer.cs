@@ -10,21 +10,25 @@ public class Gatherer : MonoBehaviour
     public static int moonsGathered = 1;
     public static int credits = 0;
 
+
     [Header("Attributes")]
     public int mind = 1;
     public int body = 1;
     public int soul = 1;
     public int luck = 1;
 
+
     [Header("Health")]
     public float currentHealth = 100f;
     public int maxHealth = 100;
     public float healthRegenDelay = 6f;
 
+
     [Header("Mana")]
     public float currentMana = 100f;
     public int maxMana = 100;
     public float manaRegenDelay = 1f;
+
 
     [Header("Movement")]
     // Current effective stats (calculated, but also used to initialize base values)
@@ -35,7 +39,12 @@ public class Gatherer : MonoBehaviour
     private float baseAcceleration;
     private float baseMaxSpeed;
 
-    
+
+    [Header("Weapons")]
+    public Transform firePoint;
+    public LaserWeapon weapon;
+
+
     [Header("Death and Recovery")]
     public bool diesPermanently = false;
     public bool isDying = false;
@@ -108,6 +117,10 @@ public class Gatherer : MonoBehaviour
 
         // Initialize speed modifiers
         ApplySpeedModifiers();
+
+        // Initialize weapons(?)
+        if (weapon != null)
+            weapon.SetStats(1, false);
     }
 
     // Calculate stats that can be derived directly from attributes:
@@ -158,6 +171,13 @@ public class Gatherer : MonoBehaviour
         {
             HandleDying();
             //return;
+        } else
+        {
+            // - Life
+
+            // Weapons
+            if (weapon != null)
+                weapon.HandleWeapon();
         }
 
         // Star time visual effect

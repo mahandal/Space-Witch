@@ -4,7 +4,7 @@ public class LaserWeapon : MonoBehaviour
 {
     [Header("Manual Machinery")]
     // Reference to owner
-    public Gatherer owner;
+    
 
     [Header("Stats (calculated mostly)")]
     // Weapon properties
@@ -18,29 +18,42 @@ public class LaserWeapon : MonoBehaviour
     public bool isCharging = false;
 
     [Header("Automated Machinery")]
+    // Our shooter
+    public Gatherer owner;
+
     // Where our shots fire from
     public Transform firePoint;
 
     // Our current target
     public Asteroid target = null;
 
+    void Awake()
+    {
+        // Get our shooter
+        if (owner == null)
+            owner = GetComponent<Gatherer>();
+
+        // Set fire point
+        firePoint = owner.firePoint;
+    }
+
     void Start()
     {
         // Initialize for drones
-        Drone drone = GetComponent<Drone>();
-        if (drone != null)
-        {
-            // fire point
-            firePoint = drone.firePoint;
-        }
+        // Drone drone = GetComponent<Drone>();
+        // if (drone != null)
+        // {
+        //     // fire point
+        //     firePoint = drone.firePoint;
+        // }
 
-        // Initialize for satellites
-        Satellite satellite = GetComponent<Satellite>();
-        if (satellite != null)
-        {
-            // fire point
-            firePoint = satellite.firePoint;
-        }
+        // // Initialize for satellites
+        // Satellite satellite = GetComponent<Satellite>();
+        // if (satellite != null)
+        // {
+        //     // fire point
+        //     firePoint = satellite.firePoint;
+        // }
     }
 
     public void HandleWeapon()
@@ -60,13 +73,26 @@ public class LaserWeapon : MonoBehaviour
             currentChargeTime = 0f;
         }
         
-        // Always look at target if one exists
+        // We have a target?
         if (target != null)
         {
-            // Face the target
-            Vector3 targetDirection = target.transform.position - transform.position;
-            float angle = Mathf.Atan2(targetDirection.y, targetDirection.x) * Mathf.Rad2Deg;
-            transform.rotation = Quaternion.Euler(0, 0, angle - 90);
+            // Ghetto
+            // tbd: update
+            bool shouldFaceTarget = false;
+
+            Drone drone = GetComponent<Drone>();
+            Satellite satellite = GetComponent<Satellite>();
+            if (drone != null || satellite != null)
+                shouldFaceTarget = true;
+
+            // Face the target?
+            if (shouldFaceTarget)
+            {
+                Vector3 targetDirection = target.transform.position - transform.position;
+                float angle = Mathf.Atan2(targetDirection.y, targetDirection.x) * Mathf.Rad2Deg;
+                transform.rotation = Quaternion.Euler(0, 0, angle - 90);
+            }
+                
             
             // If charging, increase charge time
             if (isCharging)

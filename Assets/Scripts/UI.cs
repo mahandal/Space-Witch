@@ -309,7 +309,7 @@ public class UI : MonoBehaviour
     void UpdatePlanetCount()
     {
         // Set text
-        planetCount.text = GM.I.planets.Count.ToString();
+        planetCount.text = GM.I.activePlanets.Count.ToString();
     }
 
     // TBD: Optimize

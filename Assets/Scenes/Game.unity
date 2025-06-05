@@ -12250,6 +12250,8 @@ MonoBehaviour:
   manaRegenDelay: 1
   acceleration: 1
   maxSpeed: 2
+  firePoint: {fileID: 0}
+  weapon: {fileID: 0}
   diesPermanently: 0
   isDying: 0
   deathSpinSpeed: 720
@@ -13369,6 +13371,7 @@ GameObject:
   - component: {fileID: 255450496}
   - component: {fileID: 255450497}
   - component: {fileID: 255450498}
+  - component: {fileID: 255450499}
   m_Layer: 13
   m_Name: Familiar
   m_TagString: Untagged
@@ -13390,6 +13393,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1282681056}
+  - {fileID: 1062068628}
   m_Father: {fileID: 530615785}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!212 &255450494
@@ -13534,6 +13538,8 @@ MonoBehaviour:
   manaRegenDelay: 1
   acceleration: 1
   maxSpeed: 4
+  firePoint: {fileID: 1062068628}
+  weapon: {fileID: 255450499}
   diesPermanently: 0
   isDying: 0
   deathSpinSpeed: 720
@@ -13575,6 +13581,27 @@ MonoBehaviour:
   specialImage: {fileID: 1006836846}
   specialImageFileName: 
   sprite: {fileID: 0}
+--- !u!114 &255450499
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 255450492}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d4ab541d1cb156c43b53075868dd7af2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  fireRange: 4
+  fireRate: 1
+  damage: 10
+  chargeTime: 1
+  currentChargeTime: 0
+  isCharging: 0
+  owner: {fileID: 0}
+  firePoint: {fileID: 0}
+  target: {fileID: 0}
 --- !u!1 &256551900
 GameObject:
   m_ObjectHideFlags: 0
@@ -16396,6 +16423,8 @@ MonoBehaviour:
   manaRegenDelay: 1
   acceleration: 1
   maxSpeed: 2
+  firePoint: {fileID: 1666915915}
+  weapon: {fileID: 397640117}
   diesPermanently: 0
   isDying: 0
   deathSpinSpeed: 720
@@ -16412,8 +16441,6 @@ MonoBehaviour:
   healthRegenTimer: 0
   orbitDistance: 2
   orbitSpeed: 420
-  firePoint: {fileID: 1666915915}
-  weapon: {fileID: 397640117}
 --- !u!50 &397640113
 Rigidbody2D:
   serializedVersion: 5
@@ -16560,13 +16587,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d4ab541d1cb156c43b53075868dd7af2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  owner: {fileID: 397640112}
   fireRange: 3
   fireRate: 1
   damage: 100
   chargeTime: 0
   currentChargeTime: 0
   isCharging: 0
+  owner: {fileID: 397640112}
   firePoint: {fileID: 0}
   target: {fileID: 0}
 --- !u!114 &397640118
@@ -19105,6 +19132,8 @@ MonoBehaviour:
   manaRegenDelay: 1
   acceleration: 1.8
   maxSpeed: 1.8
+  firePoint: {fileID: 0}
+  weapon: {fileID: 0}
   diesPermanently: 0
   isDying: 0
   deathSpinSpeed: 720
@@ -20803,6 +20832,8 @@ MonoBehaviour:
   manaRegenDelay: 1
   acceleration: 0.2
   maxSpeed: 0.5
+  firePoint: {fileID: 0}
+  weapon: {fileID: 0}
   diesPermanently: 0
   isDying: 0
   deathSpinSpeed: 720
@@ -29517,6 +29548,8 @@ MonoBehaviour:
   manaRegenDelay: 1
   acceleration: 1.4
   maxSpeed: 1.4
+  firePoint: {fileID: 0}
+  weapon: {fileID: 0}
   diesPermanently: 0
   isDying: 0
   deathSpinSpeed: 720
@@ -40953,6 +40986,8 @@ MonoBehaviour:
   manaRegenDelay: 1
   acceleration: 1.1
   maxSpeed: 1.1
+  firePoint: {fileID: 0}
+  weapon: {fileID: 0}
   diesPermanently: 0
   isDying: 0
   deathSpinSpeed: 720
@@ -44569,6 +44604,37 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1055891235}
   m_CullTransparentMesh: 1
+--- !u!1 &1062068627
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1062068628}
+  m_Layer: 13
+  m_Name: Fire Point
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1062068628
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1062068627}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 6.15, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 255450493}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1066555017
 GameObject:
   m_ObjectHideFlags: 0
@@ -45608,6 +45674,8 @@ MonoBehaviour:
   manaRegenDelay: 1
   acceleration: 1.5
   maxSpeed: 1.5
+  firePoint: {fileID: 0}
+  weapon: {fileID: 0}
   diesPermanently: 0
   isDying: 0
   deathSpinSpeed: 720
@@ -47733,6 +47801,8 @@ MonoBehaviour:
   manaRegenDelay: 1
   acceleration: 1.9
   maxSpeed: 1.9
+  firePoint: {fileID: 0}
+  weapon: {fileID: 0}
   diesPermanently: 0
   isDying: 0
   deathSpinSpeed: 720
@@ -48144,13 +48214,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d4ab541d1cb156c43b53075868dd7af2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  owner: {fileID: 1204809610}
   fireRange: 6
   fireRate: 2
   damage: 200
   chargeTime: 0
   currentChargeTime: 0
   isCharging: 0
+  owner: {fileID: 1204809610}
   firePoint: {fileID: 0}
   target: {fileID: 0}
 --- !u!114 &1204809610
@@ -48177,6 +48247,8 @@ MonoBehaviour:
   manaRegenDelay: 1
   acceleration: 0
   maxSpeed: 0
+  firePoint: {fileID: 347486057}
+  weapon: {fileID: 1204809609}
   diesPermanently: 0
   isDying: 0
   deathSpinSpeed: 720
@@ -48193,8 +48265,6 @@ MonoBehaviour:
   healthRegenTimer: 0
   offsetDistance: 8
   offsetDirection: {x: 0, y: 1}
-  firePoint: {fileID: 347486057}
-  weapon: {fileID: 1204809609}
 --- !u!114 &1204809611
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -49356,6 +49426,8 @@ MonoBehaviour:
   manaRegenDelay: 1
   acceleration: 0.2
   maxSpeed: 0.5
+  firePoint: {fileID: 0}
+  weapon: {fileID: 0}
   diesPermanently: 0
   isDying: 0
   deathSpinSpeed: 720
@@ -52803,6 +52875,8 @@ MonoBehaviour:
   manaRegenDelay: 1
   acceleration: 0.2
   maxSpeed: 0.5
+  firePoint: {fileID: 0}
+  weapon: {fileID: 0}
   diesPermanently: 0
   isDying: 0
   deathSpinSpeed: 720
@@ -60001,6 +60075,8 @@ MonoBehaviour:
   manaRegenDelay: 1
   acceleration: 1.3
   maxSpeed: 1.3
+  firePoint: {fileID: 0}
+  weapon: {fileID: 0}
   diesPermanently: 0
   isDying: 0
   deathSpinSpeed: 720
@@ -61689,6 +61765,8 @@ MonoBehaviour:
   manaRegenDelay: 1
   acceleration: 0.2
   maxSpeed: 0.5
+  firePoint: {fileID: 0}
+  weapon: {fileID: 0}
   diesPermanently: 0
   isDying: 0
   deathSpinSpeed: 720
@@ -66426,6 +66504,8 @@ MonoBehaviour:
   manaRegenDelay: 1
   acceleration: 2.3
   maxSpeed: 13
+  firePoint: {fileID: 0}
+  weapon: {fileID: 0}
   diesPermanently: 0
   isDying: 0
   deathSpinSpeed: 720
@@ -68334,6 +68414,8 @@ MonoBehaviour:
   manaRegenDelay: 1
   acceleration: 1.7
   maxSpeed: 1.7
+  firePoint: {fileID: 0}
+  weapon: {fileID: 0}
   diesPermanently: 0
   isDying: 0
   deathSpinSpeed: 720
@@ -75933,6 +76015,8 @@ MonoBehaviour:
   manaRegenDelay: 1
   acceleration: 1.2
   maxSpeed: 1.2
+  firePoint: {fileID: 0}
+  weapon: {fileID: 0}
   diesPermanently: 0
   isDying: 0
   deathSpinSpeed: 720
@@ -78174,6 +78258,8 @@ MonoBehaviour:
   manaRegenDelay: 1
   acceleration: 0.2
   maxSpeed: 0.5
+  firePoint: {fileID: 0}
+  weapon: {fileID: 0}
   diesPermanently: 0
   isDying: 0
   deathSpinSpeed: 720
@@ -79148,6 +79234,7 @@ GameObject:
   - component: {fileID: 1906942308}
   - component: {fileID: 1906942311}
   - component: {fileID: 1906942312}
+  - component: {fileID: 1906942313}
   m_Layer: 13
   m_Name: Player
   m_TagString: Untagged
@@ -79169,6 +79256,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 748917296}
+  - {fileID: 1945550248}
   m_Father: {fileID: 530615785}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!50 &1906942306
@@ -79277,6 +79365,8 @@ MonoBehaviour:
   manaRegenDelay: 1
   acceleration: 0.69
   maxSpeed: 3
+  firePoint: {fileID: 1945550248}
+  weapon: {fileID: 1906942313}
   diesPermanently: 0
   isDying: 0
   deathSpinSpeed: 720
@@ -79755,6 +79845,27 @@ PolygonCollider2D:
       - {x: -2.07, y: -8.615}
       - {x: -1.9399999, y: -8.595}
   m_UseDelaunayMesh: 0
+--- !u!114 &1906942313
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1906942304}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d4ab541d1cb156c43b53075868dd7af2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  fireRange: 4
+  fireRate: 1
+  damage: 10
+  chargeTime: 1
+  currentChargeTime: 0
+  isCharging: 0
+  owner: {fileID: 0}
+  firePoint: {fileID: 0}
+  target: {fileID: 0}
 --- !u!1 &1912134779
 GameObject:
   m_ObjectHideFlags: 0
@@ -85423,6 +85534,8 @@ MonoBehaviour:
   manaRegenDelay: 1
   acceleration: 2.1
   maxSpeed: 7
+  firePoint: {fileID: 0}
+  weapon: {fileID: 0}
   diesPermanently: 0
   isDying: 0
   deathSpinSpeed: 720
@@ -86052,6 +86165,37 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1944936830}
   m_CullTransparentMesh: 1
+--- !u!1 &1945550247
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1945550248}
+  m_Layer: 13
+  m_Name: Fire Point
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1945550248
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1945550247}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 8.5, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1906942305}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1945751002
 GameObject:
   m_ObjectHideFlags: 0
@@ -86194,6 +86338,8 @@ MonoBehaviour:
   manaRegenDelay: 1
   acceleration: 1.6
   maxSpeed: 1.6
+  firePoint: {fileID: 0}
+  weapon: {fileID: 0}
   diesPermanently: 0
   isDying: 0
   deathSpinSpeed: 720
@@ -89307,9 +89453,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   myName: Beacon
-  description: Beacons were a nifty invention with little practical purpose, until
-    now! They seem to confuse asteroids enough to buy some time. Make the most of
-    it!
+  description: Beacons distract incoming asteroids, buying precious time. Position
+    them wisely before starting the music!
   specialImage: {fileID: 0}
   specialImageFileName: 
   sprite: {fileID: 0}
@@ -89348,7 +89493,7 @@ CircleCollider2D:
   m_CompositeOperation: 0
   m_CompositeOrder: 0
   m_Offset: {x: 0, y: 0}
-  m_Radius: 6.425
+  m_Radius: 3.66
 --- !u!50 &2029020833
 Rigidbody2D:
   serializedVersion: 5
@@ -89420,12 +89565,12 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 12
-  m_Sprite: {fileID: 6737142329169032314, guid: 108f5f6aec376e54b8072246e7af1693, type: 3}
-  m_Color: {r: 1, g: 1, b: 1, a: 0.48235294}
+  m_Sprite: {fileID: 21300000, guid: 68ecd5a3bf54a4c429299684074f71f4, type: 3}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
-  m_Size: {x: 17.28, y: 16.99}
+  m_Size: {x: 20, y: 20}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
@@ -91355,6 +91500,8 @@ MonoBehaviour:
   manaRegenDelay: 1
   acceleration: 2
   maxSpeed: 2
+  firePoint: {fileID: 0}
+  weapon: {fileID: 0}
   diesPermanently: 0
   isDying: 0
   deathSpinSpeed: 720

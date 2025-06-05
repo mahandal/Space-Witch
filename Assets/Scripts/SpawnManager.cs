@@ -159,10 +159,10 @@ public class SpawnManager : MonoBehaviour
         //Planet planet = planets[index];
 
         // Choose the next planet
-        if (index >= GM.I.planets.Count)
+        if (index >= GM.I.activePlanets.Count)
             index = 0;
         
-        Planet planet = GM.I.planets[index];
+        Planet planet = GM.I.activePlanets[index];
 
         // Instantiate a new moon
         Moon newMoon = Object.Instantiate(progenitor_Moon, planet.moonMama);
@@ -178,9 +178,11 @@ public class SpawnManager : MonoBehaviour
     }
 
     // --- Planets
-    public List<Planet> SpawnPlanets(int numberToSpawn)
+
+    // - Spawn a new cluster of planets
+    public void SpawnPlanets(int numberToSpawn)
     {
-        List<Planet> returnList = new List<Planet>();
+        List<Planet> planetList = new List<Planet>();
 
         for (int i = 0; i < numberToSpawn; i++)
         {
@@ -194,10 +196,28 @@ public class SpawnManager : MonoBehaviour
             GM.I.bees[i].goal = newPlanet;
 
             // Add to return list
-            returnList.Add(newPlanet);
+            planetList.Add(newPlanet);
         }
 
-        return returnList;
+        GM.I.nebula.planets = planetList;
+        //GM.I.planets = planetList;
+        //GM.I.activePlanets = planetList;
+
+        //return returnList;
+    }
+
+    // - Curate down the list of planets by the given number
+    public void CuratePlanets(int numCut)
+    {
+        // Loop numCut times
+        for (int i = 0; i < numCut; i++)
+        {
+            Debug.Log("Cutting a planet...");
+            // Cut a random planet
+            int randomIndex = Random.Range(0, GM.I.activePlanets.Count);
+            Planet cutPlanet = GM.I.activePlanets[randomIndex];
+            cutPlanet.Death();
+        }
     }
 
     // Spawns a new planet in a random location.
@@ -244,7 +264,7 @@ public class SpawnManager : MonoBehaviour
         //newPlanet.transform.localScale = new Vector3(size, size, size);
 
         // Document new planet
-        GM.I.planets.Add(newPlanet);
+        // GM.I.planets.Add(newPlanet);
 
         // Activate new planet
         newPlanet.gameObject.SetActive(true);
@@ -261,75 +281,35 @@ public class SpawnManager : MonoBehaviour
     public void SetUpBees()
     {
         // Activate all bees
-        foreach (Bee bee in GM.I.bees)
-        {
-            bee.gameObject.SetActive(true);
-        }
+        // foreach (Bee bee in GM.I.bees)
+        // {
+        //     bee.gameObject.SetActive(true);
+        // }
 
         // Shuffle starting locations.
-        ShuffleBeePositions();
+        // ShuffleBeePositions();
 
-        // Then get bee starting planet.
-        // (slightly complicated to keep a clean break)
+        // Shuffle bees
+        ShuffleBees();
 
-        // First, categorize planets by quadrant
-        Dictionary<int, List<Planet>> planetsByQuadrant = new Dictionary<int, List<Planet>>();
-        // Initialize dictionary with 4 quadrants
-        for (int i = 0; i < 4; i++)
+        // Activate one bee per planet
+        for (int i = 0; i < GM.I.planets.Count; i++)
         {
-            planetsByQuadrant[i] = new List<Planet>();
-        }
+            Debug.Log("Setting up bee # " + i);
 
-        // Sort planets into quadrants
-        foreach (Planet planet in GM.I.planets)
-        {
-            int quadrant = GetQuadrant(planet.transform.position);
-            planetsByQuadrant[quadrant].Add(planet);
-        }
-
-        // Assign planets to bees based on quadrant
-        for (int i = 0; i < GM.I.bees.Count; i++)
-        {
+            // Get bee
             Bee bee = GM.I.bees[i];
-            int beeQuadrant = GetQuadrant(bee.transform.position);
 
-            // Get a planet from the bee's quadrant if available
-            if (planetsByQuadrant[beeQuadrant].Count > 0)
-            {
-                // Use the first planet in this quadrant
-                bee.goal = planetsByQuadrant[beeQuadrant][0];
-                bee.goalIndex = GM.I.planets.IndexOf(bee.goal);
+            // Set starting goal
+            bee.goalIndex = 0;
+            bee.goal = GM.I.planets[bee.goalIndex];
 
-                // Remove the planet from the available list
-                planetsByQuadrant[beeQuadrant].RemoveAt(0);
-            }
-            else
-            {
-                // Fallback: use any available planet
-                foreach (var quadrant in planetsByQuadrant.Keys)
-                {
-                    if (planetsByQuadrant[quadrant].Count > 0)
-                    {
-                        bee.goal = planetsByQuadrant[quadrant][0];
-                        bee.goalIndex = GM.I.planets.IndexOf(bee.goal);
-                        planetsByQuadrant[quadrant].RemoveAt(0);
-                        break;
-                    }
-                }
-            }
+            // Activate
+            bee.gameObject.SetActive(true);
         }
 
         // Set up the spinning effect and delays.
         Invoke("SetupBeeDelays", 0.1f);
-    }
-
-    // Helper method to determine quadrant (0: ++, 1: -+, 2: --, 3: +-)
-    public int GetQuadrant(Vector3 position)
-    {
-        if (position.x >= 0 && position.y >= 0) return 0; // Quadrant 1 (++)
-        if (position.x < 0 && position.y >= 0) return 1;  // Quadrant 2 (-+)
-        if (position.x < 0 && position.y < 0) return 2;   // Quadrant 3 (--)
-        return 3;                                         // Quadrant 4 (+-)
     }
 
     private void SetupBeeDelays()
@@ -345,32 +325,44 @@ public class SpawnManager : MonoBehaviour
         }
     }
 
-    private void ShuffleBeePositions()
+    private void ShuffleBees()
     {
-        // Get all current bee positions
-        List<Vector3> positions = new List<Vector3>();
-        foreach (Bee bee in GM.I.bees)
-        {
-            positions.Add(bee.transform.position);
-        }
-        
-        // Shuffle the positions
-        for (int i = 0; i < positions.Count; i++)
-        {
-            int randomIndex = Random.Range(i, positions.Count);
-            Vector3 temp = positions[i];
-            positions[i] = positions[randomIndex];
-            positions[randomIndex] = temp;
-        }
-        
-        // Assign shuffled positions back to bees
+        // Shuffle the bees list using Fisher-Yates
         for (int i = 0; i < GM.I.bees.Count; i++)
         {
-            GM.I.bees[i].transform.position = positions[i];
+            int randomIndex = Random.Range(i, GM.I.bees.Count);
+            Bee temp = GM.I.bees[i];
+            GM.I.bees[i] = GM.I.bees[randomIndex];
+            GM.I.bees[randomIndex] = temp;
         }
     }
 
-    // --- Misc
+    // private void ShuffleBeePositions()
+    // {
+    //     // Get all current bee positions
+    //     List<Vector3> positions = new List<Vector3>();
+    //     foreach (Bee bee in GM.I.bees)
+    //     {
+    //         positions.Add(bee.transform.position);
+    //     }
+        
+    //     // Shuffle the positions
+    //     for (int i = 0; i < positions.Count; i++)
+    //     {
+    //         int randomIndex = Random.Range(i, positions.Count);
+    //         Vector3 temp = positions[i];
+    //         positions[i] = positions[randomIndex];
+    //         positions[randomIndex] = temp;
+    //     }
+        
+    //     // Assign shuffled positions back to bees
+    //     for (int i = 0; i < GM.I.bees.Count; i++)
+    //     {
+    //         GM.I.bees[i].transform.position = positions[i];
+    //     }
+    // }
+
+    // --- Nebulas
     
     // Nebula
     public void SetUpNebula(string nebulaName = "Unknown")
@@ -383,25 +375,36 @@ public class SpawnManager : MonoBehaviour
         {
             GM.I.nebula = eldest_ring;
         }
-        else
+        
+        if (nebulaName == "Unknown")
         {
             // Unknown nebula
             GM.I.nebula = unknown;
 
-            // Generate new random arrangement of planets
-            GM.I.nebula.planets = SpawnPlanets(GM.I.bees.Count);
+            // Generate a dozen planets
+            // GM.I.nebula.planets = SpawnPlanets(GM.I.bees.Count);
+            SpawnPlanets(GM.I.bees.Count);
+
+            // Track planets
+            SetUpPlanets(GM.I.nebula.planets);
+
+            // Curate down to however many we want
+            CuratePlanets(Random.Range(0, 9));
 
             // Generate new worm hole
             //SpawnWormHoles(1);
             GM.I.nebula.wormHoles = new List<WormHole>();
             GM.I.nebula.wormHoles.Add(SpawnWormHole(0, 0));
+        } else {
+            // Track planets
+            SetUpPlanets(GM.I.nebula.planets);
         }
 
         // Activate
         GM.I.nebula.gameObject.SetActive(true);
 
         // Track planets
-        SetUpPlanets(GM.I.nebula.planets);
+        //SetUpPlanets(GM.I.nebula.planets);
 
         // Track worm holes
         SetUpWormHoles(GM.I.nebula.wormHoles);
@@ -414,6 +417,8 @@ public class SpawnManager : MonoBehaviour
         int numBeaconsToSpawn = Random.Range(2, 7);
         SpawnBeacons(numBeaconsToSpawn);
     }
+
+    // --- Beacons
 
     public void SpawnBeacons(int count)
     {
@@ -462,6 +467,7 @@ public class SpawnManager : MonoBehaviour
     {
         // Set GM's list of planets
         GM.I.planets = planets;
+        GM.I.activePlanets = planets;
 
         // Set up each planet
         for (int i = 0; i < planets.Count; i++)
@@ -527,22 +533,6 @@ public class SpawnManager : MonoBehaviour
         // Set position
         newAsteroid.transform.position = position;
 
-        // Choose a random planet as target
-        // int randomIndex = Random.Range(0, GM.I.planets.Count + 1);
-        // int randomIndex = Random.Range(0, GM.I.planets.Count);
-
-        // // Target player?
-        // if (randomIndex == GM.I.planets.Count)
-        // {
-        //     newAsteroid.direction = (GM.I.player.transform.position - position).normalized;
-        // }
-        // else
-        // {
-        //     // Target planet
-        //     Planet targetPlanet = GM.I.planets[randomIndex];
-        //     newAsteroid.direction = (targetPlanet.transform.position - position).normalized;
-        // }
-
         // Set initial target to first beacon
         if (GM.I.beacons.Count > 0)
         {
@@ -553,20 +543,17 @@ public class SpawnManager : MonoBehaviour
         else
         {
             // No beacons, target planets directly
-            int randomIndex = Random.Range(0, GM.I.planets.Count);
-            Planet targetPlanet = GM.I.planets[randomIndex];
+            int randomIndex = Random.Range(0, GM.I.activePlanets.Count);
+            Planet targetPlanet = GM.I.activePlanets[randomIndex];
             newAsteroid.direction = (targetPlanet.transform.position - position).normalized;
         }
-
-        // Get hype
-        //float hype = GM.I.passiveHype + GM.I.dj.songHype;
 
         // Set speed & size
 
         // Base values that scale directly with hype
-        float baseAcceleration = 0.2f + (0.02f * GM.I.hype);
-        float baseSpeed = 0.2f + (0.02f * GM.I.hype);
-        float baseSize = 0.2f + (0.02f * GM.I.hype);
+        float baseAcceleration = 0.5f + (0.1f * GM.I.hype);
+        float baseSpeed = 0.5f + (0.1f * GM.I.hype);
+        float baseSize = 0.5f + (0.1f * GM.I.hype);
 
         // Add some random variation
         float randomVariation = Random.Range(0.1f, 2.9f);

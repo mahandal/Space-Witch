@@ -61,6 +61,7 @@ public class GM : MonoBehaviour
 
     // Planets
     public List<Planet> planets;
+    public List<Planet> activePlanets;
 
     // Worm holes
     public List<WormHole> wormHoles = new List<WormHole>();
@@ -405,22 +406,14 @@ public class GM : MonoBehaviour
         // Initialize score.
         float score = Gatherer.starsGathered;
 
-        // Count # of lost lives.
-        int lostLives = 9 - GM.I.player.livesRemaining;
+        // Multiply by # of lives remaining
+        // score *= GM.I.player.livesRemaining;
 
-        // Divide score by # of lost lives.
-        if (lostLives > 0)
-            score = score / lostLives;
+        // // Multiply by # of planets remaining
+        // score *= GM.I.activePlanets.Count;
 
-        // Count # of lost planets.
-        int lostPlanets = bees.Count - planets.Count;
-
-        // Divide score by # of lost planets.
-        if (lostPlanets > 0)
-            score = score / lostPlanets;
-
-        // Gain bonus score per moon.
-        score *= 1f + (0.5f * Gatherer.moonsGathered);
+        // // Gain bonus score per moon.
+        // score *= 1f + (0.5f * Gatherer.moonsGathered);
 
         return (int)score;
     }
@@ -431,23 +424,11 @@ public class GM : MonoBehaviour
         // Initialize score.
         float score = Gatherer.starsGathered;
 
-        // Count # of lost lives.
-        int lostLives = 9 - GM.I.player.livesRemaining;
+        // Multiply by # of lives remaining
+        score *= GM.I.player.livesRemaining;
 
-        // Divide score by # of lost lives.
-        if (lostLives > 0)
-            score = score / lostLives;
-        else
-            score = score * 2f; // Double score for not losing any lives.
-
-        // Count # of lost planets.
-        int lostPlanets = bees.Count - planets.Count;
-
-        // Divide score by # of lost planets.
-        if (lostPlanets > 0)
-            score = score / lostPlanets;
-        else
-            score = score * 2f; // Double score for not losing any planets.
+        // Multiply by # of planets remaining
+        score *= GM.I.activePlanets.Count;
 
         // Gain bonus score per moon.
         score *= 1f + (0.5f * Gatherer.moonsGathered);

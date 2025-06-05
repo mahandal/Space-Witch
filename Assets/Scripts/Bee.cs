@@ -219,7 +219,7 @@ public class Bee : Gatherer
         
         // Normal planet navigation for when no one is dying
         if (goal == null)
-            goal = GM.I.planets[0];
+            goal = GM.I.activePlanets[0];
 
         float goalDistance = Vector3.Distance(transform.position, goal.transform.position);
 
@@ -238,10 +238,10 @@ public class Bee : Gatherer
             previousPlanet = goal;
             
             goalIndex++;
-            if (goalIndex >= GM.I.planets.Count)
+            if (goalIndex >= GM.I.activePlanets.Count)
                 goalIndex = 0;
                 
-            goal = GM.I.planets[goalIndex];
+            goal = GM.I.activePlanets[goalIndex];
             isPollinating = false;
         }
 

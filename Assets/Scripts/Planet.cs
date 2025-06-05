@@ -37,6 +37,9 @@ public class Planet : MonoBehaviour
     [Header("Machinery")]
     public float harvestTimer = 0f;
 
+    // States
+    public bool isAlive = true;
+
     void Awake()
     {
         radius = GetComponent<CircleCollider2D>().radius;
@@ -137,17 +140,41 @@ public class Planet : MonoBehaviour
     public void Death()
     {
         // Remove from list of planets
-        GM.I.planets.Remove(this);
+        //GM.I.planets.Remove(this);
+
+        // Death!
+        isAlive = false;
+
+        // Deactivate
+        gameObject.SetActive(false);
 
         // Not my bee!?
         GM.I.bees[index].gameObject.SetActive(false);
 
+        // Remove from list of active planets
+        GM.I.activePlanets.Remove(this);
+
         // GG?
-        if (GM.I.planets.Count == 0)
+        if (GM.I.activePlanets.Count == 0)
             GM.I.Lose();
 
+        // GG?
+        // if (GM.I.planets.Count == 0)
+        //     GM.I.Lose();
+
+        // GG?
+        // bool gg = true;
+        // foreach (Planet planet in GM.I.planets)
+        // {
+        //     if (planet.isAlive)
+        //         gg = false;
+        // }
+
+        // if (gg)
+        //     GM.I.Lose();
+
         // Clean up game object
-        Object.Destroy(gameObject);
+        //Object.Destroy(gameObject);
     }
 
     public void Harvest()

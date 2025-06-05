@@ -8,9 +8,9 @@ public class Drone : Gatherer
     public float orbitSpeed = 100f;
     private float currentAngle = 0f;
     
-    [Header("Weapons")]
-    public Transform firePoint;
-    public LaserWeapon weapon;
+    //[Header("Weapons")]
+    // public Transform firePoint;
+    // public LaserWeapon weapon;
     
     new void Start()
     {

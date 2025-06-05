@@ -156,13 +156,13 @@ public class SummonCrow : Talent
     
     private Planet FindFurthestPlanet()
     {
-        if (GM.I.planets == null || GM.I.planets.Count == 0)
+        if (GM.I.activePlanets == null || GM.I.activePlanets.Count == 0)
             return null;
             
         Planet furthestPlanet = null;
         float maxDistance = 0f;
         
-        foreach (Planet planet in GM.I.planets)
+        foreach (Planet planet in GM.I.activePlanets)
         {
             float distance = Vector3.Distance(planet.transform.position, GM.I.player.transform.position);
             if (distance > maxDistance)

@@ -6,9 +6,9 @@ public class Satellite : Gatherer
     public float offsetDistance = 8f; // How far from player to maintain position
     public Vector2 offsetDirection = Vector2.up; // Direction from player
     
-    [Header("Weapons")]
-    public Transform firePoint;
-    public LaserWeapon weapon;
+    //[Header("Weapons")]
+    // public Transform firePoint;
+    // public LaserWeapon weapon;
     
     new void Start()
     {

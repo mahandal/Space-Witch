@@ -226,8 +226,8 @@ public class Asteroid : MonoBehaviour
             if (currentBeaconIndex > GM.I.beacons.Count)
             {
                 // Completed all beacons, now target planets
-                int randomIndex = Random.Range(0, GM.I.planets.Count);
-                targetPlanet = GM.I.planets[randomIndex];
+                int randomIndex = Random.Range(0, GM.I.activePlanets.Count);
+                targetPlanet = GM.I.activePlanets[randomIndex];
                 direction = (targetPlanet.transform.position - transform.position).normalized;
             }
             else
