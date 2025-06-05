@@ -44,7 +44,7 @@ public class Player : Gatherer
     [Header("States")]
     public int livesRemaining = 9;
     public bool isShaking = false;
-    public bool isCalm = true;
+    //public bool isCalm = true;
 
     [Header("Input")]
 
@@ -515,6 +515,7 @@ public class Player : Gatherer
         {
             // Set bool
             familiar.isStaying = true;
+            familiar.isCalm = !familiar.isCalm;
 
             // Stop rotation
             familiar.rb2d.angularVelocity = 0f;

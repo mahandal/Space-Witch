@@ -8260,6 +8260,7 @@ MonoBehaviour:
   sun: {fileID: 67689602}
   orbitSpeed: 40
   harvestTimer: 0
+  isAlive: 1
 --- !u!58 &99346147
 CircleCollider2D:
   m_ObjectHideFlags: 0
@@ -11104,6 +11105,7 @@ MonoBehaviour:
   sun: {fileID: 0}
   orbitSpeed: 10
   harvestTimer: 0
+  isAlive: 1
 --- !u!4 &185765117
 Transform:
   m_ObjectHideFlags: 0
@@ -13693,6 +13695,7 @@ MonoBehaviour:
   sun: {fileID: 0}
   orbitSpeed: 10
   harvestTimer: 0
+  isAlive: 1
 --- !u!58 &278615015
 CircleCollider2D:
   m_ObjectHideFlags: 0
@@ -17307,6 +17310,7 @@ MonoBehaviour:
   sun: {fileID: 67689602}
   orbitSpeed: 30
   harvestTimer: 0
+  isAlive: 1
 --- !u!58 &414400097
 CircleCollider2D:
   m_ObjectHideFlags: 0
@@ -17443,6 +17447,7 @@ MonoBehaviour:
   gameState: 0
   nebula: {fileID: 0}
   planets: []
+  activePlanets: []
   wormHoles: []
   bees:
   - {fileID: 887961206}
@@ -17548,7 +17553,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   planetMinDistance: 5
-  planetMaxDistance: 25
+  planetMaxDistance: 27.2
   despawnDistance: 10
   unknown: {fileID: 893226646}
   eldest_ring: {fileID: 1593529513}
@@ -17566,6 +17571,7 @@ MonoBehaviour:
   progenitor_Drone: {fileID: 397640112}
   laser_satellite: {fileID: 1204809610}
   spawnTimer: 1
+  boundaryCircle: {fileID: 0}
 --- !u!114 &414781822
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -17951,6 +17957,7 @@ MonoBehaviour:
   sun: {fileID: 67689602}
   orbitSpeed: 12
   harvestTimer: 0
+  isAlive: 1
 --- !u!58 &433000077
 CircleCollider2D:
   m_ObjectHideFlags: 0
@@ -19729,6 +19736,7 @@ MonoBehaviour:
   sun: {fileID: 0}
   orbitSpeed: 10
   harvestTimer: 0
+  isAlive: 1
 --- !u!58 &485298635
 CircleCollider2D:
   m_ObjectHideFlags: 0
@@ -28500,6 +28508,7 @@ MonoBehaviour:
   sun: {fileID: 0}
   orbitSpeed: 10
   harvestTimer: 0
+  isAlive: 1
 --- !u!58 &623625395
 CircleCollider2D:
   m_ObjectHideFlags: 0
@@ -29760,6 +29769,7 @@ MonoBehaviour:
   sun: {fileID: 0}
   orbitSpeed: 10
   harvestTimer: 0
+  isAlive: 1
 --- !u!58 &651135555
 CircleCollider2D:
   m_ObjectHideFlags: 0
@@ -31586,6 +31596,7 @@ MonoBehaviour:
   sun: {fileID: 0}
   orbitSpeed: 10
   harvestTimer: 0
+  isAlive: 1
 --- !u!58 &723874241
 CircleCollider2D:
   m_ObjectHideFlags: 0
@@ -39074,6 +39085,7 @@ MonoBehaviour:
   sun: {fileID: 0}
   orbitSpeed: 10
   harvestTimer: 0
+  isAlive: 1
 --- !u!58 &829564956
 CircleCollider2D:
   m_ObjectHideFlags: 0
@@ -39652,6 +39664,7 @@ MonoBehaviour:
   sun: {fileID: 0}
   orbitSpeed: 10
   harvestTimer: 0
+  isAlive: 1
 --- !u!58 &848629775
 CircleCollider2D:
   m_ObjectHideFlags: 0
@@ -47437,6 +47450,7 @@ MonoBehaviour:
   sun: {fileID: 0}
   orbitSpeed: 10
   harvestTimer: 0
+  isAlive: 1
 --- !u!58 &1195096092
 CircleCollider2D:
   m_ObjectHideFlags: 0
@@ -47938,6 +47952,7 @@ MonoBehaviour:
   sun: {fileID: 0}
   orbitSpeed: 10
   harvestTimer: 0
+  isAlive: 1
 --- !u!58 &1203450718
 CircleCollider2D:
   m_ObjectHideFlags: 0
@@ -51639,6 +51654,7 @@ MonoBehaviour:
   sun: {fileID: 67689602}
   orbitSpeed: 3
   harvestTimer: 0
+  isAlive: 1
 --- !u!58 &1333144371
 CircleCollider2D:
   m_ObjectHideFlags: 0
@@ -52078,6 +52094,7 @@ MonoBehaviour:
   sun: {fileID: 67689602}
   orbitSpeed: 65
   harvestTimer: 0
+  isAlive: 1
 --- !u!58 &1344408809
 CircleCollider2D:
   m_ObjectHideFlags: 0
@@ -52514,6 +52531,7 @@ MonoBehaviour:
   sun: {fileID: 0}
   orbitSpeed: 10
   harvestTimer: 0
+  isAlive: 1
 --- !u!58 &1369285341
 CircleCollider2D:
   m_ObjectHideFlags: 0
@@ -69762,6 +69780,7 @@ MonoBehaviour:
   sun: {fileID: 67689602}
   orbitSpeed: 50
   harvestTimer: 0
+  isAlive: 1
 --- !u!58 &1751796561
 CircleCollider2D:
   m_ObjectHideFlags: 0
@@ -77286,6 +77305,7 @@ MonoBehaviour:
   sun: {fileID: 0}
   orbitSpeed: 10
   harvestTimer: 0
+  isAlive: 1
 --- !u!58 &1842752918
 CircleCollider2D:
   m_ObjectHideFlags: 0
@@ -85836,6 +85856,7 @@ MonoBehaviour:
   sun: {fileID: 67689602}
   orbitSpeed: 20
   harvestTimer: 0
+  isAlive: 1
 --- !u!58 &1939275680
 CircleCollider2D:
   m_ObjectHideFlags: 0
@@ -87723,6 +87744,7 @@ MonoBehaviour:
   sun: {fileID: 0}
   orbitSpeed: 10
   harvestTimer: 0
+  isAlive: 1
 --- !u!58 &1986061136
 CircleCollider2D:
   m_ObjectHideFlags: 0
@@ -89434,7 +89456,7 @@ Transform:
   m_GameObject: {fileID: 2029020829}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 6.85, y: 6.92, z: 0}
   m_LocalScale: {x: 0.1, y: 0.1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -89488,7 +89510,7 @@ CircleCollider2D:
   m_CallbackLayers:
     serializedVersion: 2
     m_Bits: 4294967295
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_UsedByEffector: 0
   m_CompositeOperation: 0
   m_CompositeOrder: 0
@@ -89566,7 +89588,7 @@ SpriteRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 12
   m_Sprite: {fileID: 21300000, guid: 68ecd5a3bf54a4c429299684074f71f4, type: 3}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 1, g: 1, b: 1, a: 0.2784314}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
@@ -89589,6 +89611,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   index: 0
+  isBeingDragged: 0
+  dragForce: 5
   rb2d: {fileID: 0}
 --- !u!1 &2029705314
 GameObject:
@@ -89664,6 +89688,7 @@ MonoBehaviour:
   sun: {fileID: 67689602}
   orbitSpeed: 5
   harvestTimer: 0
+  isAlive: 1
 --- !u!58 &2029705318
 CircleCollider2D:
   m_ObjectHideFlags: 0
@@ -92545,6 +92570,7 @@ MonoBehaviour:
   sun: {fileID: 67689602}
   orbitSpeed: 8
   harvestTimer: 0
+  isAlive: 1
 --- !u!58 &2098951359
 CircleCollider2D:
   m_ObjectHideFlags: 0

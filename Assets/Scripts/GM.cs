@@ -340,6 +340,9 @@ public class GM : MonoBehaviour
         // UI Beat
         ui.Beat();
 
+        // Beacon beat!
+        Beacon.Beat();
+
         // Astarax
         Astarax();
     }
@@ -609,7 +612,15 @@ public class GM : MonoBehaviour
         // Activate the beacons
         foreach (Beacon beacon in beacons)
         {
+            // Freeze in place, just in case (and reduce their physics load?)
             beacon.rb2d.bodyType = RigidbodyType2D.Static;
+
+            // Make trigger so they don't physically block objects anymore.
+            beacon.GetComponent<Collider2D>().isTrigger = true;
+
+            // Materialize visual
+            SpriteRenderer renderer = beacon.GetComponent<SpriteRenderer>();
+            renderer.color = new Color(1f, 1f, 1f, 0.5f); // Half opacity
         }
 
         // Set game state

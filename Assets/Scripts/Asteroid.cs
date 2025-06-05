@@ -171,7 +171,7 @@ public class Asteroid : MonoBehaviour
 
     void OnTriggerEnter2D(Collider2D col)
     {
-        // Check for planet collision
+        // Planets
         Planet planet = col.gameObject.GetComponent<Planet>();
         if (planet != null && !exploding)
         {
@@ -189,6 +189,31 @@ public class Asteroid : MonoBehaviour
             Explode();
 
             return;
+        }
+
+        // Beacons
+        Beacon beacon = col.GetComponent<Beacon>();
+        if (beacon != null && beacon.index == currentBeaconIndex)
+        {
+            // Move to next beacon
+            currentBeaconIndex++;
+            
+            if (currentBeaconIndex > GM.I.beacons.Count)
+            {
+                // Completed all beacons, now target planets
+                int randomIndex = Random.Range(0, GM.I.activePlanets.Count);
+                targetPlanet = GM.I.activePlanets[randomIndex];
+                direction = (targetPlanet.transform.position - transform.position).normalized;
+            }
+            else
+            {
+                // Target next beacon
+                Beacon nextBeacon = GM.I.beacons[currentBeaconIndex-1];
+                direction = (nextBeacon.transform.position - transform.position).normalized;
+            }
+
+            // Reset velocity
+            rb2d.linearVelocity = Vector2.zero;
         }
     }
 
@@ -217,27 +242,27 @@ public class Asteroid : MonoBehaviour
         // - Beacons
 
         // Get beacon
-        Beacon beacon = collision.gameObject.GetComponent<Beacon>();
-        if (beacon != null && beacon.index == currentBeaconIndex)
-        {
-            // Move to next beacon
-            currentBeaconIndex++;
+        // Beacon beacon = collision.gameObject.GetComponent<Beacon>();
+        // if (beacon != null && beacon.index == currentBeaconIndex)
+        // {
+        //     // Move to next beacon
+        //     currentBeaconIndex++;
             
-            if (currentBeaconIndex > GM.I.beacons.Count)
-            {
-                // Completed all beacons, now target planets
-                int randomIndex = Random.Range(0, GM.I.activePlanets.Count);
-                targetPlanet = GM.I.activePlanets[randomIndex];
-                direction = (targetPlanet.transform.position - transform.position).normalized;
-            }
-            else
-            {
-                // Target next beacon
-                // Note: At this point I regret making currentBeaconIndex 1-indexed, and wish I could just take it back. But I'm afraid of breaking things even worse so I'm just gonna stumble forward for now.
-                Beacon nextBeacon = GM.I.beacons[currentBeaconIndex-1];
-                direction = (nextBeacon.transform.position - transform.position).normalized;
-            }
-        }
+        //     if (currentBeaconIndex > GM.I.beacons.Count)
+        //     {
+        //         // Completed all beacons, now target planets
+        //         int randomIndex = Random.Range(0, GM.I.activePlanets.Count);
+        //         targetPlanet = GM.I.activePlanets[randomIndex];
+        //         direction = (targetPlanet.transform.position - transform.position).normalized;
+        //     }
+        //     else
+        //     {
+        //         // Target next beacon
+        //         // Note: At this point I regret making currentBeaconIndex 1-indexed, and wish I could just take it back. But I'm afraid of breaking things even worse so I'm just gonna stumble forward for now.
+        //         Beacon nextBeacon = GM.I.beacons[currentBeaconIndex-1];
+        //         direction = (nextBeacon.transform.position - transform.position).normalized;
+        //     }
+        // }
     }
     
     void ConsumeAsteroid(Asteroid prey)

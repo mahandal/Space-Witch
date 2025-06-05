@@ -133,12 +133,28 @@ public class LaserWeapon : MonoBehaviour
         foreach (Collider2D col in colliders)
         {
             Asteroid asteroid = col.GetComponent<Asteroid>();
+            // if (asteroid != null && !asteroid.exploding)
+            // {
+            //     // Calculate distance
+            //     float distance = Vector3.Distance(transform.position, asteroid.transform.position);
+                
+            //     // If this asteroid is closer than the previous best target
+            //     if (distance < closestDistance)
+            //     {
+            //         closestDistance = distance;
+            //         bestTarget = asteroid;
+            //     }
+            // }
             if (asteroid != null && !asteroid.exploding)
             {
-                // Calculate distance
-                float distance = Vector3.Distance(transform.position, asteroid.transform.position);
+                // Check if asteroid is in front of us
+                Vector3 directionToAsteroid = (asteroid.transform.position - transform.position).normalized;
+                Vector3 forwardDirection = transform.up; // Assuming up is forward
                 
-                // If this asteroid is closer than the previous best target
+                float dot = Vector3.Dot(forwardDirection, directionToAsteroid);
+                if (dot < 0.5f) continue; // Only targets in front 60-degree cone
+                
+                float distance = Vector3.Distance(transform.position, asteroid.transform.position);
                 if (distance < closestDistance)
                 {
                     closestDistance = distance;

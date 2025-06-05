@@ -47,11 +47,42 @@ public class SpawnManager : MonoBehaviour
 
     private Player player;
     private Familiar familiar;
+    public LineRenderer boundaryCircle;
+
 
     void Start()
     {
         player = GM.I.player;
         familiar = GM.I.familiar;
+
+        // Create boundary circle
+        CreateBoundaryCircle();
+    }
+
+    void CreateBoundaryCircle()
+    {
+        GameObject circleObj = new GameObject("BoundaryCircle");
+        boundaryCircle = circleObj.AddComponent<LineRenderer>();
+        
+        // Simple white outline
+        boundaryCircle.material = new Material(Shader.Find("Sprites/Default"));
+        boundaryCircle.startColor = new Color (0f, 0f, 1f, 0.01f);
+        boundaryCircle.endColor = new Color (0f, 0f, 1f, 0.01f);
+        boundaryCircle.startWidth = 0.1f;
+        boundaryCircle.endWidth = 0.1f;
+        boundaryCircle.useWorldSpace = true;
+        
+        // Draw circle at max planet distance
+        int segments = 64;
+        boundaryCircle.positionCount = segments + 1;
+        
+        for (int i = 0; i <= segments; i++)
+        {
+            float angle = i * 2f * Mathf.PI / segments;
+            float x = Mathf.Cos(angle) * planetMaxDistance;
+            float y = Mathf.Sin(angle) * planetMaxDistance;
+            boundaryCircle.SetPosition(i, new Vector3(x, y, 0));
+        }
     }
 
     void FixedUpdate()

@@ -65,7 +65,10 @@ public class Gatherer : MonoBehaviour
 
     [Header("Star Time Effects")]
     public bool isInStarTime = false;
-    private Color starTimeColor = new Color(1f, 0.8f, 0.2f); 
+    private Color starTimeColor = new Color(1f, 0.8f, 0.2f);
+
+    [Header("Gatherer States")]
+    public bool isCalm = true;
 
     [Header("Gatherer Automated Machinery")]
     public Rigidbody2D rb2d;
