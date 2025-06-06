@@ -108,17 +108,24 @@ public class WheelChoice : MonoBehaviour, IPointerEnterHandler, IPointerExitHand
     // Chooses this talent as the player's new talent for this level
     public void ChooseTalent()
     {
-        // Check if we're at home and should unlock a new talent, or if we're outside and should learn that talent instead.
+        // Check if we're at home.
         if (GM.I.nebula.myName == "Home")
         {
-            UnlockTalent();
+            // If we already know this one, forget it!
+            if (GM.I.saveData.unlockedTalents.Contains(myName))
+                LockTalent();
+            else
+                UnlockTalent();
         }
         else
         {
+            // In game, learn a talent.
             LearnTalent();
         }
     }
 
+    // Unlock a talent.
+    // (at home, costing credits)
     public void UnlockTalent()
     {
         int cost = GM.I.currentWitch.baseTalentCost;
@@ -155,6 +162,37 @@ public class WheelChoice : MonoBehaviour, IPointerEnterHandler, IPointerExitHand
         }
     }
 
+    // Lock a talent.
+    public void LockTalent()
+    {
+        int cost = GM.I.currentWitch.baseTalentCost;
+
+        // Check if enough credits.
+        if (Gatherer.credits >= cost)
+        {
+            // Spend credits.
+            Gatherer.credits -= cost;
+
+            // Remove from unlocked talents.
+            GM.I.saveData.unlockedTalents.Remove(myName);
+
+            // Remove from known spells if it's a spell.
+            Talent talent = GM.I.talents[myName];
+            if (talent.isSpell && GM.I.player.knownSpells.Contains(myName))
+            {
+                GM.I.player.knownSpells.Remove(myName);
+            }
+
+            // Save game
+            GM.I.SaveGame();
+
+            // Reload
+            GM.I.currentWitch.BeginTraining();
+        }
+    }
+
+    // Learn a talent.
+    // (in-game, bought with your soul)
     public void LearnTalent()
     {
         // Count talents bought
@@ -224,8 +262,14 @@ public class WheelChoice : MonoBehaviour, IPointerEnterHandler, IPointerExitHand
         foreach (string talentName in witch.teachableTalents)
         {
             // Skip if already unlocked
-            if (GM.I.saveData.unlockedTalents.Contains(talentName))
-                continue;
+            // if (GM.I.saveData.unlockedTalents.Contains(talentName))
+            //     continue;
+
+            if (talentName == "Alchemist" || 
+                talentName == "Enchantress" || 
+                talentName == "Engineer" || 
+                talentName == "Druid" || 
+                talentName == "Oracle") continue;
 
             // Load talent into slot
             GM.I.ui.trainingTalents[slotIndex].LoadTalent(talentName);

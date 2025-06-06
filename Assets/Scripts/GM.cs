@@ -397,7 +397,7 @@ public class GM : MonoBehaviour
 
         // Award credits
         int score = CalculateScore();
-        Gatherer.credits += score / 10;
+        Gatherer.credits += score / 100;
         SaveGame();
 
         // sfx
@@ -433,14 +433,14 @@ public class GM : MonoBehaviour
         // Initialize score.
         float score = Gatherer.starsGathered;
 
-        // Multiply by # of lives remaining
-        score *= GM.I.player.livesRemaining;
+        // Gain bonus for # of lives remaining
+        score *= 1f + (0.1f * GM.I.player.livesRemaining);
 
-        // Multiply by # of planets remaining
-        score *= GM.I.activePlanets.Count;
+        // Gain bonus for # of planets remaining
+        score *= 1f + (0.1f * GM.I.activePlanets.Count);
 
         // Gain bonus score per moon.
-        score *= 1f + (0.5f * Gatherer.moonsGathered);
+        score *= 1f + (0.1f * Gatherer.moonsGathered);
 
         return (int)score;
     }

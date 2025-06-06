@@ -122,6 +122,8 @@ public class UI : MonoBehaviour
     public GameObject persistentGrowth;
     public GameObject talentCostParent;
     public TMP_Text talentCost;
+    public TMP_Text remember;
+    public TMP_Text forget;
     public Button exitButton;
 
     [Header("Full")]
@@ -780,6 +782,17 @@ public class UI : MonoBehaviour
         // Load cost at home
         if (GM.I.nebula.myName == "Home")
         {
+            // Set whether we're remembering or forgetting.
+            if (GM.I.saveData.unlockedTalents.Contains(talent.myName))
+            {
+                // Forgetting
+                remember.gameObject.SetActive(false);
+                forget.gameObject.SetActive(true);
+            } else {
+                // Remembering
+                remember.gameObject.SetActive(true);
+                forget.gameObject.SetActive(false);
+            }
             // Activate
             talentCostParent.SetActive(true);
 
