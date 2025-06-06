@@ -115,6 +115,10 @@ public class UI : MonoBehaviour
     public Slider gatherVolume;
     public Slider ambienceVolume;
 
+    [Header("Meditating")]
+    public Image beginMeditatingBG;
+    public Image beginMeditatingWheel;
+
     [Header("Growth")]
     public GameObject levelUpScreen;
     public GameObject mySelf;
@@ -258,6 +262,9 @@ public class UI : MonoBehaviour
 
         // Black hole
         UpdateBlackHole();
+
+        // Beginning of meditating does a little fade thing, tracked here.
+        UpdateBeginMeditating();
     }
 
     // Called once each beat.
@@ -268,6 +275,31 @@ public class UI : MonoBehaviour
         
         UpdateProgressBar();
         UpdateScore();
+    }
+
+    void UpdateBeginMeditating()
+    {
+        if (GM.I.player.isPreparingToMeditate)
+        {
+            // Calculate percent done
+            float percentDone = GM.I.player.meditationTimer / GM.I.player.meditationFadeTime;
+
+            // Color
+            beginMeditatingBG.color = new Color (0f, 0f, 0f, percentDone);
+
+            // Fill
+            beginMeditatingWheel.fillAmount = percentDone;
+
+            // reveal
+            // tbd: optimize
+            beginMeditatingWheel.gameObject.SetActive(true);
+            beginMeditatingBG.gameObject.SetActive(true);
+        } else {
+            // hide
+            // tbd : optimize
+            beginMeditatingWheel.gameObject.SetActive(false);
+            beginMeditatingBG.gameObject.SetActive(false);
+        }
     }
 
     void UpdateProgressBar()
@@ -1111,6 +1143,10 @@ public class UI : MonoBehaviour
 
         // Hide the universe
         //GM.I.universe.gameObject.SetActive(false);
+
+        // hide beginning
+        beginMeditatingWheel.gameObject.SetActive(false);
+        beginMeditatingBG.gameObject.SetActive(false);
     }
 
     public void CloseMeditationUI()
@@ -1249,6 +1285,9 @@ public class UI : MonoBehaviour
 
         // Deactivate top stuff
         topGameParent.SetActive(false);
+
+        // Disable the start button
+        startButton.SetActive(false);
 
         // Activate credits
         //creditsParent.SetActive(true);

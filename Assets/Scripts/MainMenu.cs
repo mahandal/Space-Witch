@@ -8,6 +8,9 @@ public class MainMenu : MonoBehaviour
     // The settings menu.
     public GameObject settingsMenu;
 
+    // Overlay for loading
+    public Image overlay;
+
     [Header("Settings")]
     public Slider masterVolume;
     public Slider musicVolume;
@@ -32,11 +35,16 @@ public class MainMenu : MonoBehaviour
 
         // Disable stuff that shouldn't be
         settingsMenu.SetActive(false);
+        overlay.gameObject.SetActive(false);
     }
 
     // Press play!
     public void PlayButtonPressed()
     {
+        // Overlay!
+        overlay.gameObject.SetActive(true);
+
+        // Load game!
         SceneManager.LoadScene("Game");
     }
 

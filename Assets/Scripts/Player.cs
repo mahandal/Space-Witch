@@ -37,6 +37,11 @@ public class Player : Gatherer
     // Rigid body
     //public Rigidbody2D rb2d;
 
+    [Header("Meditation")]
+    public float meditationFadeTime = 1f;
+    public float meditationTimer = 0f;
+    public bool isPreparingToMeditate = false;
+
     [Header("Timers")]
     //public float spellCooldown = 0f;
     public Dictionary<string, float> spellCooldowns = new Dictionary<string, float>();
@@ -166,16 +171,37 @@ public class Player : Gatherer
         EndSprint();
     }
 
+    // private void MeditatePerformed(InputAction.CallbackContext context)
+    // {
+    //     Meditate();
+    //     //GM.I.ui.Meditate();
+    // }
+
+    // private void MeditateCanceled(InputAction.CallbackContext context)
+    // {
+    //     EndMeditation();
+    //     //GM.I.ui.EndMeditation();
+    // }
+
     private void MeditatePerformed(InputAction.CallbackContext context)
     {
-        Meditate();
-        //GM.I.ui.Meditate();
+        // Start the meditation timer
+        isPreparingToMeditate = true;
+        meditationTimer = 0f;
     }
 
     private void MeditateCanceled(InputAction.CallbackContext context)
     {
+        // Cancel meditation if we're still preparing
+        if (isPreparingToMeditate)
+        {
+            isPreparingToMeditate = false;
+            meditationTimer = 0f;
+            return;
+        }
+        
+        // Otherwise end meditation normally
         EndMeditation();
-        //GM.I.ui.EndMeditation();
     }
 
     private void PausePerformed(InputAction.CallbackContext context)
@@ -292,7 +318,7 @@ public class Player : Gatherer
         Homeostasis();
 
         // Count down timers
-        // (called in GM so spells cool down while meditating)
+        // (called in GM so spells cool down while meditating? maybe not needed anymore huh)
         //Timers();
 
         // Call OnFixedUpdate for each of our talents
@@ -454,6 +480,19 @@ public class Player : Gatherer
     // Assumed to be called once per Update (or FixedUpdate maybe? but not both!)
     public void Timers()
     {
+        // - Meditation
+        if (isPreparingToMeditate)
+        {
+            meditationTimer += Time.deltaTime;
+            
+            if (meditationTimer >= meditationFadeTime)
+            {
+                Meditate();
+            }
+        }
+
+        // - Spells
+
         // Create a temporary list of spell names that need cooldown updates
         List<string> spellsToUpdate = new List<string>(spellCooldowns.Keys);
 
@@ -730,6 +769,9 @@ public class Player : Gatherer
 
         // Stop time
         GM.I.StopTime();
+
+        // Reset preparatation
+        isPreparingToMeditate = false;
     }
 
     public void EndMeditation()
