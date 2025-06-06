@@ -333,17 +333,31 @@ public class SpawnManager : MonoBehaviour
         ShuffleBees();
 
         // Activate one bee per planet
-        for (int i = 0; i < GM.I.planets.Count; i++)
+        // for (int i = 0; i < GM.I.planets.Count; i++)
+        // {
+        //     Debug.Log("Setting up bee # " + i);
+
+        //     // Get bee
+        //     Bee bee = GM.I.bees[i];
+
+        //     // Set starting goal
+        //     bee.goalIndex = i;
+        //     bee.goal = GM.I.planets[bee.goalIndex];
+
+        //     // Activate
+        //     bee.gameObject.SetActive(true);
+        // }
+
+        // Activate each planet's bee
+        for (int i = 0; i < GM.I.activePlanets.Count; i++)
         {
-            Debug.Log("Setting up bee # " + i);
-
-            // Get bee
-            Bee bee = GM.I.bees[i];
-
-            // Set starting goal
-            bee.goalIndex = 0;
-            bee.goal = GM.I.planets[bee.goalIndex];
-
+            Planet planet = GM.I.activePlanets[i];
+            Bee bee = GM.I.bees[planet.index]; // Use planet's original index to find its bee
+            
+            // Set starting goal to this planet's position in the active list
+            bee.goalIndex = i;
+            bee.goal = planet;
+            
             // Activate
             bee.gameObject.SetActive(true);
         }
@@ -421,6 +435,7 @@ public class SpawnManager : MonoBehaviour
         {
             // Unknown nebula
             GM.I.nebula = unknown;
+            GM.I.nebula.myName = "Unknown";
 
             // Generate a dozen planets
             // GM.I.nebula.planets = SpawnPlanets(GM.I.bees.Count);
@@ -433,7 +448,7 @@ public class SpawnManager : MonoBehaviour
             CuratePlanets(Random.Range(0, 9));
 
             // Spawn beacons
-            SpawnBeacons(Random.Range(2, 7));
+            SpawnBeacons(Random.Range(3, 7));
 
             // Generate new worm hole
             //SpawnWormHoles(1);
@@ -458,6 +473,7 @@ public class SpawnManager : MonoBehaviour
             
             // Generate deterministic nebula
             GM.I.nebula = unknown;
+            GM.I.nebula.myName = "Daily";
 
             // Spawn planets
             SpawnPlanets(GM.I.bees.Count);
@@ -469,7 +485,7 @@ public class SpawnManager : MonoBehaviour
             CuratePlanets(Random.Range(0, 9));
 
             // Spawn beacons
-            SpawnBeacons(Random.Range(2, 7));
+            SpawnBeacons(Random.Range(3, 7));
 
             // Spawn worm hole
             GM.I.nebula.wormHoles = new List<WormHole>();
@@ -500,8 +516,8 @@ public class SpawnManager : MonoBehaviour
         // Spawn beacons
         // SpawnBeacons(Random.Range(2, 7));
 
-        // Preview bee path
-        BeePath();
+        // Create preview of bee path
+        CreateBeePath();
     }
 
     // --- Beacons
@@ -671,7 +687,7 @@ public class SpawnManager : MonoBehaviour
     public LineRenderer asteroidPath;
 
     // Show the path bees will take.
-    void BeePath()
+    void CreateBeePath()
     {
         GameObject pathObj = new GameObject("BeePath");
         beePath = pathObj.AddComponent<LineRenderer>();
@@ -686,6 +702,22 @@ public class SpawnManager : MonoBehaviour
 
         
         // Connect all planets in a loop
+        beePath.positionCount = GM.I.activePlanets.Count + 1;
+        
+        for (int i = 0; i < GM.I.activePlanets.Count; i++)
+        {
+            beePath.SetPosition(i, GM.I.activePlanets[i].transform.position);
+        }
+        
+        // Close the loop - back to first planet
+        beePath.SetPosition(GM.I.activePlanets.Count, GM.I.activePlanets[0].transform.position);
+    }
+
+    public void UpdateBeePath()
+    {
+        if (beePath == null || GM.I.activePlanets.Count == 0) return;
+        
+        // Connect all living planets in a loop
         beePath.positionCount = GM.I.activePlanets.Count + 1;
         
         for (int i = 0; i < GM.I.activePlanets.Count; i++)

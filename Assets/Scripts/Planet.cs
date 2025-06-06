@@ -139,9 +139,6 @@ public class Planet : MonoBehaviour
 
     public void Death()
     {
-        // Remove from list of planets
-        //GM.I.planets.Remove(this);
-
         // Death!
         isAlive = false;
 
@@ -158,23 +155,8 @@ public class Planet : MonoBehaviour
         if (GM.I.activePlanets.Count == 0)
             GM.I.Lose();
 
-        // GG?
-        // if (GM.I.planets.Count == 0)
-        //     GM.I.Lose();
-
-        // GG?
-        // bool gg = true;
-        // foreach (Planet planet in GM.I.planets)
-        // {
-        //     if (planet.isAlive)
-        //         gg = false;
-        // }
-
-        // if (gg)
-        //     GM.I.Lose();
-
-        // Clean up game object
-        //Object.Destroy(gameObject);
+        // Update bee path
+        GM.I.spawnManager.UpdateBeePath();
     }
 
     public void Harvest()

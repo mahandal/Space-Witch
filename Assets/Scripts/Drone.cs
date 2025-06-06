@@ -82,6 +82,6 @@ public class Drone : Gatherer
             weapon = new LaserWeapon(transform, this); */
         
         // Set weapon stats
-        weapon.SetStats(talentLevel, false);
+        weapon.SetStats();
     }
 }

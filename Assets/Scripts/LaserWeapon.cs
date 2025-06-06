@@ -2,10 +2,6 @@ using UnityEngine;
 
 public class LaserWeapon : MonoBehaviour
 {
-    [Header("Manual Machinery")]
-    // Reference to owner
-    
-
     [Header("Stats (calculated mostly)")]
     // Weapon properties
     public float fireRange = 15f;
@@ -220,22 +216,42 @@ public class LaserWeapon : MonoBehaviour
         return laser;
     }
 
-    public void SetStats(int talentLevel, bool isSatellite = false)
+    // public void SetStats(int talentLevel, bool isSatellite = false)
+    // {
+    //     // Base damage scales with talent level
+    //     float baseDamage = 100f + 10f * talentLevel;
+        
+    //     // Mind influences damage (10% per point of mind)
+    //     damage = baseDamage * (1f + (owner.mind * 0.1f));
+        
+    //     // Mind could also influence charge time (shorter with higher mind)
+    //     chargeTime = 1f / (1f + (owner.mind * 0.05f));
+        
+    //     // Satellites do double damage but take twice as long to charge.
+    //     if (isSatellite)
+    //     {
+    //         damage *= 2f;
+    //         chargeTime *= 2f;
+    //     }
+    // }
+
+    public void SetStats(bool isHeavy = false)
     {
-        // Base damage scales with talent level
-        float baseDamage = 100f + 10f * talentLevel;
-        
-        // Mind influences damage (10% per point of mind)
-        damage = baseDamage * (1f + (owner.mind * 0.1f));
-        
-        // Mind could also influence charge time (shorter with higher mind)
-        chargeTime = 1f / (1f + (owner.mind * 0.05f));
-        
-        // Satellites do double damage but take twice as long to charge.
-        if (isSatellite)
+        // Damage (scales with Body)
+        damage = 50f + (owner.body * 15f);
+
+        // Range (scales with Mind)
+        fireRange = 3f + (owner.mind * 0.1f);
+
+        // Charge time (scales with Soul)
+        chargeTime = 2f / (1f + (owner.soul * 0.1f));
+
+        // Double damage, range, and charge time for heavy weapons
+        if (isHeavy)
         {
-            damage *= 2f;
-            chargeTime *= 2f;
+            damage *= 2;
+            fireRange *= 2;
+            chargeTime *= 2;
         }
     }
 }

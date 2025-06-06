@@ -51,6 +51,6 @@ public class Satellite : Gatherer
             weapon = new LaserWeapon(transform, this); */
         
         // Set weapon stats
-        weapon.SetStats(talentLevel, true);
+        weapon.SetStats();
     }
 }

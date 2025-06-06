@@ -123,7 +123,7 @@ public class Gatherer : MonoBehaviour
 
         // Initialize weapons(?)
         if (weapon != null)
-            weapon.SetStats(1, false);
+            weapon.SetStats();
     }
 
     // Calculate stats that can be derived directly from attributes:

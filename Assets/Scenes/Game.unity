@@ -5778,6 +5778,37 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 34155751}
   m_CullTransparentMesh: 1
+--- !u!1 &38162443
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 38162444}
+  m_Layer: 13
+  m_Name: Fire Point
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &38162444
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 38162443}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 8.31, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 887961202}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &39400660
 GameObject:
   m_ObjectHideFlags: 0
@@ -9915,6 +9946,37 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 159489039}
   m_CullTransparentMesh: 1
+--- !u!1 &162236131
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 162236132}
+  m_Layer: 13
+  m_Name: Fire Point
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &162236132
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 162236131}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 8.31, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 2068688410}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &162637805
 GameObject:
   m_ObjectHideFlags: 0
@@ -17558,8 +17620,8 @@ MonoBehaviour:
   baseAsteroidAcceleration: 2
   baseAsteroidMaxSpeed: 2
   baseAsteroidSize: 0.2
-  asteroidAccelerationHypeScalar: 0.2
-  asteroidMaxSpeedHypeScalar: 0.2
+  asteroidAccelerationHypeScalar: 0.1
+  asteroidMaxSpeedHypeScalar: 0.1
   asteroidSizeHypeScalar: 0.05
   planetMinDistance: 5
   planetMaxDistance: 27.2
@@ -19022,6 +19084,7 @@ GameObject:
   - component: {fileID: 459272878}
   - component: {fileID: 459272879}
   - component: {fileID: 459272880}
+  - component: {fileID: 459272881}
   m_Layer: 13
   m_Name: 8 - Bee Leaf
   m_TagString: Untagged
@@ -19041,7 +19104,8 @@ Transform:
   m_LocalPosition: {x: -1.85, y: -1.05, z: 0}
   m_LocalScale: {x: 0.043, y: 0.043, z: 1}
   m_ConstrainProportionsScale: 0
-  m_Children: []
+  m_Children:
+  - {fileID: 699030905}
   m_Father: {fileID: 2099221306}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!50 &459272876
@@ -19150,8 +19214,8 @@ MonoBehaviour:
   manaRegenDelay: 1
   acceleration: 1.8
   maxSpeed: 1.8
-  firePoint: {fileID: 0}
-  weapon: {fileID: 0}
+  firePoint: {fileID: 699030905}
+  weapon: {fileID: 459272881}
   diesPermanently: 0
   isDying: 0
   deathSpinSpeed: 720
@@ -19232,6 +19296,27 @@ MonoBehaviour:
   specialImage: {fileID: 0}
   specialImageFileName: 
   sprite: {fileID: 0}
+--- !u!114 &459272881
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 459272873}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d4ab541d1cb156c43b53075868dd7af2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  fireRange: 3
+  fireRate: 1
+  damage: 10
+  chargeTime: 1
+  currentChargeTime: 0
+  isCharging: 0
+  owner: {fileID: 0}
+  firePoint: {fileID: 0}
+  target: {fileID: 0}
 --- !u!1 &467118748
 GameObject:
   m_ObjectHideFlags: 0
@@ -29442,6 +29527,7 @@ GameObject:
   - component: {fileID: 649978082}
   - component: {fileID: 649978083}
   - component: {fileID: 649978084}
+  - component: {fileID: 649978085}
   m_Layer: 13
   m_Name: 4 - Bebe
   m_TagString: Untagged
@@ -29461,7 +29547,8 @@ Transform:
   m_LocalPosition: {x: 1.8, y: -1, z: 0}
   m_LocalScale: {x: 0.047, y: 0.047, z: 1}
   m_ConstrainProportionsScale: 0
-  m_Children: []
+  m_Children:
+  - {fileID: 775732726}
   m_Father: {fileID: 2099221306}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!50 &649978080
@@ -29570,8 +29657,8 @@ MonoBehaviour:
   manaRegenDelay: 1
   acceleration: 1.4
   maxSpeed: 1.4
-  firePoint: {fileID: 0}
-  weapon: {fileID: 0}
+  firePoint: {fileID: 775732726}
+  weapon: {fileID: 649978085}
   diesPermanently: 0
   isDying: 0
   deathSpinSpeed: 720
@@ -29652,6 +29739,27 @@ MonoBehaviour:
   specialImage: {fileID: 0}
   specialImageFileName: 
   sprite: {fileID: 0}
+--- !u!114 &649978085
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 649978077}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d4ab541d1cb156c43b53075868dd7af2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  fireRange: 3
+  fireRate: 1
+  damage: 10
+  chargeTime: 1
+  currentChargeTime: 0
+  isCharging: 0
+  owner: {fileID: 0}
+  firePoint: {fileID: 0}
+  target: {fileID: 0}
 --- !u!1 &651028570
 GameObject:
   m_ObjectHideFlags: 0
@@ -31282,6 +31390,37 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 696461432}
   m_CullTransparentMesh: 1
+--- !u!1 &699030904
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 699030905}
+  m_Layer: 13
+  m_Name: Fire Point
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &699030905
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 699030904}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 8.31, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 459272874}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &705192718
 GameObject:
   m_ObjectHideFlags: 0
@@ -37757,6 +37896,37 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!1 &775732725
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 775732726}
+  m_Layer: 13
+  m_Name: Fire Point
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &775732726
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 775732725}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 8.31, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 649978078}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &778418208
 GameObject:
   m_ObjectHideFlags: 0
@@ -40369,6 +40539,37 @@ MonoBehaviour:
   image: {fileID: 853725992}
   myName: Jump
   isSpell: 0
+--- !u!1 &860182370
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 860182371}
+  m_Layer: 13
+  m_Name: Fire Point
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &860182371
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 860182370}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 8.31, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1793365066}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &861764078
 GameObject:
   m_ObjectHideFlags: 0
@@ -40885,6 +41086,7 @@ GameObject:
   - component: {fileID: 887961206}
   - component: {fileID: 887961207}
   - component: {fileID: 887961208}
+  - component: {fileID: 887961209}
   m_Layer: 13
   m_Name: 1 - Beamish
   m_TagString: Untagged
@@ -40904,7 +41106,8 @@ Transform:
   m_LocalPosition: {x: -2.67, y: 1.13, z: 0}
   m_LocalScale: {x: 0.05, y: 0.05, z: 1}
   m_ConstrainProportionsScale: 0
-  m_Children: []
+  m_Children:
+  - {fileID: 38162444}
   m_Father: {fileID: 2099221306}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!50 &887961204
@@ -41013,8 +41216,8 @@ MonoBehaviour:
   manaRegenDelay: 1
   acceleration: 1.1
   maxSpeed: 1.1
-  firePoint: {fileID: 0}
-  weapon: {fileID: 0}
+  firePoint: {fileID: 38162444}
+  weapon: {fileID: 887961209}
   diesPermanently: 0
   isDying: 0
   deathSpinSpeed: 720
@@ -41094,6 +41297,27 @@ MonoBehaviour:
   specialImage: {fileID: 0}
   specialImageFileName: 
   sprite: {fileID: 0}
+--- !u!114 &887961209
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 887961201}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d4ab541d1cb156c43b53075868dd7af2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  fireRange: 3
+  fireRate: 1
+  damage: 10
+  chargeTime: 1
+  currentChargeTime: 0
+  isCharging: 0
+  owner: {fileID: 0}
+  firePoint: {fileID: 0}
+  target: {fileID: 0}
 --- !u!1 &889139438
 GameObject:
   m_ObjectHideFlags: 0
@@ -44440,6 +44664,37 @@ MonoBehaviour:
             m_StringArgument: 
             m_BoolArgument: 0
           m_CallState: 2
+--- !u!1 &1048339478
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1048339479}
+  m_Layer: 13
+  m_Name: Fire Point
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1048339479
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1048339478}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 8.31, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1708296736}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1051918637
 GameObject:
   m_ObjectHideFlags: 0
@@ -45574,6 +45829,7 @@ GameObject:
   - component: {fileID: 1108576401}
   - component: {fileID: 1108576402}
   - component: {fileID: 1108576403}
+  - component: {fileID: 1108576404}
   m_Layer: 13
   m_Name: 5 - Beans
   m_TagString: Untagged
@@ -45593,7 +45849,8 @@ Transform:
   m_LocalPosition: {x: 1.05, y: -1.85, z: 0}
   m_LocalScale: {x: 0.046, y: 0.046, z: 1}
   m_ConstrainProportionsScale: 0
-  m_Children: []
+  m_Children:
+  - {fileID: 1426488241}
   m_Father: {fileID: 2099221306}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!50 &1108576399
@@ -45702,8 +45959,8 @@ MonoBehaviour:
   manaRegenDelay: 1
   acceleration: 1.5
   maxSpeed: 1.5
-  firePoint: {fileID: 0}
-  weapon: {fileID: 0}
+  firePoint: {fileID: 1426488241}
+  weapon: {fileID: 1108576404}
   diesPermanently: 0
   isDying: 0
   deathSpinSpeed: 720
@@ -45784,6 +46041,27 @@ MonoBehaviour:
   specialImage: {fileID: 0}
   specialImageFileName: 
   sprite: {fileID: 0}
+--- !u!114 &1108576404
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1108576396}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d4ab541d1cb156c43b53075868dd7af2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  fireRange: 3
+  fireRate: 1
+  damage: 10
+  chargeTime: 1
+  currentChargeTime: 0
+  isCharging: 0
+  owner: {fileID: 0}
+  firePoint: {fileID: 0}
+  target: {fileID: 0}
 --- !u!1 &1112346566
 GameObject:
   m_ObjectHideFlags: 0
@@ -47703,6 +47981,7 @@ GameObject:
   - component: {fileID: 1201588398}
   - component: {fileID: 1201588399}
   - component: {fileID: 1201588400}
+  - component: {fileID: 1201588401}
   m_Layer: 13
   m_Name: 9 - Beethoven
   m_TagString: Untagged
@@ -47722,7 +48001,8 @@ Transform:
   m_LocalPosition: {x: -2.26, y: 0, z: 0}
   m_LocalScale: {x: 0.042, y: 0.042, z: 1}
   m_ConstrainProportionsScale: 0
-  m_Children: []
+  m_Children:
+  - {fileID: 1817860857}
   m_Father: {fileID: 2099221306}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!50 &1201588396
@@ -47831,8 +48111,8 @@ MonoBehaviour:
   manaRegenDelay: 1
   acceleration: 1.9
   maxSpeed: 1.9
-  firePoint: {fileID: 0}
-  weapon: {fileID: 0}
+  firePoint: {fileID: 1817860857}
+  weapon: {fileID: 1201588401}
   diesPermanently: 0
   isDying: 0
   deathSpinSpeed: 720
@@ -47913,6 +48193,27 @@ MonoBehaviour:
   specialImage: {fileID: 0}
   specialImageFileName: 
   sprite: {fileID: 0}
+--- !u!114 &1201588401
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1201588393}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d4ab541d1cb156c43b53075868dd7af2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  fireRange: 3
+  fireRate: 1
+  damage: 10
+  chargeTime: 1
+  currentChargeTime: 0
+  isCharging: 0
+  owner: {fileID: 0}
+  firePoint: {fileID: 0}
+  target: {fileID: 0}
 --- !u!1 &1203450715
 GameObject:
   m_ObjectHideFlags: 0
@@ -54367,6 +54668,68 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1425897532}
   m_CullTransparentMesh: 1
+--- !u!1 &1426488240
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1426488241}
+  m_Layer: 13
+  m_Name: Fire Point
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1426488241
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1426488240}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 8.31, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1108576397}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1428704550
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1428704551}
+  m_Layer: 13
+  m_Name: Fire Point
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1428704551
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1428704550}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 8.31, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1936830534}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1430024444
 GameObject:
   m_ObjectHideFlags: 0
@@ -54728,6 +55091,37 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!1 &1433952577
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1433952578}
+  m_Layer: 13
+  m_Name: Fire Point
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1433952578
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1433952577}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 8.31, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1650974545}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1435110282
 GameObject:
   m_ObjectHideFlags: 0
@@ -59985,6 +60379,7 @@ GameObject:
   - component: {fileID: 1464730732}
   - component: {fileID: 1464730733}
   - component: {fileID: 1464730734}
+  - component: {fileID: 1464730735}
   m_Layer: 13
   m_Name: 3 - Beatrice
   m_TagString: Untagged
@@ -60004,7 +60399,8 @@ Transform:
   m_LocalPosition: {x: 2.35, y: -0.03, z: 0}
   m_LocalScale: {x: 0.048, y: 0.048, z: 1}
   m_ConstrainProportionsScale: 0
-  m_Children: []
+  m_Children:
+  - {fileID: 1933385969}
   m_Father: {fileID: 2099221306}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!50 &1464730730
@@ -60113,8 +60509,8 @@ MonoBehaviour:
   manaRegenDelay: 1
   acceleration: 1.3
   maxSpeed: 1.3
-  firePoint: {fileID: 0}
-  weapon: {fileID: 0}
+  firePoint: {fileID: 1933385969}
+  weapon: {fileID: 1464730735}
   diesPermanently: 0
   isDying: 0
   deathSpinSpeed: 720
@@ -60195,6 +60591,27 @@ MonoBehaviour:
   specialImage: {fileID: 0}
   specialImageFileName: 
   sprite: {fileID: 0}
+--- !u!114 &1464730735
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1464730727}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d4ab541d1cb156c43b53075868dd7af2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  fireRange: 3
+  fireRate: 1
+  damage: 10
+  chargeTime: 1
+  currentChargeTime: 0
+  isCharging: 0
+  owner: {fileID: 0}
+  firePoint: {fileID: 0}
+  target: {fileID: 0}
 --- !u!1 &1465043245
 GameObject:
   m_ObjectHideFlags: 0
@@ -66513,6 +66930,7 @@ GameObject:
   - component: {fileID: 1650974541}
   - component: {fileID: 1650974546}
   - component: {fileID: 1650974547}
+  - component: {fileID: 1650974548}
   m_Layer: 13
   m_Name: 12 - Beelzebub
   m_TagString: Untagged
@@ -66544,8 +66962,8 @@ MonoBehaviour:
   manaRegenDelay: 1
   acceleration: 2.3
   maxSpeed: 13
-  firePoint: {fileID: 0}
-  weapon: {fileID: 0}
+  firePoint: {fileID: 1433952578}
+  weapon: {fileID: 1650974548}
   diesPermanently: 0
   isDying: 0
   deathSpinSpeed: 720
@@ -66666,7 +67084,8 @@ Transform:
   m_LocalPosition: {x: 1.45, y: 2.21, z: 0}
   m_LocalScale: {x: 0.03, y: 0.03, z: 1}
   m_ConstrainProportionsScale: 0
-  m_Children: []
+  m_Children:
+  - {fileID: 1433952578}
   m_Father: {fileID: 2099221306}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!58 &1650974546
@@ -66722,6 +67141,27 @@ MonoBehaviour:
   specialImage: {fileID: 0}
   specialImageFileName: 
   sprite: {fileID: 0}
+--- !u!114 &1650974548
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1650974540}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d4ab541d1cb156c43b53075868dd7af2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  fireRange: 3
+  fireRate: 1
+  damage: 10
+  chargeTime: 1
+  currentChargeTime: 0
+  isCharging: 0
+  owner: {fileID: 0}
+  firePoint: {fileID: 0}
+  target: {fileID: 0}
 --- !u!1 &1651455949
 GameObject:
   m_ObjectHideFlags: 0
@@ -68327,6 +68767,7 @@ GameObject:
   - component: {fileID: 1708296740}
   - component: {fileID: 1708296741}
   - component: {fileID: 1708296742}
+  - component: {fileID: 1708296743}
   m_Layer: 13
   m_Name: 7 - Beaker
   m_TagString: Untagged
@@ -68346,7 +68787,8 @@ Transform:
   m_LocalPosition: {x: -0.98, y: -1.85, z: 0}
   m_LocalScale: {x: 0.044, y: 0.044, z: 1}
   m_ConstrainProportionsScale: 0
-  m_Children: []
+  m_Children:
+  - {fileID: 1048339479}
   m_Father: {fileID: 2099221306}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!50 &1708296738
@@ -68455,8 +68897,8 @@ MonoBehaviour:
   manaRegenDelay: 1
   acceleration: 1.7
   maxSpeed: 1.7
-  firePoint: {fileID: 0}
-  weapon: {fileID: 0}
+  firePoint: {fileID: 1048339479}
+  weapon: {fileID: 1708296743}
   diesPermanently: 0
   isDying: 0
   deathSpinSpeed: 720
@@ -68537,6 +68979,27 @@ MonoBehaviour:
   specialImage: {fileID: 0}
   specialImageFileName: 
   sprite: {fileID: 0}
+--- !u!114 &1708296743
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1708296735}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d4ab541d1cb156c43b53075868dd7af2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  fireRange: 3
+  fireRate: 1
+  damage: 10
+  chargeTime: 1
+  currentChargeTime: 0
+  isCharging: 0
+  owner: {fileID: 0}
+  firePoint: {fileID: 0}
+  target: {fileID: 0}
 --- !u!1 &1713835916
 GameObject:
   m_ObjectHideFlags: 0
@@ -75930,6 +76393,7 @@ GameObject:
   - component: {fileID: 1793365070}
   - component: {fileID: 1793365071}
   - component: {fileID: 1793365072}
+  - component: {fileID: 1793365073}
   m_Layer: 13
   m_Name: 2 - Bianca
   m_TagString: Untagged
@@ -75949,7 +76413,8 @@ Transform:
   m_LocalPosition: {x: 2.43, y: 1.18, z: 0}
   m_LocalScale: {x: 0.049, y: 0.049, z: 1}
   m_ConstrainProportionsScale: 0
-  m_Children: []
+  m_Children:
+  - {fileID: 860182371}
   m_Father: {fileID: 2099221306}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!50 &1793365068
@@ -76058,8 +76523,8 @@ MonoBehaviour:
   manaRegenDelay: 1
   acceleration: 1.2
   maxSpeed: 1.2
-  firePoint: {fileID: 0}
-  weapon: {fileID: 0}
+  firePoint: {fileID: 860182371}
+  weapon: {fileID: 1793365073}
   diesPermanently: 0
   isDying: 0
   deathSpinSpeed: 720
@@ -76139,6 +76604,27 @@ MonoBehaviour:
   specialImage: {fileID: 0}
   specialImageFileName: 
   sprite: {fileID: 0}
+--- !u!114 &1793365073
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1793365065}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d4ab541d1cb156c43b53075868dd7af2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  fireRange: 3
+  fireRate: 1
+  damage: 10
+  chargeTime: 1
+  currentChargeTime: 0
+  isCharging: 0
+  owner: {fileID: 0}
+  firePoint: {fileID: 0}
+  target: {fileID: 0}
 --- !u!1 &1793526911
 GameObject:
   m_ObjectHideFlags: 0
@@ -76214,6 +76700,37 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1793526911}
   m_CullTransparentMesh: 1
+--- !u!1 &1807053220
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1807053221}
+  m_Layer: 13
+  m_Name: Fire Point
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1807053221
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1807053220}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 8.31, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1945751003}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1808041656
 GameObject:
   m_ObjectHideFlags: 0
@@ -76896,6 +77413,37 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1816710583}
   m_CullTransparentMesh: 1
+--- !u!1 &1817860856
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1817860857}
+  m_Layer: 13
+  m_Name: Fire Point
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1817860857
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1817860856}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 8.31, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1201588394}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1824820663
 GameObject:
   m_ObjectHideFlags: 0
@@ -85318,6 +85866,37 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1928360647}
   m_CullTransparentMesh: 1
+--- !u!1 &1933385968
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1933385969}
+  m_Layer: 13
+  m_Name: Fire Point
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1933385969
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1933385968}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 8.31, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1464730728}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1934796541
 GameObject:
   m_ObjectHideFlags: 0
@@ -85452,6 +86031,7 @@ GameObject:
   - component: {fileID: 1936830538}
   - component: {fileID: 1936830539}
   - component: {fileID: 1936830540}
+  - component: {fileID: 1936830541}
   m_Layer: 13
   m_Name: 11 - Beesly
   m_TagString: Untagged
@@ -85471,7 +86051,8 @@ Transform:
   m_LocalPosition: {x: 0, y: 1.52, z: 0}
   m_LocalScale: {x: 0.04, y: 0.04, z: 1}
   m_ConstrainProportionsScale: 0
-  m_Children: []
+  m_Children:
+  - {fileID: 1428704551}
   m_Father: {fileID: 2099221306}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!50 &1936830536
@@ -85580,8 +86161,8 @@ MonoBehaviour:
   manaRegenDelay: 1
   acceleration: 2.1
   maxSpeed: 7
-  firePoint: {fileID: 0}
-  weapon: {fileID: 0}
+  firePoint: {fileID: 1428704551}
+  weapon: {fileID: 1936830541}
   diesPermanently: 0
   isDying: 0
   deathSpinSpeed: 720
@@ -85661,6 +86242,27 @@ MonoBehaviour:
   specialImage: {fileID: 0}
   specialImageFileName: 
   sprite: {fileID: 0}
+--- !u!114 &1936830541
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1936830533}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d4ab541d1cb156c43b53075868dd7af2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  fireRange: 3
+  fireRate: 1
+  damage: 10
+  chargeTime: 1
+  currentChargeTime: 0
+  isCharging: 0
+  owner: {fileID: 0}
+  firePoint: {fileID: 0}
+  target: {fileID: 0}
 --- !u!1 &1936891201
 GameObject:
   m_ObjectHideFlags: 0
@@ -86258,6 +86860,7 @@ GameObject:
   - component: {fileID: 1945751007}
   - component: {fileID: 1945751008}
   - component: {fileID: 1945751009}
+  - component: {fileID: 1945751010}
   m_Layer: 13
   m_Name: 6 - Beaver
   m_TagString: Untagged
@@ -86277,7 +86880,8 @@ Transform:
   m_LocalPosition: {x: 0, y: -2.7, z: 0}
   m_LocalScale: {x: 0.045, y: 0.045, z: 1}
   m_ConstrainProportionsScale: 0
-  m_Children: []
+  m_Children:
+  - {fileID: 1807053221}
   m_Father: {fileID: 2099221306}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!50 &1945751005
@@ -86386,8 +86990,8 @@ MonoBehaviour:
   manaRegenDelay: 1
   acceleration: 1.6
   maxSpeed: 1.6
-  firePoint: {fileID: 0}
-  weapon: {fileID: 0}
+  firePoint: {fileID: 1807053221}
+  weapon: {fileID: 1945751010}
   diesPermanently: 0
   isDying: 0
   deathSpinSpeed: 720
@@ -86467,6 +87071,27 @@ MonoBehaviour:
   specialImage: {fileID: 0}
   specialImageFileName: 
   sprite: {fileID: 0}
+--- !u!114 &1945751010
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1945751002}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d4ab541d1cb156c43b53075868dd7af2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  fireRange: 3
+  fireRate: 1
+  damage: 10
+  chargeTime: 1
+  currentChargeTime: 0
+  isCharging: 0
+  owner: {fileID: 0}
+  firePoint: {fileID: 0}
+  target: {fileID: 0}
 --- !u!1 &1950264502
 GameObject:
   m_ObjectHideFlags: 0
@@ -91425,6 +92050,7 @@ GameObject:
   - component: {fileID: 2068688414}
   - component: {fileID: 2068688415}
   - component: {fileID: 2068688416}
+  - component: {fileID: 2068688417}
   m_Layer: 13
   m_Name: 10 - Beer Tastes Bad
   m_TagString: Untagged
@@ -91444,7 +92070,8 @@ Transform:
   m_LocalPosition: {x: -1.6, y: 2.25, z: 0}
   m_LocalScale: {x: 0.041, y: 0.041, z: 1}
   m_ConstrainProportionsScale: 0
-  m_Children: []
+  m_Children:
+  - {fileID: 162236132}
   m_Father: {fileID: 2099221306}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!50 &2068688412
@@ -91553,8 +92180,8 @@ MonoBehaviour:
   manaRegenDelay: 1
   acceleration: 2
   maxSpeed: 2
-  firePoint: {fileID: 0}
-  weapon: {fileID: 0}
+  firePoint: {fileID: 162236132}
+  weapon: {fileID: 2068688417}
   diesPermanently: 0
   isDying: 0
   deathSpinSpeed: 720
@@ -91634,6 +92261,27 @@ MonoBehaviour:
   specialImage: {fileID: 0}
   specialImageFileName: 
   sprite: {fileID: 0}
+--- !u!114 &2068688417
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2068688409}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d4ab541d1cb156c43b53075868dd7af2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  fireRange: 3
+  fireRate: 1
+  damage: 10
+  chargeTime: 1
+  currentChargeTime: 0
+  isCharging: 0
+  owner: {fileID: 0}
+  firePoint: {fileID: 0}
+  target: {fileID: 0}
 --- !u!1 &2069022668
 GameObject:
   m_ObjectHideFlags: 0
