@@ -108,7 +108,8 @@ public class Asteroid : MonoBehaviour
         // - Spawn stars
 
         // Start with our size
-        float numStars = size * previousFrameVelocity + size * Mathf.Log(previousAngularVelocity);
+        float numStars = size;
+        //float numStars = size * previousFrameVelocity + size * Mathf.Log(previousAngularVelocity);
 
         // Multiply based on luck?
         float ourLuck = (GM.I.player.luck + GM.I.familiar.luck) / 2;
@@ -213,13 +214,16 @@ public class Asteroid : MonoBehaviour
             }
 
             // Reset velocity
-            rb2d.linearVelocity = Vector2.zero;
+            //rb2d.linearVelocity = Vector2.zero;
+
+            rb2d.linearVelocity = direction.normalized * maxSpeed;
         }
     }
 
     public float CalculateDamage()
     {
-        return damage * size * previousFrameVelocity * Mathf.Log(Mathf.Abs(previousAngularVelocity) + 1);
+        return damage * size * previousFrameVelocity;
+        // return damage * size * previousFrameVelocity * Mathf.Log(Mathf.Abs(previousAngularVelocity) + 1);
     }
 
     void OnCollisionEnter2D(Collision2D collision)
@@ -239,30 +243,6 @@ public class Asteroid : MonoBehaviour
             }
         }
 
-        // - Beacons
-
-        // Get beacon
-        // Beacon beacon = collision.gameObject.GetComponent<Beacon>();
-        // if (beacon != null && beacon.index == currentBeaconIndex)
-        // {
-        //     // Move to next beacon
-        //     currentBeaconIndex++;
-            
-        //     if (currentBeaconIndex > GM.I.beacons.Count)
-        //     {
-        //         // Completed all beacons, now target planets
-        //         int randomIndex = Random.Range(0, GM.I.activePlanets.Count);
-        //         targetPlanet = GM.I.activePlanets[randomIndex];
-        //         direction = (targetPlanet.transform.position - transform.position).normalized;
-        //     }
-        //     else
-        //     {
-        //         // Target next beacon
-        //         // Note: At this point I regret making currentBeaconIndex 1-indexed, and wish I could just take it back. But I'm afraid of breaking things even worse so I'm just gonna stumble forward for now.
-        //         Beacon nextBeacon = GM.I.beacons[currentBeaconIndex-1];
-        //         direction = (nextBeacon.transform.position - transform.position).normalized;
-        //     }
-        // }
     }
     
     void ConsumeAsteroid(Asteroid prey)
@@ -285,7 +265,7 @@ public class Asteroid : MonoBehaviour
         //rb2d.linearVelocity = Vector2.Lerp(rb2d.linearVelocity, prey.rb2d.linearVelocity, 0.3f);
 
         // Gain prey's speed
-        float speedEfficiency = 1f - sizeEfficiency;
+        float speedEfficiency = 0.2f - sizeEfficiency;
         maxSpeed += prey.maxSpeed * speedEfficiency;
         acceleration += prey.acceleration * speedEfficiency;
         rb2d.linearVelocity += prey.rb2d.linearVelocity.magnitude * rb2d.linearVelocity.normalized;

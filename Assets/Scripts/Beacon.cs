@@ -88,6 +88,8 @@ public class Beacon : MonoBehaviour
     // Called each beat by GM
     public static void Beat()
     {
+        if (GM.I.gameState < 1) return;
+        
         // Go through each beacon
         foreach (Beacon beacon in GM.I.beacons)
         {

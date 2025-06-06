@@ -12260,6 +12260,7 @@ MonoBehaviour:
   isInBabyTime: 0
   babyTimeFlashRate: 5
   isInStarTime: 0
+  isCalm: 1
   rb2d: {fileID: 0}
   previousFrameVelocity: 0
   originalScale: {x: 0, y: 0, z: 0}
@@ -13548,6 +13549,7 @@ MonoBehaviour:
   isInBabyTime: 0
   babyTimeFlashRate: 5
   isInStarTime: 0
+  isCalm: 1
   rb2d: {fileID: 0}
   previousFrameVelocity: 0
   originalScale: {x: 0, y: 0, z: 0}
@@ -16434,6 +16436,7 @@ MonoBehaviour:
   isInBabyTime: 0
   babyTimeFlashRate: 5
   isInStarTime: 0
+  isCalm: 1
   rb2d: {fileID: 0}
   previousFrameVelocity: 0
   originalScale: {x: 0, y: 0, z: 0}
@@ -17552,6 +17555,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8a83dcd5d2ecb2142a168a7ccfb79690, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  baseAsteroidAcceleration: 2
+  baseAsteroidMaxSpeed: 2
+  baseAsteroidSize: 0.2
+  asteroidAccelerationHypeScalar: 0.2
+  asteroidMaxSpeedHypeScalar: 0.2
+  asteroidSizeHypeScalar: 0.05
   planetMinDistance: 5
   planetMaxDistance: 27.2
   despawnDistance: 10
@@ -17572,6 +17581,8 @@ MonoBehaviour:
   laser_satellite: {fileID: 1204809610}
   spawnTimer: 1
   boundaryCircle: {fileID: 0}
+  beePath: {fileID: 0}
+  asteroidPath: {fileID: 0}
 --- !u!114 &414781822
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -19147,6 +19158,7 @@ MonoBehaviour:
   isInBabyTime: 0
   babyTimeFlashRate: 5
   isInStarTime: 0
+  isCalm: 1
   rb2d: {fileID: 0}
   previousFrameVelocity: 0
   originalScale: {x: 0, y: 0, z: 0}
@@ -20848,6 +20860,7 @@ MonoBehaviour:
   isInBabyTime: 0
   babyTimeFlashRate: 5
   isInStarTime: 0
+  isCalm: 1
   rb2d: {fileID: 0}
   previousFrameVelocity: 0
   originalScale: {x: 0, y: 0, z: 0}
@@ -21617,7 +21630,7 @@ GameObject:
   - component: {fileID: 560119984}
   - component: {fileID: 560119983}
   m_Layer: 0
-  m_Name: BH - Unknown (1)
+  m_Name: BH - Daily
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -21651,8 +21664,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: eb90ac3a355662548b4cf517c92734f8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  myName: BLACK HOLE - UNKNOWN
-  description: Enter this black hole to warp to a new unknown nebula.
+  myName: BLACK HOLE - DAILY
+  description: Enter this black hole to warp to the nebula of the day!
   specialImage: {fileID: 0}
   specialImageFileName: 
   sprite: {fileID: 0}
@@ -21668,7 +21681,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 45cfb0b1be9bcbe4880d19f675333113, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  destination: Unknown
+  destination: Daily
 --- !u!58 &560119985
 CircleCollider2D:
   m_ObjectHideFlags: 0
@@ -29565,6 +29578,7 @@ MonoBehaviour:
   isInBabyTime: 0
   babyTimeFlashRate: 5
   isInStarTime: 0
+  isCalm: 1
   rb2d: {fileID: 0}
   previousFrameVelocity: 0
   originalScale: {x: 0, y: 0, z: 0}
@@ -41007,6 +41021,7 @@ MonoBehaviour:
   isInBabyTime: 0
   babyTimeFlashRate: 5
   isInStarTime: 0
+  isCalm: 1
   rb2d: {fileID: 0}
   previousFrameVelocity: 0
   originalScale: {x: 0, y: 0, z: 0}
@@ -45695,6 +45710,7 @@ MonoBehaviour:
   isInBabyTime: 0
   babyTimeFlashRate: 5
   isInStarTime: 0
+  isCalm: 1
   rb2d: {fileID: 0}
   previousFrameVelocity: 0
   originalScale: {x: 0, y: 0, z: 0}
@@ -47823,6 +47839,7 @@ MonoBehaviour:
   isInBabyTime: 0
   babyTimeFlashRate: 5
   isInStarTime: 0
+  isCalm: 1
   rb2d: {fileID: 0}
   previousFrameVelocity: 0
   originalScale: {x: 0, y: 0, z: 0}
@@ -48270,6 +48287,7 @@ MonoBehaviour:
   isInBabyTime: 0
   babyTimeFlashRate: 5
   isInStarTime: 0
+  isCalm: 1
   rb2d: {fileID: 0}
   previousFrameVelocity: 0
   originalScale: {x: 0, y: 0, z: 0}
@@ -49449,6 +49467,7 @@ MonoBehaviour:
   isInBabyTime: 0
   babyTimeFlashRate: 5
   isInStarTime: 0
+  isCalm: 1
   rb2d: {fileID: 0}
   previousFrameVelocity: 0
   originalScale: {x: 0, y: 0, z: 0}
@@ -52901,6 +52920,7 @@ MonoBehaviour:
   isInBabyTime: 0
   babyTimeFlashRate: 5
   isInStarTime: 0
+  isCalm: 1
   rb2d: {fileID: 0}
   previousFrameVelocity: 0
   originalScale: {x: 0, y: 0, z: 0}
@@ -60101,6 +60121,7 @@ MonoBehaviour:
   isInBabyTime: 0
   babyTimeFlashRate: 5
   isInStarTime: 0
+  isCalm: 1
   rb2d: {fileID: 0}
   previousFrameVelocity: 0
   originalScale: {x: 0, y: 0, z: 0}
@@ -61791,6 +61812,7 @@ MonoBehaviour:
   isInBabyTime: 0
   babyTimeFlashRate: 5
   isInStarTime: 0
+  isCalm: 1
   rb2d: {fileID: 0}
   previousFrameVelocity: 0
   originalScale: {x: 0, y: 0, z: 0}
@@ -66530,6 +66552,7 @@ MonoBehaviour:
   isInBabyTime: 0
   babyTimeFlashRate: 5
   isInStarTime: 0
+  isCalm: 1
   rb2d: {fileID: 0}
   previousFrameVelocity: 0
   originalScale: {x: 0, y: 0, z: 0}
@@ -68440,6 +68463,7 @@ MonoBehaviour:
   isInBabyTime: 0
   babyTimeFlashRate: 5
   isInStarTime: 0
+  isCalm: 1
   rb2d: {fileID: 0}
   previousFrameVelocity: 0
   originalScale: {x: 0, y: 0, z: 0}
@@ -76042,6 +76066,7 @@ MonoBehaviour:
   isInBabyTime: 0
   babyTimeFlashRate: 5
   isInStarTime: 0
+  isCalm: 1
   rb2d: {fileID: 0}
   previousFrameVelocity: 0
   originalScale: {x: 0, y: 0, z: 0}
@@ -78286,6 +78311,7 @@ MonoBehaviour:
   isInBabyTime: 0
   babyTimeFlashRate: 5
   isInStarTime: 0
+  isCalm: 1
   rb2d: {fileID: 0}
   previousFrameVelocity: 0
   originalScale: {x: 0, y: 0, z: 0}
@@ -79393,6 +79419,7 @@ MonoBehaviour:
   isInBabyTime: 0
   babyTimeFlashRate: 5
   isInStarTime: 0
+  isCalm: 0
   rb2d: {fileID: 0}
   previousFrameVelocity: 0
   originalScale: {x: 0, y: 0, z: 0}
@@ -79413,7 +79440,6 @@ MonoBehaviour:
   familiar: {fileID: 255450497}
   livesRemaining: 9
   isShaking: 0
-  isCalm: 0
   isMovingUp: 0
   isMovingDown: 0
   isMovingLeft: 0
@@ -85562,6 +85588,7 @@ MonoBehaviour:
   isInBabyTime: 0
   babyTimeFlashRate: 5
   isInStarTime: 0
+  isCalm: 1
   rb2d: {fileID: 0}
   previousFrameVelocity: 0
   originalScale: {x: 0, y: 0, z: 0}
@@ -86367,6 +86394,7 @@ MonoBehaviour:
   isInBabyTime: 0
   babyTimeFlashRate: 5
   isInStarTime: 0
+  isCalm: 1
   rb2d: {fileID: 0}
   previousFrameVelocity: 0
   originalScale: {x: 0, y: 0, z: 0}
@@ -91533,6 +91561,7 @@ MonoBehaviour:
   isInBabyTime: 0
   babyTimeFlashRate: 5
   isInStarTime: 0
+  isCalm: 1
   rb2d: {fileID: 0}
   previousFrameVelocity: 0
   originalScale: {x: 0, y: 0, z: 0}

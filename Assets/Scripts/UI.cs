@@ -262,6 +262,8 @@ public class UI : MonoBehaviour
     // Used to update UI elements that stay on beat.
     public void Beat()
     {
+        if (GM.I.gameState < 1) return;
+        
         UpdateProgressBar();
         UpdateScore();
     }

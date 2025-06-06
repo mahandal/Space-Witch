@@ -267,9 +267,26 @@ public class GM : MonoBehaviour
     // Expected to be called once per update
     void Timers()
     {
+        // - Beat timer
+
+        // Decrement
+        beatTimer -= Time.deltaTime;
+
+        // Next beat?
+        if (beatTimer < 0)
+        {
+            // Beat
+            Beat();
+
+            // Reset
+            beatTimer = 60f / bpm;
+        }
+
+
         // Wait for game to start
         if (gameState < 1)
             return;
+
 
         // - Time elapsed
         timeElapsed += Time.deltaTime;
@@ -310,22 +327,6 @@ public class GM : MonoBehaviour
         // Song is over, on to the next one!
         if (songTimer < 0)
             dj.PlayNextSong();
-
-
-        // - Beat timer
-
-        // Decrement
-        beatTimer -= Time.deltaTime;
-
-        // Next beat?
-        if (beatTimer < 0)
-        {
-            // Beat
-            Beat();
-
-            // Reset
-            beatTimer = 60f / bpm;
-        }
     }
 
     // New beat!
@@ -343,12 +344,17 @@ public class GM : MonoBehaviour
         // Beacon beat!
         Beacon.Beat();
 
+        // SpawnManager?
+        spawnManager.UpdateAsteroidPath();
+
         // Astarax
         Astarax();
     }
 
     void BeePM()
     {
+        if (gameState < 1) return;
+
         // Go through each bee
         foreach (Bee bee in bees)
         {
@@ -365,7 +371,7 @@ public class GM : MonoBehaviour
     void Astarax()
     {
         // wait for it to get intense
-        if (dj.songHype <= 0)
+        if (gameState < 1 || dj.songHype <= 0)
             return;
 
         // Go through each worm hole
@@ -588,6 +594,11 @@ public class GM : MonoBehaviour
     {
         // Set game state.
         gameState = 0;
+
+        // Pregame song
+        bpm = 120;
+        beatTimer = 60f / bpm;
+        dj.PlayLoopyMusic("Planning");
 
         // Time to start.
         StartTime();

@@ -3,7 +3,15 @@ using System.Collections.Generic;
 
 public class SpawnManager : MonoBehaviour
 {
-    [Header("Stats")]
+    [Header("Asteroids")]
+    public float baseAsteroidAcceleration = 0.5f;
+    public float baseAsteroidMaxSpeed = 0.5f;
+    public float baseAsteroidSize = 0.5f;
+    public float asteroidAccelerationHypeScalar = 0.05f;
+    public float asteroidMaxSpeedHypeScalar = 0.05f;
+    public float asteroidSizeHypeScalar = 0.05f;
+
+    [Header("Planet Spawning")]
     // Planets
     public float planetMinDistance;
     public float planetMaxDistance;
@@ -183,15 +191,16 @@ public class SpawnManager : MonoBehaviour
     // --- Moons
 
     // - Spawn a new moon
-    public void SpawnMoon(int index = 0)
+    public void SpawnMoon(Planet previousPlanet = null)
     {
-        // Pick a random planet
-        //int index = Random.Range(0, planets.Count);
-        //Planet planet = planets[index];
-
-        // Choose the next planet
-        if (index >= GM.I.activePlanets.Count)
-            index = 0;
+        int index = 0;
+    
+        if (previousPlanet != null)
+        {
+            // Find current planet in active list and get next one
+            int currentIndex = GM.I.activePlanets.IndexOf(previousPlanet);
+            index = (currentIndex + 1) % GM.I.activePlanets.Count;
+        }
         
         Planet planet = GM.I.activePlanets[index];
 
@@ -398,15 +407,16 @@ public class SpawnManager : MonoBehaviour
     // Nebula
     public void SetUpNebula(string nebulaName = "Unknown")
     {
-        // First deactivate all nebulas
+        // Deactivate all nebulas
         DeactivateNebulas();
 
-        // Then get the right nebula
+        // Get the right nebula
         if (nebulaName == "Eldest Ring")
         {
             GM.I.nebula = eldest_ring;
         }
         
+        // Set up unknown nebulas special
         if (nebulaName == "Unknown")
         {
             // Unknown nebula
@@ -422,16 +432,59 @@ public class SpawnManager : MonoBehaviour
             // Curate down to however many we want
             CuratePlanets(Random.Range(0, 9));
 
+            // Spawn beacons
+            SpawnBeacons(Random.Range(2, 7));
+
             // Generate new worm hole
             //SpawnWormHoles(1);
             GM.I.nebula.wormHoles = new List<WormHole>();
             GM.I.nebula.wormHoles.Add(SpawnWormHole(0, 0));
+        }
+        // Daily nebula
+        else if (nebulaName == "Daily")
+        {
+            // New day begins at 4:20am PST.
+            // For the whole world, so we can all dance together.
+            System.DateTime utcNow = System.DateTime.UtcNow;
+            System.DateTime adjustedTime = utcNow.AddHours(-12).AddMinutes(-20); // Subtract 12:20 to offset for 4:20am PST
+            System.DateTime seedDate = adjustedTime.Date;
+            
+            int dailySeed = seedDate.Year * 10000 + seedDate.Month * 100 + seedDate.Day;
+
+            // Set seed based on today's date
+            // System.DateTime today = System.DateTime.Today;
+            // int dailySeed = today.Year * 10000 + today.Month * 100 + today.Day;
+            Random.InitState(dailySeed);
+            
+            // Generate deterministic nebula
+            GM.I.nebula = unknown;
+
+            // Spawn planets
+            SpawnPlanets(GM.I.bees.Count);
+
+            // Track planets
+            SetUpPlanets(GM.I.nebula.planets);
+
+            // Curate down to however many we want
+            CuratePlanets(Random.Range(0, 9));
+
+            // Spawn beacons
+            SpawnBeacons(Random.Range(2, 7));
+
+            // Spawn worm hole
+            GM.I.nebula.wormHoles = new List<WormHole>();
+            GM.I.nebula.wormHoles.Add(SpawnWormHole(0, 0));
         } else {
+            // Set up known nebulas
+
+            // tbd: other nebulas
+            SpawnBeacons(5);
+
             // Track planets
             SetUpPlanets(GM.I.nebula.planets);
         }
 
-        // Activate
+        // Activate nebula
         GM.I.nebula.gameObject.SetActive(true);
 
         // Track planets
@@ -445,8 +498,10 @@ public class SpawnManager : MonoBehaviour
         //SpawnMoon();
 
         // Spawn beacons
-        int numBeaconsToSpawn = Random.Range(2, 7);
-        SpawnBeacons(numBeaconsToSpawn);
+        // SpawnBeacons(Random.Range(2, 7));
+
+        // Preview bee path
+        BeePath();
     }
 
     // --- Beacons
@@ -484,6 +539,8 @@ public class SpawnManager : MonoBehaviour
             // Activate
             newBeacon.gameObject.SetActive(true);
         }
+
+        CreateAsteroidPath();
     }
 
     // Set up worm holes from a nebula
@@ -581,10 +638,10 @@ public class SpawnManager : MonoBehaviour
 
         // Set speed & size
 
-        // Base values that scale directly with hype
-        float baseAcceleration = 0.5f + (0.1f * GM.I.hype);
-        float baseSpeed = 0.5f + (0.1f * GM.I.hype);
-        float baseSize = 0.5f + (0.1f * GM.I.hype);
+        // Base values scale with hype
+        float acceleration = baseAsteroidAcceleration + (asteroidAccelerationHypeScalar * GM.I.hype);
+        float maxSpeed = baseAsteroidMaxSpeed + (asteroidMaxSpeedHypeScalar * GM.I.hype);
+        float size = baseAsteroidSize + (asteroidSizeHypeScalar * GM.I.hype);
 
         // Add some random variation
         float randomVariation = Random.Range(0.1f, 2.9f);
@@ -593,19 +650,97 @@ public class SpawnManager : MonoBehaviour
         float inverseVariation = 3f - randomVariation;
 
         // Set speed with controlled scaling
-        newAsteroid.acceleration = baseAcceleration * speedMultiplier * randomVariation;
-        newAsteroid.maxSpeed = baseSpeed * speedMultiplier * randomVariation;
+        newAsteroid.acceleration = acceleration * speedMultiplier * randomVariation;
+        newAsteroid.maxSpeed = maxSpeed * speedMultiplier * randomVariation;
 
 
         // Start at max speed
         newAsteroid.rb2d.linearVelocity = newAsteroid.direction * newAsteroid.maxSpeed;
 
         // Set size
-        newAsteroid.size = baseSize * sizeMultiplier * inverseVariation;
+        newAsteroid.size = size * sizeMultiplier * inverseVariation;
         float newScale = progenitor_Asteroid.transform.localScale.x * newAsteroid.size;
         newAsteroid.transform.localScale = new Vector3(newScale, newScale, newScale);
 
         // Activate
         newAsteroid.gameObject.SetActive(true);
+    }
+
+    [Header("Paths")]
+    public LineRenderer beePath;
+    public LineRenderer asteroidPath;
+
+    // Show the path bees will take.
+    void BeePath()
+    {
+        GameObject pathObj = new GameObject("BeePath");
+        beePath = pathObj.AddComponent<LineRenderer>();
+        
+        // Yellow line
+        beePath.material = new Material(Shader.Find("Sprites/Default"));
+        beePath.startColor = new Color(0f, 1f, 0f, 0.02f);
+        beePath.endColor = new Color(0f, 1f, 0f, 0.02f);
+        beePath.startWidth = 0.02f;
+        beePath.endWidth = 0.02f;
+        beePath.useWorldSpace = true;
+
+        
+        // Connect all planets in a loop
+        beePath.positionCount = GM.I.activePlanets.Count + 1;
+        
+        for (int i = 0; i < GM.I.activePlanets.Count; i++)
+        {
+            beePath.SetPosition(i, GM.I.activePlanets[i].transform.position);
+        }
+        
+        // Close the loop - back to first planet
+        beePath.SetPosition(GM.I.activePlanets.Count, GM.I.activePlanets[0].transform.position);
+    }
+
+    // Create the path asteroids will take.
+    void CreateAsteroidPath()
+    {
+        GameObject pathObj = new GameObject("AsteroidPath");
+        asteroidPath = pathObj.AddComponent<LineRenderer>();
+        
+        // Red line
+        asteroidPath.material = new Material(Shader.Find("Sprites/Default"));
+        asteroidPath.startColor = new Color(1f, 0f, 0f, 0.1f);
+        asteroidPath.endColor = new Color(1f, 0f, 0f, 0.01f);
+        asteroidPath.startWidth = 0.05f;
+        asteroidPath.endWidth = 0.01f;
+        asteroidPath.useWorldSpace = true;
+        
+        // Set points: origin -> beacon 1 -> beacon 2 -> etc
+        asteroidPath.positionCount = GM.I.beacons.Count + 1;
+        
+        // Start at origin
+        asteroidPath.SetPosition(0, Vector3.zero);
+        
+        // Connect each beacon in order
+        for (int i = 0; i < GM.I.beacons.Count; i++)
+        {
+            asteroidPath.SetPosition(i + 1, GM.I.beacons[i].transform.position);
+        }
+    }
+
+    public void UpdateAsteroidPath()
+    {
+        if (asteroidPath == null) return;
+        
+        // Origin -> beacons
+        int totalPoints = 1 + GM.I.beacons.Count;
+        asteroidPath.positionCount = totalPoints;
+        
+        int index = 0;
+        
+        // Start at origin
+        asteroidPath.SetPosition(index++, Vector3.zero);
+        
+        // Through each beacon
+        for (int i = 0; i < GM.I.beacons.Count; i++)
+        {
+            asteroidPath.SetPosition(index++, GM.I.beacons[i].transform.position);
+        }
     }
 }

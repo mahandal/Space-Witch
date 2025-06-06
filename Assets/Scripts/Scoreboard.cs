@@ -178,7 +178,10 @@ public class Scoreboard : MonoBehaviour
     private void SaveHighScores()
     {
         // Get save path
-        string savePath = Path.Combine(Application.persistentDataPath, "highscores_" + GM.I.nebula.myName + ".json");
+        //string savePath = Path.Combine(Application.persistentDataPath, "highscores_" + GM.I.nebula.myName + ".json");
+
+        string fileName = GetScoreboardFileName();
+        string savePath = Path.Combine(Application.persistentDataPath, fileName);
 
         try
         {
@@ -195,8 +198,11 @@ public class Scoreboard : MonoBehaviour
     private void LoadHighScores()
     {
         // Get save path
-        string savePath = Path.Combine(Application.persistentDataPath, "highscores_" + GM.I.nebula.myName + ".json");
+        //string savePath = Path.Combine(Application.persistentDataPath, "highscores_" + GM.I.nebula.myName + ".json");
         
+        string fileName = GetScoreboardFileName();
+        string savePath = Path.Combine(Application.persistentDataPath, fileName);
+
         try
         {
             if (File.Exists(savePath))
@@ -220,6 +226,20 @@ public class Scoreboard : MonoBehaviour
         // Note: Mostly for new games, but also in case I fuck up the list somehow. Shouldn't even happen tho so this is mostly so that right now I don't have to go delete the old JSON.
         if (highScores.scores.Count != 12)
             InitializeDefaultScores();
+    }
+
+    private string GetScoreboardFileName()
+    {
+        if (GM.I.nebula.myName == "Daily")
+        {
+            System.DateTime today = System.DateTime.Today;
+            string dateString = today.ToString("yyyy-MM-dd");
+            return $"highscores_Daily_{dateString}.json";
+        }
+        else
+        {
+            return $"highscores_{GM.I.nebula.myName}.json";
+        }
     }
 
     // Add default scores as goals for the player

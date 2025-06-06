@@ -83,6 +83,8 @@ public class AudioManager : MonoBehaviour
     // Called once per beat, by GM.
     public void Beat()
     {
+        if (GM.I.gameState < 1) return;
+
         // Get current song
         Song currentSong = GM.I.songs[GM.I.songIndex];
 
@@ -205,6 +207,23 @@ public class AudioManager : MonoBehaviour
         //musicSource.clip = musicClips[songName];
         musicSource = musicSources[songName];
         musicSource.volume = musicVolume * masterVolume;
+        musicSource.loop = false;
+        musicSource.Play();
+    }
+
+    // Play music by name (but looping)
+    public void PlayLoopyMusic(string songName)
+    {
+        if (!musicClips.ContainsKey(songName))
+        {
+            Debug.LogWarning("Song not found: " + songName);
+            return;
+        }
+
+        //musicSource.clip = musicClips[songName];
+        musicSource = musicSources[songName];
+        musicSource.volume = musicVolume * masterVolume;
+        musicSource.loop = true;
         musicSource.Play();
     }
     

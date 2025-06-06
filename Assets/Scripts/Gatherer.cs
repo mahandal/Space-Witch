@@ -476,10 +476,10 @@ public class Gatherer : MonoBehaviour
             OnGather(moon);
 
             // Spawn another one
-            GM.I.spawnManager.SpawnMoon(moon.planet.index + 1);
+            GM.I.spawnManager.SpawnMoon(moon.planet);
 
-            // Spawn some stars!
-            GM.I.spawnManager.SpawnStars(transform.position, 7 * moonsGathered, moonsGathered);
+            // Spawn some stars!?
+            //GM.I.spawnManager.SpawnStars(transform.position, 7 * moonsGathered, moonsGathered);
 
             // Add time to gameTimer
             if (moonsGathered <= 7)
