@@ -54,6 +54,7 @@ public class Beacon : MonoBehaviour
         else
         {
             isBeingDragged = false;
+            dragger = null;
         }
     }
 
@@ -102,9 +103,27 @@ public class Beacon : MonoBehaviour
     void OnTriggerEnter2D(Collider2D col)
     {
         Gatherer gatherer = col.GetComponent<Gatherer>();
-        if (gatherer != null)
+        // if (gatherer != null)
+        // {
+        //     dragger = gatherer;
+        // }
+        if (gatherer != null && dragger == null && gatherer.isCalm)
         {
-            dragger = gatherer;
+            // Check if this gatherer is already dragging another beacon
+            bool alreadyDragging = false;
+            foreach (Beacon beacon in GM.I.beacons)
+            {
+                if (beacon != this && beacon.dragger == gatherer)
+                {
+                    alreadyDragging = true;
+                    break;
+                }
+            }
+            
+            if (!alreadyDragging)
+            {
+                dragger = gatherer;
+            }
         }
     }
 

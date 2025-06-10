@@ -308,8 +308,12 @@ public class Gatherer : MonoBehaviour
         // Set baby time
         babyTime = timeAlive + 7f;
 
-        // Apply spin manually to ensure it keeps spinning
+        // Death spiral
         transform.Rotate(0, 0, deathSpinSpeed * Time.deltaTime);
+
+        // Respect boundaries
+        if (transform.position.magnitude > GM.I.spawnManager.planetMaxDistance)
+            transform.position = transform.position.normalized * GM.I.spawnManager.planetMaxDistance;
 
         // Apply drag to slow down
         rb2d.linearVelocity *= 0.98f;

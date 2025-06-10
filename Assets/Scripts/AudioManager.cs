@@ -98,13 +98,18 @@ public class AudioManager : MonoBehaviour
     {
         // Play some ambience!
         PlayAmbience("ambience_home");
+
+        // Play some music!
+        PlayLoopyMusic("Home");
     }
 
     // What does the DJ do when we go outside?
     public void GoOut()
     {
-        // Stop ambience for now?
+        // Stop ambience(?)
         StopAmbience();
+
+        // Stop music?
     }
 
     void Update()
@@ -204,6 +209,9 @@ public class AudioManager : MonoBehaviour
             return;
         }
 
+        // Stop any currently playing music
+        musicSource.Stop();
+
         //musicSource.clip = musicClips[songName];
         musicSource = musicSources[songName];
         musicSource.volume = musicVolume * masterVolume;
@@ -219,6 +227,9 @@ public class AudioManager : MonoBehaviour
             Debug.LogWarning("Song not found: " + songName);
             return;
         }
+
+        // Stop any currently playing music
+        musicSource.Stop();
 
         //musicSource.clip = musicClips[songName];
         musicSource = musicSources[songName];

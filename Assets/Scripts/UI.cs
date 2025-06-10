@@ -286,6 +286,7 @@ public class UI : MonoBehaviour
 
             // Color
             beginMeditatingBG.color = new Color (0f, 0f, 0f, percentDone);
+            beginMeditatingWheel.color = new Color (percentDone, percentDone, percentDone, percentDone);
 
             // Fill
             beginMeditatingWheel.fillAmount = percentDone;

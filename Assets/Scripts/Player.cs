@@ -188,6 +188,9 @@ public class Player : Gatherer
         // Start the meditation timer
         isPreparingToMeditate = true;
         meditationTimer = 0f;
+
+        // Become calm
+        isCalm = true;
     }
 
     private void MeditateCanceled(InputAction.CallbackContext context)
