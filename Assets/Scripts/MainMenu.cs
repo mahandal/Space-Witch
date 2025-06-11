@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using System.Collections;
+using TMPro;
 
 public class MainMenu : MonoBehaviour
 {
@@ -36,6 +37,17 @@ public class MainMenu : MonoBehaviour
     public Slider gatherVolume;
     public Slider ambienceVolume;
 
+    [Header("Intro Skip")]
+    public TMP_Text skipPrompt; // UI text that says "Hold any button to skip".
+    public Image skipCircle; // Radial fill image that fills up as you hold down a button to skip the intro.
+    public Image skipBG; // A blank black background that fades out the universe as you skip.
+    public float skipHoldTime = 1.5f; // How long to hold.
+    public float promptFadeTime = 3f; // How long prompt stays visible.
+
+    private bool skipPromptShown = false;
+    private float skipTimer = 0f;
+    private float promptTimer = 0f;
+
 
     [Header("Automated Machinery")]
     // Singleton
@@ -56,6 +68,7 @@ public class MainMenu : MonoBehaviour
     // Is the intro playing?
     public bool introPlaying = false;
 
+
     // Awaken!
     void Awake()
     {
@@ -71,6 +84,9 @@ public class MainMenu : MonoBehaviour
         settingsMenu.SetActive(false);
         overlay.gameObject.SetActive(false);
         intro.SetActive(false);
+
+        // hide skip prompt
+        HideSkipPrompt();
 
         // Enable stuff that should be!
         mainUI.SetActive(true);
@@ -95,14 +111,79 @@ public class MainMenu : MonoBehaviour
 
     void FixedUpdate()
     {
+        // if (introPlaying)
+        // {
+        //     // Timer
+        //     introTimer += Time.deltaTime;
+        //     if (introTimer > introDuration)
+        //         LoadGame();
+
+        //     // Move camera
+        //     mainCam.transform.position += Vector3.up * introCameraSpeed * Time.deltaTime;
+        // }
         if (introPlaying)
         {
-            // Timer
+            // Check for any input
+            if (Input.anyKey || Input.anyKeyDown)
+            {
+                // Show Skip prompt
+                ShowSkipPrompt();
+
+                // Show skip prompt on first input
+                // if (!skipPromptShown)
+                // {
+                //     ShowSkipPrompt();
+                // }
+                
+                // Count hold time
+                if (Input.anyKey)
+                {
+                    skipTimer += Time.deltaTime;
+                    if (skipTimer >= skipHoldTime)
+                    {
+                        LoadGame(); // Skip to game
+                        return;
+                    }
+                }
+            }
+            else
+            {
+                // Reset skip timer when no input
+                skipTimer = 0f;
+            }
+            
+            // Handle prompt fade
+            if (skipPromptShown)
+            {
+                // Timer
+                promptTimer += Time.deltaTime;
+                
+                // Calculate text opacity based on fade progress
+                float fadeProgress = promptTimer / promptFadeTime;
+                Color textColor = skipPrompt.color;
+                textColor.a = 1f - fadeProgress;
+                skipPrompt.color = textColor;
+
+                // Update image color
+                float skipProgress = skipTimer / skipHoldTime;
+                skipCircle.color = new Color(skipProgress, skipProgress, skipProgress, skipProgress);
+                skipBG.color = new Color(0f, 0f, 0f, skipProgress);
+
+                // Update fill amount
+                skipCircle.fillAmount = skipProgress;
+                
+                // Hide?
+                if (promptTimer >= promptFadeTime)
+                {
+                    HideSkipPrompt();
+                }
+            }
+            
+            // Continue with your existing intro timer logic
             introTimer += Time.deltaTime;
             if (introTimer > introDuration)
                 LoadGame();
-
-            // Move camera
+                
             mainCam.transform.position += Vector3.up * introCameraSpeed * Time.deltaTime;
         }
     }
@@ -160,5 +241,37 @@ public class MainMenu : MonoBehaviour
     {
         // Deactivate settings menu
         settingsMenu.SetActive(false);
+    }
+
+    void ShowSkipPrompt()
+    {
+        // Bool
+        skipPromptShown = true;
+
+        // Timer
+        promptTimer = 0f;
+
+        // Text color
+        Color textColor = skipPrompt.color;
+        textColor.a = 1f;
+        skipPrompt.color = textColor;
+
+        // Image color
+        // skipCircle.color = new Color(0f, 0f, 0f, 0f);
+        // skipBG.color = new Color(0f, 0f, 0f, 0f);
+
+        // // Fill
+        // skipCircle.fillAmount = 0f;
+
+        // // Activate
+        // skipPrompt.gameObject.SetActive(true);
+        // skipCircle.gameObject.SetActive(true);
+    }
+
+    void HideSkipPrompt()
+    {
+        skipPromptShown = false;
+        // skipPrompt.gameObject.SetActive(false);
+        skipPrompt.color = new Color(1f, 1f, 1f, 0f);
     }
 }

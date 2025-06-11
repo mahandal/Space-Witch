@@ -68,7 +68,7 @@ public class Beacon : MonoBehaviour
         {
             // Pulsing color
             float pulse = Mathf.PingPong(Time.time * 2f, 1f); // 2f controls pulse speed
-            sr.color = new Color(0f, pulse, pulse, 0.2f + pulse * 0.6f); // Pulse between 0.2 and 0.8 alpha
+            sr.color = new Color(1f, 1f, 1f, 0.2f + pulse * 0.6f); // Pulse between 0.2 and 0.8 alpha
 
             // Max distance
             if (transform.position.magnitude > GM.I.spawnManager.planetMaxDistance)
