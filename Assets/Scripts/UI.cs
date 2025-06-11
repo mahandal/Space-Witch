@@ -137,6 +137,8 @@ public class UI : MonoBehaviour
     public GameObject postGame;
     public GameObject winBackground;
     public GameObject lossBackground;
+    public Image planetSurface;
+
 
     //[Header("States")]
 
@@ -167,9 +169,6 @@ public class UI : MonoBehaviour
     private float currentDisplayFamiliarMana = 1f;
     private float familiarManaFlashTimer = 0f;
 
-    // Spells
-    public float lastSpellCastCooldown = 1f;
-
     // Cooldown flash
     private bool flashCooldown = false;
     private float cooldownFlashTimer = 0f;
@@ -184,6 +183,8 @@ public class UI : MonoBehaviour
     private bool canLevelUp = false;
     private float flashTimer = 0f;
     private float flashSpeed = 2f;
+
+    [Header("Misc")]
     public Color originalXPColor;
 
     // Other
@@ -583,12 +584,6 @@ public class UI : MonoBehaviour
 
     void UpdateCDCircle()
     {
-        // Set the cd circle's fill equal to our current spell cooldown divided by the cooldown of the last spell we cast, stored here in UI for specifically this purpose.
-        //CD_Circle.fillAmount = GM.I.player.spellCooldown / lastSpellCastCooldown;
-
-        // Same as above but inverse so we fill up to full as we cool down
-        //CD_Circle.fillAmount = 1 - (GM.I.player.spellCooldown / lastSpellCastCooldown);
-
         // Get current spell's cooldown
         string currentSpell = GM.I.player.currentSpell;
         float cooldownTime = GM.I.player.spellCooldowns.ContainsKey(currentSpell) ?
@@ -815,22 +810,42 @@ public class UI : MonoBehaviour
         // Load cost at home
         if (GM.I.nebula.myName == "Home")
         {
-            // Set whether we're remembering or forgetting.
-            if (GM.I.saveData.unlockedTalents.Contains(talent.myName))
-            {
-                // Forgetting
-                remember.gameObject.SetActive(false);
-                forget.gameObject.SetActive(true);
-            } else {
-                // Remembering
-                remember.gameObject.SetActive(true);
-                forget.gameObject.SetActive(false);
-            }
-            // Activate
-            talentCostParent.SetActive(true);
+            // Set cost
 
-            // Load text
-            talentCost.text = "100";
+            // Can't forget the basics!
+            if (talent.myName == "Alchemist" ||
+                talent.myName == "Enchantress" ||
+                talent.myName == "Engineer" ||
+                talent.myName == "Druid" ||
+                talent.myName == "Oracle")
+            {
+                remember.gameObject.SetActive(false);
+                forget.gameObject.SetActive(false);
+                talentCostParent.SetActive(false);
+            }
+            // Normal talents
+            else {
+
+                // Check if we're remembering or forgetting
+                if (GM.I.saveData.unlockedTalents.Contains(talent.myName))
+                {
+                    // Forgetting
+                    remember.gameObject.SetActive(false);
+                    forget.gameObject.SetActive(true);
+                } else {
+                    // Remembering
+                    remember.gameObject.SetActive(true);
+                    forget.gameObject.SetActive(false);
+                }
+
+                // Activate
+                talentCostParent.SetActive(true);
+
+                // Load cost
+                talentCost.text = "100";   
+            }
+
+                
         }
         else
         {
@@ -1334,5 +1349,31 @@ public class UI : MonoBehaviour
             // Close training screen.
             CloseTrainingScreen();
         }
+    }
+
+    // Opens the planet surface screen.
+    // Called when you meditate on a planet at home.
+    public void GoToPlanet(Planet planet)
+    {
+        // hide beginning
+        beginMeditatingWheel.gameObject.SetActive(false);
+        beginMeditatingBG.gameObject.SetActive(false);
+
+        // Load the planet's image.
+        string imageFileName = "Planet Surface - " + planet.myName;
+        Utility.LoadImage(planetSurface, imageFileName);
+
+        // Open planet surface screen.
+        planetSurface.gameObject.SetActive(true);
+    }
+
+    // Leave whichever planet we were on.
+    public void LeavePlanet()
+    {
+        // Close planet surface screen.
+        planetSurface.gameObject.SetActive(false);
+
+        // Return to reality.
+        GM.I.player.EndMeditation();
     }
 }

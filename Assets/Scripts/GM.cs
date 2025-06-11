@@ -675,17 +675,24 @@ public class GM : MonoBehaviour
     // Toggles the pause menu
     public void TogglePause()
     {
-        // If we're training, stop training
+        // If we're training, stop.
         if (ui.persistentGrowth.activeSelf)
         {
             ui.CloseTrainingScreen();
             return;
         }
 
-        // If we're leveling up, stop
+        // If we're leveling up, stop.
         if (ui.growth.activeSelf)
         {
             ui.CloseLevelUpScreen();
+            return;
+        }
+
+        // If we're investing, stop.
+        if (ui.planetSurface.gameObject.activeSelf)
+        {
+            ui.LeavePlanet();
             return;
         }
 

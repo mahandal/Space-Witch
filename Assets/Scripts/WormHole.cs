@@ -23,7 +23,12 @@ public class WormHole : MonoBehaviour
         AntiGravity();
 
         // Rotate
-        transform.Rotate(0, 0, spawnRate * (1 + GM.I.hype));
+        float rotateAmount = spawnRate;
+
+        if (GM.I != null)
+            rotateAmount = spawnRate * (1 + GM.I.hype);
+            
+        transform.Rotate(0, 0, rotateAmount);
     }
 
     public void SpawnAsteroid()

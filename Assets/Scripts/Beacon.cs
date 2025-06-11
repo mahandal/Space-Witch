@@ -7,6 +7,9 @@ public class Beacon : MonoBehaviour
     // Note: Beacons are 1-indexed!
     public int index = 1; 
 
+    // How strong this beacon's gravitational pull is.
+    public float gravityStrength = 5f;
+
     // How fast beacons spin, multiplied by their index.
     private float baseSpinSpeed = 60f;
 
@@ -99,14 +102,11 @@ public class Beacon : MonoBehaviour
         }
     }
 
-    // Detect player, for dragging
+    // Enter
     void OnTriggerEnter2D(Collider2D col)
     {
+        // Check if a gatherer is grabbing us
         Gatherer gatherer = col.GetComponent<Gatherer>();
-        // if (gatherer != null)
-        // {
-        //     dragger = gatherer;
-        // }
         if (gatherer != null && dragger == null && gatherer.isCalm)
         {
             // Check if this gatherer is already dragging another beacon
@@ -125,7 +125,45 @@ public class Beacon : MonoBehaviour
                 dragger = gatherer;
             }
         }
+
+        // Gather stars
+        Star star = col.gameObject.GetComponent<Star>();
+
+        if (star != null)
+        {
+            // Gather star
+            Gatherer.starsGathered += star.value;
+
+            // Gain xp!
+            GM.I.player.GainXP(star.value);
+
+            // Hit marker
+            HitMarker.CreateHitMarker(star.transform.position, star.value);
+
+            // Clean up star object
+            Object.Destroy(star.gameObject);
+        }
     }
+
+    /*
+void OnTriggerEnter2D(Collider2D col)
+{
+    // Get star
+    Star star = col.gameObject.GetComponent<Star>();
+
+    if (star != null)
+    {
+        // Gather star
+        Gatherer.starsGathered += star.value;
+
+        // Hit marker
+        HitMarker.CreateHitMarker(star.transform.position, star.value);
+
+        // Clean up star object
+        Object.Destroy(star.gameObject);
+    }
+}
+    */
 
     void OnTriggerExit2D(Collider2D col)
     {

@@ -34,7 +34,7 @@ public class Star : MonoBehaviour
         FadeOut();
     }
 
-    // Stars are pulled toward your familiar.
+    // Stars are pulled toward beacons and your familiar.
     void Gravity()
     {
         // Get current gravity range
@@ -46,6 +46,13 @@ public class Star : MonoBehaviour
 
         // Get distance
         float distance = (GM.I.familiar.transform.position - transform.position).magnitude;
+
+        // Check if we're close enough for our familiar's gravity or if we should go to a beacon.
+        if (distance > currentGravityRange * 2)
+        {
+            BeaconGravity();
+            return;
+        }
         
         // Get direction to pull star's transform to familiar
         Vector3 direction = (GM.I.familiar.transform.position - transform.position).normalized;
@@ -72,8 +79,32 @@ public class Star : MonoBehaviour
 
         // Move the target in the direction multiplied by gravity strength
         transform.position = transform.position + (direction * currentGravityStrength);
+    }
 
-        
+    // Handle gravitating toward a beacon.
+    public void BeaconGravity()
+    {
+       // Find the nearest beacon
+       Beacon nearestBeacon = null;
+       float closestDistance = float.MaxValue;
+       
+       foreach (Beacon beacon in GM.I.beacons)
+       {
+           float distance = Vector3.Distance(transform.position, beacon.transform.position);
+           if (distance < closestDistance)
+           {
+               closestDistance = distance;
+               nearestBeacon = beacon;
+           }
+       }
+       
+       if (nearestBeacon == null) return;
+       
+       // Apply gravity toward nearest beacon
+       Vector3 direction = (nearestBeacon.transform.position - transform.position).normalized;
+       float gravityStrength = nearestBeacon.gravityStrength;
+       
+       transform.position = transform.position + (direction * gravityStrength);
     }
 
     // Fade out over time

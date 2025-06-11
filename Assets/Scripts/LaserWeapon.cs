@@ -105,7 +105,19 @@ public class LaserWeapon : MonoBehaviour
                 // When fully charged, fire
                 if (currentChargeTime >= chargeTime)
                 {
-                    Fire(target);
+                    // Check if still facing target before firing
+                    Vector3 targetDirection = target.transform.position - transform.position;
+                    Vector3 forwardDirection = transform.up;
+                    float dot = Vector3.Dot(forwardDirection, targetDirection.normalized);
+                    
+                    if (dot >= 0.5f) // Same threshold as target acquisition
+                    {
+                        Fire(target);
+                    }
+                    
+                    //Fire(target);
+
+                    // Reset
                     isCharging = false;
                     fireTimer = 1f / fireRate;
                 }

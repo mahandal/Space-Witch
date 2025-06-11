@@ -202,6 +202,14 @@ public class Player : Gatherer
             meditationTimer = 0f;
             return;
         }
+
+        // Stay in a screen if we opened one
+
+        // Investing
+        if (GM.I.ui.planetSurface.gameObject.activeSelf)
+        {
+            return;
+        }
         
         // Otherwise end meditation normally
         EndMeditation();
@@ -624,9 +632,6 @@ public class Player : Gatherer
         // Set cooldown for this specific spell
         spellCooldowns[currentSpell] = talent.cooldown;
 
-        // Store for UI (will need updating later)
-        //GM.I.ui.lastSpellCastCooldown = talent.cooldown;
-
         // Call OnCast
         talent.OnCast();
     }
@@ -767,8 +772,11 @@ public class Player : Gatherer
         isMeditating = true;
         isCalm = true;
 
-        // Open UI
-        GM.I.ui.Meditate();
+        // Check which UI to open
+        if (currentPlanet != null && GM.I.nebula.myName == "Home")
+            GM.I.ui.GoToPlanet(currentPlanet);
+        else
+            GM.I.ui.Meditate();
 
         // Stop time
         GM.I.StopTime();

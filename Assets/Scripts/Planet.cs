@@ -3,6 +3,9 @@ using UnityEngine;
 public class Planet : MonoBehaviour
 {
     [Header("Planet")]
+    // What's our name?
+    public string myName;
+    
     // A hidden parent to rotate a moon, for when this planet has one.
     public Transform moonMama;
 

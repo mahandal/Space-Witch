@@ -4,11 +4,8 @@ using UnityEngine.UI;
 public class Utility : MonoBehaviour
 {
     // Loads a sprite into an Image
-    public static void LoadImage(Image image, string talentName)
+    public static void LoadImage(Image image, string fileName)
     {
-        // Get file name
-        string fileName = talentName;
-
         // Look for sprite
         Sprite sprite = Resources.Load<Sprite>(fileName);
 
@@ -16,7 +13,10 @@ public class Utility : MonoBehaviour
         if (sprite == null)
         {
             // If sprite doesn't exist, get talent to find default
-            Talent talent = GM.I.talents[talentName];
+            //Talent talent = GM.I.talents[talentName];
+
+            // Default?
+            Talent talent = GM.I.talents["Alchemist"];
 
             // Use class for default
             sprite = Resources.Load<Sprite>(talent.myClass);
