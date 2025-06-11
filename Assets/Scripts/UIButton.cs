@@ -63,4 +63,17 @@ public class UIButton : MonoBehaviour
         PlayerPrefs.Save();
     }
 
+    public void ToggleIntro()
+    {
+        // Shared toggling
+        ToggleButton();
+
+        // Update Main Menu setting
+        if (MainMenu.I != null)
+            MainMenu.I.showIntro = isToggled;
+
+        // Save the setting
+        PlayerPrefs.SetInt("ShowIntro", isToggled ? 1 : 0);
+        PlayerPrefs.Save();
+    }
 }

@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+using System.Collections;
 
 public class MainMenu : MonoBehaviour
 {
@@ -23,6 +24,9 @@ public class MainMenu : MonoBehaviour
     // Intro sequence parent game object
     public GameObject intro;
     public float introCameraSpeed = 21f;
+    public float introDuration = 512f;
+
+    private float introTimer = 0f;
 
 
     [Header("Settings")]
@@ -43,6 +47,11 @@ public class MainMenu : MonoBehaviour
     // True when you first open the game.
     // False when returning to the main menu from Game.
     public static bool firstTime = true;
+
+    // Should the intro play?
+    // True by default when first opening the game.
+    // False when returning to the main menu from Game or if disabled in settings.
+    public bool showIntro = true;
 
     // Is the intro playing?
     public bool introPlaying = false;
@@ -65,6 +74,10 @@ public class MainMenu : MonoBehaviour
 
         // Enable stuff that should be!
         mainUI.SetActive(true);
+        Time.timeScale = 1f;
+
+        // Load settings(?)
+        showIntro = PlayerPrefs.GetInt("ShowIntro", 1) == 1;
     }
 
     void Start()
@@ -84,6 +97,11 @@ public class MainMenu : MonoBehaviour
     {
         if (introPlaying)
         {
+            // Timer
+            introTimer += Time.deltaTime;
+            if (introTimer > introDuration)
+                LoadGame();
+
             // Move camera
             mainCam.transform.position += Vector3.up * introCameraSpeed * Time.deltaTime;
         }
@@ -92,21 +110,36 @@ public class MainMenu : MonoBehaviour
     // Press play!
     public void PlayButtonPressed()
     {
-        // Overlay!
-        //overlay.gameObject.SetActive(true);
-
-        // No mas!
+        // Hide the main UI.
         mainUI.SetActive(false);
 
-        // Intro!
-        intro.SetActive(true);
+        // Check if we should play the intro
+        if (showIntro)
+            PlayIntro();
+        else
+            LoadGame();
+    }
+
+    public void PlayIntro()
+    {
+        // Set bool.
         introPlaying = true;
 
-        // Music!
+        // Activate the intro parent object.
+        intro.SetActive(true);
+
+        // Play the intro audio.
         dj.PlayMusic("Intro");
+    }
+
+    // Begin loading the Game scene.
+    public void LoadGame()
+    {
+        // Activate our loading overlay.
+        overlay.gameObject.SetActive(true);
 
         // Load game!
-        //SceneManager.LoadScene("Game");
+        SceneManager.LoadScene("Game");
     }
 
     // Time to go!
