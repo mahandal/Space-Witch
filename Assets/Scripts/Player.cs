@@ -28,7 +28,7 @@ public class Player : Gatherer
 
     [Header("Manual Machinery")]
     // Camera
-    public Camera mainCam;
+    //public Camera mainCam;
 
     // Familiar
     public Familiar familiar;
@@ -171,18 +171,6 @@ public class Player : Gatherer
         EndSprint();
     }
 
-    // private void MeditatePerformed(InputAction.CallbackContext context)
-    // {
-    //     Meditate();
-    //     //GM.I.ui.Meditate();
-    // }
-
-    // private void MeditateCanceled(InputAction.CallbackContext context)
-    // {
-    //     EndMeditation();
-    //     //GM.I.ui.EndMeditation();
-    // }
-
     private void MeditatePerformed(InputAction.CallbackContext context)
     {
         // Start the meditation timer
@@ -242,7 +230,7 @@ public class Player : Gatherer
         // - Cursor
 
         // Get our mouse position in 3D cause Unity does not support me.
-        Vector3 mousePosition = mainCam.ScreenToWorldPoint(Mouse.current.position.ReadValue());
+        Vector3 mousePosition = GM.I.mainCam.ScreenToWorldPoint(Mouse.current.position.ReadValue());
 
         // Set cursor position
         cursorPosition = new Vector3(mousePosition.x, mousePosition.y, 0f);
@@ -319,7 +307,7 @@ public class Player : Gatherer
         Vector3 camPosition = new Vector3(transform.position.x, transform.position.y, -10f);
 
         if (!isShaking)
-            mainCam.transform.position = camPosition;
+            GM.I.mainCam.transform.position = camPosition;
     }
 
     // Fixed Update is for physics & stuff.
@@ -741,7 +729,7 @@ public class Player : Gatherer
         talent.OnLearn();
 
         // Visual feedback
-        HitMarker.CreateLearnMarker(transform.position, "Learned: " + talentName);
+        //HitMarker.CreateLearnMarker(transform.position, "Learned: " + talentName);
 
         // Sound effect
         GM.I.dj.PlayEffect(talent.myClass, transform.position);

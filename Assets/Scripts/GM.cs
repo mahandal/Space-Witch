@@ -6,6 +6,14 @@ using System.IO;
 public class GM : MonoBehaviour
 {
     [Header("Manual Machinery")]
+    // The main menu.
+    public MainMenu mainMenu;
+
+    // The main camera.
+    // Note: Not for the main menu! 
+    // (the intro has its own camera, that plays by its own rules)
+    public Camera mainCam;
+
     // Our hero!
     public Player player;
 
@@ -42,11 +50,14 @@ public class GM : MonoBehaviour
 
     // Game state
     // Key:
+    // -4 : init
+    // -3 : main menu
+    // -2 : intro
     // -1 : home
     //  0 : pre-game
     //  1 : game
     //  2 : post-game
-    public int gameState = -1;
+    public int gameState = -4;
 
     // Saved data for persistence
     // (credits, unlocked talents, etc...)
@@ -101,7 +112,12 @@ public class GM : MonoBehaviour
     // Polarity
     public int polarity = 1;
 
+    // Is the game currently paused?
     public bool isPaused = false;
+
+    // Should we load Home on startup?
+    // (if not, we load the Main Menu)
+    public static bool startAtHome = false;
 
     // The current witch we are learning from, while training.
     public Witch currentWitch;
@@ -152,13 +168,23 @@ public class GM : MonoBehaviour
         talentManager.InitializeTalents();
 
         // Agatha starts with Jump.
-        // TBD: Scale to other Witches
+        // TBD: Scale to include other Witches and more starting talents.
         player.LearnTalent("Jump");
 
         // Preload images so talents load smoothly.
         Utility.PreloadImages();
 
-        GoHome();
+        //GoHome();
+
+        // Start in the main menu.
+        // if (gameState == -4)
+        //     GoToMainMenu();
+
+        // Start at home?
+        if (GM.startAtHome)
+            mainMenu.GoHome();
+        else
+            GoToMainMenu();
     }
 
     public void StopTime()
@@ -484,15 +510,23 @@ public class GM : MonoBehaviour
         CollectNectar();
     }
 
-    // Go to the main menu
-    public void MainMenu()
+    // Go to the main menu.
+    public void MainMenuPressed()
     {
-        SceneManager.LoadScene("Menu");
+        // Set bool.
+        GM.startAtHome = false;
+
+        // Re-load game.
+        SceneManager.LoadScene("Game");
     }
 
-    // Go home (from post game screen)
+    // Go home (from post game screen).
     public void GoHomePressed()
     {
+        // Set bool.
+        GM.startAtHome = true;
+
+        // Re-load game.
         SceneManager.LoadScene("Game");
         //GoHome();
     }
@@ -528,6 +562,33 @@ public class GM : MonoBehaviour
 
         // Turn time back on
         StartTime();
+    }
+
+    // Set up the main menu?
+    // Note: I got a bit confused while writing this. Still not sure exactly how much to re-set up versus reload or w/e.
+    public void GoToMainMenu()
+    {
+        // Stop the music(?)
+        //GM.I.dj.StopMusic();
+
+        // Reload scene?
+        //SceneManager.LoadScene("Game");
+
+        // Set gamestate
+        gameState = -3;
+
+        // Hide the universe
+        universe.gameObject.SetActive(false);
+
+        // Hide our UI
+        ui.GoToMainMenu();
+
+        // Toggle camera
+        mainCam.gameObject.SetActive(false);
+        mainMenu.mainCam.gameObject.SetActive(true);
+
+        // Show the main menu
+        mainMenu.gameObject.SetActive(true);
     }
 
     // Give each home planet some nectar.
@@ -672,7 +733,8 @@ public class GM : MonoBehaviour
         HitMarker.CreateNarrativeMarker(v3, "Good folk need your help.");
     }
 
-    // Toggles the pause menu
+    // Toggles the pause menu.
+    // Also handles closing screens that are open.
     public void TogglePause()
     {
         // If we're training, stop.
@@ -750,13 +812,8 @@ public class GM : MonoBehaviour
 
     private System.Collections.IEnumerator ShakeCameraCoroutine(float strength, float duration, Vector3 position)
     {
-        /*
-        Vector3 originalPos = player.mainCam.transform.localPosition;
-        originalPos.x = position.x;
-        originalPos.y = position.y;
-        */
         Vector3 originalPos = position;
-        originalPos.z = player.mainCam.transform.localPosition.z;
+        originalPos.z = mainCam.transform.localPosition.z;
         player.isShaking = true;
         float elapsed = 0f;
 
@@ -766,7 +823,7 @@ public class GM : MonoBehaviour
             float yOffset = Random.Range(-1f, 1f) * strength;
 
 
-            player.mainCam.transform.localPosition = new Vector3(
+            mainCam.transform.localPosition = new Vector3(
                 originalPos.x + xOffset,
                 originalPos.y + yOffset,
                 originalPos.z);

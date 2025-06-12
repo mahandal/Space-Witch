@@ -8,7 +8,7 @@ public class MainMenu : MonoBehaviour
 {
     [Header("Manual Machinery")]
     // Our DJ!
-    public AudioManager dj;
+    //public AudioManager dj;
 
     // The main camera
     public Camera mainCam;
@@ -80,6 +80,24 @@ public class MainMenu : MonoBehaviour
             I = this;
         }
 
+        // // Disable stuff that shouldn't be
+        // settingsMenu.SetActive(false);
+        // overlay.gameObject.SetActive(false);
+        // intro.SetActive(false);
+
+        // // hide skip prompt
+        // HideSkipPrompt();
+
+        // // Enable stuff that should be!
+        // mainUI.SetActive(true);
+        // Time.timeScale = 1f;
+
+        // // Load settings(?)
+        // showIntro = PlayerPrefs.GetInt("ShowIntro", 1) == 1;
+    }
+
+    void OnEnable()
+    {
         // Disable stuff that shouldn't be
         settingsMenu.SetActive(false);
         overlay.gameObject.SetActive(false);
@@ -98,29 +116,21 @@ public class MainMenu : MonoBehaviour
 
     void Start()
     {
+        Debug.Log("Startin up!");
+
         // First time?
         if (firstTime)
         {
             // Play the very first thing a new player will hear!
-            dj.PlayMusic("Nycticorax");
+            GM.I.dj.PlayMusic("Nycticorax");
             firstTime = false;
         } else {
-            dj.PlayLoopyMusic("Night Heron");
+            GM.I.dj.PlayLoopyMusic("Night Heron");
         }
     }
 
     void FixedUpdate()
     {
-        // if (introPlaying)
-        // {
-        //     // Timer
-        //     introTimer += Time.deltaTime;
-        //     if (introTimer > introDuration)
-        //         LoadGame();
-
-        //     // Move camera
-        //     mainCam.transform.position += Vector3.up * introCameraSpeed * Time.deltaTime;
-        // }
         if (introPlaying)
         {
             // Check for any input
@@ -128,12 +138,6 @@ public class MainMenu : MonoBehaviour
             {
                 // Show Skip prompt
                 ShowSkipPrompt();
-
-                // Show skip prompt on first input
-                // if (!skipPromptShown)
-                // {
-                //     ShowSkipPrompt();
-                // }
                 
                 // Count hold time
                 if (Input.anyKey)
@@ -141,7 +145,7 @@ public class MainMenu : MonoBehaviour
                     skipTimer += Time.deltaTime;
                     if (skipTimer >= skipHoldTime)
                     {
-                        LoadGame(); // Skip to game
+                        GoHome(); // Skip to game
                         return;
                     }
                 }
@@ -152,7 +156,7 @@ public class MainMenu : MonoBehaviour
                 skipTimer = 0f;
             }
             
-            // Handle prompt fade
+            // Handle prompt progress
             if (skipPromptShown)
             {
                 // Timer
@@ -182,7 +186,7 @@ public class MainMenu : MonoBehaviour
             // Continue with your existing intro timer logic
             introTimer += Time.deltaTime;
             if (introTimer > introDuration)
-                LoadGame();
+                GoHome();
                 
             mainCam.transform.position += Vector3.up * introCameraSpeed * Time.deltaTime;
         }
@@ -198,7 +202,7 @@ public class MainMenu : MonoBehaviour
         if (showIntro)
             PlayIntro();
         else
-            LoadGame();
+            GoHome();
     }
 
     public void PlayIntro()
@@ -210,17 +214,34 @@ public class MainMenu : MonoBehaviour
         intro.SetActive(true);
 
         // Play the intro audio.
-        dj.PlayMusic("Intro");
+        GM.I.dj.PlayMusic("Intro");
     }
 
-    // Begin loading the Game scene.
-    public void LoadGame()
+    // Set us up to go home.
+    // Note: I don't like how this overlaps with GM.GoHome but I'm not quite sure which direction to go. A problem for another time.
+    // TBD: Refactor
+    public void GoHome()
     {
         // Activate our loading overlay.
-        overlay.gameObject.SetActive(true);
+        //overlay.gameObject.SetActive(true);
 
         // Load game!
-        SceneManager.LoadScene("Game");
+        //SceneManager.LoadScene("Game");
+
+        // Stop the music!
+        GM.I.dj.StopMusic();
+
+        // Disable the main menu
+        gameObject.SetActive(false);
+
+        // Unfreeze universe
+        GM.I.universe.gameObject.SetActive(true);
+
+        // Activate the main camera
+        GM.I.mainCam.gameObject.SetActive(true);
+
+        // Go home!
+        GM.I.GoHome();
     }
 
     // Time to go!

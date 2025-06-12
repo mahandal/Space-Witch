@@ -6,7 +6,7 @@ using System.Collections.Generic;
 public class UI : MonoBehaviour
 {
     [Header("Top")]
-    public GameObject top;
+    public GameObject TOP;
     public GameObject topGameParent;
     public TMP_Text xText;
     public TMP_Text yText;
@@ -26,6 +26,7 @@ public class UI : MonoBehaviour
 
 
     [Header("Middle")]
+    public GameObject MIDDLE;
     public GameObject tooltip;
     public TMP_Text tooltipName;
     public TMP_Text tooltipDescription;
@@ -42,6 +43,7 @@ public class UI : MonoBehaviour
     public List<WheelChoice> trainingTalents;
 
     [Header("Bottom")]
+    public GameObject BOTTOM;
     public Slider playerHealthBar;
     public Slider playerManaBar;
     public Slider familiarHealthBar;
@@ -1222,7 +1224,7 @@ public class UI : MonoBehaviour
                 float regress = 1 - (blackHoleChannelTimer / blackHoleChannelTime);
 
                 // Set camera 
-                GM.I.player.mainCam.orthographicSize = Mathf.Lerp(0.1f, 5f, regress);
+                GM.I.mainCam.orthographicSize = Mathf.Lerp(0.1f, 5f, regress);
 
                 // Set scale
                 GM.I.player.transform.localScale = GM.I.player.originalScale * (0.5f + regress * 0.5f);
@@ -1258,9 +1260,9 @@ public class UI : MonoBehaviour
         GM.I.player.transform.localScale = GM.I.player.originalScale * (1 - progress * 0.5f);
 
         // Camera zoom effect
-        if (GM.I.player.mainCam != null)
+        if (GM.I.mainCam != null)
         {
-            GM.I.player.mainCam.orthographicSize = Mathf.Lerp(5, 0.1f, progress);
+            GM.I.mainCam.orthographicSize = Mathf.Lerp(5, 0.1f, progress);
         }
 
         // Execute transition when complete
@@ -1271,7 +1273,7 @@ public class UI : MonoBehaviour
                 Destroy(blackHoleVignette.gameObject);
 
             // Reset camera and player
-            GM.I.player.mainCam.orthographicSize = 5;
+            GM.I.mainCam.orthographicSize = 5;
             GM.I.player.transform.localScale = GM.I.player.originalScale;
 
             // Transition complete
@@ -1299,10 +1301,19 @@ public class UI : MonoBehaviour
         // Deactivate progress bar
         //progressBar.gameObject.SetActive(false);
 
-        // Deactivate top stuff
+        // Enable top stuff.
+        TOP.SetActive(true);
+
+        // Deactivate most top stuff.
         topGameParent.SetActive(false);
 
-        // Disable the start button
+        // Enable middle?
+        MIDDLE.SetActive(true);
+
+        // Activate all bottom stuff.
+        BOTTOM.SetActive(true);
+
+        // Disable the start button.
         startButton.SetActive(false);
 
         // Activate credits
@@ -1315,6 +1326,9 @@ public class UI : MonoBehaviour
     {
         // Enable the start button
         startButton.SetActive(true);
+
+        // Enable bottom stuff.
+        //BOTTOM.SetActive(true);
     }
 
     // Begin game.
@@ -1375,5 +1389,19 @@ public class UI : MonoBehaviour
 
         // Return to reality.
         GM.I.player.EndMeditation();
+    }
+
+    // Load the main menu UI.
+    // Mostly disabling the HUD.
+    public void GoToMainMenu()
+    {
+        // Disable everything up top.
+        TOP.SetActive(false);
+
+        // Disable everything down low.
+        BOTTOM.SetActive(false);
+
+        // Disable everything in between.
+        MIDDLE.SetActive(false);
     }
 }

@@ -15,17 +15,19 @@ public class ParallaxBackground : MonoBehaviour
     void Start()
     {
         // Get reference to camera if not set
-        if (cameraTransform == null)
-            cameraTransform = Camera.main.transform;
+        // if (cameraTransform == null)
+        //     cameraTransform = Camera.main.transform;
             
         lastCameraPosition = cameraTransform.position;
         originalPosition = transform.position;
     }
 
-    void LateUpdate()
+    //void LateUpdate()
+    void FixedUpdate()
     {
         // Calculate camera movement
-        Vector3 cameraMovement = cameraTransform.position - lastCameraPosition;
+        Vector3 cameraMovement = (cameraTransform.position - lastCameraPosition);
+        //Vector3 cameraMovement = (cameraTransform.position - lastCameraPosition) * Time.fixedDeltaTime;
 
         // Move each layer based on parallax effect
         for (int i = 0; i < backgroundLayers.Length; i++)
