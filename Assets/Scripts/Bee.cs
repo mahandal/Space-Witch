@@ -3,6 +3,7 @@ using UnityEngine;
 public class Bee : Gatherer
 {
     [Header("Bee")]
+    public int index;
     public int goalIndex;
     public Planet goal;
     public Vector3 destination;
@@ -426,5 +427,40 @@ public class Bee : Gatherer
                 SpendMana(manaCost);
             }
         }
+    }
+
+    public void GetStats()
+    {
+        if (index < 9) // Bees 0-8 care about their specific planet
+        {
+            Planet myPlanet = GM.I.home.planets[index];
+            mind = 1 + myPlanet.science / 3;
+            body = 1 + myPlanet.environment / 3;
+            soul = 1 + myPlanet.culture / 3;
+            luck = 1 + myPlanet.economy / 3;
+        }
+        else // Bees 9-11 use averages
+        {
+            int totalScience = 0;
+            int totalEnvironment = 0; 
+            int totalCulture = 0;
+            int totalEconomy = 0;
+            
+            foreach (Planet planet in GM.I.home.planets)
+            {
+                totalScience += planet.science;
+                totalEnvironment += planet.environment;
+                totalCulture += planet.culture;
+                totalEconomy += planet.economy;
+            }
+            
+            int planetCount = GM.I.home.planets.Count;
+            mind = 1 + (totalScience / planetCount) / 3;
+            body = 1 + (totalEnvironment / planetCount) / 3;
+            soul = 1 + (totalCulture / planetCount) / 3;
+            luck = 1 + (totalEconomy / planetCount) / 3;
+        }
+        
+        CalculateStats();
     }
 }

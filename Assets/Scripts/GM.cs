@@ -63,6 +63,9 @@ public class GM : MonoBehaviour
     // (credits, unlocked talents, etc...)
     public SaveData saveData = new SaveData();
 
+    // Difficulty settings stored here.
+    public DifficultySettings difficulty = new DifficultySettings();
+
     // Current nebula
     //public string nebula = "unknown";
     public Nebula nebula;
@@ -121,6 +124,9 @@ public class GM : MonoBehaviour
 
     // The current witch we are learning from, while training.
     public Witch currentWitch;
+
+    // Used to alternate beats.
+    private int beatCounter = 0;
 
 
     // Timers
@@ -423,17 +429,33 @@ public class GM : MonoBehaviour
     // Known by many names, including The Devil.
     void Astarax()
     {
-        // wait for it to get intense
-        if (gameState < 1 || dj.songHype <= 0)
-            return;
-
-        // Go through each worm hole
+        if (gameState < 1 || dj.songHype <= 0) return;
+        
+        beatCounter++;
+        
+        int[] spawnIntervals = {4, 2, 1}; // Every beat, every other beat, or 1 in 4.
+        int interval = spawnIntervals[difficulty.spawnRate];
+        
+        if (beatCounter % interval != 0) return;
+        
         foreach (WormHole wormHole in wormHoles)
         {
-            // Spawn an asteroid
             wormHole.SpawnAsteroid();
         }
     }
+    // void Astarax()
+    // {
+    //     // wait for it to get intense
+    //     if (gameState < 1 || dj.songHype <= 0)
+    //         return;
+
+    //     // Go through each worm hole
+    //     foreach (WormHole wormHole in wormHoles)
+    //     {
+    //         // Spawn an asteroid
+    //         wormHole.SpawnAsteroid();
+    //     }
+    // }
 
     // Survive your flight to win!
     public void Win()
@@ -477,6 +499,20 @@ public class GM : MonoBehaviour
         // // Gain bonus score per moon.
         // score *= 1f + (0.5f * Gatherer.moonsGathered);
 
+        // - Difficulties
+
+        // Size
+        if (difficulty.asteroidSize > 1)
+            score *= 1 + (difficulty.asteroidSize / 2f);
+
+        // Speed
+        if (difficulty.asteroidSpeed > 1)
+            score *= 1 + (difficulty.asteroidSpeed / 2f);
+
+        // Spawn Rate
+        if (difficulty.spawnRate > 1)
+            score *= 1 + (difficulty.spawnRate / 2f);
+
         return (int)score;
     }
 
@@ -486,6 +522,8 @@ public class GM : MonoBehaviour
         // Initialize score.
         float score = Gatherer.starsGathered;
 
+        // - Status
+
         // Gain bonus for # of lives remaining
         score *= 1f + (0.1f * GM.I.player.livesRemaining);
 
@@ -494,6 +532,20 @@ public class GM : MonoBehaviour
 
         // Gain bonus score per moon.
         score *= 1f + (0.1f * Gatherer.moonsGathered);
+
+        // - Difficulties
+
+        // Size
+        if (difficulty.asteroidSize > 1)
+            score *= 1 + (difficulty.asteroidSize / 2f);
+
+        // Speed
+        if (difficulty.asteroidSpeed > 1)
+            score *= 1 + (difficulty.asteroidSpeed / 2f);
+
+        // Spawn Rate
+        if (difficulty.spawnRate > 1)
+            score *= 1 + (difficulty.spawnRate / 2f);
 
         return (int)score;
     }

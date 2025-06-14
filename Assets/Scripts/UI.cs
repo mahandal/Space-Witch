@@ -155,6 +155,10 @@ public class UI : MonoBehaviour
     public TMP_Text environmentCost;
     public TMP_Text economyCost;
 
+    [Header("Sol Surface")]
+    // Background image, also parent object.
+    public Image solSurface;
+
     [Header("Full")]
     public GameObject pauseMenu;
     //public GameObject preGame;
@@ -225,6 +229,7 @@ public class UI : MonoBehaviour
         CloseWheelOfTalents();
         mySelf.SetActive(false);
         planetSurface.gameObject.SetActive(false);
+        solSurface.gameObject.SetActive(false);
     }
 
     void Start()
@@ -1379,9 +1384,19 @@ public class UI : MonoBehaviour
         {
             // Check if we're on a planet and should leave.
             if (GM.I.player.currentPlanet != null)
+            {
                 LeavePlanet();
-            else // Normal meditation.
+            }
+            // Check if we're on the sun and should leave.
+            if (solSurface.gameObject.activeSelf)
+            {
+                LeaveSun();
+            }
+            // Normal meditation.
+            else
+            {
                 CloseMeditationUI(); // Close meditation UI, but keep time frozen so you can look around and think.
+            }
         }
         else
         {
@@ -1431,6 +1446,28 @@ public class UI : MonoBehaviour
         planetSurface.gameObject.SetActive(false);
 
         // Return to reality.
+        GM.I.player.EndMeditation();
+    }
+
+    // Enter the sun.
+    public void GoToSun()
+    {
+        // hide beginning
+        beginMeditatingWheel.gameObject.SetActive(false);
+        beginMeditatingBG.gameObject.SetActive(false);
+
+        // Open the sol surface screen.
+        solSurface.gameObject.SetActive(false);
+        solSurface.gameObject.SetActive(true);
+    }
+
+    // Leave the sun
+    public void LeaveSun()
+    {
+        // Close sun surface screen.
+        solSurface.gameObject.SetActive(false);
+
+        // Return to reality
         GM.I.player.EndMeditation();
     }
 

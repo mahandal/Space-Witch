@@ -193,11 +193,13 @@ public class Player : Gatherer
 
         // Stay in a screen if we opened one
 
-        // Investing
+        // Planet surface
         if (GM.I.ui.planetSurface.gameObject.activeSelf)
-        {
             return;
-        }
+
+        // Sol surface
+        if (GM.I.ui.solSurface.gameObject.activeSelf)
+            return;
         
         // Otherwise end meditation normally
         EndMeditation();
@@ -760,17 +762,30 @@ public class Player : Gatherer
         isMeditating = true;
         isCalm = true;
 
-        // Check which UI to open
-        if (currentPlanet != null && GM.I.nebula.myName == "Home")
-            GM.I.ui.GoToPlanet(currentPlanet);
-        else
-            GM.I.ui.Meditate();
+        // Reset preparatation
+        isPreparingToMeditate = false;
 
         // Stop time
         GM.I.StopTime();
 
-        // Reset preparatation
-        isPreparingToMeditate = false;
+        // Check which UI to open
+        if ((currentPlanet != null || walkingOnTheSun) && GM.I.nebula.myName == "Home")
+        {
+            if (currentPlanet != null)
+            {
+                GM.I.ui.GoToPlanet(currentPlanet);
+            }
+            else
+            {
+                // walking on the sun? must be
+                // Note: This is really weirdly designed. But honestly it's prolly gonna be a bit odd no matter what so w/e.
+                GM.I.ui.GoToSun();
+            }
+        }
+        else
+        {
+            GM.I.ui.Meditate();
+        }
     }
 
     public void EndMeditation()
@@ -824,6 +839,9 @@ public class Player : Gatherer
     // Track if we're flying over a planet.
     public Planet currentPlanet;
 
+    // Track if we're flying over the sun?
+    public bool walkingOnTheSun = false;
+
     new void OnTriggerEnter2D(Collider2D col)
     {
         // base gatherer
@@ -838,6 +856,11 @@ public class Player : Gatherer
         Planet planet = col.GetComponent<Planet>();
         if (planet != null)
             EnterPlanet(planet);
+
+        // Walk on the sun
+        Sun sun = col.GetComponent<Sun>();
+        if (sun != null)
+            walkingOnTheSun = true;
     }
 
     // Enter a black hole, beginning its dilation effects.
@@ -882,6 +905,11 @@ public class Player : Gatherer
         {
             ExitPlanet(planet);
         }
+
+        // Stop walking on the sun.
+        Sun sun = col.GetComponent<Sun>();
+        if (sun != null)
+            walkingOnTheSun = false;
     }
 
     void OnTriggerStay2D(Collider2D col)

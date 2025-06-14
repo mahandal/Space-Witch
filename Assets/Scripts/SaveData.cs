@@ -18,7 +18,10 @@ public class SaveData
     public List<int> planetScience = new List<int>();
     public List<int> planetCulture = new List<int>();
     public List<int> planetEnvironment = new List<int>();
-    public List<int> planetEconomy = new List<int>(); 
+    public List<int> planetEconomy = new List<int>();
+
+    // - Difficulties
+    
 
     public SaveData()
     {

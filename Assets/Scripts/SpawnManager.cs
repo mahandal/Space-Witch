@@ -327,33 +327,8 @@ public class SpawnManager : MonoBehaviour
 
     public void SetUpBees()
     {
-        // Activate all bees
-        // foreach (Bee bee in GM.I.bees)
-        // {
-        //     bee.gameObject.SetActive(true);
-        // }
-
-        // Shuffle starting locations.
-        // ShuffleBeePositions();
-
         // Shuffle bees
         ShuffleBees();
-
-        // Activate one bee per planet
-        // for (int i = 0; i < GM.I.planets.Count; i++)
-        // {
-        //     Debug.Log("Setting up bee # " + i);
-
-        //     // Get bee
-        //     Bee bee = GM.I.bees[i];
-
-        //     // Set starting goal
-        //     bee.goalIndex = i;
-        //     bee.goal = GM.I.planets[bee.goalIndex];
-
-        //     // Activate
-        //     bee.gameObject.SetActive(true);
-        // }
 
         // Activate each planet's bee
         for (int i = 0; i < GM.I.activePlanets.Count; i++)
@@ -364,6 +339,9 @@ public class SpawnManager : MonoBehaviour
             // Set starting goal to this planet's position in the active list
             bee.goalIndex = i;
             bee.goal = planet;
+
+            // Bee stats
+            bee.GetStats();
             
             // Activate
             bee.gameObject.SetActive(true);
@@ -661,10 +639,16 @@ public class SpawnManager : MonoBehaviour
 
         // Set speed & size
 
-        // Base values scale with hype
-        float acceleration = baseAsteroidAcceleration + (asteroidAccelerationHypeScalar * GM.I.hype);
-        float maxSpeed = baseAsteroidMaxSpeed + (asteroidMaxSpeedHypeScalar * GM.I.hype);
-        float size = baseAsteroidSize + (asteroidSizeHypeScalar * GM.I.hype);
+        // Base values scale with hype & difficulty
+        float[] sizeMultipliers = {0.5f, 1.0f, 2f};
+        float[] speedMultipliers = {0.5f, 1.0f, 2f};
+
+        float size = baseAsteroidSize * sizeMultipliers[GM.I.difficulty.asteroidSize];
+        float maxSpeed = baseAsteroidMaxSpeed * speedMultipliers[GM.I.difficulty.asteroidSpeed];
+        float acceleration = maxSpeed;
+        // float acceleration = baseAsteroidAcceleration + (asteroidAccelerationHypeScalar * GM.I.hype);
+        // float maxSpeed = baseAsteroidMaxSpeed + (asteroidMaxSpeedHypeScalar * GM.I.hype);
+        // float size = baseAsteroidSize + (asteroidSizeHypeScalar * GM.I.hype);
 
         // Add some random variation
         float randomVariation = Random.Range(0.1f, 2.9f);
