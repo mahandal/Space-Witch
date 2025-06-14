@@ -99,7 +99,7 @@ public class LaserWeapon : MonoBehaviour
                 if (currentChargeTime <= chargeTime)
                 {
                     // Create charge-up effect
-                    //CreateChargingEffect(targetDirection, currentChargeTime / chargeTime);
+                    UpdateChargingEffect(currentChargeTime / chargeTime);
                 }
                 
                 // When fully charged, fire
@@ -120,6 +120,8 @@ public class LaserWeapon : MonoBehaviour
                     // Reset
                     isCharging = false;
                     fireTimer = 1f / fireRate;
+
+                    DestroyChargingEffect();
                 }
             }
         }
@@ -127,6 +129,8 @@ public class LaserWeapon : MonoBehaviour
         {
             // No target, reset charging
             isCharging = false;
+
+            DestroyChargingEffect();
         }
     }
     
@@ -174,10 +178,14 @@ public class LaserWeapon : MonoBehaviour
         return bestTarget;
     }
     
+    // I'm firin my laser!
     public void Fire(Asteroid target)
     {
         // Reset fire timer
         fireTimer = 1f / fireRate;
+
+        // Destroy charging effect
+        //DestroyChargingEffect();
 
         // Check for critical hit
         float finalDamage = damage;
@@ -255,6 +263,51 @@ public class LaserWeapon : MonoBehaviour
     //         chargeTime *= 2f;
     //     }
     // }
+
+    private LineRenderer chargingCircle;
+
+    private void UpdateChargingEffect(float chargePercent)
+    {
+        if (chargingCircle == null)
+        {
+            GameObject circleObj = new GameObject("ChargingCircle");
+            circleObj.transform.position = firePoint.position;
+            
+            chargingCircle = circleObj.AddComponent<LineRenderer>();
+            chargingCircle.material = new Material(Shader.Find("Sprites/Default"));
+            chargingCircle.startWidth = 0.02f;
+            chargingCircle.endWidth = 0.02f;
+            chargingCircle.useWorldSpace = true;
+            chargingCircle.sortingOrder = 100;
+        }
+        
+        // Update circle
+        float radius = (chargePercent * 0.01f);
+        Color circleColor = new Color(1f, 0f, 0f, chargePercent);
+        chargingCircle.startColor = circleColor;
+        chargingCircle.endColor = circleColor;
+        
+        // Draw circle
+        int segments = 12;
+        chargingCircle.positionCount = segments + 1;
+        
+        for (int i = 0; i <= segments; i++)
+        {
+            float angle = i * 2f * Mathf.PI / segments;
+            float x = firePoint.position.x + Mathf.Cos(angle) * radius;
+            float y = firePoint.position.y + Mathf.Sin(angle) * radius;
+            chargingCircle.SetPosition(i, new Vector3(x, y, 0));
+        }
+    }
+
+    private void DestroyChargingEffect()
+    {
+        if (chargingCircle != null)
+        {
+            Object.Destroy(chargingCircle.gameObject);
+            chargingCircle = null;
+        }
+    }
 
     public void SetStats(bool isHeavy = false)
     {
