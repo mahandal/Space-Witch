@@ -433,7 +433,7 @@ public class GM : MonoBehaviour
         
         beatCounter++;
         
-        int[] spawnIntervals = {4, 2, 1}; // Every beat, every other beat, or 1 in 4.
+        int[] spawnIntervals = {0, 4, 2, 1}; // Every beat, every other beat, or 1 in 4.
         int interval = spawnIntervals[difficulty.spawnRate];
         
         if (beatCounter % interval != 0) return;
@@ -838,6 +838,12 @@ public class GM : MonoBehaviour
         {
             ui.LeavePlanet();
             return;
+        }
+
+        // Leave sol
+        if (ui.solSurface.gameObject.activeSelf)
+        {
+            ui.LeaveSun();
         }
 
         // Already paused, so we should unpause.

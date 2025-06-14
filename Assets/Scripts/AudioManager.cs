@@ -136,6 +136,16 @@ public class AudioManager : MonoBehaviour
                 currentPartIndex++;
                 currentPartTimer = 0f;
 
+                // If we've gone through all parts...
+                if (currentPartIndex >= currentSong.parts.Count)
+                {
+                    // Reset
+                    currentPartIndex = 0;
+
+                    // Return
+                    return;
+                }
+
                 // Get new song part
                 SongPart part = currentSong.parts[currentPartIndex];
 
@@ -145,10 +155,6 @@ public class AudioManager : MonoBehaviour
                 // Set bpm?
                 if (part.bpm > 0)
                     GM.I.bpm = part.bpm;
-                
-                // If we've gone through all parts...
-                // if (currentPartIndex >= currentSong.parts.Count)
-                //     currentPartIndex = 0;
             }
         }
     }

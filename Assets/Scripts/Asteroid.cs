@@ -82,6 +82,13 @@ public class Asteroid : MonoBehaviour
 
     public void Navigate()
     {
+        // Check if the planet we're chasing dies.
+        if (targetPlanet != null && !targetPlanet.isAlive)
+        {
+            Explode();
+            return;
+        }
+
         // Check if we're still chasing beacons.
         bool hasCompletedBeacons = currentBeaconIndex > GM.I.beacons.Count;
 
@@ -214,9 +221,9 @@ public class Asteroid : MonoBehaviour
             }
 
             // Reset velocity
-            //rb2d.linearVelocity = Vector2.zero;
+            rb2d.linearVelocity = Vector2.zero;
 
-            rb2d.linearVelocity = direction.normalized * maxSpeed;
+            //rb2d.linearVelocity = direction.normalized * maxSpeed;
         }
     }
 

@@ -640,8 +640,8 @@ public class SpawnManager : MonoBehaviour
         // Set speed & size
 
         // Base values scale with hype & difficulty
-        float[] sizeMultipliers = {0.5f, 1.0f, 2f};
-        float[] speedMultipliers = {0.5f, 1.0f, 2f};
+        float[] sizeMultipliers = {0f, 1f, 2f, 4f};
+        float[] speedMultipliers = {0f, 1f, 2f, 4f};
 
         float size = baseAsteroidSize * sizeMultipliers[GM.I.difficulty.asteroidSize];
         float maxSpeed = baseAsteroidMaxSpeed * speedMultipliers[GM.I.difficulty.asteroidSpeed];
@@ -662,7 +662,7 @@ public class SpawnManager : MonoBehaviour
 
 
         // Start at max speed
-        newAsteroid.rb2d.linearVelocity = newAsteroid.direction * newAsteroid.maxSpeed;
+        //newAsteroid.rb2d.linearVelocity = newAsteroid.direction * newAsteroid.maxSpeed;
 
         // Set size
         newAsteroid.size = size * sizeMultiplier * inverseVariation;
