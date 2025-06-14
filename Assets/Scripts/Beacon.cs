@@ -48,6 +48,18 @@ public class Beacon : MonoBehaviour
 
     void HandleDragging()
     {
+        // Get picked up?
+        if (dragger == null)
+        {
+            Collider2D gathererCollider = Physics2D.OverlapPoint(transform.position);
+            if (gathererCollider != null)
+            {
+                Gatherer gatherer = gathererCollider.GetComponent<Gatherer>();
+                TryPickup(gatherer);
+            }
+        }
+
+        // Get dragged.
         if (dragger != null && dragger.isCalm)
         {
             isBeingDragged = true;
@@ -107,24 +119,28 @@ public class Beacon : MonoBehaviour
     {
         // Check if a gatherer is grabbing us
         Gatherer gatherer = col.GetComponent<Gatherer>();
-        if (gatherer != null && dragger == null && gatherer.isCalm)
-        {
-            // Check if this gatherer is already dragging another beacon
-            bool alreadyDragging = false;
-            foreach (Beacon beacon in GM.I.beacons)
-            {
-                if (beacon != this && beacon.dragger == gatherer)
-                {
-                    alreadyDragging = true;
-                    break;
-                }
-            }
+        TryPickup(gatherer);
+
+        // Check if a gatherer is grabbing us
+        // Gatherer gatherer = col.GetComponent<Gatherer>();
+        // if (gatherer != null && dragger == null && gatherer.isCalm)
+        // {
+        //     // Check if this gatherer is already dragging another beacon
+        //     bool alreadyDragging = false;
+        //     foreach (Beacon beacon in GM.I.beacons)
+        //     {
+        //         if (beacon != this && beacon.dragger == gatherer)
+        //         {
+        //             alreadyDragging = true;
+        //             break;
+        //         }
+        //     }
             
-            if (!alreadyDragging)
-            {
-                dragger = gatherer;
-            }
-        }
+        //     if (!alreadyDragging)
+        //     {
+        //         dragger = gatherer;
+        //     }
+        // }
 
         // Gather stars
         Star star = col.gameObject.GetComponent<Star>();
@@ -173,5 +189,30 @@ void OnTriggerEnter2D(Collider2D col)
             dragger = null;
             isBeingDragged = false;
         }
+    }
+
+    // 
+    public bool TryPickup(Gatherer gatherer)
+    {
+        if (gatherer != null && dragger == null && gatherer.isCalm)
+        {
+            // Check if this gatherer is already dragging another beacon
+            bool alreadyDragging = false;
+            foreach (Beacon beacon in GM.I.beacons)
+            {
+                if (beacon != this && beacon.dragger == gatherer)
+                {
+                    alreadyDragging = true;
+                    break;
+                }
+            }
+            
+            if (!alreadyDragging)
+            {
+                dragger = gatherer;
+                return true;
+            }
+        }
+        return false;
     }
 }

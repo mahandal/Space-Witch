@@ -312,7 +312,7 @@ public class LaserWeapon : MonoBehaviour
     public void SetStats(bool isHeavy = false)
     {
         // Damage (scales with Body)
-        damage = 15f + (owner.body * 5f);
+        damage = 13f + (owner.body * 3f);
 
         // Range (scales with Mind)
         fireRange = 3f + (owner.mind * 0.1f);
