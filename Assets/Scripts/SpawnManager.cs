@@ -651,10 +651,10 @@ public class SpawnManager : MonoBehaviour
         // float size = baseAsteroidSize + (asteroidSizeHypeScalar * GM.I.hype);
 
         // Add some random variation
-        float randomVariation = Random.Range(0.1f, 2.9f);
+        float randomVariation = Random.Range(0.5f, 1.5f);
 
         // Get inverse of random variation, so speed and size will scale inverse to each other.
-        float inverseVariation = 3f - randomVariation;
+        float inverseVariation = 2f - randomVariation;
 
         // Set speed with controlled scaling
         newAsteroid.acceleration = acceleration * speedMultiplier * randomVariation;

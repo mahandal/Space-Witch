@@ -307,6 +307,9 @@ public class AudioManager : MonoBehaviour
         // Update music volume
         musicSource.volume = musicVolume * masterVolume;
 
+        // Update ambience volume
+        ambienceSource.volume = ambienceVolume * masterVolume; 
+
         // Save the setting
         PlayerPrefs.SetFloat("MasterVolume", volume);
         PlayerPrefs.Save();

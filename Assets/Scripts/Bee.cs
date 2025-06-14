@@ -434,10 +434,10 @@ public class Bee : Gatherer
         if (index < 9) // Bees 0-8 care about their specific planet
         {
             Planet myPlanet = GM.I.home.planets[index];
-            mind = 1 + myPlanet.science / 3;
-            body = 1 + myPlanet.environment / 3;
-            soul = 1 + myPlanet.culture / 3;
-            luck = 1 + myPlanet.economy / 3;
+            mind = myPlanet.science;
+            body = myPlanet.environment;
+            soul = myPlanet.culture;
+            luck = myPlanet.economy;
         }
         else // Bees 9-11 use averages
         {
@@ -454,11 +454,10 @@ public class Bee : Gatherer
                 totalEconomy += planet.economy;
             }
             
-            int planetCount = GM.I.home.planets.Count;
-            mind = 1 + (totalScience / planetCount) / 3;
-            body = 1 + (totalEnvironment / planetCount) / 3;
-            soul = 1 + (totalCulture / planetCount) / 3;
-            luck = 1 + (totalEconomy / planetCount) / 3;
+            mind = totalScience / GM.I.home.planets.Count;
+            body = totalEnvironment / GM.I.home.planets.Count;
+            soul = totalCulture / GM.I.home.planets.Count;
+            luck = totalEconomy / GM.I.home.planets.Count;
         }
         
         CalculateStats();

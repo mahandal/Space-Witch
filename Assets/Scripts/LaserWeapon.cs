@@ -178,9 +178,18 @@ public class LaserWeapon : MonoBehaviour
     {
         // Reset fire timer
         fireTimer = 1f / fireRate;
+
+        // Check for critical hit
+        float finalDamage = damage;
+        if (Random.Range(1, 101) <= owner.luck)
+        {
+            finalDamage *= 2f; // Double damage on crit
+            // Visual feedback for crit
+            HitMarker.CreateCombatMarker(target.transform.position, "CRITICAL!");
+        }
         
         // Deal damage to asteroid
-        target.ReceiveDamage(damage);
+        target.ReceiveDamage(finalDamage);
         
         // Get direction
         Vector3 direction = target.transform.position - transform.position;
@@ -250,7 +259,7 @@ public class LaserWeapon : MonoBehaviour
     public void SetStats(bool isHeavy = false)
     {
         // Damage (scales with Body)
-        damage = 5f + (owner.body * 2f);
+        damage = 15f + (owner.body * 5f);
 
         // Range (scales with Mind)
         fireRange = 3f + (owner.mind * 0.1f);
