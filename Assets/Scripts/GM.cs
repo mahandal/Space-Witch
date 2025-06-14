@@ -211,14 +211,29 @@ public class GM : MonoBehaviour
     // Save our progress.
     public void SaveGame()
     {
-        // Update save data with current values
+        // Credits
         saveData.credits = Gatherer.credits;
 
-        // Save planet nectar
+        //  - Planets
+
+        // Reset lists
         saveData.planetNectar.Clear();
+        saveData.planetScience.Clear();
+        saveData.planetCulture.Clear();
+        saveData.planetEnvironment.Clear();
+        saveData.planetEconomy.Clear();
+
+        // Go through each planet
         foreach (Planet planet in home.planets)
         {
+            // Save nectar
             saveData.planetNectar.Add(planet.nectar);
+
+            // Save investments
+            saveData.planetScience.Add(planet.science);
+            saveData.planetCulture.Add(planet.culture);
+            saveData.planetEnvironment.Add(planet.environment);
+            saveData.planetEconomy.Add(planet.economy);
         }
 
         // Convert to JSON and write to file
@@ -242,7 +257,12 @@ public class GM : MonoBehaviour
 
                 // Clear ooold saves
                 // (literally just for Evan and Nate I think?)
+                // (can replace soon prolly)
                 if (saveData.unlockedTalents.Count < 5)
+                    saveData = new SaveData();
+
+                // Clear old saves
+                if (saveData.planetNectar.Count != saveData.planetCulture.Count)
                     saveData = new SaveData();
             }
             else
@@ -262,10 +282,17 @@ public class GM : MonoBehaviour
         // Credits
         Gatherer.credits = saveData.credits;
 
-        // Nectar
+        // Planets
         for (int i = 0; i < saveData.planetNectar.Count; i++)
         {
+            // Nectar
             home.planets[i].nectar = saveData.planetNectar[i];
+
+            // Investments
+            home.planets[i].science = saveData.planetScience[i];
+            home.planets[i].culture = saveData.planetCulture[i];
+            home.planets[i].environment = saveData.planetEnvironment[i];
+            home.planets[i].economy = saveData.planetEconomy[i];
         }
     }
 
@@ -546,6 +573,9 @@ public class GM : MonoBehaviour
 
         // DJ go home
         dj.GoHome();
+
+        // Spawn manager go home
+        spawnManager.GoHome();
 
         // Deactivate all bees
         foreach (Bee bee in bees)

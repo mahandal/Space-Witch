@@ -132,6 +132,29 @@ public class UI : MonoBehaviour
     public TMP_Text forget;
     public Button exitButton;
 
+    [Header("Planet Surface")]
+    // Background image, also parent object.
+    public Image planetSurface;
+
+    // Header with planet name.
+    public TMP_Text planetName;
+
+    // How many credits we have.
+    // Note: Kinda redundant with a couple others? Or maybe this is the best way idk...
+    public TMP_Text planetCredits;
+
+    // Portfolio
+    public TMP_Text scienceText;
+    public TMP_Text cultureText;
+    public TMP_Text environmentText;
+    public TMP_Text economyText;
+
+    // Investments
+    public TMP_Text scienceCost;
+    public TMP_Text cultureCost;
+    public TMP_Text environmentCost;
+    public TMP_Text economyCost;
+
     [Header("Full")]
     public GameObject pauseMenu;
     //public GameObject preGame;
@@ -139,8 +162,6 @@ public class UI : MonoBehaviour
     public GameObject postGame;
     public GameObject winBackground;
     public GameObject lossBackground;
-    public Image planetSurface;
-
 
     //[Header("States")]
 
@@ -203,6 +224,7 @@ public class UI : MonoBehaviour
         meditationWheel.SetActive(false);
         CloseWheelOfTalents();
         mySelf.SetActive(false);
+        planetSurface.gameObject.SetActive(false);
     }
 
     void Start()
@@ -1355,8 +1377,11 @@ public class UI : MonoBehaviour
         // Check if we're meditating
         else if (GM.I.player.isMeditating)
         {
-            // Close meditation UI, but keep time frozen so you can look around and think.
-            CloseMeditationUI();
+            // Check if we're on a planet and should leave.
+            if (GM.I.player.currentPlanet != null)
+                LeavePlanet();
+            else // Normal meditation.
+                CloseMeditationUI(); // Close meditation UI, but keep time frozen so you can look around and think.
         }
         else
         {
@@ -1376,6 +1401,24 @@ public class UI : MonoBehaviour
         // Load the planet's image.
         string imageFileName = "Planet Surface - " + planet.myName;
         Utility.LoadImage(planetSurface, imageFileName);
+
+        // Load name
+        planetName.text = "Planet - " + planet.myName;
+
+        // Load credits
+        planetCredits.text = Gatherer.credits.ToString();
+
+        // Load portfolio.
+        scienceText.text = planet.science.ToString();
+        cultureText.text = planet.culture.ToString();
+        environmentText.text = planet.environment.ToString();
+        economyText.text = planet.economy.ToString();
+
+        // Load investment costs
+        scienceCost.text = planet.GetInvestmentCost("Science").ToString();
+        cultureCost.text = planet.GetInvestmentCost("Culture").ToString();
+        environmentCost.text = planet.GetInvestmentCost("Environment").ToString();
+        economyCost.text = planet.GetInvestmentCost("Economy").ToString();
 
         // Open planet surface screen.
         planetSurface.gameObject.SetActive(true);

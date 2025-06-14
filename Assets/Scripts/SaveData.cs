@@ -9,15 +9,23 @@ public class SaveData
     // Remember our talents.
     public List<string> unlockedTalents = new List<string>();
 
+    // - Planets
+
     // Nectar
     public List<int> planetNectar = new List<int>();
 
+    // Investments
+    public List<int> planetScience = new List<int>();
+    public List<int> planetCulture = new List<int>();
+    public List<int> planetEnvironment = new List<int>();
+    public List<int> planetEconomy = new List<int>(); 
+
     public SaveData()
     {
-        // Start with no money
+        // Start with no money,
         credits = 0;
 
-        // Just some talent
+        // just a lil talent.
         unlockedTalents = new List<string>();
         unlockedTalents.Add("Alchemist");
         unlockedTalents.Add("Enchantress");

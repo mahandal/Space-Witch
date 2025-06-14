@@ -27,15 +27,15 @@ public class MainMenu : MonoBehaviour
     public float introCameraSpeed = 21f;
     public float introDuration = 512f;
 
-    private float introTimer = 0f;
+    public float introTimer = 0f;
 
 
-    [Header("Settings")]
-    public Slider masterVolume;
-    public Slider musicVolume;
-    public Slider sfxVolume;
-    public Slider gatherVolume;
-    public Slider ambienceVolume;
+    // [Header("Settings")]
+    // public Slider masterVolume;
+    // public Slider musicVolume;
+    // public Slider sfxVolume;
+    // public Slider gatherVolume;
+    // public Slider ambienceVolume;
 
     [Header("Intro Skip")]
     public TMP_Text skipPrompt; // UI text that says "Hold any button to skip".
@@ -47,6 +47,14 @@ public class MainMenu : MonoBehaviour
     private bool skipPromptShown = false;
     private float skipTimer = 0f;
     private float promptTimer = 0f;
+
+    [Header("Intro Black Hole")]
+    public Transform blackHole;
+    public Image bhBG;
+    public float blackHoleStartTime = 13f; // Last 13 seconds
+    private bool inBlackHoleEffect = false;
+    private float orbitRadius;
+    private float orbitAngle = 0f;
 
 
     [Header("Automated Machinery")]
@@ -116,8 +124,6 @@ public class MainMenu : MonoBehaviour
 
     void Start()
     {
-        Debug.Log("Startin up!");
-
         // First time?
         if (firstTime)
         {
@@ -187,9 +193,76 @@ public class MainMenu : MonoBehaviour
             introTimer += Time.deltaTime;
             if (introTimer > introDuration)
                 GoHome();
-                
+            
+
+            // Move camera up.
+            //mainCam.transform.position += Vector3.up * introCameraSpeed * Time.deltaTime;
+            HandleIntroBlackHole();
+        }
+    }
+
+    // Handle the intro black hole effect.
+    // Note: Also handles the camera moving up until then. Is that the black hole too????
+    public void HandleIntroBlackHole()
+    {
+        // Check if we should start black hole effect
+        float timeRemaining = introDuration - introTimer;
+        if (timeRemaining <= blackHoleStartTime && !inBlackHoleEffect)
+        {
+            inBlackHoleEffect = true;
+            // Calculate initial orbit radius (distance from camera to black hole)
+            orbitRadius = Vector3.Distance(mainCam.transform.position, blackHole.position);
+        }
+
+        if (inBlackHoleEffect)
+        {
+            // Orbit
+            OrbitBlackHole(timeRemaining);
+
+            // Fade in background
+            float percentDone = 1 - (timeRemaining / blackHoleStartTime);
+            bhBG.color = new Color (0f, 0f, 0f, percentDone);
+        }
+        else
+        {
+            // Normal upward movement
             mainCam.transform.position += Vector3.up * introCameraSpeed * Time.deltaTime;
         }
+    }
+
+    void OrbitBlackHole(float timeRemaining)
+    {
+        // Gradually transition from upward movement to orbital
+        float effectProgress = 1f - (timeRemaining / blackHoleStartTime); // 0 to 1
+        
+        // Reduce upward movement and increase orbital speed over time
+        float upwardSpeed = introCameraSpeed * (1f - effectProgress);
+        float orbitSpeed = effectProgress * 90f; // Degrees per second at full effect
+        
+        // Continue some upward movement early on
+        mainCam.transform.position += Vector3.up * upwardSpeed * Time.deltaTime;
+        
+        // Shrink orbit radius (zoom in)
+        float currentRadius = orbitRadius * (1f - effectProgress * 0.8f); // Zoom to 20% of original
+        
+        // Add orbital movement
+        orbitAngle += orbitSpeed * Time.deltaTime;
+        Vector3 orbitOffset = new Vector3(
+            Mathf.Cos(orbitAngle * Mathf.Deg2Rad) * currentRadius * effectProgress,
+            Mathf.Sin(orbitAngle * Mathf.Deg2Rad) * currentRadius * effectProgress,
+            0
+        );
+        
+        Vector3 targetPos = blackHole.position + orbitOffset;
+        targetPos.z = mainCam.transform.position.z; // Keep camera Z
+        
+        // Blend between current movement and orbital position
+        mainCam.transform.position = Vector3.Lerp(mainCam.transform.position, targetPos, effectProgress * Time.deltaTime * 2f);
+        
+        // Zoom camera
+        float startSize = 5f; // Adjust to your normal camera size
+        float endSize = 0.1f; // How zoomed in you want
+        mainCam.orthographicSize = Mathf.Lerp(startSize, endSize, effectProgress);
     }
 
     // Press play!

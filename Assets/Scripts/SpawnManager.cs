@@ -64,6 +64,13 @@ public class SpawnManager : MonoBehaviour
         familiar = GM.I.familiar;
 
         // Create boundary circle
+        //CreateBoundaryCircle();
+    }
+
+    // Called by GM.GoHome
+    public void GoHome()
+    {
+        // Create boundary circle
         CreateBoundaryCircle();
     }
 

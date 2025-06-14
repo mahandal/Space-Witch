@@ -58,26 +58,11 @@ public class AudioManager : MonoBehaviour
     void Start()
     {
         // - Set volume sliders
-
-        // Check where we are
-        if (GM.I == null)
-        {
-            // Menu
-            MainMenu.I.masterVolume.value = masterVolume;
-            MainMenu.I.musicVolume.value = musicVolume;
-            MainMenu.I.sfxVolume.value = sfxVolume;
-            MainMenu.I.gatherVolume.value = gatherVolume;
-            MainMenu.I.ambienceVolume.value = ambienceVolume;
-        } 
-        else 
-        {
-            // Game
-            GM.I.ui.masterVolume.value = masterVolume;
-            GM.I.ui.musicVolume.value = musicVolume;
-            GM.I.ui.sfxVolume.value = sfxVolume;
-            GM.I.ui.gatherVolume.value = gatherVolume;
-            GM.I.ui.ambienceVolume.value = ambienceVolume;
-        }
+        GM.I.ui.masterVolume.value = masterVolume;
+        GM.I.ui.musicVolume.value = musicVolume;
+        GM.I.ui.sfxVolume.value = sfxVolume;
+        GM.I.ui.gatherVolume.value = gatherVolume;
+        GM.I.ui.ambienceVolume.value = ambienceVolume;
     }
 
     // Called once per beat, by GM.

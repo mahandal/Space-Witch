@@ -2,27 +2,22 @@ using UnityEngine;
 
 public class Planet : MonoBehaviour
 {
+    [Header("Investments")]
+    public int science = 12;
+    public int culture = 7;
+    public int environment = 1;
+    public int economy = 13;
+
     [Header("Planet")]
     // What's our name?
     public string myName;
     
-    // A hidden parent to rotate a moon, for when this planet has one.
-    public Transform moonMama;
-
+    
     // This planet's index in the list of planets.
     public int index;
 
     // How much pollen this planet currently has.
     public float pollen = 1;
-
-    // How big this planet is mechanically
-    private float radius;
-
-    // This planet's initial scale factor
-    private float initialScale;
-
-    // How much this planet grows per pollen.
-    private float growthFactor = 0.1f;
 
 
     [Header("Nectar")]
@@ -38,7 +33,20 @@ public class Planet : MonoBehaviour
     private Vector3 sunPosition;
 
     [Header("Machinery")]
+    // A hidden parent to rotate a moon, for when this planet has one.
+    public Transform moonMama;
+
+    // How long this planet has been harvested.
     public float harvestTimer = 0f;
+
+    // How big this planet is mechanically
+    private float radius;
+
+    // This planet's initial scale factor
+    private float initialScale;
+
+    // How much this planet grows per pollen.
+    private float growthFactor = 0.1f;
 
     // States
     public bool isAlive = true;
@@ -177,5 +185,54 @@ public class Planet : MonoBehaviour
 
         // Save
         GM.I.SaveGame();
+    }
+
+    // Get the cost for the next investment in the given industry on this planet.
+    public int GetInvestmentCost(string industry)
+    {
+         int currentLevel = 0;
+        switch(industry)
+        {
+            case "Science": currentLevel = science; break;
+            case "Culture": currentLevel = culture; break;
+            case "Environment": currentLevel = environment; break;
+            case "Economy": currentLevel = economy; break;
+        }
+        
+        return (int)Mathf.Pow(2, currentLevel);
+    }
+
+    // Invest in an industry.
+    public bool Invest(string industry)
+    {
+        // Check the cost.
+        int cost = GetInvestmentCost(industry);
+
+        // Do you got what it takes?
+        if (Gatherer.credits < cost)
+        {
+            // TBD: Handle failed attempts.
+            return false;
+        }
+
+        // Spend money.
+        Gatherer.credits -= cost;
+
+        switch(industry)
+        {
+            case "Science": science++; break;
+            case "Culture": culture++; break;
+            case "Environment": environment++; break;
+            case "Economy": economy++; break;
+        }
+        
+        // Save progress.
+        GM.I.SaveGame();
+
+        // Reload planet screen
+        GM.I.ui.GoToPlanet(this);
+
+        // Return successful.
+        return true;
     }
 }
