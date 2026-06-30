@@ -6,6 +6,9 @@ using System.Collections.Generic;
 [Serializable]
 public class SaveData
 {
+    // The name of the leader we are playing as.
+    public string leaderName;
+
     // The name of the current star we are on.
     public string currentStarName = "";
 

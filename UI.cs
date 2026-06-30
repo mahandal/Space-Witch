@@ -21,6 +21,19 @@ public class UI : MonoBehaviour
     // The green fill for the evil leader's health bar.
     public Image evilHealth;
 
+    [Header("Portraits")]
+    // The portrait showing who is leading the forces of good.
+    public Image goodPortrait;
+
+    // The text saying the name of the good leader.
+    public TMP_Text goodName;
+
+    // The portrait showing who is leading the forces of evil.
+    public Image evilPortrait;
+
+    // The text saying the name of the evil leader.
+    public TMP_Text evilName;
+
     [Header("Trash Can")]
     public GameObject trashCan;
 
@@ -78,13 +91,6 @@ public class UI : MonoBehaviour
         else
             Destroy(this);
 
-        // // Hide what should not be.
-        // victoryBackground.gameObject.SetActive(false);
-        // defeatBackground.gameObject.SetActive(false);
-        // HideTooltip();
-        // reservesDepleted.gameObject.SetActive(false);
-        // reinforcementsArrived.gameObject.SetActive(false);
-
         // Start auto pilot off.
         B_AutoPilotOff();
     }
@@ -102,6 +108,12 @@ public class UI : MonoBehaviour
 
         // Load the current planet's image into the background.
         Utility.LoadImage(battleBackground, "Planets/" + StarManager.I.GetCurrentPlanetName());
+
+        // Load the good leader's name.
+        goodName.text = GM.I.goodLeader.myName;
+
+        // Load the good leader's portrait.
+        Utility.LoadImage(goodPortrait, "Leaders/" + GM.I.goodLeader.myName);
     }
 
     // + Battle

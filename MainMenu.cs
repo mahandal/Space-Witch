@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using System.Collections.Generic;
+using System.Collections;
 
 public class MainMenu : MonoBehaviour
 {
@@ -36,15 +37,20 @@ public class MainMenu : MonoBehaviour
     // The description of the leader (lore).
     public TMP_Text leaderDetailsDescription;
 
-    // The leader's cards.
-    // public List<MiniCard>
+    // The cards this leader plays with.
+    public List<MiniCard> leaderDetailCards = new List<MiniCard>();
 
     [Header("Automated Machinery")]
     // Are we sliding toward the leader select screen?
     public bool slidingToLeaderSelectScreen = false;
 
-    // The leader detail's start position.
-    public Vector3 leaderDetailStartPosition;
+    // The leader select screen's start position.
+    public Vector3 leaderSelectStartPosition;
+
+    // A dictionary mapping leader names to their bios.
+    // Automatically populated by leader bios themselves.
+    [System.NonSerialized]
+    public Dictionary<string, LeaderBio> leaderBios = new Dictionary<string, LeaderBio>();
 
     // Singleton.
     public static MainMenu I;
@@ -60,8 +66,8 @@ public class MainMenu : MonoBehaviour
         else
             Destroy(this);
 
-        // Remember leader detail's start position.
-        leaderDetailStartPosition = leaderDetailsScreen.transform.position;
+        // Remember leader select's start position.
+        leaderSelectStartPosition = leaderSelectScreen.transform.localPosition;
 
         // Initialize.
         Initialize();
@@ -76,7 +82,7 @@ public class MainMenu : MonoBehaviour
         leaderDetailsScreen.SetActive(false);
 
         // Reset leader details screen position.
-        leaderDetailsScreen.transform.position = leaderDetailStartPosition;
+        leaderSelectScreen.transform.localPosition = leaderSelectStartPosition;
 
         // Activate the main menu object.
         gameObject.SetActive(true);
@@ -109,7 +115,19 @@ public class MainMenu : MonoBehaviour
     // Called when you click on a leader's portrait.
     public void B_LeaderPortrait(string leaderName)
     {
-        // TBD: Load the selected leader's details into the leader details screen.
+        // Get the bio for this leader.
+        LeaderBio bio = leaderBios[leaderName];
+
+        // Load the leader's details.
+        Utility.LoadImage(leaderDetailsBackground, "Planets/" + bio.homeStar.planets[0].myName);
+        Utility.LoadImage(leaderDetailsPortrait, "Leaders/" + bio.myName);
+        leaderDetailsName.text = bio.myName;
+        leaderDetailsAbility.text = bio.abilityDescription;
+        leaderDetailsDescription.text = bio.description;
+        for(int i = 0; i < leaderDetailCards.Count; i++)
+        {
+            leaderDetailCards[i].LoadCard(bio.homeStar.cards[i]);
+        }
 
         // Enable the leader details screen.
         leaderDetailsScreen.SetActive(true);
@@ -142,6 +160,12 @@ public class MainMenu : MonoBehaviour
     {
         // Reset save.
         Utility.ResetSave();
+
+        // Set good leader's name.
+        GM.I.goodLeader.myName = leaderDetailsName.text;
+
+        // Set good leader's home star.
+        GM.I.goodLeader.homeStar = leaderBios[leaderDetailsName.text].homeStar;
 
         // Go to star map!
         StarManager.I.GoToStarMap();

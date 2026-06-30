@@ -87,12 +87,14 @@ public class StarManager : MonoBehaviour
         else
             Destroy(this);
 
-        // Fetch save data.
-        saveData = Utility.GetSaveData();
-
         // Hide what should not be.
         planetScreen.SetActive(false);
         victory.gameObject.SetActive(false);
+
+        // Fetch save data.
+        saveData = Utility.GetSaveData();
+
+        
 
         // Set our current planet index to past the current star's planet count,
         // so we go to the star map instead of the planet screen.
@@ -100,6 +102,15 @@ public class StarManager : MonoBehaviour
 
         // Disable self.
         gameObject.SetActive(false);
+    }
+
+    // Start early, start often!
+    void Start()
+    {
+        // Load save data.
+        GM.I.goodLeader.myName = saveData.leaderName;
+        GM.I.goodLeader.homeStar = MainMenu.I.leaderBios[saveData.leaderName].homeStar;
+        currentStarName = saveData.currentStarName;
     }
 
     // Open the star map screen.
@@ -306,7 +317,7 @@ public class StarManager : MonoBehaviour
         Utility.LoadImage(planetBackground, "Planets/" + p.myName);
 
         // Load the planet's cards.
-        List<string> planetCards = GetPlanetCards();
+        List<string> planetCards = GetPlanetCards(true);
         for (int i = 0; i < cardsOnPlanet.Count; i++)
         {
             // Check if the planet has a card in this slot.
@@ -328,13 +339,17 @@ public class StarManager : MonoBehaviour
     }
 
     // Get a list of names of the cards available on the current planet.
-    public List<string> GetPlanetCards()
+    public List<string> GetPlanetCards(bool includeHomeCards)
     {
-        // Initialize a new list of card names.
-        List<string> cardNames = new List<string>();
-
         // Get current planet.
         Planet p = currentStar.planets[planetIndex];
+
+        // If we're not including home cards, just return the planet's list of cards.
+        if (!includeHomeCards)
+            return p.availableCards;
+
+        // Initialize a new list of card names.
+        List<string> cardNames = new List<string>();
 
         // Iterate once per card on planet.
         for (int i = 0; i < p.availableCards.Count; i++)
@@ -352,16 +367,13 @@ public class StarManager : MonoBehaviour
 
         // Return.
         return cardNames;
-
-        // Return available cards.
-        // return p.availableCards;
     }
 
     // Get a random card from the current planet, weighted toward lower mana cost cards.
-    public string GetRandomPlanetCard()
+    public string GetRandomPlanetCard(bool includeHomeCards)
     {
         // Get a list of names of the available cards for the current planet.
-        List<string> availableCards = GetPlanetCards();
+        List<string> availableCards = GetPlanetCards(includeHomeCards);
 
         // Build a weighted list of cards, using 1/manaCost as the weight.
         // This makes lower mana cost cards proportionally more likely to be drawn.

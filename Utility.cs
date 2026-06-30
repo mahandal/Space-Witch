@@ -86,6 +86,9 @@ public class Utility : MonoBehaviour
         // Update our saveData's current star.
         StarManager.I.saveData.currentStarName = StarManager.I.currentStar.myName;
 
+        // Update our save data's leader name.
+        StarManager.I.saveData.leaderName = GM.I.goodLeader.myName;
+
         // Convert to json.
         string json = JsonUtility.ToJson(StarManager.I.saveData);
 

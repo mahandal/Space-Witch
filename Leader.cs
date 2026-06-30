@@ -205,7 +205,7 @@ public partial class Leader : MonoBehaviour
             if (reinforcementTimer <= 0f)
             {
                 // Locals reinforce your army!
-                cardName = StarManager.I.GetRandomPlanetCard();
+                cardName = StarManager.I.GetRandomPlanetCard(good);
 
                 // Get the card, using its name.
                 Card card = GM.I.grimoire[cardName];
@@ -469,6 +469,9 @@ public partial class Leader : MonoBehaviour
     // Used whenever a unit deals damage to this leader.
     public void LoseHealth(float healthLost, Unit source = null)
     {
+        // Think faster when damaged.
+        thinkTimer = 0f;
+
         // Lose health.
         health -= healthLost;
 

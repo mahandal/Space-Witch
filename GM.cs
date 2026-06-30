@@ -488,7 +488,6 @@ public class GM : MonoBehaviour
 
     // Button press: Return!
     // Return to the main menu, after losing a battle.
-    // (for now just goes to star map, until we have a main menu)
     public void B_Return()
     {
         // Safety guard(?)
@@ -500,11 +499,14 @@ public class GM : MonoBehaviour
         // Close the defeat screen.
         UI.I.defeatBackground.gameObject.SetActive(false);
 
+        // Go to the main menu.
+        GoToMainMenu();
+        
         // Close the battle map.
-        battleMap.SetActive(false);
+        // battleMap.SetActive(false);
 
         // Open the star map.
-        StarManager.I.GoToStarMap();
+        // StarManager.I.GoToStarMap();
     }
 
     // Exit the game.
