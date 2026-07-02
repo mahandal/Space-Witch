@@ -2,7 +2,7 @@ using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 
-public class Unit : MonoBehaviour
+public partial class Unit : MonoBehaviour
 {
     [Header("Meta")]
     // This unit's name.
@@ -218,6 +218,12 @@ public class Unit : MonoBehaviour
             // Return.
             return;
         }
+
+        // Hover
+        if (this == InputManager.I.hoveredUnit)
+            Utility.SetOpacity(spriteRenderer, 0.5f);
+        else
+            Utility.SetOpacity(spriteRenderer, 1f);
 
         // TBD: Add OnUpdate and similar functions to handle keywords.
 
@@ -493,8 +499,8 @@ public class Unit : MonoBehaviour
         deployTimer += item.deployTime;
 
         // Health.
-        GainHealth(item.currentHealth);
         maxHealth += item.maxHealth;
+        GainHealth(item.currentHealth);
 
         // Damage.
         damage += item.damage;
@@ -544,23 +550,20 @@ public class Unit : MonoBehaviour
         // Fail if we have no target.
         if (target == null) return;
 
-        // TBD: Add OnAttack to handle keywords!
+        // Handle keywords and other attack triggers.
+        OnAttack();
+
+        // Deal damage to our target.
+        target.LoseHealth(damage, this);
+    }
+
+    // On attack triggers.
+    public void OnAttack()
+    {
         // Bloodthirst?
         if (keywords.Contains("Bloodthirst"))
         {
             damage *= 1.01f;
-        }
-
-        // Laser?
-        if (keywords.Contains("Laser"))
-        {
-            // Draw a red line to our target.
-            attackLine.SetPosition(0, transform.position);
-            attackLine.SetPosition(1, target.transform.position);
-            attackLine.enabled = true;
-
-            // Fade the laser after a brief delay.
-            StartCoroutine(FadeLaser());
         }
 
         // Cleave?
@@ -574,8 +577,17 @@ public class Unit : MonoBehaviour
             }
         }
 
-        // Deal damage to our target.
-        target.LoseHealth(damage, this);
+        // Laser?
+        if (keywords.Contains("Laser"))
+        {
+            // Draw a red line to our target.
+            attackLine.SetPosition(0, transform.position);
+            attackLine.SetPosition(1, target.transform.position);
+            attackLine.enabled = true;
+
+            // Fade the laser after a brief delay.
+            StartCoroutine(FadeLaser());
+        }
     }
 
     IEnumerator FadeLaser()
@@ -621,6 +633,12 @@ public class Unit : MonoBehaviour
         return nearbyEnemies;
     }
 
+    // Fully heal.
+    public void FullHeal()
+    {
+        currentHealth = maxHealth;
+    }
+
     // Gain health.
     public void GainHealth(float healthGained, Unit source = null)
     {
@@ -635,6 +653,9 @@ public class Unit : MonoBehaviour
     // Lose health.
     public void LoseHealth(float healthLost, Unit source = null, bool ignoreArmor = false, bool damageFlash = true)
     {
+        // Treasure can't be killed.
+        if (role == "Treasure") return;
+
         // Flash red when hurt.
         if (damageFlash)
         {
@@ -650,7 +671,10 @@ public class Unit : MonoBehaviour
                 healthLost = 1;
         }
 
-        // + TBD: Move keywords elsewhere
+        // Other modifiers.
+        healthLost *= DamageReceivedModifiers();
+
+        // + TBD: Move keywords elsewhere?
 
         // Getting stunned?
         if (source != null && source.keywords.Contains("Stuns"))
@@ -690,11 +714,13 @@ public class Unit : MonoBehaviour
     // Begin dying.
     public void BeginDying()
     {
+        // Unstun, if we were stunned.
+        if (state == 3)
+            Unstun();
+        
         // Charming
         if (target != null && target.keywords.Contains("Charming"))
         {
-            Debug.Log(target.myName + " is charming " + myName);
-
             // Charm.
             ChangeSides();
 
@@ -779,10 +805,11 @@ public class Unit : MonoBehaviour
     }
 
     // Change sides.
-    public void ChangeSides()
+    public void ChangeSides(bool fullHeal = true)
     {
         // Full heal!
-        currentHealth = maxHealth;
+        if (fullHeal)
+            FullHeal();
 
         // Good to evil?
         if (good)

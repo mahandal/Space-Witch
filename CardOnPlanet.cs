@@ -88,7 +88,7 @@ public class CardOnPlanet : MonoBehaviour
         // Add to deck!
         for (int i = 0; i < numCopies; i++)
         {
-            StarManager.I.saveData.decklist.Add(myName);
+            MainMenu.I.saveData.decklist.Add(myName);
         }
     }
 }

@@ -46,6 +46,9 @@ public class CardInHand : MonoBehaviour, IPointerEnterHandler, IPointerExitHandl
     // How long until this card is thrown into the trash.
     public float trashTimer = 2f;
 
+    // This card's original scale.
+    public Vector3 originalScale = new Vector3(1, 1, 1);
+
     [Header("Machinery")]
     // The index of this card in its owners hand.
     public int index;
@@ -62,13 +65,16 @@ public class CardInHand : MonoBehaviour, IPointerEnterHandler, IPointerExitHandl
     {
         // Hide highlight.
         highlight.SetActive(false);
+
+        // Remember original scale.
+        originalScale = transform.localScale;
     }
 
     // Fixed update.
     void FixedUpdate()
     {
         // Hiding?
-        if (hideTimer > 0f)
+        if (index >= 0 && hideTimer > 0f)
         {
             // Decrement.
             hideTimer -= Time.fixedDeltaTime;
@@ -137,13 +143,12 @@ public class CardInHand : MonoBehaviour, IPointerEnterHandler, IPointerExitHandl
 
 
             // + Shrink.
-            // (Note: Cards have a base local scale of 1)
             
-            // Get new scale.
-            float scale = 1f - percentJourneyTraveled;
+            // Get new scalar.
+            float scalar = 1f - percentJourneyTraveled;
 
             // Set scale.
-            transform.localScale = new Vector3(scale, scale, scale);
+            transform.localScale = scalar * originalScale;
 
             // + Set opacity.
             canvasGroup.alpha = 1f - percentDeployed;
@@ -211,7 +216,14 @@ public class CardInHand : MonoBehaviour, IPointerEnterHandler, IPointerExitHandl
         {
             // Reveal deploying unit (if extant).
             if (deployingUnit != null)
+            {
+                // Reveal unit.
                 Utility.SetOpacity(deployingUnit.spriteRenderer, 0.5f);
+
+                // + Guinevere
+                if (GM.I.goodLeader.myName == "Guinevere")
+                    GM.I.goodLeader.GuinevereSing(deployingUnit);
+            }
 
             // Destroy object.
             Destroy(gameObject);
@@ -249,6 +261,16 @@ public class CardInHand : MonoBehaviour, IPointerEnterHandler, IPointerExitHandl
 
         // Clear highlight.
         highlight.SetActive(false);
+    }
+
+    // Load a card into this position (by name).
+    public void LoadCard(string cardName)
+    {
+        // Get the card from the grimoire.
+        Card card = GM.I.grimoire[cardName];
+
+        // Delegate to below!
+        LoadCard(card);
     }
 
     // Load a card into this position.

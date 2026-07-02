@@ -6,6 +6,9 @@ using System.Collections.Generic;
 public class MiniCard : MonoBehaviour
 {
     [Header("Mini Card")]
+    // The canvas group for this mini card.
+    public CanvasGroup canvasGroup;
+    
     // The text object for this card's name.
     public TMP_Text nameText;
 

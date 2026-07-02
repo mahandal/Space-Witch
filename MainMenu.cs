@@ -28,17 +28,26 @@ public class MainMenu : MonoBehaviour
     // The leader's name.
     public TMP_Text leaderDetailsName;
 
+    // The description of the leader (lore).
+    public TMP_Text leaderDetailsDescription;
+
     // The leader's portrait.
     public Image leaderDetailsPortrait;
 
     // The description of the leader's ability.
     public TMP_Text leaderDetailsAbility;
 
-    // The description of the leader (lore).
-    public TMP_Text leaderDetailsDescription;
+    // The description of the leader's stats.
+    public TMP_Text leaderDetailsStats;
 
     // The cards this leader plays with.
     public List<MiniCard> leaderDetailCards = new List<MiniCard>();
+
+    // This leader's signature cards.
+    public List<MiniCard> leaderSignatureCards = new List<MiniCard>();
+
+    // This leader's other cards.
+    public List<MiniCard> leaderOtherCards;
 
     [Header("Automated Machinery")]
     // Are we sliding toward the leader select screen?
@@ -51,6 +60,9 @@ public class MainMenu : MonoBehaviour
     // Automatically populated by leader bios themselves.
     [System.NonSerialized]
     public Dictionary<string, LeaderBio> leaderBios = new Dictionary<string, LeaderBio>();
+
+    // The player's saved data.
+    public SaveData saveData;
 
     // Singleton.
     public static MainMenu I;
@@ -118,15 +130,57 @@ public class MainMenu : MonoBehaviour
         // Get the bio for this leader.
         LeaderBio bio = leaderBios[leaderName];
 
-        // Load the leader's details.
+        // + Load the leader's details.
+        
+        // Load background image, using home star's first planet.
         Utility.LoadImage(leaderDetailsBackground, "Planets/" + bio.homeStar.planets[0].myName);
+
+        // Load portrait.
         Utility.LoadImage(leaderDetailsPortrait, "Leaders/" + bio.myName);
+
+        // Set name.
         leaderDetailsName.text = bio.myName;
-        leaderDetailsAbility.text = bio.abilityDescription;
+
+        // Set lore description.
         leaderDetailsDescription.text = bio.description;
-        for(int i = 0; i < leaderDetailCards.Count; i++)
+
+        // Set active ability description.
+        leaderDetailsAbility.text = bio.abilityDescription;
+
+        // Set passive ability description.
+        leaderDetailsStats.text = bio.statsDescription;
+
+        // + Load cards.
+
+        // Signature cards.
+        for(int i = 0; i < bio.signatureCards.Count; i++)
         {
-            leaderDetailCards[i].LoadCard(bio.homeStar.cards[i]);
+            leaderSignatureCards[i].LoadCard(bio.signatureCards[i]);
+        }
+
+        // Other cards
+
+        // Get leader's full card list.
+        List<string> leaderCardList = bio.homeStar.cards;
+
+        // Count the index of the current displayed mini card we are loading.
+        int otherIndex = 0;
+
+        // Loop through each card in the leader's card list.
+        foreach (string cardName in leaderCardList)
+        {
+            // Ignore signature cards.
+            if (!bio.signatureCards.Contains(cardName))
+            {
+                // Load the card.
+                leaderOtherCards[otherIndex].LoadCard(cardName);
+
+                // Increment our index tracking which mini card to load into.
+                otherIndex++;
+
+                // Break?
+                if (otherIndex >= leaderOtherCards.Count) break;
+            }
         }
 
         // Enable the leader details screen.
@@ -161,20 +215,40 @@ public class MainMenu : MonoBehaviour
         // Reset save.
         Utility.ResetSave();
 
-        // Set good leader's name.
-        GM.I.goodLeader.myName = leaderDetailsName.text;
+        // Get bio for player's leader.
+        LeaderBio bio = leaderBios[leaderDetailsName.text];
 
-        // Set good leader's home star.
-        GM.I.goodLeader.homeStar = leaderBios[leaderDetailsName.text].homeStar;
+        // Load the player's leader.
+        InitializeGoodLeader(bio);
 
         // Go to star map!
-        StarManager.I.GoToStarMap();
+        StarManager.I.GoToStarMap(true);
     }
 
     // Continue from your previous save.
     public void B_ContinueAdventure()
     {
+        // Fetch save data.
+        saveData = Utility.GetSaveData();
+
+        Debug.Log("Fetched save data. Current star: " + saveData.currentStarName);
+
+        // Get bio for player's leader.
+        LeaderBio bio = leaderBios[saveData.leaderName];
+
+        // Load the player's leader.
+        InitializeGoodLeader(bio);
+
         // Go to star map!
-        StarManager.I.GoToStarMap();
+        StarManager.I.GoToStarMap(true);
+    }
+
+    // Fill in the good leader from a bio.
+    public void InitializeGoodLeader(LeaderBio bio)
+    {
+        GM.I.goodLeader.myName = bio.myName;
+        GM.I.goodLeader.homeStar = bio.homeStar;
+        GM.I.goodLeader.signatureCards = bio.signatureCards;
+        GM.I.goodLeader.signatureCooldowns = bio.signatureCooldowns;
     }
 }

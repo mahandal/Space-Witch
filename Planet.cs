@@ -13,4 +13,7 @@ public class Planet : MonoBehaviour
 
     // This planet's list of cards you may choose from to add to your deck.
     public List<string> availableCards;
+
+    // This planet's tilemap shown for its big battle.
+    public GameObject battleMap;
 }

@@ -89,35 +89,26 @@ public class StarManager : MonoBehaviour
 
         // Hide what should not be.
         planetScreen.SetActive(false);
-        victory.gameObject.SetActive(false);
+        victory.gameObject.SetActive(false);     
 
-        // Fetch save data.
-        saveData = Utility.GetSaveData();
-
-        
-
-        // Set our current planet index to past the current star's planet count,
-        // so we go to the star map instead of the planet screen.
-        planetIndex = FindCurrentStar().planets.Count;
+        // // Set our current planet index to past the current star's planet count,
+        // // so we go to the star map instead of the planet screen.
+        // planetIndex = FindCurrentStar().planets.Count;
 
         // Disable self.
         gameObject.SetActive(false);
     }
 
-    // Start early, start often!
-    void Start()
-    {
-        // Load save data.
-        GM.I.goodLeader.myName = saveData.leaderName;
-        GM.I.goodLeader.homeStar = MainMenu.I.leaderBios[saveData.leaderName].homeStar;
-        currentStarName = saveData.currentStarName;
-    }
-
     // Open the star map screen.
-    public void GoToStarMap()
+    public void GoToStarMap(bool fromMainMenu = false)
     {
         // Find which star we are on.
         currentStar = FindCurrentStar();
+
+        // Set our current planet index to past the current star's planet count,
+        // so we go to the star map instead of the planet screen.
+        if (fromMainMenu)
+            planetIndex = currentStar.planets.Count;
 
         // Check if we just beat the final planet on this star and should return to the star map.
 
@@ -176,12 +167,15 @@ public class StarManager : MonoBehaviour
         if (currentStarName == "")
         {
             // Set name from save data, if it exists.
-            if (saveData != null && saveData.currentStarName != "")
-                currentStarName = saveData.currentStarName;
+            if (MainMenu.I.saveData != null && MainMenu.I.saveData.currentStarName != "")
+                currentStarName = MainMenu.I.saveData.currentStarName;
             else
                 // Default to starting star.
                 currentStarName = startingStar.myName;
         }
+
+        Debug.Log("We think the current star is: " + currentStarName);
+        Debug.Log("MainMenu.I.saveData.currentStarName: " + MainMenu.I.saveData.currentStarName);
 
         // Look through each star.
         foreach (Transform t in starParent)
@@ -291,6 +285,16 @@ public class StarManager : MonoBehaviour
 
     // + Planets
 
+    // Get the current planet.
+    public Planet GetCurrentPlanet()
+    {
+        // Get current planet.
+        Planet p = currentStar.planets[planetIndex];
+
+        // Return.
+        return p;
+    }
+
     // Get the name of the current planet.
     public string GetCurrentPlanetName()
     {
@@ -298,7 +302,7 @@ public class StarManager : MonoBehaviour
         if (currentStar == null) return "";
 
         // Get current planet.
-        Planet p = currentStar.planets[planetIndex];
+        Planet p = GetCurrentPlanet();
 
         // Return name.
         return p.myName;
@@ -342,7 +346,7 @@ public class StarManager : MonoBehaviour
     public List<string> GetPlanetCards(bool includeHomeCards)
     {
         // Get current planet.
-        Planet p = currentStar.planets[planetIndex];
+        Planet p = GetCurrentPlanet();
 
         // If we're not including home cards, just return the planet's list of cards.
         if (!includeHomeCards)
@@ -378,32 +382,53 @@ public class StarManager : MonoBehaviour
         // Build a weighted list of cards, using 1/manaCost as the weight.
         // This makes lower mana cost cards proportionally more likely to be drawn.
         // e.g. a 2 mana card is 5x as likely as a 10 mana card.
-        List<Card> weightedPool = new List<Card>();
+
+        // Count the total weight of all cards.
         float totalWeight = 0f;
 
+        // Create a list of cards, paired with their weights.
         List<(Card, float)> cardWeights = new List<(Card, float)>();
+
+        // Loop through each available card.
         foreach (string name in availableCards)
         {
+            // Get the card from the grimoire.
             Card c = GM.I.grimoire[name];
-            float weight = 1f / c.manaCost;
+
+            // Initialize the card's weight.
+            float weight = 1f;
+
+            // Avoid dividing by zero.
+            if (c.manaCost != 0)
+                weight = 1f / c.manaCost;
+
+            // Add the card and its weight to our list.
             cardWeights.Add((c, weight));
+
+            // Count up our total weight.
             totalWeight += weight;
         }
 
         // Roll randomly along the total weight.
         float roll = Random.Range(0f, totalWeight);
+
+        // Count how far into the card weights we have looked.
         float cumulative = 0f;
+
+        // Look through each card.
         foreach (var (c, weight) in cardWeights)
         {
+            // Accumulate weight.
             cumulative += weight;
+
+            // Check if we have reached our roll yet.
             if (roll < cumulative)
-            {
                 return c.myName;
-            }
         }
 
-        Debug.LogWarning("Failed to select a random planet card!");
-        return "Hyena";
+        // Should not reach here!
+        Debug.LogWarning("Failed to select a random planet card! Returning first planet card: " + availableCards[0]);
+        return availableCards[0];
     }
 
     // + End game

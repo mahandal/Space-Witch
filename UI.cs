@@ -77,6 +77,9 @@ public class UI : MonoBehaviour
     // The parent object for the defeat post game screen.
     public Image defeatBackground;
 
+    [Header("Fog of War")]
+    public SpriteRenderer fogOfWar;
+
     // Singleton.
     public static UI I;
 
@@ -93,6 +96,9 @@ public class UI : MonoBehaviour
 
         // Start auto pilot off.
         B_AutoPilotOff();
+
+        // Make sure fog of war is on!
+        fogOfWar.gameObject.SetActive(true);
     }
 
     // Called once at the beginning of each battle.

@@ -21,45 +21,42 @@ public partial class Leader
     // A list of each item we have active, so we remember to grab them!
     public List<Unit> items = new List<Unit>();
 
-
-    // + Auto pilot
-    // Let the auto pilot handle decision making, for this tick.
-    public void AutoPilot()
+    // + Auto Play
+    // Auto play a specific card.
+    // Used by leader abilities.
+    public void AutoPlayCard(string cardName, bool signatureCard = false)
     {
-        // Decrement think timer.
-        thinkTimer -= Time.fixedDeltaTime;
+        // Pick which tile to play the card in.
+        Tile tile = GetTileToPlay(cardName);
 
-        // Time to think?
-        if (thinkTimer <= 0f)
+        if (signatureCard)
         {
-            // Think!
-            Think();
+            // Play a signature card!
+            PlaySignatureCard(cardName, tile);
 
-            // + Reset think timer.
+            // Put the unit directly into play!
+            // SpawnUnit(cardName, tile);
+        } else {
+            // Try to play the card.
+            bool successfullyPlayedCard = AttemptPlayCard(indexOfNextCard, tile);
 
-            // Check mana.
-            if (mana < 10)
+            // Check if we were able to play the card successfully.
+            if (successfullyPlayedCard)
             {
-                // Roll random think time.
-                float varianceRoll = Random.Range(-thinkTimeVariance, thinkTimeVariance);
-
-                // Reset think timer.
-                thinkTimer = timeToThink + varianceRoll;
-            } else {
-                // Too much mana, think faster!
-                thinkTimer = 1f;
-            }                
-        }
+                // Increment the index of the next card we want to play.
+                IncrementIndexOfNextCard();
+            }    
+        }        
     }
 
-    // Think!
-    public void Think()
+    // Get which tile to play a card in.
+    // Note: The boolean parameter 'signature' is passed in as well,
+    // so we know whether or not to discard unplayable cards.
+    // (Leader abilities also call this, but for free so they don't affect your hand.)
+    public Tile GetTileToPlay(string cardName, bool signature = false)
     {
-        // Get the card we want to play.
-        CardInHand cardInHand = hand[indexOfNextCard];
-        Card card = GM.I.grimoire[cardInHand.myName];
-
-        // +++ Pick a tile to play a card in.
+        // Get the card from the grimoire.
+        Card card = GM.I.grimoire[cardName];
 
         // Randomize row to begin with.
         int row = Random.Range(0, GM.I.gridHeight);
@@ -118,7 +115,7 @@ public partial class Leader
                     IncrementIndexOfNextCard();
 
                     // Return.
-                    return;
+                    return null;
                 }
             }
         }
@@ -133,13 +130,14 @@ public partial class Leader
             if (enemyNear)
             {
                 // Discard card.
-                Discard(indexOfNextCard);
+                if (!signature)
+                    Discard(indexOfNextCard);
 
                 // Move on to the next card index.
                 IncrementIndexOfNextCard();
 
                 // Return.
-                return;
+                return null;
             }
 
             // Look at the column closest to us, right outside our dragon statues.
@@ -164,7 +162,7 @@ public partial class Leader
                     IncrementIndexOfNextCard();
 
                     // Return.
-                    return;
+                    return null;
                 }
             }
         }
@@ -179,8 +177,12 @@ public partial class Leader
             if (closestEnemy == null)
             {
                 IncrementIndexOfNextCard();
-                return;
+                return null;
             } else {
+                // Check if the closest visible enemy is too far away to target, even with a hex.
+                if (IsInEnemyDeploymentZone(closestEnemy))
+                    return null;
+
                 // We have a target!
                 // Set row.
                 row = closestEnemy.laneIndex;
@@ -191,19 +193,47 @@ public partial class Leader
         }
 
         // Choose tile using column and row.
-        Tile tile = GM.I.grid[column, row];
+        return GM.I.grid[column, row];
+    }
 
-        // Try to play a card.
-        bool successfullyPlayedCard = AttemptPlayCard(indexOfNextCard, tile);
+    // + Auto pilot
+    // Let the auto pilot handle decision making, for this tick.
+    public void AutoPilot()
+    {
+        // Decrement think timer.
+        thinkTimer -= Time.fixedDeltaTime;
 
-        // Check if we were able to play the card successfully.
-        if (successfullyPlayedCard)
+        // Time to think?
+        if (thinkTimer <= 0f)
         {
-            // Increment the index of the next card we want to play.
-            IncrementIndexOfNextCard();
-        }
+            // Think!
+            Think();
 
-            
+            // + Reset think timer.
+
+            // Check mana.
+            if (mana < 10)
+            {
+                // Roll random think time.
+                float varianceRoll = Random.Range(-thinkTimeVariance, thinkTimeVariance);
+
+                // Reset think timer.
+                thinkTimer = timeToThink + varianceRoll;
+            } else {
+                // Too much mana, think faster!
+                thinkTimer = 1f;
+            }                
+        }
+    }
+
+    // Think!
+    public void Think()
+    {
+        // Get the card we want to play.
+        CardInHand cardInHand = hand[indexOfNextCard];
+        // Card card = GM.I.grimoire[cardInHand.myName];
+
+        AutoPlayCard(cardInHand.myName);
     }
 
     // Increment the index of the next card the auto pilot will play.

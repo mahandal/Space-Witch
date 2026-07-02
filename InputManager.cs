@@ -3,7 +3,11 @@ using UnityEngine.InputSystem;
 
 public class InputManager : MonoBehaviour
 {
-    [Header("Hovered Tile")]
+    [Header("Hover")]
+    // The currently hovered unit.
+    public Unit hoveredUnit;
+
+    // The currently hovered tile.
     public Tile hoveredTile;
     
     [Header("Selected Card")]
@@ -27,6 +31,9 @@ public class InputManager : MonoBehaviour
     {
         // Wait for a battle.
         if (GM.I.gameState != 1) return;
+
+        // Hover a unit to show its tooltip.
+        HoverTooltip();
 
         // 1 selects card 0.
         if (Keyboard.current.digit1Key.wasPressedThisFrame)
@@ -56,11 +63,71 @@ public class InputManager : MonoBehaviour
         if (Mouse.current.leftButton.wasPressedThisFrame && selectedCard != null && hoveredTile != null)
             GM.I.goodLeader.AttemptPlayCard(selectedCard.index, hoveredTile);
 
-        HoverTooltip();
+        // + Leader abilities
+        // Left clicked on a unit?
+        if (Mouse.current.leftButton.wasPressedThisFrame && hoveredUnit != null)
+        {
+            // Can't target enemy deployment zone.
+            if (GM.I.goodLeader.IsInEnemyDeploymentZone(hoveredUnit))
+            {
+                return;
+            }
+            // Dying units.
+            else if (hoveredUnit.state == -1)
+            {
+                return;
+            }
+            // Deploying units
+            else if (hoveredUnit.state == 0)
+            {
+                // Guinevere
+                // (Handled in CardInHand)
+                // if (GM.I.goodLeader.myName == "Guinevere")
+                //     GM.I.goodLeader.GuinevereSing(hoveredUnit);
+            }
+            // Items?
+            else if (hoveredUnit.cardType == "Item")
+            {
+                // Shruk
+                if (GM.I.goodLeader.myName == "Shruk")
+                    GM.I.goodLeader.ShrukEat(hoveredUnit);
+            }
+            // Clicking on friendlies:
+            else if (hoveredUnit.good)
+            {
+                // Sybil
+                if (GM.I.goodLeader.myName == "Sybil")
+                    GM.I.goodLeader.SybilHeal(hoveredUnit);
+                // Gatama
+                else if (GM.I.goodLeader.myName == "Gatama")
+                    GM.I.goodLeader.GatamaHeal(hoveredUnit);
+                // Lancelot
+                else if (GM.I.goodLeader.myName == "Lancelot")
+                    GM.I.goodLeader.Sacrifice(hoveredUnit);
+            } else {
+                // Clicking on enemies:
+                // Morgan le Fey
+                if (GM.I.goodLeader.myName == "Morgan le Fey")
+                    GM.I.goodLeader.MorganCharm(hoveredUnit);
+
+                // Wubalin Brightforge
+                else if (GM.I.goodLeader.myName == "Wubalin Brightforge")
+                    GM.I.goodLeader.WubalinShoot(hoveredUnit);
+
+
+                // Markaus Allstrong
+                else if (GM.I.goodLeader.myName == "Markaus Allstrong")
+                    GM.I.goodLeader.MarkausPunch(hoveredUnit);
+
+                // Penelope
+                else if (GM.I.goodLeader.myName == "Penelope")
+                    GM.I.goodLeader.PenEat(hoveredUnit);
+            }
+        }
     }
 
     // Hover a unit to show a tooltip for it.
-    // Also sets the currently hoveredTile.
+    // Sets hoveredUnit and hoveredTile.
     public void HoverTooltip()
     {
         // Convert our mouse position to 3d coordinates.
@@ -112,7 +179,7 @@ public class InputManager : MonoBehaviour
         if (hit != null)
         {
             // Check if we found a unit.
-            Unit hoveredUnit = hit.GetComponent<Unit>();
+            hoveredUnit = hit.GetComponent<Unit>();
 
             // Show tooltip for units!
             // Hide tooltip if hovering something else.

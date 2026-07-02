@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.UI;
 using System.Collections.Generic;
 
 public partial class Leader : MonoBehaviour
@@ -26,6 +27,19 @@ public partial class Leader : MonoBehaviour
 
     // The timer counting down until we generate mana.
     public float manaTimer = 1f;
+
+    [Header("Signature Cards")]
+    // This leader's signature cards, which they periodically play for free automatically.
+    public List<string> signatureCards = new List<string>();
+
+    // A list of cooldowns for this leader's signature cards.
+    public List<float> signatureCooldowns = new List<float>();
+
+    // A list of timers tracking the cooldowns for this leader's signature cards.
+    public List<float> signatureTimers = new List<float>();
+
+    // The mini cards showing the leader's signature cards cooling down.
+    public List<CardInHand> signatureDisplayCards = new List<CardInHand>();
 
     [Header("Hand")]
     public List<CardInHand> hand = new List<CardInHand>();
@@ -57,7 +71,10 @@ public partial class Leader : MonoBehaviour
         reservesDepleted = false;
 
         // Set our starting health.
-        SetHealth(GM.I.startingHealth);
+        float startingHealth = GM.I.startingHealth;
+        if (myName == "Wubalin Brightforge")
+            startingHealth *= 1.2f;
+        SetHealth(startingHealth);
 
         // Set our starting mana.
         mana = 0;
@@ -81,6 +98,24 @@ public partial class Leader : MonoBehaviour
         // Draw our starting hand.
         DrawStartingHand();
 
+        // + Signature cards
+        // Reset timers.
+        signatureTimers.Clear();
+
+        // Loop through each of our signature cards.
+        for (int i = 0; i < signatureCards.Count; i++)
+        {
+            // Set timer.
+            signatureTimers.Add(signatureCooldowns[i]);
+
+            // Load card.
+            signatureDisplayCards[i].LoadCard(signatureCards[i]);
+
+            // Hide card to begin with.
+            signatureDisplayCards[i].canvasGroup.alpha = 0f;
+        }
+
+
         // + Reinforcement times:
 
         // For good, it means how long you wait between playing your deck and playing local reinforcements.
@@ -92,7 +127,7 @@ public partial class Leader : MonoBehaviour
         else
             timeUntilReinforcements = Random.Range(1, 10);
 
-        // Set the reinforcement timer.
+        // Set reinforcement timer.
         reinforcementTimer = timeUntilReinforcements;
     }
 
@@ -146,6 +181,36 @@ public partial class Leader : MonoBehaviour
         if (GM.I.gameState != 1) return;
         if (GM.I.timeElapsed < 1f) return;
 
+        // + Signature Cards
+        // Loop through each signature card.
+        for (int i = 0; i < signatureCards.Count; i++)
+        {
+            // Count down timer.
+            signatureTimers[i] -= Time.fixedDeltaTime;
+
+            // Get percent cooled down.
+            float percent = 1f - (signatureTimers[i] / signatureCooldowns[i]);
+
+            // Set the opacity of the displayed signature card.
+            signatureDisplayCards[i].canvasGroup.alpha = percent;
+
+            // Time to play our signature card?
+            if (signatureTimers[i] <= 0f)
+            {
+                // Reset timer.
+                signatureTimers[i] = signatureCooldowns[i];
+
+                // Get the card to play's name.
+                string cardName = signatureCards[i];
+
+                // Auto play the card.
+                AutoPlayCard(cardName, true);
+            }
+        }
+            
+
+        // + Mana
+
         // Count down mana timer.
         manaTimer -= Time.fixedDeltaTime;
 
@@ -159,7 +224,9 @@ public partial class Leader : MonoBehaviour
             manaTimer = secondsPerMana;
         }
 
-        // Reinforcements?
+        // + Reinforcements
+
+        // Are we counting down our reinforcement timer?
         if (reservesDepleted && reinforcementTimer > 0f)
         {
             // Count down time until reinforcements arrive.
@@ -170,7 +237,7 @@ public partial class Leader : MonoBehaviour
                 Reinforce();
         }
 
-        // Auto pilot?
+        // + Auto Pilot
         if (autoPilot)
             AutoPilot();
     }
@@ -338,10 +405,36 @@ public partial class Leader : MonoBehaviour
         newUnit.gameObject.SetActive(true);
     }
 
+    // Play one of our signature cards.
+    public void PlaySignatureCard(string cardName, Tile tile)
+    {
+        // Get card.
+        Card card = GM.I.grimoire[cardName];
+
+        // Spawn the unit.
+        Unit newUnit = SpawnUnit(cardName, tile);
+
+        // Return here if we failed to play a card for whatever reason.
+        if (newUnit == null) return;
+
+        // Get index
+        int index = signatureCards.IndexOf(cardName);
+
+        // Throw card into play.
+        signatureDisplayCards[index].Throw(newUnit);
+
+        // Activate!
+        newUnit.gameObject.SetActive(true);
+    }
+
     // Spawn a new Unit.
     // Note: In this case Unit refers to the class which includes all card types: Units, Structures, Items, and Spells.
+    // Used when playing a card, when production buildings produce, when leader abilities play free cards, etc...
     public Unit SpawnUnit(string unitName, Tile tile)
     {
+        // Null check.
+        if (tile == null) return null;
+
         // Get the unit's card.
         Card card = GM.I.grimoire[unitName];
 
@@ -358,12 +451,6 @@ public partial class Leader : MonoBehaviour
         // If card is an item, remember it in our list of items.
         if (card.cardType == "Item")
             items.Add(newUnit);
-
-        // TBD: Move keywords elsewhere, prolly to OnPlayed or something...
-
-        // If card is damned, lose health.
-        if (newUnit.keywords.Contains("Damned"))
-            LoseHealth(newUnit.manaCost);
 
         // Get unit's position offset (i.e. how far above the ground it stands).
         float offset = progenitor.transform.position.y % 1f;
@@ -396,11 +483,99 @@ public partial class Leader : MonoBehaviour
         // Hide (to deploy in).
         Utility.SetOpacity(newUnit.spriteRenderer, 0f);
 
+        // OnPlayed triggers.
+        OnPlayed(newUnit);
+
         // Activate!
         newUnit.gameObject.SetActive(true);
 
         // Return.
         return newUnit;
+    }
+
+    // Called when this leader plays a card.
+    public void OnPlayed(Unit cardPlayed)
+    {
+        // + Leader Stats
+        // Avalon:
+        // +20% speed
+        if (homeStar.myName == "Avalon")
+            cardPlayed.speed *= 1.2f;
+
+        // Bedegraine
+        // +20% health
+        if (homeStar.myName == "Bedegraine")
+        {
+            cardPlayed.maxHealth *= 1.2f;
+            cardPlayed.currentHealth *= 1.2f;
+        }
+
+        // Sarras:
+        // +20% vision
+        if (homeStar.myName == "Sarras")
+            cardPlayed.vision *= 1.2f;
+
+        // Orkney:
+        // +20% damage
+        if (homeStar.myName == "Orkney")
+            cardPlayed.damage *= 1.2f;
+
+        // Logres:
+        // -20% speed
+        // +20% health
+        // +20% damage
+        // +20% size
+        if (homeStar.myName == "Logres")
+        {
+            cardPlayed.speed *= 0.8f;
+            cardPlayed.maxHealth *= 1.2f;
+            cardPlayed.currentHealth *= 1.2f;
+            cardPlayed.damage *= 1.2f;
+            cardPlayed.transform.localScale *= 1.2f;
+        }
+
+        // Gorr:
+        // -20% health
+        // +20% speed
+        // +20% vision
+        if (homeStar.myName == "Gorr")
+        {
+            cardPlayed.maxHealth *= 0.8f;
+            cardPlayed.currentHealth *= 0.8f;
+            cardPlayed.speed *= 1.2f;
+            cardPlayed.vision *= 1.2f;
+        }
+
+        // Corbenic:
+        // +2 armor
+        if (homeStar.myName == "Corbenic")
+            cardPlayed.armor += 2;
+
+        // Lyonesse of the Lakes:
+        // -2s deploy time in the river
+        // -1s deploy time adjacent to river
+        if (homeStar.myName == "Lyonesse of the Lakes")
+        {
+            // Check if we're in the river.
+            if (cardPlayed.laneIndex == 2)
+                cardPlayed.deployTime -= 2f;
+            else if (cardPlayed.laneIndex == 1 || cardPlayed.laneIndex == 3)
+                cardPlayed.deployTime -= 1f;
+
+            // Minimum of 1.
+            if (cardPlayed.deployTime < 1)
+                cardPlayed.deployTime = 1;
+        }
+
+        // Dolorous Gard:
+        // -1 mana cost
+        // if (homeStar.myName == "Dolorous Gard")
+        //     mana++;
+
+        // + Keywords
+        // Damned: Leader loses life equal to the card's mana cost.
+        if (cardPlayed.keywords.Contains("Damned"))
+            LoseHealth(cardPlayed.manaCost);
     }
 
     // + Deployment zones
@@ -415,6 +590,18 @@ public partial class Leader : MonoBehaviour
             return unit.transform.position.x < numColumnsDeployable;
         else
             return unit.transform.position.x >= GM.I.gridWidth - numColumnsDeployable;
+    }
+
+    // Returns true if the given unit is in our enemy's deployment zone.
+    public bool IsInEnemyDeploymentZone(Unit unit)
+    {
+        // Return false for null units.
+        if (unit == null) return false;
+
+        if (good)
+            return GM.I.evilLeader.IsInDeploymentZone(unit);
+        else
+            return GM.I.goodLeader.IsInDeploymentZone(unit);
     }
 
     // Returns true if the given tile is in our deployment zone.
@@ -469,6 +656,16 @@ public partial class Leader : MonoBehaviour
     // Used whenever a unit deals damage to this leader.
     public void LoseHealth(float healthLost, Unit source = null)
     {
+        // + Lancelot
+        if (myName == "Lancelot" && source != null)
+        {
+            // Lose health.
+            LoseHealth(source.currentHealth);
+
+            // Charm (without healing).
+            source.ChangeSides(false);
+        }
+
         // Think faster when damaged.
         thinkTimer = 0f;
 
@@ -493,8 +690,21 @@ public partial class Leader : MonoBehaviour
         }
     }
 
+    // Gain health.
+    public void GainHealth(float healthGained)
+    {
+        // Gain health.
+        health += healthGained;
+
+        // Set health for vital units.
+        foreach (Unit unit in vitalUnits)
+        {
+            unit.currentHealth = health;
+        }
+    }
+
     // Set health.
-    // Used at the end (and maybe beginning?) of the game to initialize starting health.
+    // Used at the beginning of the game to initialize starting health.
     public void SetHealth(float newHealth)
     {
         // Set our health.
@@ -503,6 +713,7 @@ public partial class Leader : MonoBehaviour
         // Set health for vital units.
         foreach (Unit unit in vitalUnits)
         {
+            unit.maxHealth = health;
             unit.currentHealth = health;
         }
     }

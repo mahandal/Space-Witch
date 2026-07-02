@@ -86,12 +86,6 @@ public class GM : MonoBehaviour
         else
             Destroy(this);
 
-        // Start on the star map?
-        // starMap.SetActive(true);
-
-        // Initialize the star manager.
-        starManager.Initialize();
-
         // Make sure we start on the main menu.
         GoToMainMenu();
 
@@ -108,11 +102,8 @@ public class GM : MonoBehaviour
         // Initialize grid.
         InitializeGrid();
 
-        // Hide the battle map to begin with.
-        // battleMap.SetActive(false);
-
-        // // Reveal the star map!
-        // StarManager.I.starMap.SetActive(true);
+        // Initialize the star manager.
+        starManager.Initialize();
     }
 
     // Start a battle!
@@ -129,7 +120,7 @@ public class GM : MonoBehaviour
         // + Initialize each leader.
 
         // Copy your decklist into your deck.
-        goodLeader.deck = new List<string>(StarManager.I.saveData.decklist);
+        goodLeader.deck = new List<string>(MainMenu.I.saveData.decklist);
 
         // Give evil an empty deck for now.
         evilLeader.deck = new List<string>();
@@ -434,6 +425,10 @@ public class GM : MonoBehaviour
         // Clear selected card.
         if (InputManager.I.selectedCard != null)
             InputManager.I.selectedCard.Deselect();
+
+
+        // Disable battle map!
+        StarManager.I.GetCurrentPlanet().battleMap.SetActive(false);
     }
 
     // + Menu management
@@ -454,6 +449,12 @@ public class GM : MonoBehaviour
 
     public void GoToBattleMap()
     {
+        // Get current planet.
+        Planet p = StarManager.I.GetCurrentPlanet();
+
+        // Load the appropriate battle map.
+        p.battleMap.SetActive(true);
+
         // Disable star map.
         starManager.gameObject.SetActive(false);
 
