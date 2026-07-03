@@ -28,6 +28,9 @@ public class UI : MonoBehaviour
     // The text saying the name of the good leader.
     public TMP_Text goodName;
 
+    // The image saying VERSUS at the start of the game.
+    public CanvasGroup versus;
+
     // The portrait showing who is leading the forces of evil.
     public Image evilPortrait;
 
@@ -95,7 +98,10 @@ public class UI : MonoBehaviour
             Destroy(this);
 
         // Start auto pilot off.
-        B_AutoPilotOff();
+        // B_AutoPilotOff();
+
+        autoPilotOn.gameObject.SetActive(false);
+        autoPilotOff.gameObject.SetActive(false);
 
         // Make sure fog of war is on!
         fogOfWar.gameObject.SetActive(true);
@@ -111,15 +117,24 @@ public class UI : MonoBehaviour
         HideTooltip();
         reservesDepleted.gameObject.SetActive(false);
         reinforcementsArrived.gameObject.SetActive(false);
+        versus.gameObject.SetActive(false);
 
         // Load the current planet's image into the background.
         Utility.LoadImage(battleBackground, "Planets/" + StarManager.I.GetCurrentPlanetName());
 
-        // Load the good leader's name.
-        goodName.text = GM.I.goodLeader.myName;
+        // Hide leader names and portraits to begin with.
+        goodName.gameObject.SetActive(false);
+        evilName.gameObject.SetActive(false);
+        goodPortrait.gameObject.SetActive(false);
+        evilPortrait.gameObject.SetActive(false);
 
-        // Load the good leader's portrait.
+        // Load leader names.
+        goodName.text = GM.I.goodLeader.myName;
+        evilName.text = GM.I.evilLeader.myName;
+
+        // Load leader portraits.
         Utility.LoadImage(goodPortrait, "Leaders/" + GM.I.goodLeader.myName);
+        Utility.LoadImage(evilPortrait, "Leaders/" + GM.I.evilLeader.myName);
     }
 
     // + Battle
@@ -127,6 +142,9 @@ public class UI : MonoBehaviour
     // Fixed update.
     void FixedUpdate()
     {
+        // Versus sequence
+        Versus();
+
         // Update mana.
         UpdateMana();
 
@@ -135,6 +153,45 @@ public class UI : MonoBehaviour
 
         // Update reinforcements.
         UpdateReinforcements();
+    }
+
+    // Dramatic intro saying leader names VERSUS each other.
+    // 
+    void Versus()
+    {
+        // Time to reveal the good leader?
+        if (GM.I.gameTimer >= 1f && !goodPortrait.gameObject.activeSelf)
+        {
+            // Reveal the good leader.
+            goodPortrait.gameObject.SetActive(true);
+            goodName.gameObject.SetActive(true);
+        }
+
+        // Time to reveal VERSUS?
+        if (GM.I.gameTimer >= 2f && GM.I.gameTimer < 3f && !versus.gameObject.activeSelf)
+        {
+            versus.gameObject.SetActive(true);
+            versus.alpha = 1f;
+        }
+
+        // Time to reveal the evil leader?
+        if (GM.I.gameTimer >= 3f && !evilPortrait.gameObject.activeSelf)
+        {
+            // Reveal the evil leader.
+            evilPortrait.gameObject.SetActive(true);
+            evilName.gameObject.SetActive(true);
+        }
+
+        // Time to hide VERSUS?
+        if (GM.I.gameTimer >= 4f && versus.gameObject.activeSelf)
+        {
+            // Fade versus.
+            versus.alpha -= 0.001f;
+
+            // Faded?
+            if (versus.alpha <= 0f)
+                versus.gameObject.SetActive(false);
+        }
     }
 
     // Update the player's mana icon to show progress toward gaining mana,
@@ -177,11 +234,11 @@ public class UI : MonoBehaviour
             if (reservesDepleted.gameObject.activeSelf)
             {
                 // Get percent toward reinforcements.
-                float percent = GM.I.goodLeader.reinforcementTimer / GM.I.goodLeader.timeUntilReinforcements;
+                // float percent = GM.I.goodLeader.reinforcementTimer / GM.I.goodLeader.timeUntilReinforcements;
 
                 // Fade out.
-                // reservesDepleted.alpha -= 0.01f;
-                reservesDepleted.alpha = percent;
+                reservesDepleted.alpha -= 0.01f;
+                // reservesDepleted.alpha = percent;
 
                 // Done?
                 if (reservesDepleted.alpha <= 0f)

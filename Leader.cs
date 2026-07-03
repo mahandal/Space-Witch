@@ -63,6 +63,15 @@ public partial class Leader : MonoBehaviour
 
     // + Initialization
 
+    // Fill in this leader from a bio.
+    public void LoadBio(LeaderBio bio)
+    {
+        myName = bio.myName;
+        homeStar = bio.homeStar;
+        signatureCards = bio.signatureCards;
+        signatureCooldowns = bio.signatureCooldowns;
+    }
+
     // Start a new battle:
     // Reset our health and mana, shuffle our deck, and draw a starting hand.
     public void NewBattle()
@@ -179,7 +188,7 @@ public partial class Leader : MonoBehaviour
     {
         // Wait for battle.
         if (GM.I.gameState != 1) return;
-        if (GM.I.timeElapsed < 1f) return;
+        if (GM.I.gameTimer < 1f) return;
 
         // + Signature Cards
         // Loop through each signature card.

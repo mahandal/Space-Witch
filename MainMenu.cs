@@ -219,7 +219,8 @@ public class MainMenu : MonoBehaviour
         LeaderBio bio = leaderBios[leaderDetailsName.text];
 
         // Load the player's leader.
-        InitializeGoodLeader(bio);
+        GM.I.goodLeader.LoadBio(bio);
+        // InitializeGoodLeader(bio);
 
         // Go to star map!
         StarManager.I.GoToStarMap(true);
@@ -231,24 +232,14 @@ public class MainMenu : MonoBehaviour
         // Fetch save data.
         saveData = Utility.GetSaveData();
 
-        Debug.Log("Fetched save data. Current star: " + saveData.currentStarName);
-
         // Get bio for player's leader.
         LeaderBio bio = leaderBios[saveData.leaderName];
 
         // Load the player's leader.
-        InitializeGoodLeader(bio);
+        GM.I.goodLeader.LoadBio(bio);
+        // InitializeGoodLeader(bio);
 
         // Go to star map!
         StarManager.I.GoToStarMap(true);
-    }
-
-    // Fill in the good leader from a bio.
-    public void InitializeGoodLeader(LeaderBio bio)
-    {
-        GM.I.goodLeader.myName = bio.myName;
-        GM.I.goodLeader.homeStar = bio.homeStar;
-        GM.I.goodLeader.signatureCards = bio.signatureCards;
-        GM.I.goodLeader.signatureCooldowns = bio.signatureCooldowns;
     }
 }

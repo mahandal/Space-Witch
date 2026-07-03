@@ -84,13 +84,13 @@ public class Utility : MonoBehaviour
     public static void SaveGame()
     {
         // Update our saveData's current star.
-        StarManager.I.saveData.currentStarName = StarManager.I.currentStar.myName;
+        MainMenu.I.saveData.currentStarName = StarManager.I.currentStar.myName;
 
         // Update our save data's leader name.
-        StarManager.I.saveData.leaderName = GM.I.goodLeader.myName;
+        MainMenu.I.saveData.leaderName = GM.I.goodLeader.myName;
 
         // Convert to json.
-        string json = JsonUtility.ToJson(StarManager.I.saveData);
+        string json = JsonUtility.ToJson(MainMenu.I.saveData);
 
         // Get save file path.
         string path = GetSaveFilePath();
@@ -109,9 +109,10 @@ public class Utility : MonoBehaviour
         System.IO.File.Delete(path);
 
         // Reset our save data object.
-        StarManager.I.saveData = new SaveData();
+        MainMenu.I.saveData = new SaveData();
 
         // Reset our current star.
+        StarManager.I.currentStar = StarManager.I.startingStar;
         StarManager.I.currentStarName = "";
 
         // Reset our current planet.

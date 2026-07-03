@@ -15,7 +15,7 @@ public class GM : MonoBehaviour
     public int gameState = 0;
 
     // The time elapsed of the current battle.
-    public float timeElapsed = 0f;
+    public float gameTimer = 0f;
     
 
     [Header("Violet Flowers")]
@@ -63,6 +63,9 @@ public class GM : MonoBehaviour
     // The parent object of the battle map, and all main game elements.
     public GameObject battleMap;
 
+    // The progenitor manager.
+    public Progenitors progenitors;
+
     // A list of all cards in the air.
     public List<CardInHand> cardsInTheAir = new List<CardInHand>();
 
@@ -85,6 +88,9 @@ public class GM : MonoBehaviour
             I = this;
         else
             Destroy(this);
+
+        // Make sure progenitors are active.
+        progenitors.gameObject.SetActive(true);
 
         // Make sure we start on the main menu.
         GoToMainMenu();
@@ -111,8 +117,8 @@ public class GM : MonoBehaviour
     // Called from CardOnPlanet.cs
     public void BeginBattle()
     {
-        // Reset time elapsed.
-        timeElapsed = 0f;
+        // Reset game timer.
+        gameTimer = 0f;
 
         // Reset the battle map.
         ResetBattleMap();
@@ -137,12 +143,6 @@ public class GM : MonoBehaviour
         // Go to the battle map.
         GoToBattleMap();
 
-        // Activate the battle map.
-        // battleMap.SetActive(true);
-
-        // // Disable the star map.
-        // StarManager.I.starMap.SetActive(false);
-
         // UI
         UI.I.BeginBattle();
 
@@ -161,7 +161,7 @@ public class GM : MonoBehaviour
         if (gameState != 1) return;
 
         // Increment time elapsed.
-        timeElapsed += Time.fixedDeltaTime;
+        gameTimer += Time.fixedDeltaTime;
         
         // Count down our flower timer.
         flowerTimer -= Time.fixedDeltaTime;
@@ -380,7 +380,10 @@ public class GM : MonoBehaviour
 
         // Disable ai.
         evilLeader.autoPilot = false;
-        UI.I.B_AutoPilotOff();
+        // UI.I.B_AutoPilotOff();
+
+        // Reset the battle map.
+        ResetBattleMap();
 
         // If we won, increment our planet index so the star manager knows to move us forward.
         if (victory)
@@ -392,9 +395,6 @@ public class GM : MonoBehaviour
 
         // Activate UI.
         UI.I.GameOver(victory);
-
-        // Reset the battle map.
-        ResetBattleMap();
     }
 
     // Reset the battle map by clearing old units and cards in the air.

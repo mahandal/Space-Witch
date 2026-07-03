@@ -69,9 +69,6 @@ public class StarManager : MonoBehaviour
     [Header("Victory")]
     public CanvasGroup victory;
 
-    [Header("Save Data")]
-    public SaveData saveData;
-
     // Singleton.
     public static StarManager I;
 
@@ -173,9 +170,6 @@ public class StarManager : MonoBehaviour
                 // Default to starting star.
                 currentStarName = startingStar.myName;
         }
-
-        Debug.Log("We think the current star is: " + currentStarName);
-        Debug.Log("MainMenu.I.saveData.currentStarName: " + MainMenu.I.saveData.currentStarName);
 
         // Look through each star.
         foreach (Transform t in starParent)
@@ -281,6 +275,13 @@ public class StarManager : MonoBehaviour
 
         // Load planet.
         LoadPlanet(firstPlanet);
+
+        // Get evil leader.
+        string evilLeaderName = currentStar.localEvilLeader;
+        LeaderBio evilBio = MainMenu.I.leaderBios[evilLeaderName];
+
+        // Load evil leader.
+        GM.I.evilLeader.LoadBio(evilBio);
     }
 
     // + Planets

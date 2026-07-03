@@ -29,6 +29,14 @@ public partial class Leader
         // Pick which tile to play the card in.
         Tile tile = GetTileToPlay(cardName);
 
+        // If we can't find a tile, skip playing this card.
+        if (tile == null)
+        {
+            if (!signatureCard)
+                IncrementIndexOfNextCard();
+            return;
+        }
+
         if (signatureCard)
         {
             // Play a signature card!
