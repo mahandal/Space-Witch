@@ -5,9 +5,10 @@ using UnityEngine;
 public class Region : MonoBehaviour
 {
     [Header("Terrain")]
-    // What type of terrain is this?
-    // Types of terrain:
-    // - End = Where the big battle begins.
+    // What type of region is this?
+    // Types of region:
+    // End = Where the big battle begins.
+    // Water = Slow field
     public string myType;
 
     [Header("Machinery")]

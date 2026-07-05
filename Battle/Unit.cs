@@ -38,6 +38,9 @@ public partial class Unit : MonoBehaviour
     // How much damage this unit does per attack.
     public float damage = 5f;
 
+    // How many seconds it takes for this unit to attack.
+    public float attackTime = -1f;
+
     // How much damage this unit negates per incoming attack.
     public float armor = 0f;
 
@@ -117,14 +120,73 @@ public partial class Unit : MonoBehaviour
 
     // + Initialization
 
-    // Awaken!
-    void Awake()
+    // Initialize.
+    public void Initialize()
     {
         // Get animator.
         animator = GetComponent<Animator>();
 
         // Get sprite renderer.
         spriteRenderer = GetComponent<SpriteRenderer>();
+
+        // Get attack time, for units.
+        if (cardType == "Unit")
+            attackTime = CalculateAttackTime();
+    }
+
+    // Calculate this unit's attack time.
+    // Averages time per attack for units with multiple attacks.
+    // Counts total time, including backswing, not time to first attack.
+    // Who hits first is another question entirely!
+    private float CalculateAttackTime()
+    {
+        // + Find unit's attacks.
+        // Get this unit's animation clips.
+        AnimationClip[] clips = animator.runtimeAnimatorController.animationClips;
+
+        // Look at each clip.
+        foreach (AnimationClip clip in clips)
+        {
+            // Check if this is our attack animation.
+            // Note: All unit attack animations must be strictly named, because of this line here!
+            string attackAnimationName = myName.Replace(" ", "") + "Attack";
+            if (clip.name == attackAnimationName)
+            {
+                // Count how many attacks we have.
+                int attackCount = 0;
+
+                // Look through each function call in this animation clip.
+                foreach (AnimationEvent evt in clip.events)
+                {
+                    // Make sure it is an attack, then count it!
+                    if (evt.functionName == "Attack")
+                        attackCount++;
+                }
+
+                // Avoid dividing by zero.
+                if (attackCount == 0)
+                {
+                    Debug.LogWarning("Failed to find attack time for: " + myName);
+                    return -1f;
+                }
+
+                // Return this unit's attack time.
+                return clip.length / attackCount;
+            }
+        }
+
+        Debug.LogWarning("Failed to find attack time for: " + myName);
+        return -1f;
+    }
+
+    // Awaken!
+    void Awake()
+    {
+        // Get animator.
+        // animator = GetComponent<Animator>();
+
+        // // Get sprite renderer.
+        // spriteRenderer = GetComponent<SpriteRenderer>();
 
         // Set deploy timer.
         deployTimer = deployTime;
@@ -140,6 +202,7 @@ public partial class Unit : MonoBehaviour
         // Hide vision, until deployment finishes.
         visionCircle.gameObject.SetActive(false);
 
+        // + Laser
         // Set up attack line renderer.
         if (keywords.Contains("Laser"))
         {

@@ -34,12 +34,12 @@ public class InputExplore : MonoBehaviour
         else
             GM.I.player.EndSprint();
 
-        // Spacebar = Jump
+        // Spacebar = Dodge
         if (Keyboard.current.spaceKey.wasPressedThisFrame)
-            GM.I.player.TryJump();
-
-        // Right Click = Dodge
-        if (Mouse.current.rightButton.wasPressedThisFrame)
             GM.I.player.TryDodge();
+
+        // e = Interact
+        if (Keyboard.current.eKey.wasPressedThisFrame)
+            GM.I.Interact();
     }
 }

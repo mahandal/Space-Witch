@@ -5,6 +5,13 @@ public partial class Explorer : MonoBehaviour
     [Header("Meta")]
     // What's our name?
     public string myName;
+
+    // How many credits does this explorer cost to recruit?
+    public int creditCost = -1;
+
+    // This explorer's description.
+    [TextArea(10, 30)]
+    public string description;
     
     // This explorer's state.
     // States:
@@ -23,9 +30,12 @@ public partial class Explorer : MonoBehaviour
     // How much faster this explorer moves while sprinting.
     public float sprintMultiplier = 2f;
 
+    // How far this explorer can see.
+    public float vision = 3f;
+
     [Header("States")]
     // Are we jumping?
-    public bool isJumping = false;
+    // public bool isJumping = false;
 
     // Are we dodging?
     public bool isDodging = false;
@@ -39,7 +49,7 @@ public partial class Explorer : MonoBehaviour
 
     [Header("Timers")]
     // How much longer our current jump will last.
-    public float jumpTimer = 0f;
+    // public float jumpTimer = 0f;
 
     // How much longer our current dodge will last.
     public float dodgeTimer = 0f;
@@ -59,10 +69,10 @@ public partial class Explorer : MonoBehaviour
 
     [Header("Jump")]
     // How long a jump lasts.
-    public float jumpDuration = 1f;
+    // public float jumpDuration = 1f;
 
-    // How much force we jump with.
-    public float jumpForce = 2f;
+    // // How much force we jump with.
+    // public float jumpForce = 2f;
 
     [Header("Dodge")]
     // How long we dodge.
@@ -88,30 +98,30 @@ public partial class Explorer : MonoBehaviour
         Vector2 movement = Vector2.zero;
 
         // + Jumping
-        if (isJumping)
-        {
-            // Decrement jump timer.
-            jumpTimer -= Time.fixedDeltaTime;
+        // if (isJumping)
+        // {
+        //     // Decrement jump timer.
+        //     jumpTimer -= Time.fixedDeltaTime;
 
-            // Get progress.
-            float progress = 1f - (jumpTimer / jumpDuration);
+        //     // Get progress.
+        //     float progress = 1f - (jumpTimer / jumpDuration);
 
-            // Rising?
-            if (progress < 0.5f)
-            {
-                // Move up a bit!
-                // rb.MovePosition(rb.position + Vector2.up * jumpForce * Time.fixedDeltaTime);
-                movement += Vector2.up * jumpForce;
-            } else {
-                // Fall down.
-                // rb.MovePosition(rb.position + Vector2.down * jumpForce * Time.fixedDeltaTime);
-                movement += Vector2.down * jumpForce;
-            }
+        //     // Rising?
+        //     if (progress < 0.5f)
+        //     {
+        //         // Move up a bit!
+        //         // rb.MovePosition(rb.position + Vector2.up * jumpForce * Time.fixedDeltaTime);
+        //         movement += Vector2.up * jumpForce;
+        //     } else {
+        //         // Fall down.
+        //         // rb.MovePosition(rb.position + Vector2.down * jumpForce * Time.fixedDeltaTime);
+        //         movement += Vector2.down * jumpForce;
+        //     }
 
-            // Done?
-            if (jumpTimer <= 0f)
-                isJumping = false;
-        }
+        //     // Done?
+        //     if (jumpTimer <= 0f)
+        //         isJumping = false;
+        // }
 
         // + Dodging
         if (isDodging)
@@ -221,21 +231,21 @@ public partial class Explorer : MonoBehaviour
 
     // + Jump
     // Try to jump.
-    public void TryJump()
-    {
-        // Prevent double jumps.
-        // TBD: Add double jumps somehow...
-        if (isJumping) return;
+    // public void TryJump()
+    // {
+    //     // Prevent double jumps.
+    //     // TBD: Add double jumps somehow...
+    //     if (isJumping) return;
 
-        // Prevent jumping while dying.
-        if (state == -1) return;
+    //     // Prevent jumping while dying.
+    //     if (state == -1) return;
 
-        // Set bool.
-        isJumping = true;
+    //     // Set bool.
+    //     isJumping = true;
 
-        // Set timer.
-        jumpTimer = jumpDuration;
-    }
+    //     // Set timer.
+    //     jumpTimer = jumpDuration;
+    // }
 
     // + Dodge
     // Try to dodge.

@@ -75,6 +75,9 @@ public class Progenitors : MonoBehaviour
             // Skip non-units.
             if (unit == null) continue;
 
+            // Initialize.
+            unit.Initialize();
+
             // Check if child is a unit.
             // Note: 'Unit' in this case refers to card type and NOT class!
             if (unit.cardType == "Unit")
@@ -116,6 +119,16 @@ public class Progenitors : MonoBehaviour
                 Debug.LogWarning("Failed to load card: " + unit.myName + ". Unknown card type: " + unit.cardType);
             }
         }
+    }
+
+    // Get progenitor by name.
+    public Unit GetProgenitor(string cardName)
+    {
+        // Get card from grimoire.
+        Card card = DM.I.grimoire[cardName];
+
+        // Delegate.
+        return GetProgenitor(card);
     }
 
     // Get the progenitor for the given card.
