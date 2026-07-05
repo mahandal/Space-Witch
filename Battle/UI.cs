@@ -1,0 +1,373 @@
+using UnityEngine;
+using UnityEngine.UI;
+using TMPro;
+
+public class UI : MonoBehaviour
+{
+    [Header("Battle Background")]
+    public SpriteRenderer battleBackground;
+
+    [Header("Mana")]
+    // The text object displaying how much mana the player currently has.
+    public TMP_Text manaText;
+
+    // The mana symbol showing the player's progress toward gaining mana.
+    public Image manaSymbol;
+
+    [Header("Health")]
+    // The green fill for the good leader's health bar.
+    public Image goodHealth;
+
+    // The green fill for the evil leader's health bar.
+    public Image evilHealth;
+
+    [Header("Portraits")]
+    // The portrait showing who is leading the forces of good.
+    public Image goodPortrait;
+
+    // The text saying the name of the good leader.
+    public TMP_Text goodName;
+
+    // The image saying VERSUS at the start of the game.
+    public CanvasGroup versus;
+
+    // The portrait showing who is leading the forces of evil.
+    public Image evilPortrait;
+
+    // The text saying the name of the evil leader.
+    public TMP_Text evilName;
+
+    [Header("Trash Can")]
+    public GameObject trashCan;
+
+    [Header("Popups for Reinforcements")]
+    public CanvasGroup reservesDepleted;
+    public CanvasGroup reinforcementsArrived;
+
+    [Header("Tooltip")]
+    // The parent object of the tooltip.
+    public CanvasGroup tooltip;
+
+    // The name in the tooltip.
+    public TMP_Text tooltipName;
+
+    // The mana cost in the tooltip.
+    public TMP_Text tooltipMana;
+
+    // The deployment time in the tooltip.
+    public TMP_Text tooltipTime;
+
+    // The text for the role in the tooltip.
+    public TMP_Text tooltipRole;
+
+    // The image for the role in the tooltip.
+    public Image tooltipRoleImage;
+
+    // The main image for the tooltip.
+    public Image tooltipImage;
+
+    // The background image for the tooltip.
+    public Image tooltipBackgroundImage;
+
+    [Header("Auto Pilot")]
+    public Button autoPilotOn;
+    public Button autoPilotOff;
+
+    [Header("Post game")]
+    // The parent object for the victory post game screen.
+    public Image victoryBackground;
+
+    // The parent object for the defeat post game screen.
+    public Image defeatBackground;
+
+    [Header("Fog of War")]
+    public SpriteRenderer fogOfWar;
+
+    // Singleton.
+    public static UI I;
+
+    // + Initialization
+
+    // Awaken!
+    void Awake()
+    {
+        // Singleton.
+        if (I == null)
+            I = this;
+        else
+            Destroy(this);
+
+        // Start auto pilot off.
+        // B_AutoPilotOff();
+
+        autoPilotOn.gameObject.SetActive(false);
+        autoPilotOff.gameObject.SetActive(false);
+
+        // Make sure fog of war is on!
+        fogOfWar.gameObject.SetActive(true);
+    }
+
+    // Called once at the beginning of each battle.
+    // (See DM.BeginBattle)
+    public void BeginBattle()
+    {
+        // Hide what should not be.
+        victoryBackground.gameObject.SetActive(false);
+        defeatBackground.gameObject.SetActive(false);
+        HideTooltip();
+        reservesDepleted.gameObject.SetActive(false);
+        reinforcementsArrived.gameObject.SetActive(false);
+        versus.gameObject.SetActive(false);
+
+        // Load the current planet's image into the background.
+        Utility.LoadImage(battleBackground, "Planets/" + StarManager.I.GetCurrentPlanetName());
+
+        // Hide leader names and portraits to begin with.
+        goodName.gameObject.SetActive(false);
+        evilName.gameObject.SetActive(false);
+        goodPortrait.gameObject.SetActive(false);
+        evilPortrait.gameObject.SetActive(false);
+
+        // Load leader names.
+        goodName.text = DM.I.goodLeader.myName;
+        evilName.text = DM.I.evilLeader.myName;
+
+        // Load leader portraits.
+        Utility.LoadImage(goodPortrait, "Leaders/" + DM.I.goodLeader.myName);
+        Utility.LoadImage(evilPortrait, "Leaders/" + DM.I.evilLeader.myName);
+    }
+
+    // + Battle
+
+    // Fixed update.
+    void FixedUpdate()
+    {
+        // Versus sequence
+        Versus();
+
+        // Update mana.
+        UpdateMana();
+
+        // Update health.
+        UpdateHealth();
+
+        // Update reinforcements.
+        UpdateReinforcements();
+    }
+
+    // Dramatic intro saying leader names VERSUS each other.
+    // 
+    void Versus()
+    {
+        // Time to reveal the good leader?
+        if (DM.I.gameTimer >= 1f && !goodPortrait.gameObject.activeSelf)
+        {
+            // Reveal the good leader.
+            goodPortrait.gameObject.SetActive(true);
+            goodName.gameObject.SetActive(true);
+        }
+
+        // Time to reveal VERSUS?
+        if (DM.I.gameTimer >= 2f && DM.I.gameTimer < 3f && !versus.gameObject.activeSelf)
+        {
+            versus.gameObject.SetActive(true);
+            versus.alpha = 1f;
+        }
+
+        // Time to reveal the evil leader?
+        if (DM.I.gameTimer >= 3f && !evilPortrait.gameObject.activeSelf)
+        {
+            // Reveal the evil leader.
+            evilPortrait.gameObject.SetActive(true);
+            evilName.gameObject.SetActive(true);
+        }
+
+        // Time to hide VERSUS?
+        if (DM.I.gameTimer >= 4f && versus.gameObject.activeSelf)
+        {
+            // Fade versus.
+            versus.alpha -= 0.001f;
+
+            // Faded?
+            if (versus.alpha <= 0f)
+                versus.gameObject.SetActive(false);
+        }
+    }
+
+    // Update the player's mana icon to show progress toward gaining mana,
+    // as well as updating the mana text when mana is gained or spent.
+    void UpdateMana()
+    {
+        // Set text.
+        manaText.text = DM.I.goodLeader.mana.ToString();
+
+        // Get percent toward next mana.
+        float percent = (DM.I.goodLeader.secondsPerMana - DM.I.goodLeader.manaTimer) / DM.I.goodLeader.secondsPerMana;
+
+        // Set image fill.
+        manaSymbol.fillAmount = percent;
+    }
+
+    // Update both good and evil leader's health bars to match their current health.
+    public void UpdateHealth()
+    {
+        // Get percentage of good leader's health.
+        float goodPercent = DM.I.goodLeader.health / DM.I.startingHealth;
+
+        // Set fill.
+        goodHealth.fillAmount = goodPercent;
+
+        // Get percentage of evil leader's health.
+        float evilPercent = DM.I.evilLeader.health / DM.I.startingHealth;
+
+        // Set fill.
+        evilHealth.fillAmount = evilPercent;
+    }
+
+    // Fade out reinforcement popups.
+    public void UpdateReinforcements()
+    {
+        // Check if we need reinforcements.
+        if (DM.I.goodLeader.deck.Count == 0)
+        {
+            // Reserves depleted?
+            if (reservesDepleted.gameObject.activeSelf)
+            {
+                // Get percent toward reinforcements.
+                // float percent = DM.I.goodLeader.reinforcementTimer / DM.I.goodLeader.timeUntilReinforcements;
+
+                // Fade out.
+                reservesDepleted.alpha -= 0.01f;
+                // reservesDepleted.alpha = percent;
+
+                // Done?
+                if (reservesDepleted.alpha <= 0f)
+                    reservesDepleted.gameObject.SetActive(false);
+            }
+
+            // Reinforcements arrived?
+            if (reinforcementsArrived.gameObject.activeSelf)
+            {
+                // Fade out.
+                reinforcementsArrived.alpha -= 0.01f;
+
+                // Done?
+                if (reinforcementsArrived.alpha <= 0f)
+                    reinforcementsArrived.gameObject.SetActive(false);
+            }
+        }
+
+    }
+
+    // Reveal the 'Reserves Depleted' popup.
+    public void ReservesDepleted()
+    {
+        // Set alpha to 1.
+        reservesDepleted.alpha = 1f;
+
+        // Activate game object.
+        reservesDepleted.gameObject.SetActive(true);
+    }
+
+    // Reveal the 'Reinforcements Arrived' popup.
+    public void ReinforcementsArrived()
+    {
+        // Set alpha to 1.
+        reinforcementsArrived.alpha = 1f;
+
+        // Activate game object.
+        reinforcementsArrived.gameObject.SetActive(true);
+    }
+
+
+    // + Post game
+
+    // Activate the post game overlay.
+    public void GameOver(bool victory)
+    {
+        // Enable appropriate background image.
+        if (victory)
+            victoryBackground.gameObject.SetActive(true);
+        else
+            defeatBackground.gameObject.SetActive(true);
+    }
+
+
+    // + Buttons
+
+    // Button pressed: Trash Can
+    public void B_TrashCan()
+    {
+        // Do nothing if we have no card selected.
+        if (InputBattle.I.selectedCard == null) return;
+
+        // Do nothing if card is hidden.
+        if (InputBattle.I.selectedCard.hideTimer > 0f) return;
+        
+        // Discard the currently selected card for good.
+        DM.I.goodLeader.Discard(InputBattle.I.selectedCard.index);
+    }
+
+    // Button pressed: Auto Pilot On
+    public void B_AutoPilotOn()
+    {
+        // Enable auto pilot.
+        DM.I.goodLeader.autoPilot = true;
+
+        // Disable auto pilot on button.
+        autoPilotOn.gameObject.SetActive(false);
+
+        // Enable auto pilot off button.
+        autoPilotOff.gameObject.SetActive(true);
+    }
+
+    // Button pressed: Auto Pilot Off
+    public void B_AutoPilotOff()
+    {
+        // Disable auto pilot.
+        DM.I.goodLeader.autoPilot = false;
+
+        // Disable auto pilot off button.
+        autoPilotOff.gameObject.SetActive(false);
+
+        // Enable auto pilot on button.
+        autoPilotOn.gameObject.SetActive(true);
+    }
+
+    // + Tooltip
+
+    // Load a unit into the tooltip.
+    public void ShowTooltip(Unit unit)
+    {
+        // Set the name.
+        tooltipName.text = unit.myName;
+
+        // Set the mana cost.
+        tooltipMana.text = unit.manaCost.ToString();
+
+        // Set the deployment time.
+        tooltipTime.text = unit.deployTime.ToString();
+
+        // Set the role.
+        tooltipRole.text = unit.role;
+
+        // Load the image for the role.
+        Utility.LoadImage(tooltipRoleImage, "Roles/" + unit.role);
+
+        // Load the main art image.
+        Utility.LoadImage(tooltipImage, "Cards/" + unit.myName);
+
+        // Load the background image.
+        Utility.LoadImage(tooltipBackgroundImage, "Cards/" + unit.myName);
+
+        // Reveal the tooltip.
+        tooltip.alpha = 1f;
+    }
+
+    // Hide the tooltip.
+    public void HideTooltip()
+    {
+        // Hide tooltip.
+        tooltip.alpha = 0f;
+    }
+}
