@@ -21,6 +21,19 @@ public class InputExplore : MonoBehaviour
     {
         // Stunned?
         if (GM.I.player.state == 3) return;
+
+        // + Get mouse position in world coordinates.
+        // Convert our mouse position to 3d coordinates.
+        // Vector3 mouseScreen = Mouse.current.position.ReadValue();
+
+        // Set the mouse's z to opposite the camera's, for some reason?
+        // mouseScreen.z = -Camera.main.transform.position.z;
+
+        // // Convert our mouse's 3d coordinates to 2d coordinates.
+        // Vector2 mouseWorld = Camera.main.ScreenToWorldPoint(mouseScreen);
+
+        // Set target.
+        // GM.I.player.target = GM.I.player.NearestVisibleExplorer(mouseScreen);
         
         // WASD = Move up, left, down, right.
         GM.I.player.isPressingUp = Keyboard.current.wKey.isPressed;
@@ -34,12 +47,22 @@ public class InputExplore : MonoBehaviour
         else
             GM.I.player.EndSprint();
 
+        // Ctrl = Stealth
+        if (Keyboard.current.ctrlKey.isPressed)
+            GM.I.player.Stealth();
+        else
+            GM.I.player.Unstealth();
+
         // Spacebar = Dodge
         if (Keyboard.current.spaceKey.wasPressedThisFrame)
             GM.I.player.TryDodge();
 
-        // e = Interact
+        // E = Interact
         if (Keyboard.current.eKey.wasPressedThisFrame)
             GM.I.Interact();
+
+        // Left Click = Attack
+        if (Mouse.current.leftButton.wasPressedThisFrame)
+            GM.I.player.BeginAttack();
     }
 }

@@ -182,22 +182,11 @@ public partial class Unit : MonoBehaviour
     // Awaken!
     void Awake()
     {
-        // Get animator.
-        // animator = GetComponent<Animator>();
-
-        // // Get sprite renderer.
-        // spriteRenderer = GetComponent<SpriteRenderer>();
-
         // Set deploy timer.
         deployTimer = deployTime;
 
         // Set vision circle size.
         SetVision(vision);
-        // Vision circles are children of the unit they're attached to so they scale with them, which has to be accounted for.
-        // Also we scale by 2 for some reason?
-        // float visionScale = 1 / transform.localScale.x;
-        // visionScale *= vision * 2;
-        // visionCircle.transform.localScale = new Vector3(visionScale, visionScale, visionScale);
 
         // Hide vision, until deployment finishes.
         visionCircle.gameObject.SetActive(false);
@@ -237,8 +226,21 @@ public partial class Unit : MonoBehaviour
         }
     }
 
-    // + Upkeep
+    // Set our vision stat and update our vision circle size accordingly.
+    public void SetVision(float newVision)
+    {
+        // Update vision.
+        vision = newVision;
 
+        // Set vision circle size.
+        // Vision circles are children of the unit they're attached to so they scale with them, which has to be accounted for.
+        // Also we scale by 2 for some reason?
+        float visionScale = 1 / transform.localScale.x;
+        visionScale *= vision * 2;
+        visionCircle.transform.localScale = new Vector3(visionScale, visionScale, visionScale);
+    }
+
+    // + Upkeep
     void FixedUpdate()
     {
         // Game over?
@@ -290,19 +292,8 @@ public partial class Unit : MonoBehaviour
         else
             Utility.SetOpacity(spriteRenderer, 1f);
 
-        // TBD: Add OnUpdate and similar functions to handle keywords.
-
-        // Summon
-        if (keywords.Contains("Summon"))
-            LoseHealth(maxHealth * 0.05f * Time.fixedDeltaTime, this, true, false);
-
-        // Poisoned
-        if (keywords.Contains("Poisoned"))
-            LoseHealth(maxHealth * 0.1f * Time.fixedDeltaTime, this, true);
-
-        // Troll regeneration.
-        else if (keywords.Contains("Troll"))
-            GainHealth(maxHealth * 0.1f * Time.fixedDeltaTime);
+        // OnTick
+        OnTick();
 
         // Dying.
         if (state == -1)
@@ -593,21 +584,6 @@ public partial class Unit : MonoBehaviour
         item.BeginDying();
     }
 
-    // + Stats
-    // Set our vision stat and update our vision circle size accordingly.
-    public void SetVision(float newVision)
-    {
-        // Update vision.
-        vision = newVision;
-
-        // Set vision circle size.
-        // Vision circles are children of the unit they're attached to so they scale with them, which has to be accounted for.
-        // Also we scale by 2 for some reason?
-        float visionScale = 1 / transform.localScale.x;
-        visionScale *= vision * 2;
-        visionCircle.transform.localScale = new Vector3(visionScale, visionScale, visionScale);
-    }
-
     // - Combat
     // Attack our target!
     public void Attack()
@@ -620,39 +596,6 @@ public partial class Unit : MonoBehaviour
 
         // Deal damage to our target.
         target.LoseHealth(damage, this);
-    }
-
-    // On attack triggers.
-    public void OnAttack()
-    {
-        // Bloodthirst?
-        if (keywords.Contains("Bloodthirst"))
-        {
-            damage *= 1.01f;
-        }
-
-        // Cleave?
-        if (keywords.Contains("Cleave"))
-        {
-            // Iterate through each other enemy unit nearby.
-            foreach(Unit enemy in GetEnemiesNear(target))
-            {
-                // Deal half damage.
-                enemy.LoseHealth(damage / 2f, this);
-            }
-        }
-
-        // Laser?
-        if (keywords.Contains("Laser"))
-        {
-            // Draw a red line to our target.
-            attackLine.SetPosition(0, transform.position);
-            attackLine.SetPosition(1, target.transform.position);
-            attackLine.enabled = true;
-
-            // Fade the laser after a brief delay.
-            StartCoroutine(FadeLaser());
-        }
     }
 
     IEnumerator FadeLaser()
@@ -731,7 +674,10 @@ public partial class Unit : MonoBehaviour
         // Armor
         if (!ignoreArmor)
         {
+            // Reduce incoming damage by armor.
             healthLost -= armor;
+            
+            // Minimum of 1.
             if (healthLost < 1)
                 healthLost = 1;
         }
@@ -798,7 +744,6 @@ public partial class Unit : MonoBehaviour
         animator.SetInteger("State", state);
     }
 
-
     // Death.
     public void Death()
     {
@@ -817,44 +762,6 @@ public partial class Unit : MonoBehaviour
             
         // Clean up game object.
         Destroy(gameObject);
-    }
-
-    // Called when this unit dies.
-    // Handles on death triggers.
-    public void OnDeath()
-    {
-        // Prevent the lich from surviving through battles.
-        if (DM.I.gameState != 1) return;
-        
-        // Skeleton
-        if (keywords.Contains("Skeleton"))
-        {
-            // Spawn a skull.
-            Unit newUnit = GetLeader().SpawnUnit("Skull", currentTile);
-
-            // Show its full deployment.
-            newUnit.showFullDeployment = true;
-        }
-
-        // Big Skeleton
-        if (keywords.Contains("Big Skeleton"))
-        {
-            // Spawn a skull.
-            Unit newUnit = GetLeader().SpawnUnit("Skeleton Warrior", currentTile);
-
-            // Show its full deployment.
-            newUnit.showFullDeployment = true;
-        }
-
-        // Lich
-        if (keywords.Contains("Lich"))
-        {
-            // The lich respawns!
-            Unit newUnit = GetLeader().SpawnUnit("Lich", currentTile);
-
-            // Show its full deployment.
-            newUnit.showFullDeployment = true;
-        }
     }
 
     // + Magic

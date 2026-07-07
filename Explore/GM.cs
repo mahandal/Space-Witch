@@ -13,7 +13,10 @@ public class GM : MonoBehaviour
     public Explorer player;
 
     [Header("Interact")]
-    // Which explorer we are currently interacting with, if any.
+    // The nearest interactable object, if there is one within the player's vision range.
+    public Interactable nearestInteractable;
+
+    // The nearest other explorer, if there is one within the player's vision range.
     public Explorer exploree;
 
     [Header("Planet")]
@@ -45,45 +48,88 @@ public class GM : MonoBehaviour
 
     // +++ Exploring!
 
-    // + Interact
-    // Look for the closest explorer to the player to interact with.
-    // If no other explorer is within vision range, do nothing.
-    public void Interact()
+    // Fixed update
+    void FixedUpdate()
     {
-        // + Find nearest other explorer.
+        // Find the nearest interactable object, if there is one within the player's vision range.
+        FindNearestInteractable();
+    }
+
+    // Find the nearest interactable object, and/or the nearest explorer we can talk to.
+    // Note: Done together to condense calls to overlapcircle.
+    public void FindNearestInteractable()
+    {
+        // Reset nearest explorer and nearest interactable.
+        exploree = null;
+        nearestInteractable = null;
+
+        // Remember nearest distances.
+        float exploreeDistance = float.MaxValue;
+        float interactableDistance = float.MaxValue;
+
         // Use overlapcircle to find nearby colliders.
         Collider2D[] colliders = Physics2D.OverlapCircleAll(player.transform.position, player.vision);
-
-        // Remember nearest explorer.
-        Explorer nearestExplorer = null;
-        float nearestDistance = float.MaxValue;
 
         // Look through each collider.
         foreach (Collider2D col in colliders)
         {
-            // Check if the collider is attached to an explorer.
+            // Explorer?
             Explorer e = col.GetComponent<Explorer>();
-
-            // Ignore non-explorers.
-            if (e == null) continue;
-
-            // Ignore the player.
-            if (e == player) continue;
-
-            // Get distance.
-            float distance = Vector3.Distance(e.transform.position, player.transform.position);
-
-            // Compare distance.
-            if (distance < nearestDistance)
+            if (e != null)
             {
-                // New nearest.
-                nearestDistance = distance;
-                nearestExplorer = e;
+                // Exclude self.
+                if (e == player) continue;
+
+                // Exclude squad members.
+                if (e.squadLeader == player) continue;
+
+                // Get distance.
+                float distance = Vector3.Distance(player.transform.position, e.transform.position);
+
+                // Have to get close enough they can see us.
+                if (distance > e.vision) continue;
+
+                // Check if distance is closer than any other.
+                if (distance < exploreeDistance)
+                {
+                    // Set exploree.
+                    exploree = e;
+
+                    // Remember distance.
+                    exploreeDistance = distance;
+                }
+            }
+
+            // Interactable
+            Interactable interactable = col.GetComponent<Interactable>();
+            if (interactable != null)
+            {
+                // Get distance.
+                float distance = Vector3.Distance(player.transform.position, interactable.transform.position);
+                if (distance < exploreeDistance)
+                {
+                    // Set nearest interactable.
+                    nearestInteractable = interactable;
+
+                    // Remember distance.
+                    interactableDistance = distance;
+                }
             }
         }
 
+        // Show hint to interact?
+        if (exploree != null || nearestInteractable != null)
+            ExploreUI.I.HintInteract();
+        else
+            ExploreUI.I.HideBottomHint();
+    }
+
+    // + Interact
+    // Attempt to interact with the nearest explorer or interactable object.
+    public void Interact()
+    {
         // Nothing to interact with.
-        if (nearestExplorer == null)
+        if (exploree == null && nearestInteractable == null)
             return;
 
         // + Interact.
@@ -91,18 +137,18 @@ public class GM : MonoBehaviour
         // Pause time.
         Time.timeScale = 0f;
 
-        // Set exploree.
-        exploree = nearestExplorer;
-
         // UI.
-        ExploreUI.I.Interact(nearestExplorer);
+        if (exploree != null)
+            ExploreUI.I.Interact(exploree);
+        else
+            ExploreUI.I.Interact(nearestInteractable);
     }
 
     // End an interaction.
     public void EndInteract()
     {
         // Clear exploree(?)
-        exploree = null;
+        // exploree = null;
 
         // Resume time.
         Time.timeScale = 1f;
@@ -123,7 +169,9 @@ public class GM : MonoBehaviour
         MenuManager.I.saveData.decklist.Add(exploree.myName);
 
         // For now, destroy explorer.
-        Destroy(exploree.gameObject);
+        // Destroy(exploree.gameObject);
+
+        player.AddToSquad(exploree);
 
         // TBD: Allow other explorers to follow you around in a little squad.
 

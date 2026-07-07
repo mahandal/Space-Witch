@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.UI;
 using TMPro;
 
 public class ExploreUI : MonoBehaviour
@@ -11,7 +12,10 @@ public class ExploreUI : MonoBehaviour
     // The hint saying "Press 'e' to interact!"
     public TMP_Text bottomHint;
 
-    [Header("Interact")]
+    [Header("Interact: Dragon Shrine")]
+    public CanvasGroup dragonShrineScreen;
+
+    [Header("Interact: Explorer")]
     // The parent object of the interact screen.
     public CanvasGroup interactScreen;
 
@@ -23,6 +27,9 @@ public class ExploreUI : MonoBehaviour
 
     // The description of the exploree.
     public TMP_Text interactDescription;
+
+    // The big portrait in the middle of the exploree.
+    public Image interactPortrait;
 
     // The exploree's card type.
     public TMP_Text interactCardType;
@@ -72,6 +79,7 @@ public class ExploreUI : MonoBehaviour
         // Hide what should be hidden.
         HideBottomHint();
         interactScreen.gameObject.SetActive(false);
+        dragonShrineScreen.gameObject.SetActive(false);
     }
 
     // + Exploring!
@@ -82,6 +90,48 @@ public class ExploreUI : MonoBehaviour
     }
 
     // + Interact
+
+    // TBD: Move to DragonShrine.cs
+    // Praying at the dragon shrine.
+
+    // Go to the next page of cards in your deck.
+    public void B_NextPage()
+    {
+
+    }
+
+    // Go to the previous page of cards in your deck.
+    public void B_PreviousPage()
+    {
+
+    }
+
+    // Promote the currently selected unit to squad leader.
+    // (AKA choose to play as that unit)
+    public void B_PromoteToSquadLeader()
+    {
+
+    }
+
+    // Add the currently selected unit to your squad, bringing them out to explore with you.
+    public void B_AddToSquad()
+    {
+
+    }
+
+    // Remove the currently selected unit from your squad, allowing them to rest until the big battle.
+    public void B_ReturnToRest()
+    {
+
+    }
+
+    // Sell the currently selected card.
+    public void B_Sell()
+    {
+        // TBD!
+    }
+
+    // Talking to explorers.
 
     // Button: Walk Away
     public void B_WalkAway()
@@ -99,6 +149,20 @@ public class ExploreUI : MonoBehaviour
             EndInteract();
     }
 
+    // Set up the interact screen for the given interactable object.
+    // TBD: Other interactables...
+    public void Interact(Interactable interactable)
+    {
+        // Dragon Shrine.
+        if (interactable.myType == "Dragon Shrine")
+        {
+            dragonShrineScreen.gameObject.SetActive(true);
+            return;
+        }
+        
+        // TBD: Normal interact screen(?)
+    }
+
     // Set up the interact screen for the given explorer.
     public void Interact(Explorer e)
     {
@@ -106,6 +170,9 @@ public class ExploreUI : MonoBehaviour
         interactName.text = e.myName;
         interactCredits.text = e.creditCost.ToString();
         interactDescription.text = e.description;
+
+        // Load image.
+        Utility.LoadImage(interactPortrait, "Cards/" + e.myName);
 
         // Get progenitor.
         Unit p = Progenitors.I.GetProgenitor(e.myName);
@@ -135,8 +202,9 @@ public class ExploreUI : MonoBehaviour
         // Let GM resume time.
         GM.I.EndInteract();
 
-        // Deactivate screen.
+        // Deactivate screens.
         interactScreen.gameObject.SetActive(false);
+        dragonShrineScreen.gameObject.SetActive(false);
     }
 
     // Pop up the hint saying "Press 'e' to interact!"

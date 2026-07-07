@@ -60,6 +60,6 @@ public class MiniCard : MonoBehaviour
     {
         Debug.Log(nameText.text + " pressed!");
 
-        // TBD: Examine cards!
+        // TBD: Examine cards?
     }
 }

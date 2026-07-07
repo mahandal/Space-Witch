@@ -3,13 +3,17 @@ using UnityEngine.UI;
 
 public class HealthBar : MonoBehaviour
 {
-    [Header("Machinery")]
-    // The unit this health bar is attached to.
+    [Header("Manual Machinery")]
+    // The unit this health bar is attached to, for battle mode.
     public Unit unit;
+
+    // The explorer this health bar is attached to, for explore mode.
+    public Explorer explorer;
 
     // The green bar representing how much health this unit has left.
     public Image greenBar;
 
+    [Header("Automated Machinery")]
     // A canvas group to scale opacity.
     public CanvasGroup canvasGroup;
 
@@ -20,6 +24,14 @@ public class HealthBar : MonoBehaviour
     }
 
     void FixedUpdate()
+    {
+        if (unit != null)
+            Battle();
+        if (explorer != null)
+            Explore();
+    }
+
+    void Battle()
     {
         // Deploying?
         if (unit.state == 0)
@@ -51,5 +63,21 @@ public class HealthBar : MonoBehaviour
             // Destroy the health bar.
             Destroy(gameObject);
         }
+    }
+
+    void Explore()
+    {
+        // Get percent health.
+        float percentHealth = explorer.currentHealth / explorer.maxHealth;
+
+        // Set fill.
+        greenBar.fillAmount = percentHealth;
+
+        // If full health hide.
+        // Reveal when below full.
+        if (explorer.currentHealth < explorer.maxHealth)
+            canvasGroup.alpha = 1f;
+        else
+            canvasGroup.alpha = 0f;
     }
 }
