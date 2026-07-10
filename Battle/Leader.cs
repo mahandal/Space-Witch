@@ -187,7 +187,7 @@ public partial class Leader : MonoBehaviour
     void FixedUpdate()
     {
         // Wait for battle.
-        if (DM.I.gameState != 1) return;
+        if (MenuManager.I.gameState != 1) return;
         if (DM.I.gameTimer < 1f) return;
 
         // + Signature Cards
@@ -494,6 +494,10 @@ public partial class Leader : MonoBehaviour
 
         // OnPlayed triggers.
         OnPlayed(newUnit);
+
+        // Remove rigid body.
+        if (newUnit.rb != null)
+            DestroyImmediate(newUnit.rb);
 
         // Activate!
         newUnit.gameObject.SetActive(true);

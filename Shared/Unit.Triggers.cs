@@ -24,8 +24,8 @@ public partial class Unit
     // Handles on death triggers.
     public void OnDeath()
     {
-        // Prevent the lich from surviving through battles.
-        if (DM.I.gameState != 1) return;
+        // Prevent persisting into further battles.
+        if (MenuManager.I.gameState != 1) return;
         
         // Skeleton
         if (keywords.Contains("Skeleton"))

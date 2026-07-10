@@ -1,15 +1,9 @@
 using UnityEngine;
 using System.Collections.Generic;
 
-public partial class Explorer : MonoBehaviour
+public partial class Unit
 {
-    [Header("Meta")]
-    // Is this explorer good? Or evil?
-    public bool good = true;
-
-    // What's our name?
-    public string myName;
-
+    [Header("Explore Mode")]
     // How many credits does this explorer cost to recruit?
     public int creditCost = -1;
 
@@ -17,53 +11,12 @@ public partial class Explorer : MonoBehaviour
     [TextArea(10, 30)]
     public string description;
 
-    [Header("AI")]
-    // This explorer's state.
-    // States:
-    // -1 = Dying
-    //  0 = Idle
-    //  1 = Moving
-    //  2 = Attacking
-    //  3 = Stunned
-    //  4 = Dodging
-    public int state = 0;
-
-    // Our current target, while in combat.
-    public Explorer target;
-
     [Header("Squad")]
     // Our squad, if we are a squad leader.
-    public List<Explorer> squad;
+    public List<Unit> squad;
 
     // Our squad leader, if we are in a squad.
-    public Explorer squadLeader;
-
-    [Header("Core Stats")]
-    // The maximum amount of health this explorer can have.
-    public float maxHealth = 10f;
-
-    // The current amount of health this explorer has.
-    public float currentHealth = 10f;
-
-    // How much damage this explorer does per attack.
-    public float damage = 5f;
-
-    // How many seconds it takes for this explorer to attack.
-    public float attackTime = -1f;
-
-    // How much damage this explorer negates per incoming attack.
-    public float armor = 0f;
-
-    // How fast this explorer moves.
-    // (In tiles per second?)
-    public float speed = 3f;
-
-    // How many tiles away this explorer can attack.
-    public float range = 1f;
-
-    // How many tiles away this explorer can see.
-    public float vision = 3f;
-
+    public Unit squadLeader;
 
     [Header("Explorer Specific Stats")]
     // How much faster this explorer moves while sprinting.
@@ -73,9 +26,6 @@ public partial class Explorer : MonoBehaviour
     public float stealthMultiplier = 0.5f;
 
     [Header("States")]
-    // Are we jumping?
-    // public bool isJumping = false;
-
     // Are we sprinting?
     public bool isSprinting = false;
 
@@ -95,9 +45,6 @@ public partial class Explorer : MonoBehaviour
     [Header("Timers")]
     // How much longer our current dodge will last.
     public float dodgeTimer = 0f;
-
-    // How much longer our current red damage flash will last.
-    public float hurtTimer = 0f;
 
     [Header("Inputs")]
     // Are we trying to move up?
@@ -124,26 +71,20 @@ public partial class Explorer : MonoBehaviour
     // This explorer's rigid body, for collisions.
     public Rigidbody2D rb;
 
-    // The Animator component for this explorer's animations.
-    public Animator animator;
-
-    // The sprite renderer displaying this explorer's primary visuals.
-    public SpriteRenderer spriteRenderer;
-
-    // This explorer's vision circle.
-    public SpriteMask visionCircle;
-
-    // This explorer's attack range circle.
-    public SpriteRenderer attackCircle;
-
     // +++ Initialization
-    void Start()
+    void InitializeExplorer()
     {
-        // Randomize animation speed(?)
-        animator.speed = Random.Range(0.5f, 1f);
-
         // Load this explorer's stats from its progenitor unit.
         LoadUnit(myName);
+
+        // Initialize this unit, connecting its rigid body and whatnot.
+        Initialize();
+
+        // Enable vision circle(?)
+        visionCircle.gameObject.SetActive(true);
+
+        // Randomize animation speed(?)
+        animator.speed = Random.Range(0.5f, 1f);
     }
 
     // Load the given unit's stats into this explorer.
@@ -169,37 +110,10 @@ public partial class Explorer : MonoBehaviour
         SetRange(p.range);
     }
 
-    // + Stats
-    // Set our vision stat and update our vision circle size accordingly.
-    public void SetVision(float newVision)
-    {
-        // Update vision.
-        vision = newVision;
-
-        // Set vision circle size.
-        // Vision circles are children of the unit they're attached to so they scale with them, which has to be accounted for.
-        // Also we scale by 2 for some reason?
-        float visionScale = 1 / transform.localScale.x;
-        visionScale *= vision * 2;
-        visionCircle.transform.localScale = new Vector3(visionScale, visionScale, visionScale);
-    }
-
-    // Set our range stat and update our attack range circle size accordingly.
-    public void SetRange(float newRange)
-    {
-        // Update range.
-        range = newRange;
-
-        // Set attack range circle size.
-        float attackScale = 1 / transform.localScale.x;
-        attackScale *= range * 2;
-        attackCircle.transform.localScale = new Vector3(attackScale, attackScale, attackScale);
-    }
-
     // +++ Exploring!
 
     // Fixed update.
-    void FixedUpdate()
+    void ExploreUpdate()
     {
         // Dying?
         if (state == -1) return;
@@ -231,7 +145,7 @@ public partial class Explorer : MonoBehaviour
 
         // +++ AI
         if (this != GM.I.player)
-            AI();
+            Explore();
 
 
         // +++ Attacking(?)
@@ -330,7 +244,7 @@ public partial class Explorer : MonoBehaviour
     }
 
     // + Squad
-    public void AddToSquad(Explorer newSquadMember)
+    public void AddToSquad(Unit newSquadMember)
     {
         // Add to squad.
         squad.Add(newSquadMember);
@@ -342,11 +256,11 @@ public partial class Explorer : MonoBehaviour
         newSquadMember.good = good;
     }
 
-    // + AI
+    // + Explore AI
     // Decide what to do.
     // If we see an enemy, move toward them and attack.
     // (Actual movement is handled elsewhere already, so just input direction)
-    public void AI()
+    public void Explore()
     {
         // Reset directional input.
         isPressingLeft = false;
@@ -390,30 +304,12 @@ public partial class Explorer : MonoBehaviour
                 state = 1;
 
                 TryMoveToward(target);
-
-                // Get direction to move.
-
-                // // Is the target to our left?
-                // // if (target.transform.position.x < transform.position.x)
-                // if (target.transform.position.x - transform.position.x < -0.1f)
-                //     isPressingLeft = true;
-                // // else if (target.transform.position.x > transform.position.x)
-                // else if (target.transform.position.x - transform.position.x > 0.1f)
-                //     isPressingRight = true;
-
-                // // Is the target below us?
-                // // if (target.transform.position.y < transform.position.y)
-                // if (target.transform.position.y - transform.position.y < -0.1f)
-                //     isPressingDown = true;
-                // // else if (target.transform.position.y > transform.position.y)
-                // else if (target.transform.position.y - transform.position.y > 0.1f)
-                //     isPressingUp = true;
             }
         }
     }
 
     // Set our movement toward a given explorer.
-    public void TryMoveToward(Explorer target)
+    public void TryMoveToward(Unit target)
     {
         // Reset directional movement.
         isPressingLeft = false;
@@ -441,22 +337,22 @@ public partial class Explorer : MonoBehaviour
 
     // Look for an enemy.
     // Return the nearest enemy within our vision range, or null if there is none.
-    public Explorer NearestEnemy()
+    public Unit NearestEnemy()
     {
         // Get nearby colliders.
         Collider2D[] colliders = Physics2D.OverlapCircleAll(transform.position, vision);
 
         // Remember nearest enemy.
-        Explorer nearestEnemy = null;
+        Unit nearestEnemy = null;
         float nearestDistance = float.MaxValue;
 
         // Look through each collider.
         foreach (Collider2D col in colliders)
         {
-            // Check if the collider is attached to an explorer.
-            Explorer e = col.GetComponent<Explorer>();
+            // Check if the collider is attached to a unit.
+            Unit e = col.GetComponent<Unit>();
 
-            // Ignore non-explorers.
+            // Ignore non-units.
             if (e == null) continue;
 
             // Ignore allies.
@@ -464,6 +360,9 @@ public partial class Explorer : MonoBehaviour
 
             // Ignore dying enemies.
             if (e.state == -1) continue;
+
+            // Ignore deploying enemies.
+            if (e.deployTimer > 0f) continue;
 
             // Get distance.
             float distance = Vector3.Distance(e.transform.position, transform.position);
@@ -481,46 +380,46 @@ public partial class Explorer : MonoBehaviour
         return nearestEnemy;
     }
 
-    // Look for nearest explorer.
+    // Look for the nearest other unit.
     // Return the nearest other explorer within our vision range, or null if there is none.
-    public Explorer NearestExplorer()
+    public Unit NearestUnit()
     {
         // Get nearby colliders.
         Collider2D[] colliders = Physics2D.OverlapCircleAll(transform.position, vision);
 
-        // Remember nearest explorer.
-        Explorer nearestExplorer = null;
+        // Remember nearest unit.
+        Unit nearestUnit = null;
         float nearestDistance = float.MaxValue;
 
         // Look through each collider.
         foreach (Collider2D col in colliders)
         {
-            // Check if the collider is attached to an explorer.
-            Explorer e = col.GetComponent<Explorer>();
+            // Check if the collider is attached to a unit.
+            Unit unit = col.GetComponent<Unit>();
 
-            // Ignore non-explorers.
-            if (e == null) continue;
+            // Ignore non-units.
+            if (unit == null) continue;
 
             // Ignore self.
-            if (e == this) continue;
+            if (unit == this) continue;
 
-            // Ignore dying explorers.
-            if (e.state == -1) continue;
+            // Ignore dying units.
+            if (unit.state == -1) continue;
 
             // Get distance.
-            float distance = Vector3.Distance(e.transform.position, transform.position);
+            float distance = Vector3.Distance(unit.transform.position, transform.position);
 
             // Compare distance.
             if (distance < nearestDistance)
             {
                 // New nearest.
                 nearestDistance = distance;
-                nearestExplorer = e;
+                nearestUnit = unit;
             }
         }
 
         // Return.
-        return nearestExplorer;
+        return nearestUnit;
     }
 
     // + Combat
@@ -532,94 +431,7 @@ public partial class Explorer : MonoBehaviour
         animator.SetInteger("State", state);
     }
 
-    // Attack!
-    public void Attack()
-    {
-        // Fail if dying.
-        if (state == -1) return;
-        
-        // Return to idle, if only for a moment.
-        state = 0;
-        animator.SetInteger("State", state);
 
-        // Abort if no target for w/e reason.
-        if (target == null)
-        {
-            return;
-        }
-
-        // Check if target is in range.
-        float distance = Vector3.Distance(transform.position, target.transform.position);
-
-        // Only deal damage if target is still in range.
-        if (distance <= range)
-        {
-            // Target loses health.
-            target.LoseHealth(damage, this);
-        }
-    }
-
-    // Lose health.
-    public void LoseHealth(float healthLost, Explorer source = null, bool ignoreArmor = false, bool damageFlash = true)
-    {
-        // Can't touch this!
-        if (isDodging) return;
-        
-        // Flash red when hurt.
-        if (damageFlash)
-        {
-            // Flash red.
-            spriteRenderer.color = Color.red;
-
-            // Set timer to reset color.
-            hurtTimer = 1f;
-
-            // Target enemy!
-            if (source != null)
-                target = source;
-        }
-
-        // Armor
-        if (!ignoreArmor)
-        {
-            // Reduce incoming damage by armor.
-            healthLost -= armor;
-
-            // Minimum of 1.
-            if (healthLost < 1)
-                healthLost = 1;
-        }
-
-        // Lose health.
-        currentHealth -= healthLost;
-
-        // Death.
-        if (currentHealth <= 0)
-        {
-            // Set our killer as our target, for vengeance death effects.
-            target = source;
-
-            // Begin dying.
-            BeginDying();
-        }
-    }
-
-    // Begin dying.
-    public void BeginDying(Explorer killer = null)
-    {
-        // Set state.
-        state = -1;
-        animator.SetInteger("State", state);
-    }
-
-    // Death.
-    public void Death()
-    {
-        // For now, just destroy the game object.
-        Destroy(gameObject);
-
-        // TBD: Leave corpses on the ground, so they can be picked up and resurrected at the Dragon Shrine.
-    }
 
     // + Movement
 

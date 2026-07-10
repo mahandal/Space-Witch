@@ -10,7 +10,7 @@ public class Gatherable : MonoBehaviour
     void OnTriggerEnter2D(Collider2D col)
     {
         // Get explorer.
-        Explorer explorer = col.GetComponent<Explorer>();
+        Unit explorer = col.GetComponent<Unit>();
 
         // Ignore non-explorers.
         if (explorer == null) return;

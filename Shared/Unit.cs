@@ -7,6 +7,11 @@ using System.Collections.Generic;
 public partial class Unit : MonoBehaviour
 {
     [Header("Meta")]
+    // Whether this unit is good or evil.
+    // Also whether this unit is facing right or left, for movement, attacks, and animations.
+    // (Unit animations are facing right by default, and mirrored for units facing left.)
+    public bool good = true;
+    
     // This unit's name.
     public string myName;
 
@@ -71,11 +76,6 @@ public partial class Unit : MonoBehaviour
     public float spawnTimer = 0f;
 
     [Header("Machinery")]
-    // Whether this unit is good or evil.
-    // Also whether this unit is facing right or left, for movement, attacks, and animations.
-    // (Unit animations are facing right by default, and mirrored for units facing left.)
-    public bool good = true;
-
     // Which tile this unit is currently in.
     public Tile currentTile;
 
@@ -108,6 +108,9 @@ public partial class Unit : MonoBehaviour
     // This unit's vision circle.
     public SpriteMask visionCircle;
 
+    // This unit's attack range circle.
+    public SpriteRenderer attackCircle;
+
     // The Animator component for this unit's animations.
     public Animator animator;
 
@@ -128,6 +131,9 @@ public partial class Unit : MonoBehaviour
 
         // Get sprite renderer.
         spriteRenderer = GetComponent<SpriteRenderer>();
+
+        // Get rigid body.
+        rb = GetComponent<Rigidbody2D>();
 
         // Get attack time, for units.
         if (cardType == "Unit")
@@ -210,7 +216,20 @@ public partial class Unit : MonoBehaviour
     // Start er up!
     void Start()
     {
-        // Units, structures, and summons register with DM.
+        // + Explore
+        if (GM.I.gameObject.activeSelf)
+            InitializeExplorer();
+
+        // + Battle
+        if (DM.I.gameObject.activeSelf)
+            RegisterWithDM();
+    }
+
+    // Register with DM.
+    // Units, structures, and summons register with DM when played in battle mode.
+    public void RegisterWithDM()
+    {
+        // Check card type.
         if (cardType == "Unit" || cardType == "Structure" || role == "Summon")
         {
             if (good)
@@ -240,22 +259,45 @@ public partial class Unit : MonoBehaviour
         visionCircle.transform.localScale = new Vector3(visionScale, visionScale, visionScale);
     }
 
+    // Set our range stat and update our attack range circle size accordingly.
+    public void SetRange(float newRange)
+    {
+        // Update range.
+        range = newRange;
+
+        // Set attack range circle size.
+        float attackScale = 1 / transform.localScale.x;
+        attackScale *= range * 2;
+        attackCircle.transform.localScale = new Vector3(attackScale, attackScale, attackScale);
+    }
+
+    // + Spawning
+    // Spawn a new unit at this unit's position.
+    // Note: Unit in this case refers to the class, possibly spawning structures, items, or spells as well as units.
+    public void SpawnUnit(string unitName)
+    {
+        if (GM.I.gameObject.activeSelf)
+            GM.I.SpawnUnit(unitName, transform.position); // In explore mode, GM spawns units.
+        else
+            GetLeader().SpawnUnit(unitName, currentTile); // In battle mode, leaders spawn units.
+    }
+
     // + Upkeep
     void FixedUpdate()
     {
         // Game over?
-        if (DM.I.gameState != 1)
-        {
-            // Death!
-            if (myName != "Dragon Statue")
-                Death();
+        // if (DM.I.gameState == 2)
+        // {
+        //     // Death!
+        //     if (myName != "Dragon Statue")
+        //         Death();
 
-            // Return.
-            return;
-        }
+        //     // Return.
+        //     return;
+        // }
 
         // Deploying.
-        if (state == 0)
+        if (state == 0 && deployTimer > 0f)
         {
             // Count down deploy timer.
             deployTimer -= Time.fixedDeltaTime;
@@ -268,6 +310,9 @@ public partial class Unit : MonoBehaviour
             if (percentDeployed >= 0.5f || showFullDeployment)
                 Utility.SetOpacity(spriteRenderer, percentDeployed);
 
+            // Set color.
+            spriteRenderer.color = new Color(percentDeployed / 3f, percentDeployed, percentDeployed / 2f);
+
             // Set health.
             currentHealth = maxHealth * percentDeployed;
 
@@ -276,6 +321,9 @@ public partial class Unit : MonoBehaviour
             {
                 // Set state.
                 state = 1;
+
+                // Set color.
+                spriteRenderer.color = Color.white;
 
                 // Enable vision for good.
                 if (good)
@@ -286,11 +334,7 @@ public partial class Unit : MonoBehaviour
             return;
         }
 
-        // Hover
-        if (this == InputBattle.I.hoveredUnit)
-            Utility.SetOpacity(spriteRenderer, 0.5f);
-        else
-            Utility.SetOpacity(spriteRenderer, 1f);
+        
 
         // OnTick
         OnTick();
@@ -347,6 +391,17 @@ public partial class Unit : MonoBehaviour
                 return;
         }
 
+        // + Explorers branch here.
+        if (GM.I.gameObject.activeSelf)
+        {
+            // Delegate to ExploreUpdate.
+            ExploreUpdate();
+
+            // Return to avoid battle behavior.
+            return;
+        }
+
+        // + Battle units continue here.
         // Look for an enemy unit, and target them if we can.
         LookForEnemy();
 
@@ -359,6 +414,12 @@ public partial class Unit : MonoBehaviour
 
         // Animations.
         animator.SetInteger("State", state);
+
+        // Hover
+        if (this == InputBattle.I.hoveredUnit)
+            Utility.SetOpacity(spriteRenderer, 0.5f);
+        else
+            Utility.SetOpacity(spriteRenderer, 1f);
 
         // Structures.
         if (cardType == "Structure")
@@ -588,8 +649,25 @@ public partial class Unit : MonoBehaviour
     // Attack our target!
     public void Attack()
     {
+        // In explore mode, stop attacking after each attack.
+        if (GM.I.gameObject.activeSelf)
+        {
+            // Unless we're dying!
+            if (state == -1) return;
+
+            // Set state to idle.
+            state = 0;
+            animator.SetInteger("State", state);
+        }
+
         // Fail if we have no target.
         if (target == null) return;
+
+        // Check if target is in range.
+        float distance = Vector3.Distance(transform.position, target.transform.position);
+
+        // Fail if target has left our range.
+        if (distance > range) return;
 
         // Handle keywords and other attack triggers.
         OnAttack();
@@ -664,11 +742,24 @@ public partial class Unit : MonoBehaviour
         // Treasure can't be killed.
         if (role == "Treasure") return;
 
+        // Dodging.
+        if (isDodging) return;
+
+        // Explore mode: Aggro units that attack us. (Unless we're dying.)
+        if (GM.I.gameObject.activeSelf && state != -1 && source != null)
+            target = source;
+
         // Flash red when hurt.
         if (damageFlash)
         {
             spriteRenderer.color = Color.red;
-            hurtTimer = 0.1f;
+
+            // Explore mode flashes for 6 seconds.
+            // Battle mode flashes for 0.1 second.
+            if (GM.I.gameObject.activeSelf)
+                hurtTimer = 6f;
+            else
+                hurtTimer = 0.1f;
         }
             
         // Armor
@@ -747,6 +838,33 @@ public partial class Unit : MonoBehaviour
     // Death.
     public void Death()
     {
+        // Explore mode:
+        // Squad leader death.
+        if (this == GM.I.player)
+        {
+            // Lose one credit, if we have one.
+            if (MenuManager.I.saveData.credits > 0)
+                MenuManager.I.saveData.credits--;
+                
+            // Re-deploy.
+            GM.I.Deploy(this);
+
+            // Return.
+            return;
+        }
+            
+        // Bases.
+        if (role == "Base")
+        {
+            // Reset to deploying.
+            deployTimer = deployTime;
+            state = 0;
+            visionCircle.gameObject.SetActive(false);
+
+            // Avoid destroying bases.
+            return;
+        }
+
         // On death triggers.
         OnDeath();
 
@@ -758,7 +876,13 @@ public partial class Unit : MonoBehaviour
 
         // If an item, remove from leader's list of items.
         if (cardType == "Item")
-            GetLeader().items.Remove(this);
+        {
+            // Treasure is neutral(?)
+            if (role == "Treasure")
+                DM.I.flowers.Remove(this);
+            else
+                GetLeader().items.Remove(this);
+        }
             
         // Clean up game object.
         Destroy(gameObject);

@@ -31,7 +31,7 @@ public class InputBattle : MonoBehaviour
     void Update()
     {
         // Wait for a battle.
-        if (DM.I.gameState != 1) return;
+        if (MenuManager.I.gameState != 1) return;
 
         // Hover a unit to show its tooltip.
         HoverTooltip();

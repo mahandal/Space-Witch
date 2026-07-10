@@ -19,8 +19,14 @@ public class InputExplore : MonoBehaviour
     // + Exploring
     void Update()
     {
+        // Dying?
+        if (GM.I.player.state == -1) return;
+        
         // Stunned?
         if (GM.I.player.state == 3) return;
+
+        // Deploying?
+        if (GM.I.player.deployTimer > 0f) return;
 
         // + Get mouse position in world coordinates.
         // Convert our mouse position to 3d coordinates.
@@ -31,9 +37,6 @@ public class InputExplore : MonoBehaviour
 
         // // Convert our mouse's 3d coordinates to 2d coordinates.
         // Vector2 mouseWorld = Camera.main.ScreenToWorldPoint(mouseScreen);
-
-        // Set target.
-        // GM.I.player.target = GM.I.player.NearestVisibleExplorer(mouseScreen);
         
         // WASD = Move up, left, down, right.
         GM.I.player.isPressingUp = Keyboard.current.wKey.isPressed;
@@ -64,5 +67,12 @@ public class InputExplore : MonoBehaviour
         // Left Click = Attack
         if (Mouse.current.leftButton.wasPressedThisFrame)
             GM.I.player.BeginAttack();
+
+
+        // + Dragon Shrine
+
+        // Right Click = Deselect
+        if (Mouse.current.rightButton.wasPressedThisFrame)
+            DragonShrine.I.Deselect();
     }
 }

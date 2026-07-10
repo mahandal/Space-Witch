@@ -2,6 +2,15 @@ using UnityEngine;
 
 public class MenuManager : MonoBehaviour
 {
+    [Header("Game State")]
+    // Which screen we are currently on:
+    // -2 = Main Menu
+    // -1 = Star Map
+    //  0 = Explore
+    //  1 = Battle
+    //  2 = Postgame
+    public int gameState = -2;
+
     [Header("Menus")]
     // The main menu.
     public MainMenu mainMenu;
@@ -58,11 +67,11 @@ public class MenuManager : MonoBehaviour
     // Go to the main menu.
     public void GoToMainMenu()
     {
+        // Set game state.
+        gameState = -2;
+
         // Disable star map.
         starManager.gameObject.SetActive(false);
-
-        // Disable battle map.
-        // battleMap.SetActive(false);
 
         // Disable battle map.
         dm.gameObject.SetActive(false);
@@ -80,6 +89,9 @@ public class MenuManager : MonoBehaviour
     // Go to the battle map.
     public void GoToBattleMap()
     {
+        // Set game state.
+        gameState = 1;
+
         // Get current planet.
         Planet p = StarManager.I.GetCurrentPlanet();
 
@@ -102,6 +114,9 @@ public class MenuManager : MonoBehaviour
     // Go to the explore map.
     public void GoToExplore()
     {
+        // Set game state.
+        gameState = 0;
+
         // Get current planet.
         Planet p = StarManager.I.GetCurrentPlanet();
 

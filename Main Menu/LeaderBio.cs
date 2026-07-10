@@ -14,16 +14,19 @@ public class LeaderBio : MonoBehaviour
     [TextArea(10, 30)]
     public string description;
 
-    // The description of the leader's ability.
+    // The description of the leader's active ability.
     [TextArea(5, 30)]
     public string abilityDescription;
 
-    // The description of the leader's stats.
+    // The description of the leader's passive ability.
     [TextArea(5, 30)]
     public string statsDescription;
 
 
     [Header("Signature Cards")]
+    // The unit this leader plays as.
+    public string leaderUnit;
+
     // This leader's signature cards.
     public List<string> signatureCards = new List<string>();
 

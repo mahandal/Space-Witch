@@ -10,23 +10,35 @@ public class GM : MonoBehaviour
 {
     [Header("Player")]
     // The player.
-    public Explorer player;
+    public Unit player;
+
+    // The units that are exploring in the player's squad.
+    public List<string> exploring;
+
+    // The rest of the cards in the player's deck, resting for the next big battle.
+    public List<string> resting;
 
     [Header("Interact")]
     // The nearest interactable object, if there is one within the player's vision range.
     public Interactable nearestInteractable;
 
     // The nearest other explorer, if there is one within the player's vision range.
-    public Explorer exploree;
+    public Unit exploree;
 
     [Header("Planet")]
     // Which planet we are currently exploring.
     public Planet currentPlanet;
 
+    [Header("UI")]
+    public ExploreUI exploreUI;
+
     // Singleton
     public static GM I;
 
-    // + Initialization
+    // +++ Initialization
+
+    // Initialize.
+    // Called once when the game is loaded.
     public void Initialize()
     {
         // Singleton.
@@ -34,6 +46,9 @@ public class GM : MonoBehaviour
             I = this;
         else
             Destroy(gameObject);
+
+        // Initialize UI.
+        exploreUI.Initialize();
     }
 
     // Set up the given planet for the player to explore!
@@ -42,8 +57,51 @@ public class GM : MonoBehaviour
         // Set current planet.
         currentPlanet = p;
 
+        // Set resting.
+        resting = new List<string>(MenuManager.I.saveData.decklist);
+
+        // Pop leader(?) into exploring.
+        exploring = new List<string>();
+        exploring.Add(resting[0]);
+        resting.RemoveAt(0);
+
+        // Set squad.
+        player.squad = new List<Unit>();
+        player.squad.Add(player);
+
+        // Deploy.
+        Deploy(player);
+
         // Move player into starting position.
-        player.transform.position = currentPlanet.exploreStart.position;
+        // player.transform.position = currentPlanet.exploreStart.position;
+
+        // // Set player's deployment time.
+        // player.deployTimer = player.deployTime;
+        // player.state = 0;
+
+        // UI.
+        ExploreUI.I.Explore(p);
+    }
+
+    // Set a unit to deploying and move it to the current planet's spawn position.
+    public void Deploy(Unit unit)
+    {
+        // Set deploying.
+        unit.deployTimer = unit.deployTime;
+        unit.state = 0;
+        unit.animator.SetInteger("State", unit.state);
+
+        // Show full deployment.
+        unit.showFullDeployment = true;
+
+        // Move into position.
+        unit.transform.position = currentPlanet.exploreStart.position;
+
+        // Reset rotation.
+        unit.transform.eulerAngles = Vector3.zero;
+
+        // Reset hurt timer.
+        unit.hurtTimer = 0f;
     }
 
     // +++ Exploring!
@@ -51,6 +109,9 @@ public class GM : MonoBehaviour
     // Fixed update
     void FixedUpdate()
     {
+        // Wait for player to finish deploying.
+        if (player.deployTimer > 0f) return;
+
         // Find the nearest interactable object, if there is one within the player's vision range.
         FindNearestInteractable();
     }
@@ -74,7 +135,7 @@ public class GM : MonoBehaviour
         foreach (Collider2D col in colliders)
         {
             // Explorer?
-            Explorer e = col.GetComponent<Explorer>();
+            Unit e = col.GetComponent<Unit>();
             if (e != null)
             {
                 // Exclude self.
@@ -168,14 +229,36 @@ public class GM : MonoBehaviour
         // Add card to deck.
         MenuManager.I.saveData.decklist.Add(exploree.myName);
 
-        // For now, destroy explorer.
-        // Destroy(exploree.gameObject);
-
+        // Add to player's squad.
         player.AddToSquad(exploree);
 
-        // TBD: Allow other explorers to follow you around in a little squad.
+        // Add to exploring list.
+        exploring.Add(exploree.myName);
 
         // Return successful.
         return true;
+    }
+
+    // + Spawning
+    // Spawn a new unit.
+    public Unit SpawnUnit(string unitName, Vector3 position)
+    {
+        // Get the progenitor for the unit.
+        Unit progenitor = Progenitors.I.GetProgenitor(unitName);
+
+        // Instantiate a new copy of the unit.
+        Unit newUnit = Object.Instantiate(progenitor);
+
+        // Move unit into position.
+        newUnit.transform.position = position;
+
+        // Show full deployment.
+        newUnit.showFullDeployment = true;
+
+        // Activate.
+        newUnit.gameObject.SetActive(true);
+
+        // Return.
+        return newUnit;
     }
 }

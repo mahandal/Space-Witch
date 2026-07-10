@@ -8,6 +8,9 @@ public class MiniCard : MonoBehaviour
     [Header("Mini Card")]
     // The canvas group for this mini card.
     public CanvasGroup canvasGroup;
+
+    // This card's highlight.
+    public Image highlight;
     
     // The text object for this card's name.
     public TMP_Text nameText;
@@ -52,6 +55,19 @@ public class MiniCard : MonoBehaviour
         Utility.LoadImage(art, "Cards/" + card.myName);
         Utility.LoadImage(backgroundImage, "Cards/" + card.myName);
         Utility.LoadImage(roleIcon, "Roles/" + card.role);
+    }
+
+    // + Highlight
+    // Highlight this mini card.
+    public void Highlight()
+    {
+        highlight.gameObject.SetActive(true);
+    }
+
+    // Un-highlight this mini card.
+    public void Unhighlight()
+    {
+        highlight.gameObject.SetActive(false);
     }
 
     // + Button

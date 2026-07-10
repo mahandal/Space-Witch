@@ -211,9 +211,11 @@ public class MainMenu : MonoBehaviour
         // Get bio for player's leader.
         LeaderBio bio = leaderBios[leaderDetailsName.text];
 
-        // Load the player's leader.
+        // Load the player's leader for battle mode.
         DM.I.goodLeader.LoadBio(bio);
-        // InitializeGoodLeader(bio);
+
+        // Add the player's leader card to their deck.
+        MenuManager.I.saveData.decklist.Add(bio.leaderUnit);
 
         // Go to star map!
         StarManager.I.GoToStarMap(true);

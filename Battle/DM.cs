@@ -9,18 +9,12 @@ using UnityEngine.SceneManagement;
 public class DM : MonoBehaviour
 {
     [Header("DM")]
-    // The current game state.
-    // -1: Main Menu
-    //  0: Star Map
-    //  1: Battle
-    //  2: Post-game
-    public int gameState = 0;
-
     // The time elapsed of the current battle.
     public float gameTimer = 0f;
     
 
     [Header("Violet Flowers")]
+    public List<Unit> flowers = new List<Unit>();
     public float timePerFlower = 6f;
     public float flowerTimer = 0f;
 
@@ -79,56 +73,15 @@ public class DM : MonoBehaviour
         else
             Destroy(this);
 
-        // Make sure progenitors are active.
-        // progenitors.gameObject.SetActive(true);
-
         // Initialize progenitors.
         progenitors.Initialize();
-
-        // Initialize game state.
-        gameState = -1;
 
         // Initialize unit lists.
         InitUnitLists();
 
         // Initialize grid.
         InitializeGrid();
-
-        // Initialize the star manager.
-        // starManager.Initialize();
     }
-
-    // Awaken!
-    // void Awake()
-    // {
-    //     // Singleton.
-    //     if (I == null)
-    //         I = this;
-    //     else
-    //         Destroy(this);
-
-    //     // Make sure progenitors are active.
-    //     progenitors.gameObject.SetActive(true);
-
-    //     // Make sure we start on the main menu.
-    //     GoToMainMenu();
-
-    //     // Initialize game state.
-    //     gameState = -1;
-
-    //     // Initialize unit lists.
-    //     InitUnitLists();
-    // }
-
-    // // Start er up!
-    // void Start()
-    // {
-    //     // Initialize grid.
-    //     InitializeGrid();
-
-    //     // Initialize the star manager.
-    //     starManager.Initialize();
-    // }
 
     // Start a battle!
     // Reset the battle map and prepare for a new battle!
@@ -139,7 +92,7 @@ public class DM : MonoBehaviour
         gameTimer = 0f;
 
         // Reset the battle map.
-        ResetBattleMap();
+        // ResetBattleMap();
 
         // + Initialize each leader.
 
@@ -159,16 +112,13 @@ public class DM : MonoBehaviour
         evilLeader.NewBattle();
 
         // Go to the battle map.
-        GoToBattleMap();
+        MenuManager.I.GoToBattleMap();
 
         // UI
         UI.I.BeginBattle();
 
         // Re-enable time.
         Time.timeScale = 1f;
-
-        // Set game state.
-        gameState = 1;
     }
 
     // + Running the game.
@@ -176,7 +126,7 @@ public class DM : MonoBehaviour
     void FixedUpdate()
     {
         // Wait for battle.
-        if (gameState != 1) return;
+        if (MenuManager.I.gameState != 1) return;
 
         // Increment time elapsed.
         gameTimer += Time.fixedDeltaTime;
@@ -208,7 +158,10 @@ public class DM : MonoBehaviour
         Tile tile = grid[column, row];
 
         // Grow a new flower!
-        SpawnItem("Violet Flower", tile);
+        Unit flower = SpawnItem("Violet Flower", tile);
+
+        // Store in list of flowers, so we can clean up post game.
+        flowers.Add(flower);
     }
 
     // + Tiles
@@ -263,7 +216,7 @@ public class DM : MonoBehaviour
     // + Units
 
     // Spawn a new item in.
-    public void SpawnItem(string unitName, Tile tile)
+    public Unit SpawnItem(string unitName, Tile tile)
     {
         // Get the unit's card.
         Card card = DM.I.grimoire[unitName];
@@ -295,6 +248,9 @@ public class DM : MonoBehaviour
 
         // Activate!
         newUnit.gameObject.SetActive(true);
+
+        // Return.
+        return newUnit;
     }
 
     // Initialize the lists for each row for each side tracking each active unit.
@@ -387,11 +343,11 @@ public class DM : MonoBehaviour
     public void GameOver(bool victory)
     {
         // Avoid repeat calls.
-        if (gameState >= 2)
+        if (MenuManager.I.gameState >= 2)
             return;
             
         // Set game state.
-        gameState = 2;
+        MenuManager.I.gameState = 2;
 
         // // Pause time.
         // Time.timeScale = 0f;
@@ -416,23 +372,34 @@ public class DM : MonoBehaviour
     }
 
     // Reset the battle map by clearing old units and cards in the air.
+    // Called at the end of each battle.
     public void ResetBattleMap()
     {
-        // Clear all units except dragon statues.
+        // Destroy all old units, except Dragon Statues which are reset to deploying.
         // Good
         foreach (Unit unit in GetAllGoodUnits())
         {
-            if (unit.myName != "Dragon Statue")
-                unit.Death();
+            unit.Death();
+            // if (unit.myName != "Dragon Statue")
+            //     unit.Death();
         }
         // Evil
         foreach (Unit unit in GetAllEvilUnits())
         {
-            if (unit.myName != "Dragon Statue")
-                unit.Death();
+            unit.Death();
+            // if (unit.myName != "Dragon Statue")
+            //     unit.Death();
         }
 
-        // Clear all cards in the air.
+        // Flowers
+        // (Need temp list so we don't edit the list while iterating through it.)
+        List<Unit> tempFlowers = new List<Unit>(flowers);
+        foreach (Unit flower in tempFlowers)
+        {
+            flower.Death();
+        }
+
+        // Cards in the air.
         foreach (CardInHand cardInTheAir in cardsInTheAir)
         {
             if (cardInTheAir != null)
@@ -449,25 +416,6 @@ public class DM : MonoBehaviour
         StarManager.I.GetCurrentPlanet().battleMap.SetActive(false);
     }
 
-    // + Menu management
-    public void GoToBattleMap()
-    {
-        // Get current planet.
-        Planet p = StarManager.I.GetCurrentPlanet();
-
-        // Load the appropriate battle map.
-        p.battleMap.SetActive(true);
-
-        // Disable star map.
-        // starManager.gameObject.SetActive(false);
-
-        // Disable the explore map.
-        GM.I.gameObject.SetActive(false);
-
-        // Enable battle map.
-        gameObject.SetActive(true);
-    }
-
     // + Buttons
 
     // Button press: Continue!
@@ -475,7 +423,7 @@ public class DM : MonoBehaviour
     public void B_Continue()
     {
         // Safety guard(?)
-        if (gameState != 2) return;
+        if (MenuManager.I.gameState != 2) return;
 
         // Re-enable time.
         // Time.timeScale = 1f;
@@ -496,7 +444,7 @@ public class DM : MonoBehaviour
     public void B_Return()
     {
         // Safety guard(?)
-        if (gameState != 2) return;
+        if (MenuManager.I.gameState != 2) return;
         
         // Re-enable time.
         // Time.timeScale = 1f;

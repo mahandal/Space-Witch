@@ -9,6 +9,7 @@ public class Region : MonoBehaviour
     // Types of region:
     // End = Where the big battle begins.
     // Water = Slow field
+    // Flora = Slow field
     public string myType;
 
     [Header("Machinery")]
@@ -16,19 +17,32 @@ public class Region : MonoBehaviour
     // Automatically hidden, so players should not see!
     public SpriteRenderer spriteRenderer;
 
+    // A unique id.
+    public int id;
+
+    // Count up the total number of regions, so each one has a unique id.
+    public static int regionCount = 0;
+
+
     // + Initialization
     void Awake()
     {
         // Hide sprite renderer.
         if (spriteRenderer != null)
             spriteRenderer.enabled = false;
+
+        // Increment region count.
+        regionCount++;
+
+        // Set id.
+        id = regionCount;
     }
 
     // Called when another collider enters this collider.
     void OnTriggerEnter2D(Collider2D col)
     {
         // Get explorer.
-        Explorer explorer = col.GetComponent<Explorer>();
+        Unit explorer = col.GetComponent<Unit>();
 
         // Ignore non-explorers.
         if (explorer == null) return;
@@ -39,19 +53,29 @@ public class Region : MonoBehaviour
 
         // Water?
         if (myType == "Water")
-            explorer.speedModifiers["Water"] = 0.5f;
+            explorer.speedModifiers[GetUID()] = 0.5f;
+
+        // Flora?
+        if (myType == "Flora")
+            explorer.speedModifiers[GetUID()] = 0.7f;
     }
 
     void OnTriggerExit2D(Collider2D col)
     {
         // Get explorer.
-        Explorer explorer = col.GetComponent<Explorer>();
+        Unit explorer = col.GetComponent<Unit>();
 
         // Ignore non-explorers.
         if (explorer == null) return;
 
-        // Water?
-        if (myType == "Water")
-            explorer.speedModifiers.Remove("Water");
+        // Slow fields: Water & Flora
+        if (myType == "Water" || myType == "Flora")
+            explorer.speedModifiers.Remove(GetUID());
+    }
+
+    // Return a unique identifer for this region.
+    public string GetUID()
+    {
+        return myType + id;
     }
 }

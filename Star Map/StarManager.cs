@@ -142,7 +142,7 @@ public class StarManager : MonoBehaviour
         // DM.I.battleMap.SetActive(false);
 
         // Set game state.
-        DM.I.gameState = 0;
+        MenuManager.I.gameState = -1;
     }
 
     // + Stars

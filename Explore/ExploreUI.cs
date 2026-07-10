@@ -8,12 +8,16 @@ public class ExploreUI : MonoBehaviour
     // Text object showing the player's credits.
     public TMP_Text playerCredits;
 
+    [Header("Fade in")]
+    // The black overlay that fades out so you fade into the explore screen.
+    public CanvasGroup fadeIn;
+
     [Header("Hints")]
     // The hint saying "Press 'e' to interact!"
     public TMP_Text bottomHint;
 
     [Header("Interact: Dragon Shrine")]
-    public CanvasGroup dragonShrineScreen;
+    public DragonShrine dragonShrine;
 
     [Header("Interact: Explorer")]
     // The parent object of the interact screen.
@@ -68,7 +72,7 @@ public class ExploreUI : MonoBehaviour
     public static ExploreUI I;
 
     // + Initialization
-    public void Awake()
+    public void Initialize()
     {
         // Singleton.
         if (I == null || I == this)
@@ -76,10 +80,25 @@ public class ExploreUI : MonoBehaviour
         else
             Destroy(gameObject);
 
+        // Initialize the dragon shrine.
+        dragonShrine.Initialize();
+
         // Hide what should be hidden.
         HideBottomHint();
         interactScreen.gameObject.SetActive(false);
-        dragonShrineScreen.gameObject.SetActive(false);
+        dragonShrine.gameObject.SetActive(false);
+    }
+
+    // Set up the UI for a new planet.
+    public void Explore(Planet p)
+    {
+        // Fade in.
+        fadeIn.alpha = 1f;
+        fadeIn.gameObject.SetActive(true);
+
+        // Load planet image(?)
+        Image img = fadeIn.GetComponent<Image>();
+        Utility.LoadImage(img, "Planets/" + p.myName);
     }
 
     // + Exploring!
@@ -89,47 +108,24 @@ public class ExploreUI : MonoBehaviour
         playerCredits.text = MenuManager.I.saveData.credits.ToString();
     }
 
+    void FixedUpdate()
+    {
+        // Fade in.
+        if (GM.I.player.deployTimer > 0f)
+        {
+            // Get percent deployed.
+            float percent = GM.I.player.deployTimer / GM.I.player.deployTime;
+
+            // Set alpha.
+            fadeIn.alpha = percent;
+        } else if (fadeIn.gameObject.activeSelf)
+        {
+            // Done?
+            fadeIn.gameObject.SetActive(false);
+        }
+    }
+
     // + Interact
-
-    // TBD: Move to DragonShrine.cs
-    // Praying at the dragon shrine.
-
-    // Go to the next page of cards in your deck.
-    public void B_NextPage()
-    {
-
-    }
-
-    // Go to the previous page of cards in your deck.
-    public void B_PreviousPage()
-    {
-
-    }
-
-    // Promote the currently selected unit to squad leader.
-    // (AKA choose to play as that unit)
-    public void B_PromoteToSquadLeader()
-    {
-
-    }
-
-    // Add the currently selected unit to your squad, bringing them out to explore with you.
-    public void B_AddToSquad()
-    {
-
-    }
-
-    // Remove the currently selected unit from your squad, allowing them to rest until the big battle.
-    public void B_ReturnToRest()
-    {
-
-    }
-
-    // Sell the currently selected card.
-    public void B_Sell()
-    {
-        // TBD!
-    }
 
     // Talking to explorers.
 
@@ -156,15 +152,17 @@ public class ExploreUI : MonoBehaviour
         // Dragon Shrine.
         if (interactable.myType == "Dragon Shrine")
         {
-            dragonShrineScreen.gameObject.SetActive(true);
+            dragonShrine.Pray();
             return;
         }
+
+        // TBD: Big Battle(?)
         
         // TBD: Normal interact screen(?)
     }
 
     // Set up the interact screen for the given explorer.
-    public void Interact(Explorer e)
+    public void Interact(Unit e)
     {
         // Load explorer's name, cost, and description.
         interactName.text = e.myName;
@@ -204,7 +202,7 @@ public class ExploreUI : MonoBehaviour
 
         // Deactivate screens.
         interactScreen.gameObject.SetActive(false);
-        dragonShrineScreen.gameObject.SetActive(false);
+        dragonShrine.gameObject.SetActive(false);
     }
 
     // Pop up the hint saying "Press 'e' to interact!"
