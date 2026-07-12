@@ -12,6 +12,9 @@ public class MenuManager : MonoBehaviour
     public int gameState = -2;
 
     [Header("Menus")]
+    // Constance.
+    public Constance constance;
+
     // The main menu.
     public MainMenu mainMenu;
 
@@ -45,6 +48,9 @@ public class MenuManager : MonoBehaviour
             I = this;
         else
             Destroy(this);
+
+        // Initialize Constance.
+        constance.Initialize();
 
         // Initialize main menu.
         mainMenu.Initialize();
@@ -97,6 +103,9 @@ public class MenuManager : MonoBehaviour
 
         // Load the appropriate battle map.
         p.battleMap.SetActive(true);
+
+        // Disable the explore map.
+        p.exploreMap.SetActive(false);
 
         // Disable main menu.
         mainMenu.gameObject.SetActive(false);

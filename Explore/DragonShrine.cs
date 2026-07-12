@@ -362,7 +362,8 @@ public class DragonShrine : MonoBehaviour
         Unit p = Progenitors.I.GetProgenitor(cardName);
 
         // Gain credits.
-        MenuManager.I.saveData.credits += p.creditCost;
+        // MenuManager.I.saveData.credits += p.creditCost;
+        GM.I.GainCredits(p.creditCost);
 
         // Remove from decklist.
         MenuManager.I.saveData.decklist.Remove(cardName);

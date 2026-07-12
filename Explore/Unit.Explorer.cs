@@ -26,6 +26,12 @@ public partial class Unit
     public float stealthMultiplier = 0.5f;
 
     [Header("States")]
+    // Are we currently going toward a specific destination?
+    public bool hasDestination = false;
+
+    // Our current destination, if we are going somewhere.
+    public Vector3 destination;
+
     // Are we sprinting?
     public bool isSprinting = false;
 
@@ -71,14 +77,17 @@ public partial class Unit
     // This explorer's rigid body, for collisions.
     public Rigidbody2D rb;
 
+    // This explorer's collider.
+    public BoxCollider2D collider;
+
     // +++ Initialization
     void InitializeExplorer()
     {
-        // Load this explorer's stats from its progenitor unit.
-        LoadUnit(myName);
-
         // Initialize this unit, connecting its rigid body and whatnot.
         Initialize();
+
+        // Load this explorer's stats from its progenitor unit.
+        LoadUnit(myName);
 
         // Enable vision circle(?)
         visionCircle.gameObject.SetActive(true);
@@ -88,26 +97,43 @@ public partial class Unit
     }
 
     // Load the given unit's stats into this explorer.
-    // Note: Does not change the animator, so not usable to shapeshift.
     public void LoadUnit(string unitName)
     {
         // Get the progenitor unit.
-        Unit p = Progenitors.I.GetProgenitor(myName);
+        Unit p = Progenitors.I.GetProgenitor(unitName);
 
         // Null check.
         if (p == null) return;
+
+        // Set meta data.
+        myName = unitName;
+        description = p.description;
+        manaCost = p.manaCost;
+        deployTime = p.deployTime;
+        cardType = p.cardType;
+        role = p.role;
 
         // Set stats.
         maxHealth = p.maxHealth;
         currentHealth = p.currentHealth;
         armor = p.armor;
-        // vision = p.vision;
         SetVision(p.vision);
         speed = p.speed;
         damage = p.damage;
         attackTime = p.attackTime;
-        // range = p.range;
         SetRange(p.range);
+        keywords = p.keywords;
+
+        // Set animator.
+        animator.runtimeAnimatorController = p.animator.runtimeAnimatorController;
+
+        // Get attack time, for units.
+        if (cardType == "Unit")
+            attackTime = CalculateAttackTime();
+
+        // Set collider size.
+        collider.offset = p.collider.offset;
+        collider.size = p.collider.size;
     }
 
     // +++ Exploring!
@@ -205,6 +231,19 @@ public partial class Unit
         if (isPressingRight)
             direction.x += 1f;
 
+        // Do we have a destination?
+        if (hasDestination)
+        {
+            // Override destination if we input other movement.
+            if (direction != Vector2.zero)
+            {
+                hasDestination = false;
+            } else {
+                // Go toward destination.
+                direction = TryMoveToward(destination);
+            }
+        }
+
         // Face our direction of movement.
         if (direction.x < 0)
             transform.eulerAngles = new Vector3(0f, 180f, 0f);
@@ -254,6 +293,14 @@ public partial class Unit
 
         // Set alignment(?)
         newSquadMember.good = good;
+
+        // Reset targeting(?)
+        target = null;
+        newSquadMember.target = null;
+
+        // If this is for the player's squad, also add to exploring list.
+        if (this == GM.I.player)
+            GM.I.exploring.Add(newSquadMember.myName);
     }
 
     // + Explore AI
@@ -285,7 +332,7 @@ public partial class Unit
                 // Are we far enough from our squad leader to move toward them?
                 float distance = Vector3.Distance(transform.position, squadLeader.transform.position);
                 if (distance > vision)
-                    TryMoveToward(squadLeader);
+                    TryMoveToward(squadLeader.transform.position);
             }
         }
         else
@@ -303,36 +350,63 @@ public partial class Unit
                 // Set state to moving.
                 state = 1;
 
-                TryMoveToward(target);
+                TryMoveToward(target.transform.position);
             }
         }
     }
 
-    // Set our movement toward a given explorer.
-    public void TryMoveToward(Unit target)
+    // Set our movement toward a given position.
+    // Returns the direction of movement.
+    public Vector2 TryMoveToward(Vector3 newDestination)
     {
+        // Set destination.
+        destination = newDestination;
+
+        // Mark that we're using a destination.
+        hasDestination = true;
+
         // Reset directional movement.
         isPressingLeft = false;
         isPressingRight = false;
         isPressingUp = false;
         isPressingDown = false;
 
-        // Is the target to our left?
+        // Is the destination to our left?
         // (with a bit of leeway)
-        // if (target.transform.position.x < transform.position.x)
-        if (target.transform.position.x - transform.position.x < -0.1f)
+        if (newDestination.x - transform.position.x < -0.1f)
             isPressingLeft = true;
-        // else if (target.transform.position.x > transform.position.x)
-        else if (target.transform.position.x - transform.position.x > 0.1f)
+        else if (newDestination.x - transform.position.x > 0.1f)
             isPressingRight = true;
 
-        // Is the target below us?
-        // if (target.transform.position.y < transform.position.y)
-        if (target.transform.position.y - transform.position.y < -0.1f)
+        // Is the destination below us?
+        if (newDestination.y - transform.position.y < -0.1f)
             isPressingDown = true;
-        // else if (target.transform.position.y > transform.position.y)
-        else if (target.transform.position.y - transform.position.y > 0.1f)
+        else if (newDestination.y - transform.position.y > 0.1f)
             isPressingUp = true;
+
+        // Close enough?
+        if (Vector3.Distance(newDestination, transform.position) < 0.1f)
+        {
+            // Done!
+            hasDestination = false;
+            return Vector2.zero;
+        }
+
+        // Return.
+        // A lil redundant with how it's handled above in FixedUpdate...
+        // I dunno how to do it better rn though! Fix it up when you know what to do!
+        Vector2 direction = Vector2.zero;
+
+        if (isPressingUp)
+            direction.y += 1f;
+        if (isPressingDown)
+            direction.y -= 1f;
+        if (isPressingLeft)
+            direction.x -= 1f;
+        if (isPressingRight)
+            direction.x += 1f;
+
+        return direction;
     }
 
     // Look for an enemy.

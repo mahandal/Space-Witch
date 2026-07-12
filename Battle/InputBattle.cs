@@ -127,6 +127,7 @@ public class InputBattle : MonoBehaviour
         }
     }
 
+
     // Hover a unit to show a tooltip for it.
     // Sets hoveredUnit and hoveredTile.
     public void HoverTooltip()
@@ -174,11 +175,13 @@ public class InputBattle : MonoBehaviour
 
         // + Tooltip
         // Look for a collider near our mouse.
-        Collider2D hit = Physics2D.OverlapPoint(mouseWorld);
+        Collider2D hit = Physics2D.OverlapPoint(mouseWorld, Constance.I.unitLayer);
 
         // Check if we're hovering anything.
         if (hit != null)
         {
+            Debug.Log("Hovering: " + hit.name);
+
             // Check if we found a unit.
             hoveredUnit = hit.GetComponent<Unit>();
 
@@ -191,6 +194,9 @@ public class InputBattle : MonoBehaviour
         }
         else
         {
+            // Set hovered unit to null.
+            hoveredUnit = null;
+            
             // Hide the tooltip.
             UI.I.HideTooltip();
         }

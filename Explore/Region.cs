@@ -12,6 +12,14 @@ public class Region : MonoBehaviour
     // Flora = Slow field
     public string myType;
 
+    // How likely is this region to spawn?
+    // Set to 1f for regions that are always there, e.g. End.
+    // Set to at least a bit below 1f for most things, to provide variety!
+    public float spawnRate = 0.8f;
+
+    // This region's description, if it has one.
+    public string description = "";
+
     [Header("Machinery")]
     // A sprite renderer to show this region visually.
     // Automatically hidden, so players should not see!
@@ -27,6 +35,18 @@ public class Region : MonoBehaviour
     // + Initialization
     void Awake()
     {
+        // Spawn(?)
+        float spawnRoll = Random.Range(0f, 1f);
+        if (spawnRoll < spawnRate)
+        {
+            // Enable.
+            gameObject.SetActive(true);
+        } else {
+            // Disable.
+            gameObject.SetActive(false);
+            return;
+        }
+
         // Hide sprite renderer.
         if (spriteRenderer != null)
             spriteRenderer.enabled = false;
@@ -58,6 +78,8 @@ public class Region : MonoBehaviour
         // Flora?
         if (myType == "Flora")
             explorer.speedModifiers[GetUID()] = 0.7f;
+        if (myType == "Thick Flora")
+            explorer.speedModifiers[GetUID()] = 0.3f;
     }
 
     void OnTriggerExit2D(Collider2D col)
@@ -69,7 +91,7 @@ public class Region : MonoBehaviour
         if (explorer == null) return;
 
         // Slow fields: Water & Flora
-        if (myType == "Water" || myType == "Flora")
+        if (myType == "Water" || myType == "Flora" || myType == "Thick Flora")
             explorer.speedModifiers.Remove(GetUID());
     }
 

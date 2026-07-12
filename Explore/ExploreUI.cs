@@ -12,9 +12,38 @@ public class ExploreUI : MonoBehaviour
     // The black overlay that fades out so you fade into the explore screen.
     public CanvasGroup fadeIn;
 
-    [Header("Hints")]
+    [Header("Hint")]
     // The hint saying "Press 'e' to interact!"
     public TMP_Text bottomHint;
+
+    [Header("Credits")]
+    // The credits symbol that flashes whenever you gain credits.
+    public CanvasGroup creditsSymbol;
+
+    [Header("Tooltip")]
+    // The parent object of the tooltip.
+    public CanvasGroup tooltip;
+
+    // The parent object of the left side of the tooltip, containing the image and cost.
+    public GameObject tooltipLeftParent;
+
+    // The parent object of the right side of the tooltip, containing the description.
+    public GameObject tooltipRightParent;
+
+    // The name in the tooltip.
+    public TMP_Text tooltipName;
+
+    // The credit cost in the tooltip.
+    public TMP_Text tooltipCredits;
+
+    // The main image in the tooltip.
+    public Image tooltipImage;
+
+    // The background image in the tooltip.
+    public Image tooltipBackground;
+
+    // The description in the tooltip.
+    public TMP_Text tooltipDescription;
 
     [Header("Interact: Dragon Shrine")]
     public DragonShrine dragonShrine;
@@ -22,6 +51,9 @@ public class ExploreUI : MonoBehaviour
     [Header("Interact: Explorer")]
     // The parent object of the interact screen.
     public CanvasGroup interactScreen;
+
+    // The background image for the interact screen.
+    public Image interactBackground;
 
     // The name of the exploree.
     public TMP_Text interactName;
@@ -85,6 +117,7 @@ public class ExploreUI : MonoBehaviour
 
         // Hide what should be hidden.
         HideBottomHint();
+        HideTooltip();
         interactScreen.gameObject.SetActive(false);
         dragonShrine.gameObject.SetActive(false);
     }
@@ -123,6 +156,19 @@ public class ExploreUI : MonoBehaviour
             // Done?
             fadeIn.gameObject.SetActive(false);
         }
+
+        // Credits
+        if (creditsSymbol.alpha > 0f)
+        {
+            creditsSymbol.alpha -= 0.01f;
+        }
+    }
+
+    // + Credits
+    // Flash the credits symbol at the top of the screen, to show you have just gained credits.
+    public void FlashCredits()
+    {
+        creditsSymbol.alpha = 1f;
     }
 
     // + Interact
@@ -171,6 +217,9 @@ public class ExploreUI : MonoBehaviour
 
         // Load image.
         Utility.LoadImage(interactPortrait, "Cards/" + e.myName);
+
+        // Load background, using current planet.
+        Utility.LoadImage(interactBackground, "Planets/" + StarManager.I.GetCurrentPlanetName());
 
         // Get progenitor.
         Unit p = Progenitors.I.GetProgenitor(e.myName);
@@ -222,4 +271,54 @@ public class ExploreUI : MonoBehaviour
         bottomHint.gameObject.SetActive(false);
     }
 
+    // + Tooltip
+
+    // Load a unit into the tooltip.
+    public void ShowTooltip(Unit unit)
+    {
+        // Set description.
+        tooltipDescription.text = unit.description;
+
+        // Set name.
+        tooltipName.text = unit.myName;
+
+        // Set credit cost.
+        tooltipCredits.text = unit.creditCost.ToString();
+
+        // Load main art image.
+        Utility.LoadImage(tooltipImage, "Cards/" + unit.myName);
+
+        // Load background image.
+        Utility.LoadImage(tooltipBackground, "Cards/" + unit.myName);
+
+        // Reveal both sides.
+        tooltipLeftParent.SetActive(true);
+        tooltipRightParent.SetActive(true);
+
+        // Reveal tooltip.
+        // tooltip.alpha = 1f;
+    }
+
+    // Load a region's description into the tooltip.
+    public void ShowTooltip(Region region)
+    {
+        // Need a description.
+        if (region.description == "") return;
+
+        // Set description.
+        tooltipDescription.text = region.description;
+
+        // Reveal right side.
+        tooltipRightParent.SetActive(true);
+    }
+
+    // Hide the tooltip.
+    public void HideTooltip()
+    {
+        // Hide both sides.
+        tooltipLeftParent.SetActive(false);
+        tooltipRightParent.SetActive(false);
+        // Hide tooltip.
+        // tooltip.alpha = 0f;
+    }
 }

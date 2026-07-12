@@ -135,6 +135,9 @@ public partial class Unit : MonoBehaviour
         // Get rigid body.
         rb = GetComponent<Rigidbody2D>();
 
+        // Get collider.
+        collider = GetComponent<BoxCollider2D>();
+
         // Get attack time, for units.
         if (cardType == "Unit")
             attackTime = CalculateAttackTime();
@@ -189,7 +192,7 @@ public partial class Unit : MonoBehaviour
     void Awake()
     {
         // Set deploy timer.
-        deployTimer = deployTime;
+        // deployTimer = deployTime;
 
         // Set vision circle size.
         SetVision(vision);
@@ -691,7 +694,7 @@ public partial class Unit : MonoBehaviour
         List<Unit> nearbyEnemies = new List<Unit>();
 
         // Get all colliders within radius of the target.
-        Collider2D[] hits = Physics2D.OverlapCircleAll(target.transform.position, radius);
+        Collider2D[] hits = Physics2D.OverlapCircleAll(target.transform.position, radius, Constance.I.unitLayer);
 
         // Look through each collider.
         foreach (Collider2D hit in hits)
@@ -839,19 +842,23 @@ public partial class Unit : MonoBehaviour
     public void Death()
     {
         // Explore mode:
-        // Squad leader death.
-        if (this == GM.I.player)
+        if (GM.I.gameObject.activeSelf)
         {
-            // Lose one credit, if we have one.
-            if (MenuManager.I.saveData.credits > 0)
-                MenuManager.I.saveData.credits--;
-                
-            // Re-deploy.
-            GM.I.Deploy(this);
+            // Squad leader death.
+            if (this == GM.I.player)
+            {
+                // Lose one credit, if we have one.
+                if (MenuManager.I.saveData.credits > 0)
+                    MenuManager.I.saveData.credits--;
+                    
+                // Re-deploy.
+                GM.I.Deploy(this);
 
-            // Return.
-            return;
+                // Return.
+                return;
+            }
         }
+            
             
         // Bases.
         if (role == "Base")
@@ -907,40 +914,58 @@ public partial class Unit : MonoBehaviour
         if (fullHeal)
             FullHeal();
 
-        // Good to evil?
-        if (good)
+        // + Explore
+        if (GM.I.gameObject.activeSelf)
         {
-            // Set bool.
-            good = false;
+            // Assumed to be the player charming enemies.
+            // (for now at least!)
 
-            // Set rotation.
-            transform.eulerAngles = new Vector3(0f, 180f, 0f);
+            // Add to player's squad.
+            GM.I.player.AddToSquad(this);
 
-            // Hide vision.
-            visionCircle.gameObject.SetActive(false);
-
-            // Remove from DM's list of good units.
-            DM.I.goodUnits[laneIndex].Remove(this);
-
-            // Add to DM's list of evil units.
-            DM.I.evilUnits[laneIndex].Add(this);
-        } else {
-            // Evil to good?
-
-            // Set bool.
-            good = true;
-
-            // Set rotation.
-            transform.eulerAngles = new Vector3(0f, 0f, 0f);
-
-            // Reveal vision.
-            visionCircle.gameObject.SetActive(true);
-
-            // Remove from DM's list of evil units.
-            DM.I.evilUnits[laneIndex].Remove(this);
-
-            // Add to DM's list of good units.
-            DM.I.goodUnits[laneIndex].Add(this);
+            // Add card to deck.
+            MenuManager.I.saveData.decklist.Add(myName);
         }
+
+        // + Battle
+        if (DM.I.gameObject.activeSelf)
+        {
+            // Good to evil?
+            if (good)
+            {
+                // Set bool.
+                good = false;
+
+                // Set rotation.
+                transform.eulerAngles = new Vector3(0f, 180f, 0f);
+
+                // Hide vision.
+                visionCircle.gameObject.SetActive(false);
+
+                // Remove from DM's list of good units.
+                DM.I.goodUnits[laneIndex].Remove(this);
+
+                // Add to DM's list of evil units.
+                DM.I.evilUnits[laneIndex].Add(this);
+            } else {
+                // Evil to good?
+
+                // Set bool.
+                good = true;
+
+                // Set rotation.
+                transform.eulerAngles = new Vector3(0f, 0f, 0f);
+
+                // Reveal vision.
+                visionCircle.gameObject.SetActive(true);
+
+                // Remove from DM's list of evil units.
+                DM.I.evilUnits[laneIndex].Remove(this);
+
+                // Add to DM's list of good units.
+                DM.I.goodUnits[laneIndex].Add(this);
+            }
+        }
+            
     }
 }

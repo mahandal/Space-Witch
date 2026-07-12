@@ -85,7 +85,7 @@ public class StarManager : MonoBehaviour
 
         // Hide what should not be.
         planetScreen.SetActive(false);
-        victory.gameObject.SetActive(false);     
+        victory.gameObject.SetActive(false);
     }
 
     // Open the star map screen.
@@ -118,13 +118,11 @@ public class StarManager : MonoBehaviour
 
             // Hide the planet screen.
             planetScreen.SetActive(false);
-        }
 
-        // Final victory?
-        if (currentStar == finalStar)
-            Victory();
-        else
-            victory.gameObject.SetActive(false);
+            // Final victory?
+            if (currentStar == finalStar)
+                Victory();
+        }
 
         // Set star opacity.
         startingStar.SetStarOpacity();

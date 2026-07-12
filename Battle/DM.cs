@@ -450,9 +450,12 @@ public class DM : MonoBehaviour
         // Time.timeScale = 1f;
 
         // Close the defeat screen.
-        UI.I.defeatBackground.gameObject.SetActive(false);
+        // UI.I.defeatBackground.gameObject.SetActive(false);
 
-        // Go to the main menu.
-        MenuManager.I.GoToMainMenu();
+        // // Go to the main menu.
+        // MenuManager.I.GoToMainMenu();
+
+        // Re-load game scene.
+        Utility.LoadGameScene();
     }
 }

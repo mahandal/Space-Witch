@@ -9,8 +9,11 @@ using UnityEngine.SceneManagement;
 public class GM : MonoBehaviour
 {
     [Header("Player")]
-    // The player.
+    // Whichever unit the player is currently controlling, aka the squad leader.
     public Unit player;
+
+    // The main unit for the player that persists between explore maps.
+    public Unit mainPlayer;
 
     // The units that are exploring in the player's squad.
     public List<string> exploring;
@@ -65,19 +68,18 @@ public class GM : MonoBehaviour
         exploring.Add(resting[0]);
         resting.RemoveAt(0);
 
+        // Reset player to main player unit.
+        player = mainPlayer;
+
+        // Load squad leader aka player character.
+        player.LoadUnit(exploring[0]);
+
         // Set squad.
         player.squad = new List<Unit>();
         player.squad.Add(player);
 
         // Deploy.
         Deploy(player);
-
-        // Move player into starting position.
-        // player.transform.position = currentPlanet.exploreStart.position;
-
-        // // Set player's deployment time.
-        // player.deployTimer = player.deployTime;
-        // player.state = 0;
 
         // UI.
         ExploreUI.I.Explore(p);
@@ -232,11 +234,21 @@ public class GM : MonoBehaviour
         // Add to player's squad.
         player.AddToSquad(exploree);
 
-        // Add to exploring list.
-        exploring.Add(exploree.myName);
+        // // Add to exploring list.
+        // exploring.Add(exploree.myName);
 
         // Return successful.
         return true;
+    }
+
+    // + Credits
+    public void GainCredits(int creditsGained)
+    {
+        // Gain credits.
+        MenuManager.I.saveData.credits += creditsGained;
+
+        // Flash credits symbol.
+        ExploreUI.I.FlashCredits();
     }
 
     // + Spawning

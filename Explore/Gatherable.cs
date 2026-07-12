@@ -19,7 +19,8 @@ public class Gatherable : MonoBehaviour
         if (explorer == GM.I.player)
         {
             // Gain credits.
-            MenuManager.I.saveData.credits += credits;
+            // MenuManager.I.saveData.credits += credits;
+            GM.I.GainCredits(credits);
 
             // Pop this item.
             Destroy(gameObject);

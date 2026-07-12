@@ -492,6 +492,9 @@ public partial class Leader : MonoBehaviour
         // Hide (to deploy in).
         Utility.SetOpacity(newUnit.spriteRenderer, 0f);
 
+        // Set deploy time.
+        newUnit.deployTimer = newUnit.deployTime;
+
         // OnPlayed triggers.
         OnPlayed(newUnit);
 
