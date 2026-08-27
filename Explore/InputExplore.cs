@@ -22,15 +22,6 @@ public class InputExplore : MonoBehaviour
     // + Exploring
     void Update()
     {
-        // Dying?
-        if (GM.I.player.state == -1) return;
-        
-        // Stunned?
-        if (GM.I.player.state == 3) return;
-
-        // Deploying?
-        if (GM.I.player.deployTimer > 0f) return;
-
         // + Get mouse position in world coordinates.
 
         // Convert our mouse position to 3d coordinates.
@@ -44,6 +35,15 @@ public class InputExplore : MonoBehaviour
 
         // Hover to show tooltips.
         HoverTooltip(mouseWorld);
+
+        // Dying?
+        if (GM.I.player.state == -1) return;
+        
+        // Stunned?
+        if (GM.I.player.state == 3) return;
+
+        // Deploying?
+        if (GM.I.player.deployTimer > 0f) return;
         
         // WASD = Move up, left, down, right.
         GM.I.player.isPressingUp = Keyboard.current.wKey.isPressed;
@@ -102,8 +102,6 @@ public class InputExplore : MonoBehaviour
         // Check if we're hovering anything.
         foreach (Collider2D hit in hits)
         {
-            Debug.Log("Hovering: " + hit.name);
-
             // Check if we found a unit.
             hoveredUnit = hit.GetComponent<Unit>();
             if (hoveredUnit != null)
@@ -124,6 +122,17 @@ public class InputExplore : MonoBehaviour
 
                 // Show tooltip.
                 ExploreUI.I.ShowTooltip(hoveredRegion);
+            }
+
+            // Check if we found a gatherable item with a tooltip.
+            Gatherable hoveredGatherable = hit.GetComponent<Gatherable>();
+            if (hoveredGatherable != null && hoveredGatherable.description != "")
+            {
+                // Set bool.
+                hoveringAnything = true;
+
+                // Show tooltip.
+                ExploreUI.I.ShowTooltip(hoveredGatherable);
             }
         }
         
