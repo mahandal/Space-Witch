@@ -54,6 +54,20 @@ public class GM : MonoBehaviour
         exploreUI.Initialize();
     }
 
+    // Disable all explore maps.
+    public void DisableExploreMaps()
+    {
+        // Get all planets.
+        List<Planet> allPlanets = StarManager.I.GetAllPlanets();
+
+        // Disable each planet's explore map.
+        foreach (Planet p in allPlanets)
+        {
+            if (p.exploreMap != null)
+                p.exploreMap.SetActive(false);
+        }
+    }
+
     // Set up the given planet for the player to explore!
     public void Explore(Planet p)
     {

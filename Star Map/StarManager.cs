@@ -285,6 +285,13 @@ public class StarManager : MonoBehaviour
         MenuManager.I.GoToExplore();
     }
 
+    // Get a list of all planets in the current sector.
+    public List<Planet> GetAllPlanets()
+    {
+        // Recursively find planets at each star, starting with the starting star.
+        return startingStar.GetAllPlanetsRecursively();
+    }
+
     // Get the current planet.
     public Planet GetCurrentPlanet()
     {

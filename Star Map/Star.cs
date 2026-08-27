@@ -71,6 +71,31 @@ public class Star : MonoBehaviour
         }
     }
 
+    // Recursively return all planets of this star and each star after it in the sector.
+    public List<Planet> GetAllPlanetsRecursively()
+    {
+        // Initialize a new list of planets.
+        List<Planet> allPlanets = new List<Planet>();
+
+        // Add each of this star's planets.
+        foreach (Planet p in planets)
+        {
+            allPlanets.Add(p);
+        }
+
+        // Recurse on each of this planet's next stars.
+        foreach (Star s in nextStars)
+        {
+            // Add each planet to allPlanets.
+            foreach(Planet p in s.GetAllPlanetsRecursively())
+            {
+                allPlanets.Add(p);
+            }
+        }
+
+        return allPlanets;
+    }
+
     // Clicked on.
     public void B_Click()
     {
