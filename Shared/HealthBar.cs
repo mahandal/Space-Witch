@@ -49,7 +49,7 @@ public class HealthBar : MonoBehaviour
             // Check if we are halfway deployed yet.
             float percentDeployed = 1f - (unit.deployTimer / unit.deployTime);
 
-            if (percentDeployed >= 0.5f || unit.showFullDeployment)
+            if (percentDeployed >= 0.5f)
                 canvasGroup.alpha = percentDeployed;
             else
                 canvasGroup.alpha = 0f;
@@ -57,11 +57,17 @@ public class HealthBar : MonoBehaviour
             // Explore
             if (GM.I.gameObject.activeSelf)
             {
-                // Hide full health bars.
+                // Fade full health bars.
                 if (percentHealth >= 1f)
-                    canvasGroup.alpha = 0f;
+                {
+                    if (canvasGroup.alpha > 0f)
+                        canvasGroup.alpha -= 0.01f;
+                }
                 else
+                {
+                    // Always show health bars for injured units.
                     canvasGroup.alpha = 1f;
+                }
             }
         }
     }
