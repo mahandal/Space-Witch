@@ -4,6 +4,9 @@ using System.Collections.Generic;
 public partial class Unit
 {
     [Header("Explore Mode")]
+    // How likely is this explorer to spawn?
+    public float spawnRate = 0.5f;
+
     // How many credits does this explorer cost to recruit?
     public int creditCost = -1;
 
@@ -83,6 +86,16 @@ public partial class Unit
     // +++ Initialization
     void InitializeExplorer()
     {
+        // Roll whether this unit should despawn.
+        float spawnRoll = Random.Range(0f, 1f);
+        if (spawnRoll > spawnRate)
+        {
+            // Deactivate game object.
+            gameObject.SetActive(false);
+
+            // Avoid other setup(?)
+            return;
+        }
         // Initialize this unit, connecting its rigid body and whatnot.
         Initialize();
 
@@ -107,7 +120,7 @@ public partial class Unit
 
         // Set meta data.
         myName = unitName;
-        description = p.description;
+        // description = p.description;
         manaCost = p.manaCost;
         deployTime = p.deployTime;
         cardType = p.cardType;
