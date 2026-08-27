@@ -35,7 +35,7 @@ public partial class Leader
         target.LoseHealth(10);
     }
 
-    // + Sybil
+    // + Sybil Solisi
     // Heal the target.
     // Costs 1 mana.
     public void SybilHeal(Unit target)
@@ -79,7 +79,7 @@ public partial class Leader
         target.BeginDying();
     }
 
-    // + Gatama
+    // + Gatama the Seer
     // Heal the target for 1 health.
     // Costs 1 health.
     public void GatamaHeal(Unit target)

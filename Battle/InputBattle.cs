@@ -97,10 +97,10 @@ public class InputBattle : MonoBehaviour
             else if (hoveredUnit.good)
             {
                 // Sybil
-                if (DM.I.goodLeader.myName == "Sybil")
+                if (DM.I.goodLeader.myName == "Sybil Solisi")
                     DM.I.goodLeader.SybilHeal(hoveredUnit);
                 // Gatama
-                else if (DM.I.goodLeader.myName == "Gatama")
+                else if (DM.I.goodLeader.myName == "Gatama the Seer")
                     DM.I.goodLeader.GatamaHeal(hoveredUnit);
                 // Lancelot
                 else if (DM.I.goodLeader.myName == "Lancelot")
