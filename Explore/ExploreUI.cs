@@ -144,7 +144,7 @@ public class ExploreUI : MonoBehaviour
     void FixedUpdate()
     {
         // Fade in.
-        if (GM.I.player.deployTimer > 0f)
+        if (GM.I.player.deployTimer > 0f && GM.I.player.deployTime > 0f)
         {
             // Get percent deployed.
             float percent = GM.I.player.deployTimer / GM.I.player.deployTime;
@@ -283,7 +283,12 @@ public class ExploreUI : MonoBehaviour
         tooltipName.text = unit.myName;
 
         // Set credit cost.
-        tooltipCredits.text = unit.creditCost.ToString();
+        // Player
+        if (unit == GM.I.player)
+            tooltipCredits.text = "∞";
+        // Errbody else
+        else
+            tooltipCredits.text = unit.creditCost.ToString();
 
         // Load main art image.
         Utility.LoadImage(tooltipImage, "Cards/" + unit.myName);
@@ -303,12 +308,33 @@ public class ExploreUI : MonoBehaviour
     public void ShowTooltip(Region region)
     {
         // Need a description.
-        if (region.description == "") return;
+        if (region.description == "")
+        {
+            HideTooltip();
+            return;
+        }
 
         // Set description.
         tooltipDescription.text = region.description;
 
-        // Reveal right side.
+        // Reveal right side of the tooltip.
+        tooltipRightParent.SetActive(true);
+    }
+
+    // Load a gatherable item's description into the tooltip.
+    public void ShowTooltip(Gatherable gatherable)
+    {
+        // Need a description.
+        if (gatherable.description == "")
+        {
+            HideTooltip();
+            return;
+        }
+
+        // Set description.
+        tooltipDescription.text = gatherable.description;
+
+        // Reveal right side of the tooltip.
         tooltipRightParent.SetActive(true);
     }
 
