@@ -27,7 +27,7 @@ public partial class Leader
     public void AutoPlayCard(string cardName, bool signatureCard = false)
     {
         // Pick which tile to play the card in.
-        Tile tile = GetTileToPlay(cardName);
+        Tile tile = GetTileToPlay(cardName, signatureCard);
 
         // If we can't find a tile, skip playing this card.
         if (tile == null)
