@@ -32,6 +32,10 @@ public partial class Unit : MonoBehaviour
     // This unit's role.
     public string role;
 
+    // This unit's level.
+    // (For Gatherer mode, for now...)
+    public int level = 1;
+
 
     [Header("Core Stats")]
     // The maximum amount of health this unit can have.
@@ -42,9 +46,6 @@ public partial class Unit : MonoBehaviour
 
     // How much damage this unit does per attack.
     public float damage = 5f;
-
-    // How many seconds it takes for this unit to attack.
-    public float attackTime = -1f;
 
     // How much damage this unit negates per incoming attack.
     public float armor = 0f;
@@ -58,6 +59,12 @@ public partial class Unit : MonoBehaviour
 
     // How many tiles away this unit can see.
     public float vision = 3f;
+
+    // How many seconds it takes for this unit to attack.
+    // Note: Descriptive, not prescriptive! Meaning, you don't get to set it here and have that matter.
+    // It is calculated using the animation times of the unit's sprite.
+    // To modify attack speed we would need to modify animation speed which gets wonky so for now at least we just don't!
+    public float attackTime = -1f;
 
     [Header("Keywords")]
     // Keywords
@@ -288,17 +295,6 @@ public partial class Unit : MonoBehaviour
     // + Upkeep
     void FixedUpdate()
     {
-        // Game over?
-        // if (DM.I.gameState == 2)
-        // {
-        //     // Death!
-        //     if (myName != "Dragon Statue")
-        //         Death();
-
-        //     // Return.
-        //     return;
-        // }
-
         // Deploying.
         if (state == 0 && deployTimer > 0f)
         {
@@ -607,10 +603,19 @@ public partial class Unit : MonoBehaviour
     {
         // + Treasure?
         if (item.role == "Treasure")
+        {
+            // Gain main.
             GetLeader().mana += item.manaCost;
+
+            // Count flowers.
+            if (item.myName == "Violet Flower")
+                GetLeader().flowersGathered++;
+        }
         else
+        {
             // Get a bit bigger.
-            transform.localScale *= 1.1f;
+            transform.localScale *= 1f + (0.01f * item.manaCost);
+        }
 
         // + Gain stats.
 
@@ -847,15 +852,18 @@ public partial class Unit : MonoBehaviour
             // Squad leader death.
             if (this == GM.I.player)
             {
-                // Lose one credit, if we have one.
-                if (MenuManager.I.saveData.credits > 0)
-                    MenuManager.I.saveData.credits--;
+                // Lose one credit.
+                MenuManager.I.saveData.credits--;
                     
                 // Re-deploy.
                 GM.I.Deploy(this);
 
                 // Return.
                 return;
+            } else {
+                // Evil units have bounties on their heads, rewarding credits for killing them.
+                if (!good)
+                    MenuManager.I.saveData.credits += creditCost;
             }
         }
             
@@ -893,6 +901,39 @@ public partial class Unit : MonoBehaviour
             
         // Clean up game object.
         Destroy(gameObject);
+    }
+
+    // + Levels
+    // Gain a level, increasing damage, health, and size.
+    // Also teleports back to base.
+    public void LevelUp()
+    {
+        // Gain a level.
+        level++;
+
+        // Increase damage by 30%.
+        damage *= 1.3f;
+
+        // Increase health by 30%.
+        maxHealth *= 1.3f;
+        currentHealth *= 1.3f;
+
+        // Increase size by 3%.
+        transform.localScale *= 1.03f;
+
+        // Teleport back to base.
+        TeleportToBase();
+    }
+
+    // Teleport this unit to its base.
+    public void TeleportToBase()
+    {
+        // Good goes to 0, the furthest left column.
+        // Evil goes to the furthest right column.
+        if (good)
+            transform.position = new Vector3(0f, transform.position.y, transform.position.z);
+        else
+            transform.position = new Vector3(DM.I.gridWidth, transform.position.y, transform.position.z);
     }
 
     // + Magic

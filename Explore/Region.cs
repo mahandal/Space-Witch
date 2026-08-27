@@ -7,9 +7,11 @@ public class Region : MonoBehaviour
     [Header("Terrain")]
     // What type of region is this?
     // Types of region:
-    // End = Where the big battle begins.
-    // Water = Slow field
-    // Flora = Slow field
+    // Plains = Default.
+    // Water = Slow field.
+    // Flora = Slow field.
+    // Battle = The path of battle.
+    // Harmony = The path of harmony.
     public string myType;
 
     // How likely is this region to spawn?
@@ -18,6 +20,7 @@ public class Region : MonoBehaviour
     public float spawnRate = 0.8f;
 
     // This region's description, if it has one.
+    [TextArea(10, 30)]
     public string description = "";
 
     [Header("Machinery")]
@@ -67,9 +70,7 @@ public class Region : MonoBehaviour
         // Ignore non-explorers.
         if (explorer == null) return;
 
-        // End?
-        if (myType == "End" && explorer == GM.I.player)
-            DM.I.BeginBattle();
+        // + Slow fields
 
         // Water?
         if (myType == "Water")
@@ -80,6 +81,25 @@ public class Region : MonoBehaviour
             explorer.speedModifiers[GetUID()] = 0.7f;
         if (myType == "Thick Flora")
             explorer.speedModifiers[GetUID()] = 0.3f;
+
+        // + Paths to Victory
+        if (explorer == GM.I.player)
+        {
+            // Hunter
+            if (myType == "Way of the Hunter")
+                DM.I.BeginHunt();
+
+            if (myType == "Way of the Gatherer")
+                DM.I.BeginGathering();
+
+            // Battle
+            // if (myType == "Battle")
+            //     DM.I.BeginBattle();
+
+            // // Harmony
+            // if (myType == "Harmony")
+            //     HM.I.BeginHarmony();
+        }
     }
 
     void OnTriggerExit2D(Collider2D col)

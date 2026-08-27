@@ -18,6 +18,10 @@ public partial class Leader : MonoBehaviour
     // Hard-coded to include dragon statues.
     public List<Unit> vitalUnits = new List<Unit>();
 
+    [Header("Flowers")]
+    // How many flowers this leader has gathered.
+    public int flowersGathered = 0;
+
     [Header("Mana")]
     // How much mana this leader currently has.
     public int mana = 0;
@@ -79,11 +83,19 @@ public partial class Leader : MonoBehaviour
         // Reset bools.
         reservesDepleted = false;
 
-        // Set our starting health.
+        // + Starting health.
         float startingHealth = DM.I.startingHealth;
+
+        // + Hero Ability: Wubalin Brightforge
+        // Gain +30% health.
         if (myName == "Wubalin Brightforge")
-            startingHealth *= 1.2f;
+            startingHealth *= 1.3f;
+
+        // Set our starting health.
         SetHealth(startingHealth);
+
+        // Reset flowers gathered.
+        flowersGathered = 0;
 
         // Set our starting mana.
         mana = 0;
@@ -275,13 +287,14 @@ public partial class Leader : MonoBehaviour
         }
         else
         {
-            // No cards left in your deck.
+            // No cards left in yer deck.
 
-            // Check if you have reinforcements.
+            // Check if ye have reinforcements.
             if (reinforcementTimer <= 0f)
             {
-                // Locals reinforce your army!
-                cardName = StarManager.I.GetRandomPlanetCard();
+                // Locals reinforce yer army!
+                // (good also gets reinforcements from home!)
+                cardName = StarManager.I.GetRandomPlanetCard(good);
 
                 // Get the card, using its name.
                 Card card = DM.I.grimoire[cardName];
@@ -514,52 +527,54 @@ public partial class Leader : MonoBehaviour
     {
         // + Leader Stats
         // Avalon:
-        // +20% speed
+        // +30% speed
         if (homeStar.myName == "Avalon")
-            cardPlayed.speed *= 1.2f;
+            cardPlayed.speed *= 1.3f;
 
         // Bedegraine
-        // +20% health
+        // +30% health
         if (homeStar.myName == "Bedegraine")
         {
-            cardPlayed.maxHealth *= 1.2f;
-            cardPlayed.currentHealth *= 1.2f;
+            cardPlayed.maxHealth *= 1.3f;
+            cardPlayed.currentHealth *= 1.3f;
         }
 
         // Sarras:
-        // +20% vision
+        // +30% vision
         if (homeStar.myName == "Sarras")
-            cardPlayed.vision *= 1.2f;
+            cardPlayed.vision *= 1.3f;
 
         // Orkney:
-        // +20% damage
+        // +30% damage
         if (homeStar.myName == "Orkney")
-            cardPlayed.damage *= 1.2f;
+            cardPlayed.damage *= 1.3f;
 
         // Logres:
-        // -20% speed
-        // +20% health
-        // +20% damage
-        // +20% size
+        // -30% speed
+        // +30% health
+        // +30% damage
+        // +30% size
         if (homeStar.myName == "Logres")
         {
-            cardPlayed.speed *= 0.8f;
-            cardPlayed.maxHealth *= 1.2f;
-            cardPlayed.currentHealth *= 1.2f;
-            cardPlayed.damage *= 1.2f;
-            cardPlayed.transform.localScale *= 1.2f;
+            cardPlayed.speed *= 0.7f;
+            cardPlayed.maxHealth *= 1.3f;
+            cardPlayed.currentHealth *= 1.3f;
+            cardPlayed.damage *= 1.3f;
+            cardPlayed.transform.localScale *= 1.3f;
         }
 
         // Gorr:
-        // -20% health
-        // +20% speed
-        // +20% vision
+        // -30% health
+        // -30% size
+        // +30% speed
+        // +30% vision
         if (homeStar.myName == "Gorr")
         {
-            cardPlayed.maxHealth *= 0.8f;
-            cardPlayed.currentHealth *= 0.8f;
-            cardPlayed.speed *= 1.2f;
-            cardPlayed.vision *= 1.2f;
+            cardPlayed.maxHealth *= 0.7f;
+            cardPlayed.currentHealth *= 0.7f;
+            cardPlayed.speed *= 1.3f;
+            cardPlayed.vision *= 1.3f;
+            cardPlayed.transform.localScale *= 0.7f;
         }
 
         // Corbenic:
@@ -675,11 +690,27 @@ public partial class Leader : MonoBehaviour
         // + Lancelot
         if (myName == "Lancelot" && source != null)
         {
-            // Lose health.
-            LoseHealth(source.currentHealth);
+            // Hunter - Lose health.
+            if (DM.I.way == "Hunter")
+                LoseHealth(source.currentHealth);
+            // Gatherer - Lose flowers.
+            if (DM.I.way == "Gatherer")
+                flowersGathered -= Mathf.CeilToInt(source.damage);
 
             // Charm (without healing).
             source.ChangeSides(false);
+        }
+
+        // Gatherer mode:
+        // Instead of dealing damage to bases, units teleport back to their base and gain a level.
+        if (DM.I.way == "Gatherer")
+        {
+            // King me!
+            if (source != null)
+                source.LevelUp();
+
+            // Avoid normal health loss.
+            return;
         }
 
         // Think faster when damaged.

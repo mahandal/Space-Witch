@@ -135,6 +135,21 @@ public class UI : MonoBehaviour
         // Load leader portraits.
         Utility.LoadImage(goodPortrait, "Leaders/" + DM.I.goodLeader.myName);
         Utility.LoadImage(evilPortrait, "Leaders/" + DM.I.evilLeader.myName);
+
+        // + Ways
+        // Hunter
+        if (DM.I.way == "Hunter")
+        {
+            goodHealth.color = Color.green;
+            evilHealth.color = Color.green;
+        }
+
+        // Gatherer
+        if (DM.I.way == "Gatherer")
+        {
+            goodHealth.color = Color.violet;
+            evilHealth.color = Color.violet;
+        }
     }
 
     // + Battle
@@ -145,14 +160,20 @@ public class UI : MonoBehaviour
         // Versus sequence
         Versus();
 
+        // Update reinforcements.
+        UpdateReinforcements();
+
         // Update mana.
         UpdateMana();
 
-        // Update health.
-        UpdateHealth();
+        // + Top bar
+        // Hunter - Update health.
+        if (DM.I.way == "Hunter")
+            UpdateHealth();
 
-        // Update reinforcements.
-        UpdateReinforcements();
+        // Gatherer - Count flowers.
+        if (DM.I.way == "Gatherer")
+            CountFlowers();
     }
 
     // Dramatic intro saying leader names VERSUS each other.
@@ -186,7 +207,7 @@ public class UI : MonoBehaviour
         if (DM.I.gameTimer >= 4f && versus.gameObject.activeSelf)
         {
             // Fade versus.
-            versus.alpha -= 0.001f;
+            versus.alpha -= 0.01f;
 
             // Faded?
             if (versus.alpha <= 0f)
@@ -224,6 +245,22 @@ public class UI : MonoBehaviour
         evilHealth.fillAmount = evilPercent;
     }
 
+    // Update both good and evil leader's progress bars to match their current flower count.
+    public void CountFlowers()
+    {
+        // Get percentage of good leader's progress toward victory.
+        float goodPercent = DM.I.goodLeader.flowersGathered / 42f;
+
+        // Set fill.
+        goodHealth.fillAmount = goodPercent;
+
+        // Get percentage of evil leader's progress toward victory.
+        float evilPercent = DM.I.evilLeader.flowersGathered / 42f;
+
+        // Set fill.
+        evilHealth.fillAmount = evilPercent;
+    }
+
     // Fade out reinforcement popups.
     public void UpdateReinforcements()
     {
@@ -233,12 +270,8 @@ public class UI : MonoBehaviour
             // Reserves depleted?
             if (reservesDepleted.gameObject.activeSelf)
             {
-                // Get percent toward reinforcements.
-                // float percent = DM.I.goodLeader.reinforcementTimer / DM.I.goodLeader.timeUntilReinforcements;
-
                 // Fade out.
                 reservesDepleted.alpha -= 0.01f;
-                // reservesDepleted.alpha = percent;
 
                 // Done?
                 if (reservesDepleted.alpha <= 0f)
@@ -340,7 +373,10 @@ public class UI : MonoBehaviour
     public void ShowTooltip(Unit unit)
     {
         // Set the name.
-        tooltipName.text = unit.myName;
+        if (unit.level > 1)
+            tooltipName.text = "Level " + unit.level + " " + unit.myName;
+        else
+            tooltipName.text = unit.myName;
 
         // Set the mana cost.
         tooltipMana.text = unit.manaCost.ToString();

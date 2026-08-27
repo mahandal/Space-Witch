@@ -11,6 +11,9 @@ public class DM : MonoBehaviour
     [Header("DM")]
     // The time elapsed of the current battle.
     public float gameTimer = 0f;
+
+    // Which way is the player following?
+    public string way = "Hunter";
     
 
     [Header("Violet Flowers")]
@@ -83,16 +86,33 @@ public class DM : MonoBehaviour
         InitializeGrid();
     }
 
+    // Begin a battle, following the way of the hunter.
+    // Called from Explore/Region.cs
+    public void BeginHunt()
+    {
+        // Set way.
+        way = "Hunter";
+
+        // Begin battle.
+        BeginBattle();
+    }
+
+    // Begin a battle, following the way of the gatherer.
+    // Called from Explore/Region.cs
+    public void BeginGathering()
+    {
+        // Set way.
+        way = "Gatherer";
+
+        // Begin battle.
+        BeginBattle();
+    }
+
     // Start a battle!
-    // Reset the battle map and prepare for a new battle!
-    // Called from CardOnPlanet.cs
     public void BeginBattle()
     {
         // Reset game timer.
         gameTimer = 0f;
-
-        // Reset the battle map.
-        // ResetBattleMap();
 
         // + Initialize each leader.
 
@@ -127,6 +147,10 @@ public class DM : MonoBehaviour
     {
         // Wait for battle.
         if (MenuManager.I.gameState != 1) return;
+
+        // Check for victory, in gatherer mode.
+        if (goodLeader.flowersGathered >= 42) GameOver(true);
+        if (evilLeader.flowersGathered >= 42) GameOver(false);
 
         // Increment time elapsed.
         gameTimer += Time.fixedDeltaTime;
@@ -343,11 +367,11 @@ public class DM : MonoBehaviour
     public void GameOver(bool victory)
     {
         // Avoid repeat calls.
-        if (MenuManager.I.gameState >= 2)
+        if (MenuManager.I.gameState >= 21)
             return;
             
         // Set game state.
-        MenuManager.I.gameState = 2;
+        MenuManager.I.gameState = 21;
 
         // // Pause time.
         // Time.timeScale = 0f;
@@ -423,7 +447,7 @@ public class DM : MonoBehaviour
     public void B_Continue()
     {
         // Safety guard(?)
-        if (MenuManager.I.gameState != 2) return;
+        if (MenuManager.I.gameState != 21) return;
 
         // Re-enable time.
         // Time.timeScale = 1f;
@@ -444,7 +468,7 @@ public class DM : MonoBehaviour
     public void B_Return()
     {
         // Safety guard(?)
-        if (MenuManager.I.gameState != 2) return;
+        if (MenuManager.I.gameState != 21) return;
         
         // Re-enable time.
         // Time.timeScale = 1f;
