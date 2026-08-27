@@ -4,11 +4,12 @@ public class MenuManager : MonoBehaviour
 {
     [Header("Game State")]
     // Which screen we are currently on:
-    // -2 = Main Menu
-    // -1 = Star Map
-    //  0 = Explore
-    //  1 = Battle
-    //  2 = Postgame
+    // -2  = Main Menu
+    // -1  = Star Map
+    //  0  = Explore
+    //  1  = Battle
+    //  2  = Harmony
+    //  21 = Postgame
     public int gameState = -2;
 
     [Header("Menus")]
@@ -70,20 +71,30 @@ public class MenuManager : MonoBehaviour
 
 
     // + Menu management
-    // Go to the main menu.
-    public void GoToMainMenu()
+    // Disable all menus.
+    public void DisableAllMenus()
     {
-        // Set game state.
-        gameState = -2;
+        // Disable the main menu.
+        mainMenu.gameObject.SetActive(false);
 
         // Disable star map.
         starManager.gameObject.SetActive(false);
 
-        // Disable battle map.
-        dm.gameObject.SetActive(false);
-
         // Disable explore mode.
         gm.gameObject.SetActive(false);
+
+        // Disable battle map.
+        dm.gameObject.SetActive(false);
+    }
+
+    // Go to the main menu.
+    public void GoToMainMenu()
+    {
+        // First, disable all menus.
+        DisableAllMenus();
+        
+        // Set game state.
+        gameState = -2;
 
         // Initialize the main menu.
         mainMenu.Initialize();
@@ -95,6 +106,9 @@ public class MenuManager : MonoBehaviour
     // Go to the battle map.
     public void GoToBattleMap()
     {
+        // First, disable all menus.
+        DisableAllMenus();
+
         // Set game state.
         gameState = 1;
 
@@ -104,18 +118,6 @@ public class MenuManager : MonoBehaviour
         // Load the appropriate battle map.
         p.battleMap.SetActive(true);
 
-        // Disable the explore map.
-        p.exploreMap.SetActive(false);
-
-        // Disable main menu.
-        mainMenu.gameObject.SetActive(false);
-
-        // Disable star map.
-        starManager.gameObject.SetActive(false);
-
-        // Disable explore map.
-        gm.gameObject.SetActive(false);
-
         // Enable battle map.
         dm.gameObject.SetActive(true);
     }
@@ -123,26 +125,23 @@ public class MenuManager : MonoBehaviour
     // Go to the explore map.
     public void GoToExplore()
     {
+        // First, disable all menus.
+        DisableAllMenus();
+
+        // Also disable all explore maps.
+        GM.I.DisableExploreMaps();
+        
         // Set game state.
         gameState = 0;
 
         // Get current planet.
         Planet p = StarManager.I.GetCurrentPlanet();
 
-        // GM handles its own stuff.
+        // Tell GM to set up the explore map for this planet.
         gm.Explore(p);
 
         // Load the appropriate battle map.
         p.exploreMap.SetActive(true);
-
-        // Disable main menu.
-        mainMenu.gameObject.SetActive(false);
-
-        // Disable star map.
-        starManager.gameObject.SetActive(false);
-
-        // Disable battle map.
-        dm.gameObject.SetActive(false);
 
         // Enable explore map.
         gm.gameObject.SetActive(true);
