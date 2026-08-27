@@ -171,18 +171,17 @@ public class DragonShrine : MonoBehaviour
         // Reveal 'Add to Squad' button for resting units, hide for exploring units.
         addToSquad.gameObject.SetActive(mode == "Resting");
 
-        // For exploring units that are not the squad leader,
-        // reveal buttons 'Return to Rest' and 'Promote to Squad Leader'.
-        // Hide those buttons for resting units, and for your squad leader.
+        // For exploring units that are not the squad leader, reveal button 'Return to Rest'.
+        // Hide that button for resting units, and for your squad leader.
         if (mode == "Exploring" && (selectedCardIndex != 0 || pageIndex != 0))
         {
             returnToRest.gameObject.SetActive(true);
-            promoteToSquadLeader.gameObject.SetActive(true);
+            // promoteToSquadLeader.gameObject.SetActive(true);
         }
         else
         {
             returnToRest.gameObject.SetActive(false);
-            promoteToSquadLeader.gameObject.SetActive(false);
+            // promoteToSquadLeader.gameObject.SetActive(false);
         }
 
         // Hide sell button only when selecting your squad leader.
