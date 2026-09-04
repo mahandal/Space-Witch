@@ -64,7 +64,7 @@ public partial class Leader
     public Tile GetTileToPlay(string cardName, bool signature = false)
     {
         // Get the card from the grimoire.
-        Card card = DM.I.grimoire[cardName];
+        Card card = DM.I.Grimoire(cardName);
 
         // Randomize row to begin with.
         int row = Random.Range(0, DM.I.gridHeight);

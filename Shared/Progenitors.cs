@@ -125,7 +125,7 @@ public class Progenitors : MonoBehaviour
     public Unit GetProgenitor(string cardName)
     {
         // Get card from grimoire.
-        Card card = DM.I.grimoire[cardName];
+        Card card = DM.I.Grimoire(cardName);
 
         // Delegate.
         return GetProgenitor(card);

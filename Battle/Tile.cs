@@ -47,7 +47,7 @@ public class Tile : MonoBehaviour
         if (InputBattle.I.selectedCard != null)
         {
             // Get card.
-            Card card = DM.I.grimoire[InputBattle.I.selectedCard.myName];
+            Card card = DM.I.Grimoire(InputBattle.I.selectedCard.myName);
 
             // Check if we are playing a spell.
             if (card.cardType == "Spell")

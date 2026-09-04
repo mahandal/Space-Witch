@@ -37,7 +37,7 @@ public class MiniCard : MonoBehaviour
     public void LoadCard(string cardName)
     {
         // Get card.
-        Card card = DM.I.grimoire[cardName];
+        Card card = DM.I.Grimoire(cardName);
 
         // Set name.
         nameText.text = cardName;

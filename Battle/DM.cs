@@ -144,6 +144,22 @@ public class DM : MonoBehaviour
         Time.timeScale = 1f;
     }
 
+    // + Grimoire
+    public Card Grimoire(string cardName)
+    {
+        // Split the name into parts.
+        string[] parts = cardName.Split(' ', 3);
+
+        // Check if the card name has a level.
+        if (parts[0] == "Level")
+        {
+            // Note: Level is available here in parts[1] but we don't need it.
+            return grimoire[parts[2]];
+        } else {
+            return grimoire[cardName];
+        }
+    }
+
     // + Running the game.
     // Fixed update!
     void FixedUpdate()
@@ -246,7 +262,7 @@ public class DM : MonoBehaviour
     public Unit SpawnItem(string unitName, Tile tile)
     {
         // Get the unit's card.
-        Card card = DM.I.grimoire[unitName];
+        Card card = Grimoire(unitName);
 
         // Get the progenitor for the card.
         Unit progenitor = Progenitors.I.GetProgenitor(card);

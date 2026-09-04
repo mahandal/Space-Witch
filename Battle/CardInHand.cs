@@ -267,7 +267,9 @@ public class CardInHand : MonoBehaviour, IPointerEnterHandler, IPointerExitHandl
     public void LoadCard(string cardName)
     {
         // Get the card from the grimoire.
-        Card card = DM.I.grimoire[cardName];
+        Card card = DM.I.Grimoire(cardName);
+
+        // Card card = DM.I.grimoire[cardName];
 
         // Delegate to below!
         LoadCard(card);

@@ -314,7 +314,7 @@ public partial class Leader : MonoBehaviour
             cardName = Utility.Pop(deck);
 
             // Get the card, using its name.
-            Card card = DM.I.grimoire[cardName];
+            Card card = DM.I.Grimoire(cardName);
 
             // Load the card into your hand!
             cardInHand.LoadCard(card);
@@ -331,7 +331,7 @@ public partial class Leader : MonoBehaviour
                 // cardName = StarManager.I.GetRandomPlanetCard(good);
 
                 // Get the card, using its name.
-                Card card = DM.I.grimoire[cardName];
+                Card card = DM.I.Grimoire(cardName);
 
                 // Load the card into your hand!
                 cardInHand.LoadCard(card);
@@ -395,7 +395,7 @@ public partial class Leader : MonoBehaviour
             return false;
 
         // Get the card from the grimoire.
-        Card card = DM.I.grimoire[cardInHand.myName];
+        Card card = DM.I.Grimoire(cardInHand.myName);
 
         // Check if we have enough mana.
         if (mana < card.manaCost)
@@ -469,7 +469,7 @@ public partial class Leader : MonoBehaviour
     public void PlaySignatureCard(string cardName, Tile tile)
     {
         // Get card.
-        Card card = DM.I.grimoire[cardName];
+        Card card = DM.I.Grimoire(cardName);
 
         // Spawn the unit.
         Unit newUnit = SpawnUnit(cardName, tile);
@@ -496,7 +496,7 @@ public partial class Leader : MonoBehaviour
         if (tile == null) return null;
 
         // Get the unit's card.
-        Card card = DM.I.grimoire[unitName];
+        Card card = DM.I.Grimoire(unitName);
 
         // Get the progenitor for the card.
         Unit progenitor = Progenitors.I.GetProgenitor(card);
@@ -843,7 +843,7 @@ public partial class Leader : MonoBehaviour
         foreach (string name in availableCards)
         {
             // Get the card from the grimoire.
-            Card c = DM.I.grimoire[name];
+            Card c = DM.I.Grimoire(name);
 
             // Initialize the card's weight.
             float weight = 1f;
