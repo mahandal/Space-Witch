@@ -7,11 +7,14 @@ public class Planet : MonoBehaviour
     // This planet's name.
     public string myName;
 
+    // Which evil leader ye fight at this planet.
+    public string villain = "Morgause le Fey";
+
     // This planet's description.
     [TextArea]
     public string description;
 
-    // This planet's list of cards you may choose from to add to your deck.
+    // This planet's list of cards ye may choose from to add to your deck.
     public List<string> availableCards;
 
     // This planet's tilemap shown for its big battle.
