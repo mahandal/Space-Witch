@@ -118,6 +118,9 @@ public class GM : MonoBehaviour
 
         // Reset hurt timer.
         unit.hurtTimer = 0f;
+
+        // Activate game object(?)
+        unit.gameObject.SetActive(true);
     }
 
     // +++ Exploring!
