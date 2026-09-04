@@ -220,6 +220,7 @@ public partial class Unit : MonoBehaviour
 
         // + Laser
         // Set up attack line renderer.
+        /*
         if (keywords.Contains("Laser"))
         {
             attackLine = gameObject.AddComponent<LineRenderer>();
@@ -232,6 +233,7 @@ public partial class Unit : MonoBehaviour
             attackLine.sortingOrder = 1000;
             attackLine.enabled = false;
         }
+        */
     }
 
     // Start er up!
