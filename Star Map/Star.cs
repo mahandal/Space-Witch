@@ -26,8 +26,8 @@ public class Star : MonoBehaviour
     // This star's list of stars that can be traveled to, after completing this star.
     public List<Star> nextStars;
 
-    [Header("Evil Leader")]
-    public string localEvilLeader;
+    // [Header("Evil Leader")]
+    // public string localEvilLeader;
 
     [Header("Machinery")]
 
