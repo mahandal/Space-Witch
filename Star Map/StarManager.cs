@@ -5,10 +5,6 @@ using System.Collections.Generic;
 
 public class StarManager : MonoBehaviour
 {
-    [Header("Star Map")]
-    // The parent object of the star map.
-    public GameObject starMap;
-
     [Header("Stars")]
     // The parent object of all stars.
     public Transform starParent;
@@ -269,7 +265,7 @@ public class StarManager : MonoBehaviour
         LoadPlanet(firstPlanet);
 
         // Get evil leader.
-        string evilLeaderName = currentStar.localEvilLeader;
+        string evilLeaderName = firstPlanet.villain;
         LeaderBio evilBio = MainMenu.I.leaderBios[evilLeaderName];
 
         // Load evil leader.
@@ -381,62 +377,62 @@ public class StarManager : MonoBehaviour
     }
 
     // Get a random card from the current planet, weighted toward lower mana cost cards.
-    public string GetRandomPlanetCard(bool includeHomeCards = false)
-    {
-        // Get a list of names of the available cards for the current planet.
-        List<string> availableCards = GetPlanetCards(includeHomeCards);
+    // public string GetRandomPlanetCard(bool includeHomeCards = false)
+    // {
+    //     // Get a list of names of the available cards for the current planet.
+    //     List<string> availableCards = GetPlanetCards(includeHomeCards);
 
-        // Build a weighted list of cards, using 1/manaCost as the weight.
-        // This makes lower mana cost cards proportionally more likely to be drawn.
-        // e.g. a 2 mana card is 5x as likely as a 10 mana card.
+    //     // Build a weighted list of cards, using 1/manaCost as the weight.
+    //     // This makes lower mana cost cards proportionally more likely to be drawn.
+    //     // e.g. a 2 mana card is 5x as likely as a 10 mana card.
 
-        // Count the total weight of all cards.
-        float totalWeight = 0f;
+    //     // Count the total weight of all cards.
+    //     float totalWeight = 0f;
 
-        // Create a list of cards, paired with their weights.
-        List<(Card, float)> cardWeights = new List<(Card, float)>();
+    //     // Create a list of cards, paired with their weights.
+    //     List<(Card, float)> cardWeights = new List<(Card, float)>();
 
-        // Loop through each available card.
-        foreach (string name in availableCards)
-        {
-            // Get the card from the grimoire.
-            Card c = DM.I.grimoire[name];
+    //     // Loop through each available card.
+    //     foreach (string name in availableCards)
+    //     {
+    //         // Get the card from the grimoire.
+    //         Card c = DM.I.grimoire[name];
 
-            // Initialize the card's weight.
-            float weight = 1f;
+    //         // Initialize the card's weight.
+    //         float weight = 1f;
 
-            // Avoid dividing by zero.
-            if (c.manaCost != 0)
-                weight = 1f / c.manaCost;
+    //         // Avoid dividing by zero.
+    //         if (c.manaCost != 0)
+    //             weight = 1f / c.manaCost;
 
-            // Add the card and its weight to our list.
-            cardWeights.Add((c, weight));
+    //         // Add the card and its weight to our list.
+    //         cardWeights.Add((c, weight));
 
-            // Count up our total weight.
-            totalWeight += weight;
-        }
+    //         // Count up our total weight.
+    //         totalWeight += weight;
+    //     }
 
-        // Roll randomly along the total weight.
-        float roll = Random.Range(0f, totalWeight);
+    //     // Roll randomly along the total weight.
+    //     float roll = Random.Range(0f, totalWeight);
 
-        // Count how far into the card weights we have looked.
-        float cumulative = 0f;
+    //     // Count how far into the card weights we have looked.
+    //     float cumulative = 0f;
 
-        // Look through each card.
-        foreach (var (c, weight) in cardWeights)
-        {
-            // Accumulate weight.
-            cumulative += weight;
+    //     // Look through each card.
+    //     foreach (var (c, weight) in cardWeights)
+    //     {
+    //         // Accumulate weight.
+    //         cumulative += weight;
 
-            // Check if we have reached our roll yet.
-            if (roll < cumulative)
-                return c.myName;
-        }
+    //         // Check if we have reached our roll yet.
+    //         if (roll < cumulative)
+    //             return c.myName;
+    //     }
 
-        // Should not reach here!
-        Debug.LogWarning("Failed to select a random planet card! Returning first planet card: " + availableCards[0]);
-        return availableCards[0];
-    }
+    //     // Should not reach here!
+    //     Debug.LogWarning("Failed to select a random planet card! Returning first planet card: " + availableCards[0]);
+    //     return availableCards[0];
+    // }
 
     // + End game
 
