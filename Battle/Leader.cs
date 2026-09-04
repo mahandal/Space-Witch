@@ -5,10 +5,19 @@ using System.Collections.Generic;
 public partial class Leader : MonoBehaviour
 {
     [Header("Meta")]
+    // This leader's name.
     public string myName;
+
+    // Whether this leader is using AI to play its cards automatically, or is manually controlled by the player.
     public bool autoPilot;
+
+    // Whether this leader is good or evil.
+    // Good is on the left, evil is on the right.
     public bool good = true;
+
+    // The star this leader calls home.
     public Star homeStar;
+
 
     [Header("Health")]
     // How much health this leader has remaining.
@@ -55,6 +64,9 @@ public partial class Leader : MonoBehaviour
     public int numColumnsDeployable = 4;
 
     [Header("Reinforcements")]
+    // A list of which cards may potentially reinforce this leader.
+    public List<string> reinforcements;
+
     // A flag tracking whether we have ran out of cards in our deck yet.
     public bool reservesDepleted = false;
 
@@ -74,6 +86,23 @@ public partial class Leader : MonoBehaviour
         homeStar = bio.homeStar;
         signatureCards = bio.signatureCards;
         signatureCooldowns = bio.signatureCooldowns;
+        reinforcements = bio.reinforcements;
+    }
+
+    // Load the local villain.
+    public void LoadVillain()
+    {
+        // Get current planet.
+        Planet p = StarManager.I.GetCurrentPlanet();
+
+        // Get the local villain's name.
+        string evilLeaderName = p.villain;
+
+        // Get the bio for the evil leader using their name.
+        LeaderBio evilBio = MainMenu.I.leaderBios[evilLeaderName];
+
+        // Load evil bio.
+        LoadBio(evilBio);
     }
 
     // Start a new battle:
@@ -88,7 +117,7 @@ public partial class Leader : MonoBehaviour
 
         // + Hero Ability: Wubalin Brightforge
         // Gain +30% health.
-        if (myName == "Wubalin Brightforge")
+        if (homeStar.myName == "Bedegraine")
             startingHealth *= 1.3f;
 
         // Set our starting health.
@@ -100,18 +129,8 @@ public partial class Leader : MonoBehaviour
         // Set our starting mana.
         mana = 0;
 
-        // Set our secondsPerMana.
-        // Both good and evil divide the base speed of 1.5 by the current star's mana scaling.
-        // Evil also reduces their seconds per mana by 10% per planet index.
-        // Note: Planet counts must not reach 10! Or we'll divide by 0 and break everything.
-        if (good)
-            secondsPerMana = DM.I.secondsPerMana / StarManager.I.currentStar.goodManaScaling;
-        else
-
-            secondsPerMana = DM.I.secondsPerMana / StarManager.I.currentStar.evilManaScaling * (1f - 0.1f * StarManager.I.planetIndex);
-
-        // Reset our mana timer.
-        manaTimer = secondsPerMana;
+        // Set our mana timer.
+        ResetManaTimer();
 
         // Shuffle our deck!
         deck = Utility.Shuffle(deck);
@@ -138,18 +157,33 @@ public partial class Leader : MonoBehaviour
 
 
         // + Reinforcement times:
-
-        // For good, it means how long you wait between playing your deck and playing local reinforcements.
-        // Evil has no deck so they wait at the beginning of the game, but for less time.
+        // Meaning how long you wait between your deck running out and reinforcements arriving.
+        // Evil has no deck so they just wait at the beginning of the game for a second.
 
         // Set time until reinforcements randomly.
         if (good)
-            timeUntilReinforcements = Random.Range(20, 40);
+            timeUntilReinforcements = Random.Range(7f, 13f);
         else
-            timeUntilReinforcements = Random.Range(1, 10);
+            timeUntilReinforcements = 1f;
 
         // Set reinforcement timer.
         reinforcementTimer = timeUntilReinforcements;
+    }
+
+    // Set our secondsPerMana for our manaTimer.
+    public void ResetManaTimer()
+    {
+        // Set our secondsPerMana.
+        // Both good and evil divide the base speed by the current star's mana scaling.
+        // Evil also reduces their seconds per mana by 10% per planet index.
+        // Note: Planet counts must not reach 10! Or we'll divide by 0 and break everything.
+        if (good)
+            secondsPerMana = DM.I.secondsPerMana / StarManager.I.currentStar.goodManaScaling;
+        else
+            secondsPerMana = DM.I.secondsPerMana / StarManager.I.currentStar.evilManaScaling * (1f - 0.1f * StarManager.I.planetIndex);
+
+        // Set mana timer.
+        manaTimer = secondsPerMana;
     }
 
     // Initialize our deck.
@@ -255,7 +289,7 @@ public partial class Leader : MonoBehaviour
 
             // Is it time for a second front?
             if (reinforcementTimer <= 0f)
-                Reinforce();
+                ReinforcementsArrive();
         }
 
         // + Auto Pilot
@@ -292,9 +326,9 @@ public partial class Leader : MonoBehaviour
             // Check if ye have reinforcements.
             if (reinforcementTimer <= 0f)
             {
-                // Locals reinforce yer army!
-                // (good also gets reinforcements from home!)
-                cardName = StarManager.I.GetRandomPlanetCard(good);
+                // Get a random reinforcement.
+                cardName = DrawReinforcement();
+                // cardName = StarManager.I.GetRandomPlanetCard(good);
 
                 // Get the card, using its name.
                 Card card = DM.I.grimoire[cardName];
@@ -309,6 +343,10 @@ public partial class Leader : MonoBehaviour
                 {
                     // Set bool.
                     reservesDepleted = true;
+
+                    // Set mana timer equal to our reinforcement timer.
+                    secondsPerMana = reinforcementTimer;
+                    manaTimer = reinforcementTimer;
 
                     // UI popup.
                     if (good)
@@ -505,15 +543,19 @@ public partial class Leader : MonoBehaviour
         // Hide (to deploy in).
         Utility.SetOpacity(newUnit.spriteRenderer, 0f);
 
-        // Set deploy time.
-        newUnit.deployTimer = newUnit.deployTime;
-
         // OnPlayed triggers.
         OnPlayed(newUnit);
 
+        // Set deploy time.
+        newUnit.deployTimer = newUnit.deployTime;
+
         // Remove rigid body.
+        // Curiosity: Why is this necessary?
+        // The rigid body is already disabled from the simulation.
+        // But with the unsimulated rigidbody, units can't pick up items (including violet flowers!)
         if (newUnit.rb != null)
-            DestroyImmediate(newUnit.rb);
+            Destroy(newUnit.rb);
+            // DestroyImmediate(newUnit.rb);
 
         // Activate!
         newUnit.gameObject.SetActive(true);
@@ -767,12 +809,87 @@ public partial class Leader : MonoBehaviour
 
     // + Reinforcements
 
-    // Locals reinforce your army!
+    // Draw a random card to reinforce your army.
+    public string DrawReinforcement()
+    {
+        // Evil uses their full reinforcement list.
+        List<string> availableCards = reinforcements;
+
+        // Good limits to match evil.
+        if (good)
+        {
+            // Initialize new list.
+            availableCards = new List<string>();
+
+            // Loop through once for each card in evil's reinforcement list.
+            for(int i = 0; i < DM.I.evilLeader.reinforcements.Count; i++)
+            {
+                // Add matching good reinforcement.
+                availableCards.Add(reinforcements[i]);
+            }
+        }
+        // + Shuffle
+        // Build a weighted list of cards, using 1/manaCost as the weight.
+        // This makes lower mana cost cards proportionally more likely to be drawn.
+        // e.g. a 2 mana card is 5x as likely as a 10 mana card.
+
+        // Count the total weight of all cards.
+        float totalWeight = 0f;
+
+        // Create a list of cards, paired with their weights.
+        List<(Card, float)> cardWeights = new List<(Card, float)>();
+
+        // Loop through each available card.
+        foreach (string name in availableCards)
+        {
+            // Get the card from the grimoire.
+            Card c = DM.I.grimoire[name];
+
+            // Initialize the card's weight.
+            float weight = 1f;
+
+            // Avoid dividing by zero.
+            if (c.manaCost != 0)
+                weight = 1f / c.manaCost;
+
+            // Add the card and its weight to our list.
+            cardWeights.Add((c, weight));
+
+            // Count up our total weight.
+            totalWeight += weight;
+        }
+
+        // Roll randomly along the total weight.
+        float roll = Random.Range(0f, totalWeight);
+
+        // Count how far into the card weights we have looked.
+        float cumulative = 0f;
+
+        // Look through each card.
+        foreach (var (c, weight) in cardWeights)
+        {
+            // Accumulate weight.
+            cumulative += weight;
+
+            // Check if we have reached our roll yet.
+            if (roll < cumulative)
+                return c.myName;
+        }
+
+        // Should not reach here!
+        Debug.LogWarning("Failed to select a random reinforcement card! Returning #1: " + availableCards[0]);
+        return availableCards[0];
+    }
+
+    // Reinforcements arrive!
     // Called 30 seconds after you run out of cards in your deck.
-    public void Reinforce()
+    public void ReinforcementsArrive()
     {
         // Draw 5 cards(?)
         // DrawStartingHand();
+
+        // Reset mana timer.
+        ResetManaTimer();
 
         // Visuals!
         if (good)
