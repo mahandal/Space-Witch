@@ -33,6 +33,10 @@ public class LeaderBio : MonoBehaviour
     // A list of cooldowns for this leader's signature cards.
     public List<float> signatureCooldowns = new List<float>();
 
+    [Header("Reinforcements")]
+    // Which cards this leader has available as reinforcements.
+    public List<string> reinforcements;
+
 
     // + Initialization
     // Start
