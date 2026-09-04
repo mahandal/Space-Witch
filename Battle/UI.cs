@@ -15,11 +15,23 @@ public class UI : MonoBehaviour
     public Image manaSymbol;
 
     [Header("Health")]
-    // The green fill for the good leader's health bar.
+    // The fill for the good leader's health bar.
     public Image goodHealth;
 
-    // The green fill for the evil leader's health bar.
+    // The text for the good leader's current health.
+    public TMP_Text goodCurrentHealth;
+
+    // The text for the good leader's max health.
+    public TMP_Text goodMaxHealth;
+
+    // The fill for the evil leader's health bar.
     public Image evilHealth;
+
+    // The text for the evil leader's current health.
+    public TMP_Text evilCurrentHealth;
+
+    // The text for the evil leader's max health.
+    public TMP_Text evilMaxHealth;
 
     [Header("Portraits")]
     // The portrait showing who is leading the forces of good.
@@ -140,15 +152,25 @@ public class UI : MonoBehaviour
         // Hunter
         if (DM.I.way == "Hunter")
         {
+            // Set health bar colors.
             goodHealth.color = Color.green;
-            evilHealth.color = Color.green;
+            evilHealth.color = Color.red;
+
+            // Set max health text.
+            goodMaxHealth.text = DM.I.goodLeader.health.ToString("0");
+            evilMaxHealth.text = DM.I.evilLeader.health.ToString("0");
         }
 
         // Gatherer
         if (DM.I.way == "Gatherer")
         {
+            // Set health bar colors.
             goodHealth.color = Color.violet;
             evilHealth.color = Color.violet;
+
+            // Set goal text.
+            goodMaxHealth.text = "42";
+            evilMaxHealth.text = "42";
         }
     }
 
@@ -232,14 +254,28 @@ public class UI : MonoBehaviour
     // Update both good and evil leader's health bars to match their current health.
     public void UpdateHealth()
     {
+        // + Good
+        // Set good current health.
+        goodCurrentHealth.text = DM.I.goodLeader.health.ToString("0");
+
+        // Get good max health.
+        float goodMax = float.Parse(goodMaxHealth.text);
+
         // Get percentage of good leader's health.
-        float goodPercent = DM.I.goodLeader.health / DM.I.startingHealth;
+        float goodPercent = DM.I.goodLeader.health / goodMax;
 
         // Set fill.
         goodHealth.fillAmount = goodPercent;
 
+        // + Evil
+        // Set evil current health.
+        evilCurrentHealth.text = DM.I.evilLeader.health.ToString("0");
+
+        // Get evil max health.
+        float evilMax = float.Parse(evilMaxHealth.text);
+
         // Get percentage of evil leader's health.
-        float evilPercent = DM.I.evilLeader.health / DM.I.startingHealth;
+        float evilPercent = DM.I.evilLeader.health / evilMax;
 
         // Set fill.
         evilHealth.fillAmount = evilPercent;
@@ -248,11 +284,19 @@ public class UI : MonoBehaviour
     // Update both good and evil leader's progress bars to match their current flower count.
     public void CountFlowers()
     {
+        // + Good
+        // Set good current flower count.
+        goodCurrentHealth.text = DM.I.goodLeader.flowersGathered.ToString("0");
+
         // Get percentage of good leader's progress toward victory.
         float goodPercent = DM.I.goodLeader.flowersGathered / 42f;
 
         // Set fill.
         goodHealth.fillAmount = goodPercent;
+
+        // + Evil
+        // Set evil current flower count.
+        evilCurrentHealth.text = DM.I.evilLeader.flowersGathered.ToString("0");
 
         // Get percentage of evil leader's progress toward victory.
         float evilPercent = DM.I.evilLeader.flowersGathered / 42f;
