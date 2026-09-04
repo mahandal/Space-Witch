@@ -154,27 +154,27 @@ public class MainMenu : MonoBehaviour
         // Other cards
 
         // Get leader's full card list.
-        List<string> leaderCardList = bio.homeStar.cards;
+        // List<string> leaderCardList = bio.homeStar.cards;
 
-        // Count the index of the current displayed mini card we are loading.
-        int otherIndex = 0;
+        // // Count the index of the current displayed mini card we are loading.
+        // int otherIndex = 0;
 
-        // Loop through each card in the leader's card list.
-        foreach (string cardName in leaderCardList)
-        {
-            // Ignore signature cards.
-            if (!bio.signatureCards.Contains(cardName))
-            {
-                // Load the card.
-                leaderOtherCards[otherIndex].LoadCard(cardName);
+        // // Loop through each card in the leader's card list.
+        // foreach (string cardName in leaderCardList)
+        // {
+        //     // Ignore signature cards.
+        //     if (!bio.signatureCards.Contains(cardName))
+        //     {
+        //         // Load the card.
+        //         leaderOtherCards[otherIndex].LoadCard(cardName);
 
-                // Increment our index tracking which mini card to load into.
-                otherIndex++;
+        //         // Increment our index tracking which mini card to load into.
+        //         otherIndex++;
 
-                // Break?
-                if (otherIndex >= leaderOtherCards.Count) break;
-            }
-        }
+        //         // Break?
+        //         if (otherIndex >= leaderOtherCards.Count) break;
+        //     }
+        // }
 
         // Enable the leader details screen.
         leaderDetailsScreen.SetActive(true);
