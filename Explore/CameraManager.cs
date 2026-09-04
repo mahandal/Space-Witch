@@ -3,7 +3,7 @@ using UnityEngine;
 public class CameraManager : MonoBehaviour
 {
     // The default position of the camera, for all screens except explore mode.
-    public Vector3 defaultPosition;
+    private Vector3 defaultPosition;
 
     // Singleton
     public static CameraManager I;
@@ -15,6 +15,9 @@ public class CameraManager : MonoBehaviour
             I = this;
         else
             Destroy(gameObject);
+
+        // Remember default position.
+        defaultPosition = Camera.main.transform.position;
     }
 
     // Reset the main camera to its default position.
