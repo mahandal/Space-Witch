@@ -142,6 +142,17 @@ public partial class Unit : MonoBehaviour
         // Get rigid body.
         rb = GetComponent<Rigidbody2D>();
 
+        // Enable rigid body for explore mode.
+        // Disable in battle mode.
+        if (rb != null)
+        {
+            if (GM.I != null && GM.I.gameObject.activeSelf)
+                rb.simulated = true;
+            else
+                rb.simulated = false;
+        }
+            
+
         // Get collider.
         collider = GetComponent<BoxCollider2D>();
 
@@ -864,6 +875,12 @@ public partial class Unit : MonoBehaviour
                 // Evil units have bounties on their heads, rewarding credits for killing them.
                 if (!good)
                     MenuManager.I.saveData.credits += creditCost;
+
+                // Disable unit.
+                gameObject.SetActive(false);
+
+                // Return.
+                return;
             }
         }
             
