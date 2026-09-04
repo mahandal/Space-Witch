@@ -21,12 +21,12 @@ public partial class Unit
     // Our squad leader, if we are in a squad.
     public Unit squadLeader;
 
-    [Header("Explorer Specific Stats")]
-    // How much faster this explorer moves while sprinting.
-    public float sprintMultiplier = 2f;
+    // [Header("Explorer Specific Stats")]
+    // // How much faster this explorer moves while sprinting.
+    // public float sprintMultiplier = 2f;
 
-    // How much slower this explorer moves while stealthing.
-    public float stealthMultiplier = 0.5f;
+    // // How much slower this explorer moves while stealthing.
+    // public float stealthMultiplier = 0.5f;
 
     [Header("States")]
     // Are we currently going toward a specific destination?
@@ -525,6 +525,11 @@ public partial class Unit
     // Sprint
     public void Sprint()
     {
+        float sprintMultiplier = 2f;
+
+        if (myName == "Roaming Warrior")
+            sprintMultiplier *= 2f;
+
         // Add speed modifier.
         speedModifiers["Sprint"] = sprintMultiplier;
 
@@ -546,6 +551,8 @@ public partial class Unit
     {
         // Set bool.
         isStealthing = true;
+
+        float stealthMultiplier = 0.5f;
 
         // Add speed modifier.
         speedModifiers["Stealth"] = stealthMultiplier;
