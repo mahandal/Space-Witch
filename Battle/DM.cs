@@ -116,6 +116,9 @@ public class DM : MonoBehaviour
 
         // + Initialize each leader.
 
+        // Load evil leader's name and portrait.
+        evilLeader.LoadVillain();
+
         // Copy your decklist into your deck.
         goodLeader.deck = new List<string>(MenuManager.I.saveData.decklist);
 
