@@ -59,9 +59,6 @@ public class StarManager : MonoBehaviour
     // The background image for the planet.
     public Image planetBackground;
 
-    // The cards available to add to your deck on this planet.
-    public List<CardOnPlanet> cardsOnPlanet;
-
     [Header("Victory")]
     public CanvasGroup victory;
 
@@ -323,24 +320,6 @@ public class StarManager : MonoBehaviour
         // Load background image.
         Utility.LoadImage(planetBackground, "Planets/" + p.myName);
 
-        // Load the planet's cards.
-        List<string> planetCards = GetPlanetCards(true);
-        for (int i = 0; i < cardsOnPlanet.Count; i++)
-        {
-            // Check if the planet has a card in this slot.
-            if (i < p.availableCards.Count)
-            {
-                // Load card.
-                cardsOnPlanet[i].LoadCard(planetCards[i]);
-                
-                // Make sure game object is active.
-                cardsOnPlanet[i].gameObject.SetActive(true);
-            } else {
-                // No card for this slot, hide this card.
-                cardsOnPlanet[i].gameObject.SetActive(false);
-            }
-        }
-
         // Go to the planet screen.
         planetScreen.SetActive(true);
     }
@@ -375,64 +354,6 @@ public class StarManager : MonoBehaviour
         // Return.
         return cardNames;
     }
-
-    // Get a random card from the current planet, weighted toward lower mana cost cards.
-    // public string GetRandomPlanetCard(bool includeHomeCards = false)
-    // {
-    //     // Get a list of names of the available cards for the current planet.
-    //     List<string> availableCards = GetPlanetCards(includeHomeCards);
-
-    //     // Build a weighted list of cards, using 1/manaCost as the weight.
-    //     // This makes lower mana cost cards proportionally more likely to be drawn.
-    //     // e.g. a 2 mana card is 5x as likely as a 10 mana card.
-
-    //     // Count the total weight of all cards.
-    //     float totalWeight = 0f;
-
-    //     // Create a list of cards, paired with their weights.
-    //     List<(Card, float)> cardWeights = new List<(Card, float)>();
-
-    //     // Loop through each available card.
-    //     foreach (string name in availableCards)
-    //     {
-    //         // Get the card from the grimoire.
-    //         Card c = DM.I.grimoire[name];
-
-    //         // Initialize the card's weight.
-    //         float weight = 1f;
-
-    //         // Avoid dividing by zero.
-    //         if (c.manaCost != 0)
-    //             weight = 1f / c.manaCost;
-
-    //         // Add the card and its weight to our list.
-    //         cardWeights.Add((c, weight));
-
-    //         // Count up our total weight.
-    //         totalWeight += weight;
-    //     }
-
-    //     // Roll randomly along the total weight.
-    //     float roll = Random.Range(0f, totalWeight);
-
-    //     // Count how far into the card weights we have looked.
-    //     float cumulative = 0f;
-
-    //     // Look through each card.
-    //     foreach (var (c, weight) in cardWeights)
-    //     {
-    //         // Accumulate weight.
-    //         cumulative += weight;
-
-    //         // Check if we have reached our roll yet.
-    //         if (roll < cumulative)
-    //             return c.myName;
-    //     }
-
-    //     // Should not reach here!
-    //     Debug.LogWarning("Failed to select a random planet card! Returning first planet card: " + availableCards[0]);
-    //     return availableCards[0];
-    // }
 
     // + End game
 
