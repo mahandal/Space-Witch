@@ -49,7 +49,8 @@ public class Gatherable : MonoBehaviour
             GM.I.GainCredits(credits);
 
             // Pop this item.
-            Destroy(gameObject);
+            gameObject.SetActive(false);
+            // Destroy(gameObject);
         }
     }
 }
