@@ -113,12 +113,12 @@ public partial class Leader : MonoBehaviour
         reservesDepleted = false;
 
         // + Starting health.
-        float startingHealth = DM.I.startingHealth;
+        int startingHealth = DM.I.startingHealth;
 
         // + Hero Ability: Wubalin Brightforge
         // Gain +30% health.
         if (homeStar.myName == "Bedegraine")
-            startingHealth *= 1.3f;
+            startingHealth = Mathf.RoundToInt(startingHealth * 1.3f);
 
         // Set our starting health.
         SetHealth(startingHealth);
@@ -313,11 +313,8 @@ public partial class Leader : MonoBehaviour
             // Draw the top card off your deck.
             cardName = Utility.Pop(deck);
 
-            // Get the card, using its name.
-            Card card = DM.I.Grimoire(cardName);
-
             // Load the card into your hand!
-            cardInHand.LoadCard(card);
+            cardInHand.LoadCard(cardName);
         }
         else
         {
@@ -328,13 +325,9 @@ public partial class Leader : MonoBehaviour
             {
                 // Get a random reinforcement.
                 cardName = DrawReinforcement();
-                // cardName = StarManager.I.GetRandomPlanetCard(good);
-
-                // Get the card, using its name.
-                Card card = DM.I.Grimoire(cardName);
 
                 // Load the card into your hand!
-                cardInHand.LoadCard(card);
+                cardInHand.LoadCard(cardName);
             }
             else
             {
@@ -504,6 +497,9 @@ public partial class Leader : MonoBehaviour
         // Instantiate a new copy of the unit, as a child of this leader.
         Unit newUnit = Object.Instantiate(progenitor, transform);
 
+        // Set name.
+        newUnit.myName = unitName;
+
         // If card is a structure, link tile to structure.
         if (card.cardType == "Structure")
             tile.structure = newUnit;
@@ -542,6 +538,14 @@ public partial class Leader : MonoBehaviour
 
         // Hide (to deploy in).
         Utility.SetOpacity(newUnit.spriteRenderer, 0f);
+
+        // Level up?
+        newUnit.level = 1;
+        int levelShouldBe = newUnit.GetLevel();
+        while (newUnit.level < levelShouldBe)
+        {
+            newUnit.LevelUp(false);
+        }
 
         // OnPlayed triggers.
         OnPlayed(newUnit);
@@ -794,7 +798,7 @@ public partial class Leader : MonoBehaviour
 
     // Set health.
     // Used at the beginning of the game to initialize starting health.
-    public void SetHealth(float newHealth)
+    public void SetHealth(int newHealth)
     {
         // Set our health.
         health = newHealth;
@@ -802,8 +806,8 @@ public partial class Leader : MonoBehaviour
         // Set health for vital units.
         foreach (Unit unit in vitalUnits)
         {
-            unit.maxHealth = health;
-            unit.currentHealth = health;
+            unit.maxHealth = newHealth;
+            unit.currentHealth = newHealth;
         }
     }
 

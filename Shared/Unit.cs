@@ -167,6 +167,9 @@ public partial class Unit : MonoBehaviour
     // Who hits first is another question entirely!
     private float CalculateAttackTime()
     {
+        // + Get base name.
+        string baseName = GetBaseName();
+
         // + Find unit's attacks.
         // Get this unit's animation clips.
         AnimationClip[] clips = animator.runtimeAnimatorController.animationClips;
@@ -176,7 +179,7 @@ public partial class Unit : MonoBehaviour
         {
             // Check if this is our attack animation.
             // Note: All unit attack animations must be strictly named, because of this line here!
-            string attackAnimationName = myName.Replace(" ", "") + "Attack";
+            string attackAnimationName = baseName.Replace(" ", "") + "Attack";
             if (clip.name == attackAnimationName)
             {
                 // Count how many attacks we have.
@@ -246,6 +249,35 @@ public partial class Unit : MonoBehaviour
         // + Battle
         if (DM.I.gameObject.activeSelf)
             RegisterWithDM();
+    }
+
+    // Get base name.
+    // Parse myName to ignore 'Level X' at the beginning for higher level units.
+    public string GetBaseName()
+    {
+        // Split name into parts.
+        string[] parts = myName.Split(' ', 3);
+
+        // Check if the card name has a level.
+        if (parts[0] == "Level")
+            return parts[2];
+        else
+            return myName;
+    }
+
+    // Get level.
+    // Parse myName to find if it starts with 'Level X' and if so to return X.
+    // If no level is found, return 1.
+    public int GetLevel()
+    {
+        // Split name into parts.
+        string[] parts = myName.Split(' ', 3);
+
+        // Check if the card name has a level.
+        if (parts[0] == "Level")
+            return int.Parse(parts[1]);
+        else
+            return 1;
     }
 
     // Register with DM.
@@ -333,6 +365,9 @@ public partial class Unit : MonoBehaviour
             {
                 // Set state.
                 state = 1;
+
+                // Set health cleanly to max health.
+                currentHealth = maxHealth;
 
                 // Set color.
                 spriteRenderer.color = Color.white;
@@ -924,8 +959,8 @@ public partial class Unit : MonoBehaviour
 
     // + Levels
     // Gain a level, increasing damage, health, and size.
-    // Also teleports back to base.
-    public void LevelUp()
+    // If in battle, also teleports back to base and updates name.
+    public void LevelUp(bool inBattle = true)
     {
         // Gain a level.
         level++;
@@ -940,8 +975,15 @@ public partial class Unit : MonoBehaviour
         // Increase size by 3%.
         transform.localScale *= 1.03f;
 
-        // Teleport back to base.
-        TeleportToBase();
+        // In battle?
+        if (inBattle)
+        {
+            // Teleport back to base.
+            TeleportToBase();
+
+            // Update name.
+            myName = "Level " + level + " " + GetBaseName();
+        }
     }
 
     // Teleport this unit to its base.

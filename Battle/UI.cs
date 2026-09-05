@@ -81,9 +81,14 @@ public class UI : MonoBehaviour
     // The background image for the tooltip.
     public Image tooltipBackgroundImage;
 
-    [Header("Auto Pilot")]
-    public Button autoPilotOn;
-    public Button autoPilotOff;
+    // The current health text in the tooltip.
+    public TMP_Text tooltipCurrentHealth;
+
+    // The max health text in the tooltip.
+    public TMP_Text tooltipMaxHealth;
+
+    // The health fill for the tooltip.
+    public Image tooltipHealthFill;
 
     [Header("Post game")]
     // The parent object for the victory post game screen.
@@ -108,12 +113,6 @@ public class UI : MonoBehaviour
             I = this;
         else
             Destroy(this);
-
-        // Start auto pilot off.
-        // B_AutoPilotOff();
-
-        autoPilotOn.gameObject.SetActive(false);
-        autoPilotOff.gameObject.SetActive(false);
 
         // Make sure fog of war is on!
         fogOfWar.gameObject.SetActive(true);
@@ -385,42 +384,13 @@ public class UI : MonoBehaviour
         DM.I.goodLeader.Discard(InputBattle.I.selectedCard.index);
     }
 
-    // Button pressed: Auto Pilot On
-    public void B_AutoPilotOn()
-    {
-        // Enable auto pilot.
-        DM.I.goodLeader.autoPilot = true;
-
-        // Disable auto pilot on button.
-        autoPilotOn.gameObject.SetActive(false);
-
-        // Enable auto pilot off button.
-        autoPilotOff.gameObject.SetActive(true);
-    }
-
-    // Button pressed: Auto Pilot Off
-    public void B_AutoPilotOff()
-    {
-        // Disable auto pilot.
-        DM.I.goodLeader.autoPilot = false;
-
-        // Disable auto pilot off button.
-        autoPilotOff.gameObject.SetActive(false);
-
-        // Enable auto pilot on button.
-        autoPilotOn.gameObject.SetActive(true);
-    }
-
     // + Tooltip
 
     // Load a unit into the tooltip.
     public void ShowTooltip(Unit unit)
     {
         // Set the name.
-        if (unit.level > 1)
-            tooltipName.text = "Level " + unit.level + " " + unit.myName;
-        else
-            tooltipName.text = unit.myName;
+        tooltipName.text = unit.myName;
 
         // Set the mana cost.
         tooltipMana.text = unit.manaCost.ToString();
@@ -435,10 +405,22 @@ public class UI : MonoBehaviour
         Utility.LoadImage(tooltipRoleImage, "Roles/" + unit.role);
 
         // Load the main art image.
-        Utility.LoadImage(tooltipImage, "Cards/" + unit.myName);
+        Utility.LoadImage(tooltipImage, "Cards/" + unit.GetBaseName());
 
         // Load the background image.
-        Utility.LoadImage(tooltipBackgroundImage, "Cards/" + unit.myName);
+        Utility.LoadImage(tooltipBackgroundImage, "Cards/" + unit.GetBaseName());
+
+        // Set the current health.
+        tooltipCurrentHealth.text = unit.currentHealth.ToString("0");
+
+        // Set the max health.
+        tooltipMaxHealth.text = unit.maxHealth.ToString("0");
+
+        // Get their percent health.
+        float healthPercent = unit.currentHealth / unit.maxHealth;
+
+        // Set health fill.
+        tooltipHealthFill.fillAmount = healthPercent;
 
         // Reveal the tooltip.
         tooltip.alpha = 1f;

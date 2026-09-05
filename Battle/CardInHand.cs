@@ -269,17 +269,8 @@ public class CardInHand : MonoBehaviour, IPointerEnterHandler, IPointerExitHandl
         // Get the card from the grimoire.
         Card card = DM.I.Grimoire(cardName);
 
-        // Card card = DM.I.grimoire[cardName];
-
-        // Delegate to below!
-        LoadCard(card);
-    }
-
-    // Load a card into this position.
-    public void LoadCard(Card card)
-    {
         // Set name.
-        myName = card.myName;
+        myName = cardName;
         nameText.text = myName;
 
         // Set mana cost.

@@ -215,27 +215,27 @@ public class ExploreUI : MonoBehaviour
         interactCredits.text = e.creditCost.ToString();
         interactDescription.text = e.description;
 
-        // Load image.
-        Utility.LoadImage(interactPortrait, "Cards/" + e.myName);
+        // Load portrait.
+        Utility.LoadImage(interactPortrait, "Cards/" + e.GetBaseName());
 
         // Load background, using current planet.
         Utility.LoadImage(interactBackground, "Planets/" + StarManager.I.GetCurrentPlanetName());
 
         // Get progenitor.
-        Unit p = Progenitors.I.GetProgenitor(e.myName);
+        // Unit p = Progenitors.I.GetProgenitor(e.myName);
 
         // Load progenitor's details.
-        interactCardType.text = p.cardType;
-        interactRole.text = p.role;
-        interactManaCost.text = p.manaCost.ToString();
-        interactDeployTime.text = p.deployTime.ToString();
-        interactHealth.text = p.maxHealth.ToString();
-        interactArmor.text = p.armor.ToString();
-        interactVision.text = p.vision.ToString();
-        interactSpeed.text = p.speed.ToString();
-        interactDamage.text = p.damage.ToString();
-        interactAttackTime.text = "per " + p.attackTime.ToString() + " seconds";
-        interactRange.text = p.range.ToString();
+        interactCardType.text = e.cardType;
+        interactRole.text = e.role;
+        interactManaCost.text = e.manaCost.ToString("0");
+        interactDeployTime.text = e.deployTime.ToString("0");
+        interactHealth.text = e.maxHealth.ToString("0");
+        interactArmor.text = e.armor.ToString("0");
+        interactVision.text = e.vision.ToString("0.0");
+        interactSpeed.text = e.speed.ToString("0.0");
+        interactDamage.text = e.damage.ToString("0.0");
+        interactAttackTime.text = "per " + e.attackTime.ToString("0.0") + " seconds";
+        interactRange.text = e.range.ToString("0.0");
 
         // TBD: Keywords
 
@@ -291,17 +291,14 @@ public class ExploreUI : MonoBehaviour
             tooltipCredits.text = unit.creditCost.ToString();
 
         // Load main art image.
-        Utility.LoadImage(tooltipImage, "Cards/" + unit.myName);
+        Utility.LoadImage(tooltipImage, "Cards/" + unit.GetBaseName());
 
         // Load background image.
-        Utility.LoadImage(tooltipBackground, "Cards/" + unit.myName);
+        Utility.LoadImage(tooltipBackground, "Cards/" + unit.GetBaseName());
 
         // Reveal both sides.
         tooltipLeftParent.SetActive(true);
         tooltipRightParent.SetActive(true);
-
-        // Reveal tooltip.
-        // tooltip.alpha = 1f;
     }
 
     // Load a region's description into the tooltip.

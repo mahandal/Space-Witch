@@ -147,6 +147,14 @@ public partial class Unit
         // Set collider size.
         collider.offset = p.collider.offset;
         collider.size = p.collider.size;
+
+        // Level up?
+        level = 1;
+        int levelShouldBe = GetLevel();
+        while (level < levelShouldBe)
+        {
+            LevelUp(false);
+        }
     }
 
     // +++ Exploring!

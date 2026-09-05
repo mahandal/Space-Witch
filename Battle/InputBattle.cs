@@ -180,8 +180,6 @@ public class InputBattle : MonoBehaviour
         // Check if we're hovering anything.
         if (hit != null)
         {
-            Debug.Log("Hovering: " + hit.name);
-
             // Check if we found a unit.
             hoveredUnit = hit.GetComponent<Unit>();
 
