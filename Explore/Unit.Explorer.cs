@@ -149,7 +149,7 @@ public partial class Unit
         collider.size = p.collider.size;
 
         // Level up?
-        level = 1;
+        // level = 1;
         int levelShouldBe = GetLevel();
         while (level < levelShouldBe)
         {
@@ -535,7 +535,7 @@ public partial class Unit
     {
         float sprintMultiplier = 2f;
 
-        if (myName == "Roaming Warrior")
+        if (GetBaseName() == "Roaming Warrior")
             sprintMultiplier *= 2f;
 
         // Add speed modifier.
