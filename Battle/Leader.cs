@@ -21,7 +21,10 @@ public partial class Leader : MonoBehaviour
 
     [Header("Health")]
     // How much health this leader has remaining.
-    public float health = 100;
+    public float currentHealth = 100;
+
+    // The maximum amount of health this leader may have.
+    public int maxHealth = 500;
 
     // A list of vital units that share health with the leader.
     // Hard-coded to include dragon statues.
@@ -30,6 +33,19 @@ public partial class Leader : MonoBehaviour
     [Header("Flowers")]
     // How many flowers this leader has gathered.
     public int flowersGathered = 0;
+
+    [Header("Powers")]
+    // How many power charges this leader currently has.
+    public int powerCharges = 0;
+
+    // The maximum number of power charges this leader may store at one time.
+    public int maxPowerCharges = 5;
+
+    // How long it takes to charge up one use of our hero power.
+    public float powerChargeTime = 13f;
+
+    // The timer tracking how long until we charge up a new use of our hero power.
+    public float powerChargeTimer = 0f;
 
     [Header("Mana")]
     // How much mana this leader currently has.
@@ -87,6 +103,8 @@ public partial class Leader : MonoBehaviour
         signatureCards = bio.signatureCards;
         signatureCooldowns = bio.signatureCooldowns;
         reinforcements = bio.reinforcements;
+        maxPowerCharges = bio.maxPowerCharges;
+        powerChargeTime = bio.powerChargeTime;
     }
 
     // Load the local villain.
@@ -113,18 +131,26 @@ public partial class Leader : MonoBehaviour
         reservesDepleted = false;
 
         // + Starting health.
-        int startingHealth = DM.I.startingHealth;
+        maxHealth = DM.I.startingHealth;
+        currentHealth = maxHealth;
 
         // + Hero Ability: Wubalin Brightforge
         // Gain +30% health.
         if (homeStar.myName == "Bedegraine")
-            startingHealth = Mathf.RoundToInt(startingHealth * 1.3f);
+        {
+            maxHealth = Mathf.RoundToInt(DM.I.startingHealth * 1.3f);
+            currentHealth = maxHealth;
+        }
 
         // Set our starting health.
-        SetHealth(startingHealth);
+        SetHealth(maxHealth);
 
         // Reset flowers gathered.
         flowersGathered = 0;
+
+        // Reset power charges.
+        powerCharges = 0;
+        powerChargeTimer = powerChargeTime;
 
         // Set our starting mana.
         mana = 0;
@@ -261,6 +287,19 @@ public partial class Leader : MonoBehaviour
                 // Auto play the card.
                 AutoPlayCard(cardName, true);
             }
+        }
+
+        // + Powers
+        powerChargeTimer -= Time.fixedDeltaTime;
+
+        if (powerChargeTimer <= 0f)
+        {
+            // Gain a power charge.
+            if (powerCharges < maxPowerCharges)
+                powerCharges++;
+
+            // Reset power charge timer.
+            powerChargeTimer = powerChargeTime;
         }
             
 
@@ -741,7 +780,7 @@ public partial class Leader : MonoBehaviour
                 LoseHealth(source.currentHealth);
             // Gatherer - Lose flowers.
             if (DM.I.way == "Gatherer")
-                flowersGathered -= Mathf.CeilToInt(source.damage);
+                flowersGathered -= 1;
 
             // Charm (without healing).
             source.ChangeSides(false);
@@ -763,16 +802,16 @@ public partial class Leader : MonoBehaviour
         thinkTimer = 0f;
 
         // Lose health.
-        health -= healthLost;
+        currentHealth -= healthLost;
 
         // Set health for vital units.
         foreach (Unit unit in vitalUnits)
         {
-            unit.currentHealth = health;
+            unit.currentHealth = currentHealth;
         }
 
         // Defeat?
-        if (health <= 0f)
+        if (currentHealth <= 0f)
         {
             // When a good leader dies, that's a loss!
             // When an evil leader dies, that's a win!
@@ -787,12 +826,16 @@ public partial class Leader : MonoBehaviour
     public void GainHealth(float healthGained)
     {
         // Gain health.
-        health += healthGained;
+        currentHealth += healthGained;
+
+        // Max health.
+        if (currentHealth > maxHealth)
+            currentHealth = maxHealth;
 
         // Set health for vital units.
         foreach (Unit unit in vitalUnits)
         {
-            unit.currentHealth = health;
+            unit.currentHealth = currentHealth;
         }
     }
 
@@ -801,7 +844,7 @@ public partial class Leader : MonoBehaviour
     public void SetHealth(int newHealth)
     {
         // Set our health.
-        health = newHealth;
+        currentHealth = newHealth;
 
         // Set health for vital units.
         foreach (Unit unit in vitalUnits)

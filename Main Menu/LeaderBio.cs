@@ -14,14 +14,20 @@ public class LeaderBio : MonoBehaviour
     [TextArea(10, 30)]
     public string description;
 
-    // The description of the leader's active ability.
-    [TextArea(5, 30)]
-    public string abilityDescription;
-
     // The description of the leader's passive ability.
     [TextArea(5, 30)]
     public string statsDescription;
 
+    [Header("Power")]
+    // The description of the leader's active ability.
+    [TextArea(5, 30)]
+    public string abilityDescription;
+
+    // The maximum number of charges this leader may store of their power at a time.
+    public int maxPowerCharges = 5;
+
+    // The number of seconds it takes to charge a use of this hero's power.
+    public float powerChargeTime = 13f;
 
     [Header("Signature Cards")]
     // The unit this leader plays as.

@@ -4,14 +4,13 @@ public partial class Leader
 {
     // + Morgan le Fey
     // Charm the target.
-    // Costs mana, equal to the target's mana cost.
     public void MorganCharm(Unit target)
     {
-        // Fail if not enough mana.
-        if (mana < target.manaCost) return;
+        // Check charges.
+        if (powerCharges <= 0) return;
 
-        // Spend mana.
-        mana -= target.manaCost;
+        // Spend charge.
+        powerCharges--;
 
         // Charm!
         target.ChangeSides(false);
@@ -19,56 +18,65 @@ public partial class Leader
 
     // + Wubalin Brightforge
     // Shoot the target.
-    // Costs 1 mana.
     public void WubalinShoot(Unit target)
     {
-        // Fail if not enough mana.
-        if (mana < 1) return;
+        // Check charges.
+        if (powerCharges <= 0) return;
 
-        // Spend mana.
-        mana -= 1;
+        // Spend charge.
+        powerCharges--;
 
         // Stun.
         target.Stun();
 
         // Deal 10 damage.
-        target.LoseHealth(10);
+        target.LoseHealth(20);
     }
 
     // + Sybil Solisi
     // Heal the target.
-    // Costs 1 mana.
     public void SybilHeal(Unit target)
     {
-        // Fail if not enough mana.
-        if (mana < 1) return;
+        // Avoid wasting charges on full health targets.
+        if (target.currentHealth >= target.maxHealth) return;
 
-        // Spend mana.
-        mana -= 1;
+        // Check charges.
+        if (powerCharges <= 0) return;
+
+        // Spend charge.
+        powerCharges--;
 
         // Unstun?
         target.Unstun();
 
         // Heal 10 health.
-        target.GainHealth(10);
+        target.GainHealth(20);
     }
 
     // + Markaus Allstrong
-    // Deal 1 damage to the target.
-    // Costs 1 health.
+    // Punch the target.
     public void MarkausPunch(Unit target)
     {
-        // Lose health.
-        LoseHealth(1);
+        // Check charges.
+        if (powerCharges <= 0) return;
+
+        // Spend charge.
+        powerCharges--;
 
         // Deal damage.
-        target.LoseHealth(1);
+        target.LoseHealth(2);
     }
 
     // + Shruk
     // Consume an item.
     public void ShrukEat(Unit target)
     {
+        // Check charges.
+        if (powerCharges <= 0) return;
+
+        // Spend charge.
+        powerCharges--;
+
         // Gain mana.
         mana += target.manaCost;
 
@@ -81,33 +89,30 @@ public partial class Leader
 
     // + Gatama the Seer
     // Heal the target for 1 health.
-    // Costs 1 health.
     public void GatamaHeal(Unit target)
     {
-        // Lose health.
-        LoseHealth(1);
+        // Avoid wasting charges on full health targets.
+        if (target.currentHealth >= target.maxHealth) return;
+        
+        // Check charges.
+        if (powerCharges <= 0) return;
+
+        // Spend charge.
+        powerCharges--;
 
         // Heal target.
-        target.GainHealth(1);
+        target.GainHealth(2);
     }
 
     // + Penelope
     // Eat the target.
-    // Costs mana, equal to the target's mana cost times its current health percent (rounded up).
     public void PenEat(Unit target)
     {
-        // Get target's health percent.
-        // float healthPercent = target.currentHealth / target.maxHealth;
+        // Check charges.
+        if (powerCharges <= 0) return;
 
-        // Get mana needed to eat target.
-        // int manaNeeded = Mathf.CeilToInt(target.manaCost * healthPercent);
-
-        // Fail if not enough mana.
-        // TBD: Meep merp!
-        if (mana < target.manaCost) return;
-
-        // Spend mana.
-        mana -= target.manaCost;
+        // Spend charge.
+        powerCharges--;
 
         // Gain health?
         GainHealth(target.currentHealth);
@@ -118,11 +123,13 @@ public partial class Leader
 
     // Guinevere
     // Speed or slow cards deploying.
-    // Costs health, equal to the card's deploy time.
     public void GuinevereSing(Unit target)
     {
-        // Spend health.
-        LoseHealth(target.deployTimer);
+        // Check charges.
+        if (powerCharges <= 0) return;
+
+        // Spend charge.
+        powerCharges--;
 
         // Ally cards are deployed twice as fast.
         // Enemy cards are deployed half as fast.
@@ -133,16 +140,25 @@ public partial class Leader
     }
 
     // Lancelot
-    // Sacrifice a unit, killing it immediately to gain mana equal to its cost.
+    // Sacrifice a unit to gain mana and health.
     public void Sacrifice(Unit victim)
     {
         // Can't sacrifice your base!
         if (victim.role == "Base") return;
+
+        // Check charges.
+        if (powerCharges <= 0) return;
+
+        // Spend charge.
+        powerCharges--;
         
         // Kill victim.
         victim.BeginDying();
 
         // Gain mana.
         mana += victim.manaCost;
+
+        // Gain health.
+        GainHealth(victim.currentHealth);
     }
 }

@@ -2,11 +2,42 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 using System.Collections.Generic;
+using System.Text;
 
 public class Utility : MonoBehaviour
 {
     // + Simple helper functions.
 
+    // Convert an int to roman numeral format.
+    public static string ToRomanNumeral(int number)
+    {
+        // 0.
+        if (number == 0)
+            return "";
+
+        // Out of bounds.
+        if (number < 0 || number > 3999)
+        {
+            Debug.LogError("Failing to convert int to roman numeral: " + number);
+            return "";
+        }
+
+        int[] values =    { 1000, 900, 500, 400, 100, 90, 50, 40, 10, 9, 5, 4, 1 };
+        string[] symbols = { "M",  "CM", "D", "CD", "C", "XC", "L", "XL", "X", "IX", "V", "IV", "I" };
+
+        var sb = new StringBuilder();
+        for (int i = 0; i < values.Length; i++)
+        {
+            while (number >= values[i])
+            {
+                number -= values[i];
+                sb.Append(symbols[i]);
+            }
+        }
+        return sb.ToString();
+    }
+
+    // Shuffle a list.
     public static List<T> Shuffle<T>(List<T> list)
     {
         List<T> shuffled = new List<T>(list);

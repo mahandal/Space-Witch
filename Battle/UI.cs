@@ -7,6 +7,13 @@ public class UI : MonoBehaviour
     [Header("Battle Background")]
     public SpriteRenderer battleBackground;
 
+    [Header("Power Charges")]
+    // The text object showing how many power charges the player currently has.
+    public TMP_Text powerCharges;
+
+    // The bar showing how long until the player charges up a new use of their hero power.
+    public Image powerChargeBar;
+
     [Header("Mana")]
     // The text object displaying how much mana the player currently has.
     public TMP_Text manaText;
@@ -156,8 +163,8 @@ public class UI : MonoBehaviour
             evilHealth.color = Color.red;
 
             // Set max health text.
-            goodMaxHealth.text = DM.I.goodLeader.health.ToString("0");
-            evilMaxHealth.text = DM.I.evilLeader.health.ToString("0");
+            goodMaxHealth.text = DM.I.goodLeader.maxHealth.ToString("0");
+            evilMaxHealth.text = DM.I.evilLeader.maxHealth.ToString("0");
         }
 
         // Gatherer
@@ -186,6 +193,9 @@ public class UI : MonoBehaviour
 
         // Update mana.
         UpdateMana();
+
+        // Update power charges.
+        UpdatePowerCharges();
 
         // + Top bar
         // Hunter - Update health.
@@ -236,6 +246,23 @@ public class UI : MonoBehaviour
         }
     }
 
+    // Update the player's power charge bar to show progress toward gaining a power charge,
+    // as well as showing how many power charges are available.
+    void UpdatePowerCharges()
+    {
+        // Get player charge count in roman numeral format.
+        string romanNumerals = Utility.ToRomanNumeral(DM.I.goodLeader.powerCharges);
+
+        // Set text.
+        powerCharges.text = romanNumerals;
+
+        // Get percent to next power charge.
+        float percentCharged = 1f - (DM.I.goodLeader.powerChargeTimer / DM.I.goodLeader.powerChargeTime);
+
+        // Set fill.
+        powerChargeBar.fillAmount = percentCharged;
+    }
+
     // Update the player's mana icon to show progress toward gaining mana,
     // as well as updating the mana text when mana is gained or spent.
     void UpdateMana()
@@ -255,26 +282,20 @@ public class UI : MonoBehaviour
     {
         // + Good
         // Set good current health.
-        goodCurrentHealth.text = DM.I.goodLeader.health.ToString("0");
-
-        // Get good max health.
-        float goodMax = float.Parse(goodMaxHealth.text);
+        goodCurrentHealth.text = DM.I.goodLeader.currentHealth.ToString("0");
 
         // Get percentage of good leader's health.
-        float goodPercent = DM.I.goodLeader.health / goodMax;
+        float goodPercent = DM.I.goodLeader.currentHealth / DM.I.goodLeader.maxHealth;
 
         // Set fill.
         goodHealth.fillAmount = goodPercent;
 
         // + Evil
         // Set evil current health.
-        evilCurrentHealth.text = DM.I.evilLeader.health.ToString("0");
-
-        // Get evil max health.
-        float evilMax = float.Parse(evilMaxHealth.text);
+        evilCurrentHealth.text = DM.I.evilLeader.currentHealth.ToString("0");
 
         // Get percentage of evil leader's health.
-        float evilPercent = DM.I.evilLeader.health / evilMax;
+        float evilPercent = DM.I.evilLeader.currentHealth / DM.I.evilLeader.maxHealth;
 
         // Set fill.
         evilHealth.fillAmount = evilPercent;
