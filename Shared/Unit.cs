@@ -212,31 +212,11 @@ public partial class Unit : MonoBehaviour
     // Awaken!
     void Awake()
     {
-        // Set deploy timer.
-        // deployTimer = deployTime;
-
         // Set vision circle size.
         SetVision(vision);
 
         // Hide vision, until deployment finishes.
         visionCircle.gameObject.SetActive(false);
-
-        // + Laser
-        // Set up attack line renderer.
-        /*
-        if (keywords.Contains("Laser"))
-        {
-            attackLine = gameObject.AddComponent<LineRenderer>();
-            attackLine.positionCount = 2;
-            attackLine.startWidth = 0.05f;
-            attackLine.endWidth = 0.05f;
-            attackLine.material = new Material(Shader.Find("Sprites/Default"));
-            attackLine.startColor = Color.red;
-            attackLine.endColor = Color.red;
-            attackLine.sortingOrder = 1000;
-            attackLine.enabled = false;
-        }
-        */
     }
 
     // Start er up!
@@ -784,6 +764,13 @@ public partial class Unit : MonoBehaviour
     // Gain health.
     public void GainHealth(float healthGained, Unit source = null)
     {
+        // Vital(?)
+        if (GetLeader().vitalUnits.Contains(this))
+        {
+            GetLeader().GainHealth(healthGained);
+            return;
+        }
+
         // Gain health.
         currentHealth += healthGained;
 
