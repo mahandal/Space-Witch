@@ -87,7 +87,7 @@ public class DM : MonoBehaviour
     }
 
     // Begin a battle, following the way of the hunter.
-    // Called from Explore/Region.cs
+    // Called from Explore/Region.cs and Star Map/StarManager.cs
     public void BeginHunt()
     {
         // Set way.

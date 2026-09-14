@@ -91,14 +91,6 @@ public class Region : MonoBehaviour
 
             if (myType == "Way of the Gatherer")
                 DM.I.BeginGathering();
-
-            // Battle
-            // if (myType == "Battle")
-            //     DM.I.BeginBattle();
-
-            // // Harmony
-            // if (myType == "Harmony")
-            //     HM.I.BeginHarmony();
         }
     }
 

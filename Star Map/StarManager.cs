@@ -59,6 +59,13 @@ public class StarManager : MonoBehaviour
     // The background image for the planet.
     public Image planetBackground;
 
+    [Header("Recruitment (for fighting)")]
+    // The parent object for the recruitment screen.
+    public GameObject recruitmentScreen;
+
+    // Recruitment packs.
+    public List<Pack> packs;
+
     [Header("Victory")]
     public CanvasGroup victory;
 
@@ -79,11 +86,15 @@ public class StarManager : MonoBehaviour
         // Hide what should not be.
         planetScreen.SetActive(false);
         victory.gameObject.SetActive(false);
+        recruitmentScreen.SetActive(false);
     }
 
     // Open the star map screen.
     public void GoToStarMap(bool fromMainMenu = false)
     {
+        // Disable recruitment screen.
+        recruitmentScreen.SetActive(false);
+
         // Find which star we are on.
         currentStar = FindCurrentStar();
 
@@ -269,14 +280,8 @@ public class StarManager : MonoBehaviour
         DM.I.evilLeader.LoadBio(evilBio);
     }
 
-    // + Planets
 
-    // Explore the current planet.
-    public void Explore()
-    {
-        // Go to explore!
-        MenuManager.I.GoToExplore();
-    }
+    // + Planets
 
     // Get a list of all planets in the current sector.
     public List<Planet> GetAllPlanets()
@@ -376,6 +381,54 @@ public class StarManager : MonoBehaviour
     }
 
     // + Buttons
+    // Explore the current planet.
+    public void B_Explore()
+    {
+        // Go to explore!
+        MenuManager.I.GoToExplore();
+    }
+
+    // Skip exploring, jump straight to the action!
+    public void B_Fight()
+    {
+        // + Generate new packs.
+
+        // Get home star.
+        Star homeStar = MainMenu.I.leaderBios[MenuManager.I.saveData.leaderName].homeStar;
+
+        // Generate home pack.
+        packs[0].GeneratePack(homeStar, planetIndex);
+        
+        // Generate local pack.
+        packs[1].GeneratePack(currentStar, planetIndex);
+
+        // Go to the recruitment screen.
+        recruitmentScreen.SetActive(true);
+    }
+
+    // Recruit a pack of cards and begin a battle.
+    public void B_Recruit(int option)
+    {
+        // Get the chosen pack.
+        Pack pack = packs[option];
+
+        // Add each card from the pack to our decklist.
+        foreach(MiniCard card in pack.minicards)
+        {
+            // Check if minicard is active.
+            if (card.gameObject.activeSelf)
+            {
+                // Get name.
+                string cardName = card.nameText.text;
+
+                // Add to decklist.
+                MenuManager.I.saveData.decklist.Add(cardName);
+            }
+        }
+       
+        // Begin the battle!
+        DM.I.BeginHunt();
+    }
 
     // Exit the game.
     public void B_Exit()
