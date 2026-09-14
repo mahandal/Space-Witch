@@ -632,12 +632,16 @@ public partial class Unit : MonoBehaviour
         // + Treasure?
         if (item.role == "Treasure")
         {
-            // Gain main.
+            // Gain mana.
             GetLeader().mana += item.manaCost;
 
             // Count flowers.
             if (item.myName == "Violet Flower")
                 GetLeader().flowersGathered++;
+
+            // Feedback for player.
+            if (good)
+                RisingText.Create(item.transform.position);
         }
         else
         {
