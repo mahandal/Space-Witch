@@ -27,13 +27,31 @@ public class Pack : MonoBehaviour
                 minicards[i].gameObject.SetActive(false);
 
             // Roll a random card.
-            int cardIndex = Random.Range(0, tier);
+            int cardIndex = Random.Range(0, tier + 1);
 
             // Get card name.
             string cardName = s.cards[cardIndex];
 
-            // Add level.
-            cardName = "Level 2 " + cardName;
+            // + Level
+            // Default to level 2.
+            int level = 2;
+
+            // Roll for higher level.
+            int d100 = Random.Range(1, 101);
+
+            // 80% level 2
+            // 15% level 3
+            // 4% level 4
+            // 1% level 5
+            if (d100 > 80 && d100 < 95)
+                level = 3;
+            else if (d100 >= 95 && d100 < 100)
+                level = 4;
+            else if (d100 == 100)
+                level = 5;
+
+            // Add level to name.
+            cardName = "Level " + level + " " + cardName;
 
             // Load minicard.
             minicards[i].LoadCard(cardName);
