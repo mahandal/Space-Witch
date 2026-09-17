@@ -41,19 +41,13 @@ public partial class Leader
         {
             // Play a signature card!
             PlaySignatureCard(cardName, tile);
-
-            // Put the unit directly into play!
-            // SpawnUnit(cardName, tile);
         } else {
             // Try to play the card.
             bool successfullyPlayedCard = AttemptPlayCard(indexOfNextCard, tile);
 
-            // Check if we were able to play the card successfully.
+            // If we were able to play the card, increment the index of the next card we want to play.
             if (successfullyPlayedCard)
-            {
-                // Increment the index of the next card we want to play.
                 IncrementIndexOfNextCard();
-            }    
         }        
     }
 
@@ -76,7 +70,8 @@ public partial class Leader
         bool enemyNear = IsInDeploymentZone(closestEnemy);
 
         // Do we have an item to protect?
-        if (items.Count > 0)
+        // (but don't just stack items!)
+        if (items.Count > 0 && card.cardType != "Item")
         {
             // Choose a random item, if we have multiple.
             int itemIndex = Random.Range(0, items.Count);
@@ -137,12 +132,15 @@ public partial class Leader
             // Skip if enemy is in our deployment zone.
             if (enemyNear)
             {
-                // Discard card.
+                // Check if it is a signature card, cause they should not affect your hand.
                 if (!signature)
+                {
+                    // Discard.
                     Discard(indexOfNextCard);
 
-                // Move on to the next card index.
-                IncrementIndexOfNextCard();
+                    // Move on to the next card index.
+                    IncrementIndexOfNextCard();
+                }   
 
                 // Return.
                 return null;
@@ -166,8 +164,15 @@ public partial class Leader
                 // If we can't find a spot, skip this card.
                 if (column < 0 || column >= DM.I.gridWidth)
                 {
-                    // Move on to the next card.
-                    IncrementIndexOfNextCard();
+                    // Move on to the next card (unless it's a signature card).
+                    if (!signature)
+                    {
+                        // Discard.
+                        Discard(indexOfNextCard);
+
+                        // Increment card index.
+                        IncrementIndexOfNextCard();
+                    }
 
                     // Return.
                     return null;
