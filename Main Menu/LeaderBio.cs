@@ -18,6 +18,10 @@ public class LeaderBio : MonoBehaviour
     [TextArea(5, 30)]
     public string statsDescription;
 
+    [Header("Explore")]
+    // The unit this leader plays as.
+    public string leaderUnit;
+
     [Header("Power")]
     // The description of the leader's active ability.
     [TextArea(5, 30)]
@@ -30,8 +34,6 @@ public class LeaderBio : MonoBehaviour
     public float powerChargeTime = 13f;
 
     [Header("Signature Cards")]
-    // The unit this leader plays as.
-    public string leaderUnit;
 
     // This leader's signature cards.
     public List<string> signatureCards = new List<string>();
