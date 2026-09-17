@@ -60,6 +60,7 @@ public partial class Unit : MonoBehaviour
     // How many tiles away this unit can see.
     public float vision = 3f;
 
+    [Header("BAT (calculated)")]
     // How many seconds it takes for this unit to attack.
     // Note: Descriptive, not prescriptive! Meaning, you don't get to set it here and have that matter.
     // It is calculated using the animation times of the unit's sprite.
@@ -750,6 +751,9 @@ public partial class Unit : MonoBehaviour
 
             // Ignore deploying and dead units.
             if (unit.state < 1) continue;
+
+            // Ignore spells and items.
+            if (unit.cardType == "Spell" || unit.cardType == "Item") continue;
 
             // Add to list.
             nearbyEnemies.Add(unit);
