@@ -175,13 +175,45 @@ public class InputBattle : MonoBehaviour
 
         // + Tooltip
         // Look for a collider near our mouse.
-        Collider2D hit = Physics2D.OverlapPoint(mouseWorld, Constance.I.unitLayer);
+        Collider2D[] hits = Physics2D.OverlapPointAll(mouseWorld, Constance.I.unitLayer);
 
         // Check if we're hovering anything.
-        if (hit != null)
+        if (hits.Length > 0)
         {
-            // Check if we found a unit.
-            hoveredUnit = hit.GetComponent<Unit>();
+            // Remember the closest unit and their distance.
+            Unit closestUnit = null;
+            float closestDistance = float.MaxValue;
+
+            // Loop through each collider we're hovering.
+            foreach (Collider2D col in hits)
+            {
+                // Check if we found a unit.
+                Unit unit = col.GetComponent<Unit>();
+
+                if (unit != null)
+                {
+                    // Ignore deploying units.
+                    if (unit.state == 0) continue;
+                    
+                    // Get the distance between the unit and our mouse position.
+                    // Note: Idk if mouseScreen is gonna work for this right?
+                    float distance = Vector3.Distance(unit.transform.position, mouseScreen);
+
+                    // Check if it is our new closest.
+                    if (distance < closestDistance)
+                    {
+                        // Remember closest.
+                        closestUnit = unit;
+                        closestDistance = distance;
+                    }
+                }
+            }
+
+            // Set hovered unit.
+            hoveredUnit = closestUnit;
+
+            // // Check if we found a unit.
+            // hoveredUnit = hit.GetComponent<Unit>();
 
             // Show tooltip for units!
             // Hide tooltip if hovering something else.
