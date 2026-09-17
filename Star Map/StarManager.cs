@@ -216,10 +216,10 @@ public class StarManager : MonoBehaviour
         for (int i = 0; i < cardHints.Count; i++)
         {
             // Check if there is a card available for this slot.
-            if (i < prime.availableCards.Count)
+            if (i < star.cards.Count)
             {
                 // Get the card name.
-                string cardName = prime.availableCards[i];
+                string cardName = star.cards[i];
 
                 // Load the image.
                 Utility.LoadImage(cardHints[i], "Cards/" + cardName);
@@ -330,35 +330,35 @@ public class StarManager : MonoBehaviour
     }
 
     // Get a list of names of the cards available on the current planet.
-    public List<string> GetPlanetCards(bool includeHomeCards = false)
-    {
-        // Get current planet.
-        Planet p = GetCurrentPlanet();
+    // public List<string> GetPlanetCards(bool includeHomeCards = false)
+    // {
+    //     // Get current planet.
+    //     Planet p = GetCurrentPlanet();
 
-        // If we're not including home cards, just return the planet's list of cards.
-        if (!includeHomeCards)
-            return p.availableCards;
+    //     // If we're not including home cards, just return the planet's list of cards.
+    //     if (!includeHomeCards)
+    //         return p.availableCards;
 
-        // Initialize a new list of card names.
-        List<string> cardNames = new List<string>();
+    //     // Initialize a new list of card names.
+    //     List<string> cardNames = new List<string>();
 
-        // Iterate once per card on planet.
-        for (int i = 0; i < p.availableCards.Count; i++)
-        {
-            // Roll whether to use the local card or pull from your home star.
-            // Note: Local card actually pulls from current star, not planet.
-            int coinFlip = Random.Range(0, 2);
-            if (coinFlip == 0)
-                cardNames.Add(currentStar.cards[i]);
-            else if (coinFlip == 1)
-                cardNames.Add(DM.I.goodLeader.homeStar.cards[i]);
-            else
-                Debug.LogError("Do I not know how unity's random range works?");
-        }
+    //     // Iterate once per card on planet.
+    //     for (int i = 0; i < p.availableCards.Count; i++)
+    //     {
+    //         // Roll whether to use the local card or pull from your home star.
+    //         // Note: Local card actually pulls from current star, not planet.
+    //         int coinFlip = Random.Range(0, 2);
+    //         if (coinFlip == 0)
+    //             cardNames.Add(currentStar.cards[i]);
+    //         else if (coinFlip == 1)
+    //             cardNames.Add(DM.I.goodLeader.homeStar.cards[i]);
+    //         else
+    //             Debug.LogError("Do I not know how unity's random range works?");
+    //     }
 
-        // Return.
-        return cardNames;
-    }
+    //     // Return.
+    //     return cardNames;
+    // }
 
     // + End game
 
