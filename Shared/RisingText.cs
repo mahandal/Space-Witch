@@ -73,6 +73,13 @@ public class RisingText : MonoBehaviour
     // Fixed update!
     void FixedUpdate()
     {
+        // Pop when game is over.
+        if (MenuManager.I.gameState == 21)
+        {
+            Destroy(gameObject);
+            return;
+        }
+
         // Rise.
         transform.position += Vector3.up * speed * Time.fixedDeltaTime;
 
