@@ -419,19 +419,38 @@ public class DM : MonoBehaviour
     public void ResetBattleMap()
     {
         // Destroy all old units, except Dragon Statues which are reset to deploying.
-        // Good
+        // + Good
+
+        // Units
         foreach (Unit unit in GetAllGoodUnits())
         {
             unit.Death();
             // if (unit.myName != "Dragon Statue")
             //     unit.Death();
         }
-        // Evil
+
+        // Items
+        List<Unit> goodItems = new List<Unit>(goodLeader.items);
+        foreach (Unit item in goodItems)
+        {
+            item.Death();
+        }
+
+        // + Evil
+
+        // Units
         foreach (Unit unit in GetAllEvilUnits())
         {
             unit.Death();
             // if (unit.myName != "Dragon Statue")
             //     unit.Death();
+        }
+
+        // Items
+        List<Unit> evilItems = new List<Unit>(evilLeader.items);
+        foreach (Unit item in evilItems)
+        {
+            item.Death();
         }
 
         // Flowers
