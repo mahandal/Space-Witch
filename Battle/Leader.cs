@@ -551,7 +551,7 @@ public partial class Leader : MonoBehaviour
         float offset = progenitor.transform.position.y % 1f;
 
         // Modify offset by a slight random factor, so stacked units can be seen.
-        offset += Random.Range(-0.2f, 0.2f);
+        offset += Random.Range(-0.1f, 0.1f);
 
         // Get position.
         // (also offset horizontally by 0.5f to spawn in the center of the tile)
