@@ -953,22 +953,28 @@ public partial class Unit : MonoBehaviour
     }
 
     // + Levels
-    // Gain a level, increasing damage, health, and size.
+    // Gain a level, increasing damage, health, range, vision, and size.
     // If in battle, also teleports back to base and updates name.
     public void LevelUp(bool inBattle = true)
     {
         // Gain a level.
         level++;
 
-        // Increase damage by 30%.
-        damage *= 1.3f;
+        // Increase damage by 20%.
+        damage *= 1.2f;
 
-        // Increase health by 30%.
-        maxHealth *= 1.3f;
-        currentHealth *= 1.3f;
+        // Increase health by 20%.
+        maxHealth *= 1.2f;
+        currentHealth *= 1.2f;
 
-        // Increase size by 3%.
-        transform.localScale *= 1.03f;
+        // Increase range by 20%.
+        range *= 1.2f;
+
+        // Increase vision by 20%.
+        vision *= 1.2f;
+
+        // Increase size by 2%.
+        transform.localScale *= 1.02f;
 
         // In battle?
         if (inBattle)
