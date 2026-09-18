@@ -36,17 +36,20 @@ public class Spell : MonoBehaviour
         // + Cast spell
 
         // Charm
-        if (spell.myName == "Charm")
+        if (spell.GetBaseName() == "Charm")
         {
+            Debug.Log("Casting Charm!");
+
             // Charm all targets!
             foreach (Unit newFriend in targets)
             {
+                Debug.Log(newFriend.myName + " was charmed!");
                 newFriend.ChangeSides();
             }
         }
 
         // Toxic spores
-        if (spell.myName == "Toxic Spores")
+        if (spell.GetBaseName() == "Toxic Spores")
         {
             // Poison all targets.
             foreach (Unit target in targets)
@@ -56,7 +59,7 @@ public class Spell : MonoBehaviour
         }
 
         // Fireball
-        if (spell.myName == "Fireball")
+        if (spell.GetBaseName() == "Fireball")
         {
             // Damage all targets.
             foreach (Unit target in targets)
@@ -66,21 +69,29 @@ public class Spell : MonoBehaviour
         }
 
         // Summon Water Elemental
-        if (spell.myName == "Summon Water Elemental")
+        if (spell.GetBaseName() == "Summon Water Elemental")
         {
             // Change from spell to unit.
             spell.myName = "Water Elemental";
             spell.cardType = "Unit";
             spell.role = "Scout";
+
+            // Add level to name.
+            if (spell.level > 1)
+                spell.myName = "Level " + spell.level + " Water Elemental";
         }
 
         // Summon Ghost
-        if (spell.myName == "Summon Ghost")
+        if (spell.GetBaseName() == "Summon Ghost")
         {
             // Change from spell to unit.
             spell.myName = "Ghost";
             spell.cardType = "Unit";
             spell.role = "Hunter";
+
+            // Add level to name.
+            if (spell.level > 1)
+                spell.myName = "Level " + spell.level + " Ghost";
         }
     }
 }
