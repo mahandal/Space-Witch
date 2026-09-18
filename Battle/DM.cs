@@ -114,6 +114,9 @@ public class DM : MonoBehaviour
         // Reset game timer.
         gameTimer = 0f;
 
+        // Set new starting health.
+        startingHealth = StarManager.I.GetStartingHealth();
+
         // + Initialize each leader.
 
         // Load evil leader's name and portrait.

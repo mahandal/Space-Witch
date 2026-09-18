@@ -9,6 +9,13 @@ public class Star : MonoBehaviour
     public float goodManaScaling = 1f;
     public float evilManaScaling = 1f;
 
+    [Header("Max Health")]
+    // How much max health each leader starts with on the first planet in this star in battle mode.
+    // Also added to the starting health of each planet afterward.
+    // E.g. if Avalon has maxHealth == 100 then Camelot will start each leader's health at 5x that, so 500.
+    // Note: Health could be decided a bunch of different ways. This is just one idea! It's easy to change if ye want!
+    public int startingHealth = 100;
+
     [Header("Star")]
     // This star's name.
     public string myName;

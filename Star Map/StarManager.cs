@@ -360,6 +360,19 @@ public class StarManager : MonoBehaviour
     //     return cardNames;
     // }
 
+    // Calculate the starting health for each leader, using the current star and planet.
+    public int GetStartingHealth()
+    {
+        // Start with the current star's starting health.
+        int startingHealth = currentStar.startingHealth;
+
+        // Add more for deeper planets.
+        startingHealth += currentStar.startingHealth * planetIndex;
+
+        // Return.
+        return startingHealth;
+    }
+
     // + End game
 
     // Final Victory!
