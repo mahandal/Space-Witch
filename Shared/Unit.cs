@@ -143,14 +143,14 @@ public partial class Unit : MonoBehaviour
         // Get rigid body.
         rb = GetComponent<Rigidbody2D>();
 
-        // Enable rigid body for explore mode.
-        // Disable in battle mode.
+        // In explore mode, set rigid body to dynamic.
+        // In battle mode, set rigid body to kinematic.
         if (rb != null)
         {
             if (GM.I != null && GM.I.gameObject.activeSelf)
-                rb.simulated = true;
+                rb.bodyType = RigidbodyType2D.Dynamic;
             else
-                rb.simulated = false;
+                rb.bodyType = RigidbodyType2D.Kinematic;
         }
             
 
@@ -477,22 +477,25 @@ public partial class Unit : MonoBehaviour
         if (state == 1)
         {
             // Water
-            float waterMultiplier = 1f;
-            if (laneIndex == 2)
-            {
-                // Aquatic creatures move faster in water!
-                if (keywords.Contains("Aquatic"))
-                    waterMultiplier = 2f;
-                // Everyone else moves slower.
-                else
-                    waterMultiplier = 0.5f;
-            }
+            // float waterMultiplier = 1f;
+            // if (laneIndex == 2)
+            // {
+            //     // Aquatic creatures move faster in water!
+            //     if (keywords.Contains("Aquatic"))
+            //         waterMultiplier = 2f;
+            //     // Everyone else moves slower.
+            //     else
+            //         waterMultiplier = 0.5f;
+            // }
+
+            // Speed multipliers.
+            float speedMultipliers = SpeedModifiers();
 
             // Direction
             if (good)
-                transform.position += Vector3.right * speed * waterMultiplier * Time.fixedDeltaTime;
+                transform.position += Vector3.right * speed * speedMultipliers * Time.fixedDeltaTime;
             else
-                transform.position -= Vector3.right * speed * waterMultiplier * Time.fixedDeltaTime;
+                transform.position -= Vector3.right * speed * speedMultipliers * Time.fixedDeltaTime;
 
             // Update current tile.
             int tileX = Mathf.Clamp(Mathf.FloorToInt(transform.position.x), 0, DM.I.gridWidth - 1);
@@ -642,7 +645,8 @@ public partial class Unit : MonoBehaviour
 
             // Feedback for player.
             if (good)
-                RisingText.Create(item.transform.position);
+                Fading.Create(item.transform.position);
+                // RisingText.Create(item.transform.position);
         }
         else
         {

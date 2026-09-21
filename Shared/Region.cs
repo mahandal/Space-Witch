@@ -1,15 +1,15 @@
 using UnityEngine;
 
-// Terrain for Explore mode.
-// See Tile.cs for Battle mode.
+// Terrain & stuff
 public class Region : MonoBehaviour
 {
     [Header("Terrain")]
     // What type of region is this?
     // Types of region:
-    // Plains = Default.
+    // Plains = Non.
     // Water = Slow field.
     // Flora = Slow field.
+    // -EXPLORE MODE ONLY-
     // Battle = The path of battle.
     // Harmony = The path of harmony.
     public string myType;
@@ -61,29 +61,32 @@ public class Region : MonoBehaviour
         id = regionCount;
     }
 
+    // Detect when a unit enters this region.
     // Called when another collider enters this collider.
     void OnTriggerEnter2D(Collider2D col)
     {
-        // Get explorer.
-        Unit explorer = col.GetComponent<Unit>();
+        Debug.Log(name + " entered by " + col.name);
 
-        // Ignore non-explorers.
-        if (explorer == null) return;
+        // Get unit.
+        Unit unit = col.GetComponent<Unit>();
+
+        // Ignore non-unit.
+        if (unit == null) return;
 
         // + Slow fields
 
         // Water?
         if (myType == "Water")
-            explorer.speedModifiers[GetUID()] = 0.5f;
+            unit.speedModifiers[GetUID()] = 0.5f;
 
         // Flora?
         if (myType == "Flora")
-            explorer.speedModifiers[GetUID()] = 0.7f;
+            unit.speedModifiers[GetUID()] = 0.7f;
         if (myType == "Thick Flora")
-            explorer.speedModifiers[GetUID()] = 0.3f;
+            unit.speedModifiers[GetUID()] = 0.3f;
 
         // + Paths to Victory
-        if (explorer == GM.I.player)
+        if (unit == GM.I.player)
         {
             // Hunter
             if (myType == "Way of the Hunter")
@@ -96,15 +99,15 @@ public class Region : MonoBehaviour
 
     void OnTriggerExit2D(Collider2D col)
     {
-        // Get explorer.
-        Unit explorer = col.GetComponent<Unit>();
+        // Get unit.
+        Unit unit = col.GetComponent<Unit>();
 
-        // Ignore non-explorers.
-        if (explorer == null) return;
+        // Ignore non-units.
+        if (unit == null) return;
 
         // Slow fields: Water & Flora
         if (myType == "Water" || myType == "Flora" || myType == "Thick Flora")
-            explorer.speedModifiers.Remove(GetUID());
+            unit.speedModifiers.Remove(GetUID());
     }
 
     // Return a unique identifer for this region.
