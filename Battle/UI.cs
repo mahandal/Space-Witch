@@ -4,9 +4,6 @@ using TMPro;
 
 public class UI : MonoBehaviour
 {
-    [Header("Battle Background")]
-    public SpriteRenderer battleBackground;
-
     [Header("Power Charges")]
     // The text object showing how many power charges the player currently has.
     public TMP_Text powerCharges;
@@ -138,7 +135,7 @@ public class UI : MonoBehaviour
         versus.gameObject.SetActive(false);
 
         // Load the current planet's image into the background.
-        Utility.LoadImage(battleBackground, "Planets/" + StarManager.I.GetCurrentPlanetName());
+        // Utility.LoadImage(battleBackground, "Planets/" + StarManager.I.GetCurrentPlanetName());
 
         // Hide leader names and portraits to begin with.
         goodName.gameObject.SetActive(false);
