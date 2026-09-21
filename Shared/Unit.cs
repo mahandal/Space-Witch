@@ -231,7 +231,7 @@ public partial class Unit : MonoBehaviour
         if (DM.I.gameObject.activeSelf)
         {
             // Starting units are deployed here.
-            if (currentTile == null && role != "Base")
+            if (currentTile == null && role != "Base" && myName != "Violet Flower")
             {
                 // Get tile.
                 Tile tile = GetCurrentTile();
