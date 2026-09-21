@@ -595,14 +595,6 @@ public partial class Leader : MonoBehaviour
         // Set deploy time.
         newUnit.deployTimer = newUnit.deployTime;
 
-        // Remove rigid body.
-        // Curiosity: Why is this necessary?
-        // The rigid body is already disabled from the simulation.
-        // But with the unsimulated rigidbody, units can't pick up items (including violet flowers!)
-        // if (newUnit.rb != null)
-        //     Destroy(newUnit.rb);
-            // DestroyImmediate(newUnit.rb);
-
         // Activate!
         newUnit.gameObject.SetActive(true);
 
