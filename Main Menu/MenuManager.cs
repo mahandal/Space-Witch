@@ -109,6 +109,9 @@ public class MenuManager : MonoBehaviour
         // First, disable all menus.
         DisableAllMenus();
 
+        // Also disable all battle maps.
+        GM.I.DisableBattleMaps();
+
         // Set game state.
         gameState = 1;
 

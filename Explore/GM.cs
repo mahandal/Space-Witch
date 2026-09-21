@@ -68,6 +68,20 @@ public class GM : MonoBehaviour
         }
     }
 
+    // Disable all battle maps.
+    public void DisableBattleMaps()
+    {
+        // Get all planets.
+        List<Planet> allPlanets = StarManager.I.GetAllPlanets();
+
+        // Disable each planet's battle map.
+        foreach (Planet p in allPlanets)
+        {
+            if (p.battleMap != null)
+                p.battleMap.SetActive(false);
+        }
+    }
+
     // Set up the given planet for the player to explore!
     public void Explore(Planet p)
     {
