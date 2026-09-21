@@ -229,7 +229,23 @@ public partial class Unit : MonoBehaviour
 
         // + Battle
         if (DM.I.gameObject.activeSelf)
-            RegisterWithDM();
+        {
+            // Starting units are deployed here.
+            if (currentTile == null && role != "Base")
+            {
+                // Get tile.
+                Tile tile = GetCurrentTile();
+
+                // Deploy to tile.
+                GetLeader().SpawnUnit(myName, tile);
+
+                // Deactivate this unit.
+                gameObject.SetActive(false);
+            } else {
+                // Register with DM.
+                RegisterWithDM();
+            }
+        }
     }
 
     // Get base name.
@@ -498,9 +514,21 @@ public partial class Unit : MonoBehaviour
                 transform.position -= Vector3.right * speed * speedMultipliers * Time.fixedDeltaTime;
 
             // Update current tile.
-            int tileX = Mathf.Clamp(Mathf.FloorToInt(transform.position.x), 0, DM.I.gridWidth - 1);
-            currentTile = DM.I.grid[tileX, laneIndex];
+            currentTile = GetCurrentTile();
+            
         }
+    }
+
+    // Return this unit's current tile.
+    // Note: May get confused near boundaries between tiles!
+    public Tile GetCurrentTile()
+    {
+        // Get the closest tile's position in grid.
+        int tileX = Mathf.Clamp(Mathf.FloorToInt(transform.position.x), 0, DM.I.gridWidth - 1);
+        laneIndex = Mathf.Clamp(Mathf.FloorToInt(transform.position.y), 0, DM.I.gridHeight - 1);
+
+        // Index into DM's grid and return the tile.
+        return DM.I.grid[tileX, laneIndex];
     }
 
     // Return this unit's leader.
