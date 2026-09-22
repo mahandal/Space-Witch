@@ -410,13 +410,13 @@ public class StarManager : MonoBehaviour
         Star homeStar = MainMenu.I.leaderBios[MenuManager.I.saveData.leaderName].homeStar;
 
         // Generate home pack.
-        packs[0].GeneratePack(homeStar, planetIndex);
+        packs[0].GeneratePack(homeStar.cards, planetIndex);
         
         // Generate local pack.
-        packs[1].GeneratePack(currentStar, planetIndex);
+        packs[1].GeneratePack(currentStar.cards, planetIndex);
 
         // Generate mercenary pack.
-        packs[2].GenerateMercenaryPack();
+        packs[2].GeneratePack(Constance.I.mercenaries);
 
         // Go to the recruitment screen.
         recruitmentScreen.SetActive(true);

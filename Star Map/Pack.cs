@@ -9,58 +9,9 @@ public class Pack : MonoBehaviour
     // (Some may be inactive!)
     public List<MiniCard> minicards;
 
-    // Randomly generate a new pack of mercenary cards.
-    // Note: Very similar to normal pack generation below. Could combine maybe?
-    public void GenerateMercenaryPack()
-    {
-        // Decide how many cards this pack will have.
-        int cardCount = Random.Range(1, 5);
-
-        // Go through each minicard.
-        for (int i = 0; i < minicards.Count; i++)
-        {
-            // Enable cards in use.
-            // Disable unused minicards.
-            if (i < cardCount)
-                minicards[i].gameObject.SetActive(true);
-            else
-                minicards[i].gameObject.SetActive(false);
-
-            // Roll a random card.
-            int cardIndex = Random.Range(0, Constance.I.mercenaries.Count);
-
-            // Get card name.
-            string cardName = Constance.I.mercenaries[cardIndex];
-
-            // + Level
-            // Default to level 2.
-            int level = 2;
-
-            // Roll for higher level.
-            int d100 = Random.Range(1, 101);
-
-            // 80% level 2
-            // 15% level 3
-            // 4% level 4
-            // 1% level 5
-            if (d100 > 80 && d100 < 95)
-                level = 3;
-            else if (d100 >= 95 && d100 < 100)
-                level = 4;
-            else if (d100 == 100)
-                level = 5;
-
-            // Add level to name.
-            cardName = "Level " + level + " " + cardName;
-
-            // Load minicard.
-            minicards[i].LoadCard(cardName);
-        }
-    }
-
     // Randomly generate a new pack of cards.
-    // Star and tier determine available cards.
-    public void GeneratePack(Star s, int tier)
+    // Tier is an optional parameter used to limit which cards will be pulled.
+    public void GeneratePack(List<string> availableCards, int tier = -1)
     {
         // Decide how many cards this pack will have.
         int cardCount = Random.Range(1, 5);
@@ -75,11 +26,19 @@ public class Pack : MonoBehaviour
             else
                 minicards[i].gameObject.SetActive(false);
 
-            // Roll a random card.
-            int cardIndex = Random.Range(0, tier + 1);
+            // + Roll a random card.
+            // Use tier to limit which card we might pull.
+            int endIndex = tier + 1;
+
+            // Mercenary cards ignore tiers, always pulling from the whole list.
+            if (tier < 0)
+                endIndex = availableCards.Count;
+
+            // Roll card index.
+            int cardIndex = Random.Range(0, endIndex);
 
             // Get card name.
-            string cardName = s.cards[cardIndex];
+            string cardName = availableCards[cardIndex];
 
             // + Level
             // Default to level 2.
