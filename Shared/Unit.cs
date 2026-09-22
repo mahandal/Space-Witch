@@ -479,7 +479,10 @@ public partial class Unit : MonoBehaviour
                 {
                     // Produce a unit!
                     // Produce();
-                    GetLeader().SpawnUnit(producedUnit, currentTile);
+                    Unit myBaby = GetLeader().SpawnUnit(producedUnit, currentTile);
+
+                    // Level up?
+                    myBaby.LevelTo(level);
 
                     // Reset spawn timer.
                     spawnTimer = timePerSpawn;
@@ -859,13 +862,16 @@ public partial class Unit : MonoBehaviour
         // Other modifiers.
         healthLost *= DamageReceivedModifiers();
 
-        // + TBD: Move keywords elsewhere?
+        // Keywords
+        if (source != null)
+            healthLost = source.OnDealDamage(this, healthLost);
+        healthLost = OnReceiveDamage(source, healthLost);
 
-        // Getting stunned?
-        if (source != null && source.keywords.Contains("Stuns"))
-            Stun();
+        // // Getting stunned?
+        // if (source != null && source.keywords.Contains("Stuns"))
+        //     Stun();
 
-        // Vital?
+        // Vital units
         if (keywords.Contains("Vital"))
         {
             // Leader loses health.
@@ -987,7 +993,7 @@ public partial class Unit : MonoBehaviour
     // + Levels
     // Gain a level, increasing damage, health, range, vision, and size.
     // If in battle, also teleports back to base and updates name.
-    public void LevelUp(bool inBattle = true)
+    public void LevelUp(bool wayOfTheGatherer = false)
     {
         // Gain a level.
         level++;
@@ -1008,14 +1014,23 @@ public partial class Unit : MonoBehaviour
         // Increase size by 2%.
         transform.localScale *= 1.02f;
 
-        // In battle?
-        if (inBattle)
+        // The way of the gatherer has special rules!
+        if (wayOfTheGatherer)
         {
             // Teleport back to base.
             TeleportToBase();
 
             // Update name.
             myName = "Level " + level + " " + GetBaseName();
+        }
+    }
+
+    // Level to the given level.
+    public void LevelTo(int targetLevel)
+    {
+        while (level < targetLevel)
+        {
+            LevelUp();
         }
     }
 

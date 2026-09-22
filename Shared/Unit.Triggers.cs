@@ -33,6 +33,9 @@ public partial class Unit
             // Spawn a skull.
             Unit newUnit = GetLeader().SpawnUnit("Skull", currentTile);
 
+            // Level.
+            newUnit.LevelTo(level);
+
             // Show its full deployment.
             newUnit.showFullDeployment = true;
         }
@@ -43,6 +46,9 @@ public partial class Unit
             // Spawn a skull.
             Unit newUnit = GetLeader().SpawnUnit("Skeleton Warrior", currentTile);
 
+            // Level.
+            newUnit.LevelTo(level);
+
             // Show its full deployment.
             newUnit.showFullDeployment = true;
         }
@@ -52,6 +58,9 @@ public partial class Unit
         {
             // The lich respawns!
             Unit newUnit = GetLeader().SpawnUnit("Lich", currentTile);
+
+            // Level.
+            newUnit.LevelTo(level);
 
             // Show its full deployment.
             newUnit.showFullDeployment = true;
@@ -90,5 +99,25 @@ public partial class Unit
             // Fade the laser after a brief delay.
             StartCoroutine(FadeLaser());
         }
+    }
+
+    // On deal damage.
+    public float OnDealDamage(Unit target, float healthLost)
+    {
+        // Stun
+        if (keywords.Contains("Stuns"))
+            target.Stun();
+
+        // Vampire
+        if (keywords.Contains("Vampire"))
+            GainHealth(healthLost);
+
+        return healthLost;
+    }
+
+    // On receive damage.
+    public float OnReceiveDamage(Unit source, float healthLost)
+    {
+        return healthLost;
     }
 }

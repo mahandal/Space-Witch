@@ -149,12 +149,7 @@ public partial class Unit
         collider.size = p.collider.size;
 
         // Level up?
-        // level = 1;
-        int levelShouldBe = GetLevel();
-        while (level < levelShouldBe)
-        {
-            LevelUp(false);
-        }
+        LevelTo(GetLevel());
     }
 
     // +++ Exploring!

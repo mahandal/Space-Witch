@@ -579,12 +579,7 @@ public partial class Leader : MonoBehaviour
         Utility.SetOpacity(newUnit.spriteRenderer, 0f);
 
         // Level up?
-        newUnit.level = 1;
-        int levelShouldBe = newUnit.GetLevel();
-        while (newUnit.level < levelShouldBe)
-        {
-            newUnit.LevelUp(false);
-        }
+        newUnit.LevelTo(newUnit.GetLevel());
 
         // Add slight variance to range so units don't stack up so much.
         newUnit.range = newUnit.range * Random.Range(0.9f, 1.1f);
@@ -787,7 +782,7 @@ public partial class Leader : MonoBehaviour
         {
             // King me!
             if (source != null)
-                source.LevelUp();
+                source.LevelUp(true);
 
             // Avoid normal health loss.
             return;
