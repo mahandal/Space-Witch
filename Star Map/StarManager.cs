@@ -415,6 +415,9 @@ public class StarManager : MonoBehaviour
         // Generate local pack.
         packs[1].GeneratePack(currentStar, planetIndex);
 
+        // Generate mercenary pack.
+        packs[2].GenerateMercenaryPack();
+
         // Go to the recruitment screen.
         recruitmentScreen.SetActive(true);
     }

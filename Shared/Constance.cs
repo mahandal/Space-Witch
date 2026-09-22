@@ -1,7 +1,11 @@
 using UnityEngine;
+using System.Collections.Generic;
 
 public class Constance : MonoBehaviour
 {
+    [Header("Mercenaries")]
+    public List<string> mercenaries;
+
     [Header("Layers")]
     public LayerMask unitLayer;
 
