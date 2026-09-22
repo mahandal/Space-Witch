@@ -406,11 +406,14 @@ public class StarManager : MonoBehaviour
     {
         // + Generate new packs.
 
-        // Get home star.
-        Star homeStar = MainMenu.I.leaderBios[MenuManager.I.saveData.leaderName].homeStar;
+        // Get leader bio.
+        LeaderBio leaderBio = MainMenu.I.leaderBios[MenuManager.I.saveData.leaderName];
+
+        // // Get home star.
+        // Star homeStar = leaderBio.homeStar;
 
         // Generate home pack.
-        packs[0].GeneratePack(homeStar.cards, planetIndex);
+        packs[0].GeneratePack(leaderBio.reinforcements, planetIndex);
         
         // Generate local pack.
         packs[1].GeneratePack(currentStar.cards, planetIndex);
