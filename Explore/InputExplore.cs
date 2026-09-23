@@ -51,40 +51,40 @@ public class InputExplore : MonoBehaviour
         GM.I.player.isPressingLeft = Keyboard.current.aKey.isPressed;
         GM.I.player.isPressingRight = Keyboard.current.dKey.isPressed;
 
-        // Shift = Sprint
-        if (Keyboard.current.leftShiftKey.isPressed)
-            GM.I.player.Sprint();
-        else
-            GM.I.player.EndSprint();
+        // // Shift = Sprint
+        // if (Keyboard.current.leftShiftKey.isPressed)
+        //     GM.I.player.Sprint();
+        // else
+        //     GM.I.player.EndSprint();
 
-        // Ctrl = Stealth
-        if (Keyboard.current.ctrlKey.isPressed)
-            GM.I.player.Stealth();
-        else
-            GM.I.player.Unstealth();
+        // // Ctrl = Stealth
+        // if (Keyboard.current.ctrlKey.isPressed)
+        //     GM.I.player.Stealth();
+        // else
+        //     GM.I.player.Unstealth();
 
-        // Spacebar = Dodge
-        if (Keyboard.current.spaceKey.wasPressedThisFrame)
-            GM.I.player.TryDodge();
+        // // Spacebar = Dodge
+        // if (Keyboard.current.spaceKey.wasPressedThisFrame)
+        //     GM.I.player.TryDodge();
 
-        // E = Interact
-        if (Keyboard.current.eKey.wasPressedThisFrame)
-            GM.I.Interact();
+        // // E = Interact
+        // if (Keyboard.current.eKey.wasPressedThisFrame)
+        //     GM.I.Interact();
 
-        // Left Click = Attack
-        if (Mouse.current.leftButton.wasPressedThisFrame)
-            GM.I.player.BeginAttack();
+        // // Left Click = Attack
+        // if (Mouse.current.leftButton.wasPressedThisFrame)
+        //     GM.I.player.BeginAttack();
 
-        // Right Click = Move
-        if (Mouse.current.rightButton.isPressed)
-            GM.I.player.TryMoveToward(mouseWorld);
+        // // Right Click = Move
+        // if (Mouse.current.rightButton.isPressed)
+        //     GM.I.player.TryMoveToward(mouseWorld);
 
 
-        // + Dragon Shrine
+        // // + Dragon Shrine
 
-        // Right Click = Deselect
-        if (DragonShrine.I.gameObject.activeSelf && Mouse.current.rightButton.wasPressedThisFrame)
-            DragonShrine.I.Deselect();
+        // // Right Click = Deselect
+        // if (DragonShrine.I.gameObject.activeSelf && Mouse.current.rightButton.wasPressedThisFrame)
+        //     DragonShrine.I.Deselect();
     }
 
     // Hover a unit to show a tooltip for it.

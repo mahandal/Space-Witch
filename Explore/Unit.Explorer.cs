@@ -526,79 +526,79 @@ public partial class Unit
     // + Movement
 
     // Sprint
-    public void Sprint()
-    {
-        float sprintMultiplier = 2f;
+    // public void Sprint()
+    // {
+    //     float sprintMultiplier = 2f;
 
-        if (GetBaseName() == "Roaming Warrior")
-            sprintMultiplier *= 2f;
+    //     if (GetBaseName() == "Roaming Warrior")
+    //         sprintMultiplier *= 2f;
 
-        // Add speed modifier.
-        speedModifiers["Sprint"] = sprintMultiplier;
+    //     // Add speed modifier.
+    //     speedModifiers["Sprint"] = sprintMultiplier;
 
-        // Animate faster(?)
-        animator.speed = sprintMultiplier;
-    }
+    //     // Animate faster(?)
+    //     animator.speed = sprintMultiplier;
+    // }
 
-    public void EndSprint()
-    {
-        // Remove speed modifier.
-        speedModifiers.Remove("Sprint");
+    // public void EndSprint()
+    // {
+    //     // Remove speed modifier.
+    //     speedModifiers.Remove("Sprint");
 
-        // Reset animation speed.
-        animator.speed = 1f;
-    }
+    //     // Reset animation speed.
+    //     animator.speed = 1f;
+    // }
 
-    // Stealth
-    public void Stealth()
-    {
-        // Set bool.
-        isStealthing = true;
+    // // Stealth
+    // public void Stealth()
+    // {
+    //     // Set bool.
+    //     isStealthing = true;
 
-        float stealthMultiplier = 0.5f;
+    //     float stealthMultiplier = 0.5f;
 
-        // Add speed modifier.
-        speedModifiers["Stealth"] = stealthMultiplier;
+    //     // Add speed modifier.
+    //     speedModifiers["Stealth"] = stealthMultiplier;
 
-        // Animate slower(?)
-        animator.speed = stealthMultiplier;
-    }
+    //     // Animate slower(?)
+    //     animator.speed = stealthMultiplier;
+    // }
 
-    public void Unstealth()
-    {
-        // Set bool.
-        isStealthing = false;
+    // public void Unstealth()
+    // {
+    //     // Set bool.
+    //     isStealthing = false;
 
-        // Remove speed modifier.
-        speedModifiers.Remove("Stealth");
+    //     // Remove speed modifier.
+    //     speedModifiers.Remove("Stealth");
 
-        // Reset animation speed.
-        animator.speed = 1f;
-    }
+    //     // Reset animation speed.
+    //     animator.speed = 1f;
+    // }
 
-    // Dodge
-    public void TryDodge()
-    {
-        // Don't double dodge.
-        if (isDodging) return;
+    // // Dodge
+    // public void TryDodge()
+    // {
+    //     // Don't double dodge.
+    //     if (isDodging) return;
 
-        // You can't dodge death!
-        if (state == -1) return;
+    //     // You can't dodge death!
+    //     if (state == -1) return;
 
-        // Set bool.
-        isDodging = true;
+    //     // Set bool.
+    //     isDodging = true;
 
-        // Roll if we're moving, spot dodge if we're idle or attacking.
-        if (state == 1)
-            isRolling = true;
+    //     // Roll if we're moving, spot dodge if we're idle or attacking.
+    //     if (state == 1)
+    //         isRolling = true;
 
-        // Set timer.
-        dodgeTimer = dodgeDuration;
+    //     // Set timer.
+    //     dodgeTimer = dodgeDuration;
 
-        // Set state.
-        state = 4;
+    //     // Set state.
+    //     state = 4;
 
-        // Animate.
-        animator.SetInteger("State", state);
-    }
+    //     // Animate.
+    //     animator.SetInteger("State", state);
+    // }
 }
