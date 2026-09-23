@@ -68,6 +68,16 @@ public class Spell : MonoBehaviour
             }
         }
 
+        // Goblin Bomb
+        if (spell.GetBaseName() == "Goblin Bomb")
+        {
+            // Damage all targets.
+            foreach (Unit target in targets)
+            {
+                target.LoseHealth(spell.damage, spell);
+            }
+        }
+
         // Summon Water Elemental
         if (spell.GetBaseName() == "Summon Water Elemental")
         {
