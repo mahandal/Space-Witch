@@ -31,10 +31,7 @@ public partial class Unit
         if (keywords.Contains("Skeleton"))
         {
             // Spawn a skull.
-            Unit newUnit = GetLeader().SpawnUnit("Skull", currentTile);
-
-            // Level.
-            newUnit.LevelTo(level);
+            Unit newUnit = GetLeader().SpawnUnit("Skull", currentTile, level);
 
             // Show its full deployment.
             newUnit.showFullDeployment = true;
@@ -44,10 +41,7 @@ public partial class Unit
         if (keywords.Contains("Big Skeleton"))
         {
             // Spawn a skull.
-            Unit newUnit = GetLeader().SpawnUnit("Skeleton Warrior", currentTile);
-
-            // Level.
-            newUnit.LevelTo(level);
+            Unit newUnit = GetLeader().SpawnUnit("Skeleton Warrior", currentTile, level);
 
             // Show its full deployment.
             newUnit.showFullDeployment = true;
@@ -57,10 +51,7 @@ public partial class Unit
         if (keywords.Contains("Lich"))
         {
             // The lich respawns!
-            Unit newUnit = GetLeader().SpawnUnit("Lich", currentTile);
-
-            // Level.
-            newUnit.LevelTo(level);
+            Unit newUnit = GetLeader().SpawnUnit("Lich", currentTile, level);
 
             // Show its full deployment.
             newUnit.showFullDeployment = true;

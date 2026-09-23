@@ -522,7 +522,7 @@ public partial class Leader : MonoBehaviour
     // Spawn a new Unit.
     // Note: In this case Unit refers to the class which includes all card types: Units, Structures, Items, and Spells.
     // Used when playing a card, when production buildings produce, when leader abilities play free cards, etc...
-    public Unit SpawnUnit(string unitName, Tile tile)
+    public Unit SpawnUnit(string unitName, Tile tile, int level = 1)
     {
         // Null check.
         if (tile == null) return null;
@@ -578,8 +578,20 @@ public partial class Leader : MonoBehaviour
         // Hide (to deploy in).
         Utility.SetOpacity(newUnit.spriteRenderer, 0f);
 
-        // Level up?
+        // + Level up?
+
+        // Level via name.
         newUnit.LevelTo(newUnit.GetLevel());
+
+        // Level via parameter.
+        if (newUnit.level < level)
+        {
+            // Level up.
+            newUnit.LevelTo(level);
+
+            // Update name.
+            newUnit.myName = "Level " + level + " " +  newUnit.GetBaseName();
+        }
 
         // Add slight variance to range so units don't stack up so much.
         newUnit.range = newUnit.range * Random.Range(0.9f, 1.1f);

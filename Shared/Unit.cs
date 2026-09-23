@@ -465,32 +465,27 @@ public partial class Unit : MonoBehaviour
         else
             Utility.SetOpacity(spriteRenderer, 1f);
 
-        // Structures.
-        if (cardType == "Structure")
+        // Production?
+        if (role == "Production")
         {
-            // Production?
-            if (role == "Production")
+            // Decrement spawn timer.
+            spawnTimer -= Time.fixedDeltaTime;
+
+            // Check if it is time to spawn again.
+            if (spawnTimer <= 0f)
             {
-                // Decrement spawn timer.
-                spawnTimer -= Time.fixedDeltaTime;
+                // Produce a unit!
+                // Produce();
+                Unit myBaby = GetLeader().SpawnUnit(producedUnit, currentTile, level);
 
-                // Check if it is time to spawn again.
-                if (spawnTimer <= 0f)
-                {
-                    // Produce a unit!
-                    // Produce();
-                    Unit myBaby = GetLeader().SpawnUnit(producedUnit, currentTile);
-
-                    // Level up?
-                    myBaby.LevelTo(level);
-
-                    // Reset spawn timer.
-                    spawnTimer = timePerSpawn;
-                }
+                // Reset spawn timer.
+                spawnTimer = timePerSpawn;
             }
-            // Return.
-            return;
         }
+
+        // Structures return here to avoid movement.
+        if (cardType == "Structure")
+            return;
 
         // - Movement
         if (state == 1)
