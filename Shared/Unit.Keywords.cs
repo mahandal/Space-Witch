@@ -103,6 +103,10 @@ public partial class Unit
         if (keywords.Contains("Vampire"))
             GainHealth(healthLost);
 
+        // Demolition
+        if (keywords.Contains("Demolition") && target.cardType == "Structure")
+            healthLost *= 2f;
+
         return healthLost;
     }
 
