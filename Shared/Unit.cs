@@ -87,7 +87,7 @@ public partial class Unit : MonoBehaviour
     // For farms which generate mana periodically.
 
     // How many seconds to wait before generating mana again.
-    public float farmTime = 6f;
+    public float farmTime = -1;
 
     // The timer tracking time between generating mana.
     public float farmTimer = 0f;
@@ -475,7 +475,7 @@ public partial class Unit : MonoBehaviour
             Utility.SetOpacity(spriteRenderer, 1f);
 
         // Production
-        if (role == "Production")
+        if (producedUnit != "" && timePerSpawn > 0)
         {
             // Decrement spawn timer.
             spawnTimer -= Time.fixedDeltaTime;
@@ -493,7 +493,7 @@ public partial class Unit : MonoBehaviour
         }
 
         // Farm
-        if (role == "Farm")
+        if (farmTime > 0)
         {
             // Decrement farm timer.
             farmTimer -= Time.fixedDeltaTime;
@@ -501,8 +501,8 @@ public partial class Unit : MonoBehaviour
             // Check if it is time to generate mana.
             if (farmTimer <= 0f)
             {
-                // Gain mana (scaling with damage!)
-                GetLeader().mana += (int)damage;
+                // Gain mana (scaling with level!)
+                GetLeader().mana += level;
 
                 // Feedback for player.
                 if (good)
