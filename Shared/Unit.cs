@@ -72,7 +72,7 @@ public partial class Unit : MonoBehaviour
     public List<string> keywords = new List<string>();
 
     [Header("Production")]
-    // For structures that produce other units periodically.
+    // For units that produce other units periodically.
 
     // Which unit to spawn.
     public string producedUnit = "";
@@ -82,6 +82,15 @@ public partial class Unit : MonoBehaviour
 
     // The timer tracking time between spawns.
     public float spawnTimer = 0f;
+
+    [Header("Farm")]
+    // For farms which generate mana periodically.
+
+    // How many seconds to wait before generating mana again.
+    public float farmTime = 6f;
+
+    // The timer tracking time between generating mana.
+    public float farmTimer = 0f;
 
     [Header("Machinery")]
     // Which tile this unit is currently in.
@@ -465,7 +474,7 @@ public partial class Unit : MonoBehaviour
         else
             Utility.SetOpacity(spriteRenderer, 1f);
 
-        // Production?
+        // Production
         if (role == "Production")
         {
             // Decrement spawn timer.
@@ -480,6 +489,27 @@ public partial class Unit : MonoBehaviour
 
                 // Reset spawn timer.
                 spawnTimer = timePerSpawn;
+            }
+        }
+
+        // Farm
+        if (role == "Farm")
+        {
+            // Decrement farm timer.
+            farmTimer -= Time.fixedDeltaTime;
+
+            // Check if it is time to generate mana.
+            if (farmTimer <= 0f)
+            {
+                // Gain mana (scaling with damage!)
+                GetLeader().mana += (int)damage;
+
+                // Feedback for player.
+                if (good)
+                    Fading.Create(transform.position);
+
+                // Reset farm timer.
+                farmTimer = farmTime;
             }
         }
 
