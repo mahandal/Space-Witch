@@ -126,58 +126,63 @@ public partial class Leader
         // Items.
         if (card.cardType == "Item")
         {
+            // For now, all items are played in a random tile.
+            if (good)
+                column = Random.Range(1, numColumnsDeployable + 1);
+            else
+                column = Random.Range(DM.I.gridWidth - numColumnsDeployable, DM.I.gridWidth - 1);
             // For now, all items are played as equipment:
             // Play in a close tile.
 
             // Skip if enemy is in our deployment zone.
-            if (enemyNear)
-            {
-                // Check if it is a signature card, cause they should not affect your hand.
-                if (!signature)
-                {
-                    // Discard.
-                    Discard(indexOfNextCard);
+            // if (enemyNear)
+            // {
+            //     // Check if it is a signature card, cause they should not affect your hand.
+            //     if (!signature)
+            //     {
+            //         // Discard.
+            //         Discard(indexOfNextCard);
 
-                    // Move on to the next card index.
-                    IncrementIndexOfNextCard();
-                }   
+            //         // Move on to the next card index.
+            //         IncrementIndexOfNextCard();
+            //     }   
 
-                // Return.
-                return null;
-            }
+            //     // Return.
+            //     return null;
+            // }
 
             // Look at the column closest to us, right outside our dragon statues.
-            if (good)
-                column = 1;
-            else
-                column = DM.I.gridWidth - 2;
+            // if (good)
+            //     column = 1;
+            // else
+            //     column = DM.I.gridWidth - 2;
 
-            // If the tile has a structure, look one column in.
-            // TBD: Look around at different rows instead of dumbly sticking with one.
-            while (DM.I.grid[column, row].structure != null)
-            {
-                if (good)
-                    column--;
-                else
-                    column++;
+            // // If the tile has a structure, look one column in.
+            // // TBD: Look around at different rows instead of dumbly sticking with one.
+            // while (DM.I.grid[column, row].structure != null)
+            // {
+            //     if (good)
+            //         column--;
+            //     else
+            //         column++;
 
-                // If we can't find a spot, skip this card.
-                if (column < 0 || column >= DM.I.gridWidth)
-                {
-                    // Move on to the next card (unless it's a signature card).
-                    if (!signature)
-                    {
-                        // Discard.
-                        Discard(indexOfNextCard);
+            //     // If we can't find a spot, skip this card.
+            //     if (column < 0 || column >= DM.I.gridWidth)
+            //     {
+            //         // Move on to the next card (unless it's a signature card).
+            //         if (!signature)
+            //         {
+            //             // Discard.
+            //             Discard(indexOfNextCard);
 
-                        // Increment card index.
-                        IncrementIndexOfNextCard();
-                    }
+            //             // Increment card index.
+            //             IncrementIndexOfNextCard();
+            //         }
 
-                    // Return.
-                    return null;
-                }
-            }
+            //         // Return.
+            //         return null;
+            //     }
+            // }
         }
 
         // Spells
