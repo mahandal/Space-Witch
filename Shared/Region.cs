@@ -75,14 +75,24 @@ public class Region : MonoBehaviour
 
         // + Slow fields
 
-        // Water?
+        // Water
         if (myType == "Water")
             unit.speedModifiers[GetUID()] = 0.5f;
 
-        // Flora?
+        // Flora
         if (myType == "Flora")
             unit.speedModifiers[GetUID()] = 0.7f;
         if (myType == "Thick Flora")
+            unit.speedModifiers[GetUID()] = 0.3f;
+
+        // Furniture
+        if (myType == "Furniture")
+            unit.speedModifiers[GetUID()] = 0.7f;
+        if (myType == "Heavy Furniture")
+            unit.speedModifiers[GetUID()] = 0.3f;
+
+        // Lava
+        if (myType == "Lava")
             unit.speedModifiers[GetUID()] = 0.3f;
 
         // + Paths to Victory
@@ -95,6 +105,23 @@ public class Region : MonoBehaviour
             if (myType == "Way of the Gatherer")
                 DM.I.BeginGathering();
         }
+    }
+
+
+    void OnTriggerStay2D(Collider2D col)
+    {
+        // Get unit.
+        Unit unit = col.GetComponent<Unit>();
+
+        // Ignore non-units.
+        if (unit == null) return;
+
+        // Ignore deploying and dead units.
+        if (unit.state <= 0) return;
+
+        // Fire & Lava
+        if (myType == "Fire" || myType == "Lava")
+            unit.LoseHealth(2f * Time.fixedDeltaTime, null, true);
     }
 
     void OnTriggerExit2D(Collider2D col)
