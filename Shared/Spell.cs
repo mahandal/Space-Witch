@@ -78,6 +78,19 @@ public class Spell : MonoBehaviour
             }
         }
 
+        // Summon Hunger Demon
+        if (spell.GetBaseName() == "Summon Hunger Demon")
+        {
+            // Change from spell to unit.
+            spell.myName = "Hunger Demon";
+            spell.cardType = "Unit";
+            spell.role = "Hunter";
+
+            // Add level to name.
+            if (spell.level > 1)
+                spell.myName = "Level " + spell.level + " Hunger Demon";
+        }
+
         // Summon Water Elemental
         if (spell.GetBaseName() == "Summon Water Elemental")
         {
