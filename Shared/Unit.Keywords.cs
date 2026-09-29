@@ -10,6 +10,10 @@ public partial class Unit
         if (keywords.Contains("Summon"))
             LoseHealth(maxHealth * 0.05f * Time.fixedDeltaTime, this, true, false);
 
+        // Decaying
+        if (keywords.Contains("Decaying"))
+            LoseHealth(maxHealth * 0.08f * Time.fixedDeltaTime, this, true);
+
         // Poisoned
         if (keywords.Contains("Poisoned"))
             LoseHealth(maxHealth * 0.1f * Time.fixedDeltaTime, this, true);
