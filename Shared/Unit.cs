@@ -577,6 +577,7 @@ public partial class Unit : MonoBehaviour
 
         // Freeze animations.
         animator.speed = 0f;
+        animator.SetInteger("State", 0);
     }
 
     // Unstun.
@@ -587,6 +588,7 @@ public partial class Unit : MonoBehaviour
 
         // Resume animations.
         animator.speed = 1f;
+        animator.SetInteger("State", state);
     }
 
     // + Vision
