@@ -128,7 +128,7 @@ public partial class Leader
         {
             // For now, all items are played in a random tile.
             if (good)
-                column = Random.Range(1, numColumnsDeployable + 1);
+                column = Random.Range(1, numColumnsDeployable);
             else
                 column = Random.Range(DM.I.gridWidth - numColumnsDeployable, DM.I.gridWidth - 1);
             // For now, all items are played as equipment:
