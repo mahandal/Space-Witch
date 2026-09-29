@@ -77,12 +77,24 @@ public class Region : MonoBehaviour
 
         // Water
         if (myType == "Water")
-            unit.speedModifiers[GetUID()] = 0.5f;
+        {
+            // Aquatic creatures gain speed instead of losing it.
+            if (unit.keywords.Contains("Aquatic"))
+                unit.speedModifiers[GetUID()] = 2f;
+            else
+                unit.speedModifiers[GetUID()] = 0.5f;
+        }
 
         // Flora
         if (myType == "Flora")
             unit.speedModifiers[GetUID()] = 0.7f;
         if (myType == "Thick Flora")
+            unit.speedModifiers[GetUID()] = 0.3f;
+
+        // Rocks
+        if (myType == "Rock")
+            unit.speedModifiers[GetUID()] = 0.7f;
+        if (myType == "Big Rock")
             unit.speedModifiers[GetUID()] = 0.3f;
 
         // Furniture
@@ -119,9 +131,18 @@ public class Region : MonoBehaviour
         // Ignore deploying and dead units.
         if (unit.state <= 0) return;
 
+        // Ignore bases.
+        if (unit.role == "Base") return;
+
         // Fire & Lava
         if (myType == "Fire" || myType == "Lava")
-            unit.LoseHealth(2f * Time.fixedDeltaTime, null, true);
+        {
+            // Dragonblood
+            if (unit.keywords.Contains("Dragonblood"))
+                unit.GainHealth(2f * Time.fixedDeltaTime);
+            else
+                unit.LoseHealth(2f * Time.fixedDeltaTime, null, true);
+        }
     }
 
     void OnTriggerExit2D(Collider2D col)
