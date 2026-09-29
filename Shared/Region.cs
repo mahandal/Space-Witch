@@ -153,8 +153,9 @@ public class Region : MonoBehaviour
         // Ignore non-units.
         if (unit == null) return;
 
-        // Slow fields: Water & Flora
-        if (myType == "Water" || myType == "Flora" || myType == "Thick Flora")
+        // Slow fields: Water, Lava, Rocks, Flora, Furniture
+        if (myType == "Water" || myType == "Lava" || myType == "Rock" || myType == "Big Rock" || 
+            myType == "Flora" || myType == "Thick Flora" || myType == "Furniture" || myType == "Heavy Furniture")
             unit.speedModifiers.Remove(GetUID());
     }
 
