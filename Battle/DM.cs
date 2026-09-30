@@ -421,15 +421,13 @@ public class DM : MonoBehaviour
     // Called at the end of each battle.
     public void ResetBattleMap()
     {
-        // Destroy all old units, except Dragon Statues which are reset to deploying.
+        // Destroy all old units.
         // + Good
 
         // Units
         foreach (Unit unit in GetAllGoodUnits())
         {
             unit.Death();
-            // if (unit.myName != "Dragon Statue")
-            //     unit.Death();
         }
 
         // Items
