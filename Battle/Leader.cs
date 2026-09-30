@@ -164,6 +164,12 @@ public partial class Leader : MonoBehaviour
         // Draw our starting hand.
         DrawStartingHand();
 
+        // Deploy base.
+        for (int i = 0; i < vitalUnits.Count; i++)
+        {
+            vitalUnits[i].deployTimer = vitalUnits[i].deployTime;
+        }
+
         // + Signature cards
         // Reset timers.
         signatureTimers.Clear();
