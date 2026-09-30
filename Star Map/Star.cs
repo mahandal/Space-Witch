@@ -4,8 +4,14 @@ using System.Collections.Generic;
 
 public class Star : MonoBehaviour
 {
-    [Header("Mana Scaling")]
-    // Mana scaling.
+    [Header("Mana")]
+    // How long it takes to generate a mana passively.
+    public float secondsPerMana = 3f;
+
+    // How long between violet flowers growing.
+    public float timePerFlower = 3f;
+
+    // Good and evil.
     public float goodManaScaling = 1f;
     public float evilManaScaling = 1f;
 

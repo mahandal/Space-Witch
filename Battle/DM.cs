@@ -117,6 +117,10 @@ public class DM : MonoBehaviour
         // Set new starting health.
         startingHealth = StarManager.I.GetStartingHealth();
 
+        // Set seconds per mana.
+        secondsPerMana = StarManager.I.currentStar.secondsPerMana;
+        timePerFlower = StarManager.I.currentStar.timePerFlower;
+
         // + Initialize each leader.
 
         // Load evil leader's name and portrait.
