@@ -151,6 +151,12 @@ public class UI : MonoBehaviour
         Utility.LoadImage(goodPortrait, "Leaders/" + DM.I.goodLeader.myName);
         Utility.LoadImage(evilPortrait, "Leaders/" + DM.I.evilLeader.myName);
 
+        // Update mana.
+        UpdateMana();
+
+        // Update power charges.
+        UpdatePowerCharges();
+
         // + Ways
         // Hunter
         if (DM.I.way == "Hunter")
