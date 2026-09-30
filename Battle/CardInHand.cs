@@ -324,7 +324,7 @@ public class CardInHand : MonoBehaviour, IPointerEnterHandler, IPointerExitHandl
     public void Reveal()
     {
         // Reveal.
-        canvasGroup.alpha = 1f;
+        // canvasGroup.alpha = 1f;
 
         // Set hide timer to 0.
         hideTimer = 0;
