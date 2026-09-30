@@ -12,6 +12,9 @@ public class CardInHand : MonoBehaviour, IPointerEnterHandler, IPointerExitHandl
     // This card's name.
     public string myName;
 
+    // This card's mana cost.
+    public int manaCost;
+
     [Header("Text Fields")]
     public TMP_Text nameText;
     public TMP_Text manaText;
@@ -91,6 +94,19 @@ public class CardInHand : MonoBehaviour, IPointerEnterHandler, IPointerExitHandl
                 // Set hide timer cleanly to 0?
                 // hideTimer = 0f;
             }
+
+            // Return.
+            return;
+        }
+
+        // Fade opacity if not enough mana.
+        if (good)
+        {
+            // Full opacity if enough mana.
+            if (manaCost <= DM.I.goodLeader.mana)
+                canvasGroup.alpha = 1f;
+            else
+                canvasGroup.alpha = 0.2f;
         }
 
         // Initialize percent deployed.
@@ -275,6 +291,7 @@ public class CardInHand : MonoBehaviour, IPointerEnterHandler, IPointerExitHandl
 
         // Set mana cost.
         manaText.text = card.manaCost.ToString();
+        manaCost = card.manaCost;
 
         // Set deployment time.
         timeText.text = card.deployTime.ToString();
