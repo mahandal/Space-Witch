@@ -14,7 +14,7 @@ public class Pack : MonoBehaviour
     public void GeneratePack(List<string> availableCards, int tier = -1)
     {
         // Decide how many cards this pack will have.
-        int cardCount = Random.Range(1, 5);
+        int cardCount = Random.Range(1, tier + 5);
 
         // Go through each minicard.
         for (int i = 0; i < minicards.Count; i++)
@@ -28,6 +28,7 @@ public class Pack : MonoBehaviour
 
             // + Roll a random card.
             // Use tier to limit which card we might pull.
+            // (+1 because Random.Range is max exclusive with ints)
             int endIndex = tier + 1;
 
             // Mercenary cards ignore tiers, always pulling from the whole list.
