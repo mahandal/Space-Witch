@@ -1032,8 +1032,9 @@ public partial class Unit : MonoBehaviour
         maxHealth *= 1.2f;
         currentHealth *= 1.2f;
 
-        // Increase range by 20%.
-        range *= 1.2f;
+        // Increase range by 20%, unless yer a bulwark and want to keep close.
+        if (role != "Bulwark")
+            range *= 1.2f;
 
         // Increase vision by 20%.
         vision *= 1.2f;
