@@ -496,11 +496,10 @@ public class DM : MonoBehaviour
         // Time.timeScale = 1f;
 
         // Close the victory screen.
-        UI.I.victoryBackground.gameObject.SetActive(false);
+        UI.I.postgameBackground.gameObject.SetActive(false);
 
         // Close the battle map.
         gameObject.SetActive(false);
-
 
         // Open the star map.
         StarManager.I.GoToStarMap();

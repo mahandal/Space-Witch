@@ -95,11 +95,18 @@ public class UI : MonoBehaviour
     public Image tooltipHealthFill;
 
     [Header("Post game")]
-    // The parent object for the victory post game screen.
-    public Image victoryBackground;
+    // The image in the background of the post game.
+    // Also the parent object of the rest of the post game screen.
+    public Image postgameBackground;
 
-    // The parent object for the defeat post game screen.
-    public Image defeatBackground;
+    // The post game header saying "GOOD VICTORY!" or something similar.
+    public TMP_Text postgameHeader;
+
+    // Button to continue onward, visible after a victory.
+    public Button continueButton;
+
+    // Button to return to the main menu, visible after defeat.
+    public Button returnButton;
 
     [Header("Fog of War")]
     public SpriteRenderer fogOfWar;
@@ -127,8 +134,7 @@ public class UI : MonoBehaviour
     public void BeginBattle()
     {
         // Hide what should not be.
-        victoryBackground.gameObject.SetActive(false);
-        defeatBackground.gameObject.SetActive(false);
+        postgameBackground.gameObject.SetActive(false);
         HideTooltip();
         reservesDepleted.gameObject.SetActive(false);
         reinforcementsArrived.gameObject.SetActive(false);
@@ -385,11 +391,43 @@ public class UI : MonoBehaviour
     // Activate the post game overlay.
     public void GameOver(bool victory)
     {
-        // Enable appropriate background image.
+        // Victory
         if (victory)
-            victoryBackground.gameObject.SetActive(true);
+        {
+            // Load random background image.
+            string imageFilePath = "Victory/Win " + Random.Range(1, 101).ToString();
+            Utility.LoadImage(postgameBackground, imageFilePath);
+
+            // Set header.
+            postgameHeader.text = "GOOD VICTORY!";
+            postgameHeader.color = new Color(133, 207, 249);
+
+            // Enable continue button.
+            continueButton.gameObject.SetActive(true);
+
+            // Disable return button.
+            returnButton.gameObject.SetActive(false);
+        }
+        // Defeat
         else
-            defeatBackground.gameObject.SetActive(true);
+        {
+            // Load random background image.
+            string imageFilePath = "Defeat/Loss " + Random.Range(1, 101).ToString();
+            Utility.LoadImage(postgameBackground, imageFilePath);
+
+            // Set header text.
+            postgameHeader.text = "YE LOST!";
+            postgameHeader.color = Color.red;
+
+            // Enable return button.
+            returnButton.gameObject.SetActive(true);
+
+            // Disable continue button.
+            continueButton.gameObject.SetActive(false);
+        }
+
+        // Enable image.
+        postgameBackground.gameObject.SetActive(true);
     }
 
 
