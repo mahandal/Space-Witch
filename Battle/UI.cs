@@ -95,18 +95,18 @@ public class UI : MonoBehaviour
     public Image tooltipHealthFill;
 
     [Header("Post game")]
-    // The image in the background of the post game.
-    // Also the parent object of the rest of the post game screen.
-    public Image postgameBackground;
+    // // The image in the background of the post game.
+    // // Also the parent object of the rest of the post game screen.
+    // public Image postgameBackground;
 
-    // The post game header saying "GOOD VICTORY!" or something similar.
-    public TMP_Text postgameHeader;
+    // // The post game header saying "GOOD VICTORY!" or something similar.
+    // public TMP_Text postgameHeader;
 
-    // Button to continue onward, visible after a victory.
-    public Button continueButton;
+    // // Button to continue onward, visible after a victory.
+    // public Button continueButton;
 
-    // Button to return to the main menu, visible after defeat.
-    public Button returnButton;
+    // // Button to return to the main menu, visible after defeat.
+    // public Button returnButton;
 
     [Header("Fog of War")]
     public SpriteRenderer fogOfWar;
@@ -134,14 +134,11 @@ public class UI : MonoBehaviour
     public void BeginBattle()
     {
         // Hide what should not be.
-        postgameBackground.gameObject.SetActive(false);
+        PostGame.I.gameObject.SetActive(false);
         HideTooltip();
         reservesDepleted.gameObject.SetActive(false);
         reinforcementsArrived.gameObject.SetActive(false);
         versus.gameObject.SetActive(false);
-
-        // Load the current planet's image into the background.
-        // Utility.LoadImage(battleBackground, "Planets/" + StarManager.I.GetCurrentPlanetName());
 
         // Hide leader names and portraits to begin with.
         goodName.gameObject.SetActive(false);
@@ -315,20 +312,20 @@ public class UI : MonoBehaviour
     {
         // + Good
         // Set good current flower count.
-        goodCurrentHealth.text = DM.I.goodLeader.flowersGathered.ToString("0");
+        goodCurrentHealth.text = DM.I.goodLeader.manaGathered.ToString("0");
 
         // Get percentage of good leader's progress toward victory.
-        float goodPercent = DM.I.goodLeader.flowersGathered / 42f;
+        float goodPercent = DM.I.goodLeader.manaGathered / 42f;
 
         // Set fill.
         goodHealth.fillAmount = goodPercent;
 
         // + Evil
         // Set evil current flower count.
-        evilCurrentHealth.text = DM.I.evilLeader.flowersGathered.ToString("0");
+        evilCurrentHealth.text = DM.I.evilLeader.manaGathered.ToString("0");
 
         // Get percentage of evil leader's progress toward victory.
-        float evilPercent = DM.I.evilLeader.flowersGathered / 42f;
+        float evilPercent = DM.I.evilLeader.manaGathered / 42f;
 
         // Set fill.
         evilHealth.fillAmount = evilPercent;
@@ -387,48 +384,53 @@ public class UI : MonoBehaviour
 
 
     // + Post game
-
-    // Activate the post game overlay.
+    // (Delegate to PostGame.cs)
     public void GameOver(bool victory)
     {
-        // Victory
-        if (victory)
-        {
-            // Load random background image.
-            string imageFilePath = "Victory/Win " + Random.Range(1, 101).ToString();
-            Utility.LoadImage(postgameBackground, imageFilePath);
-
-            // Set header.
-            postgameHeader.text = "GOOD VICTORY!";
-            postgameHeader.color = new Color(133, 207, 249);
-
-            // Enable continue button.
-            continueButton.gameObject.SetActive(true);
-
-            // Disable return button.
-            returnButton.gameObject.SetActive(false);
-        }
-        // Defeat
-        else
-        {
-            // Load random background image.
-            string imageFilePath = "Defeat/Loss " + Random.Range(1, 101).ToString();
-            Utility.LoadImage(postgameBackground, imageFilePath);
-
-            // Set header text.
-            postgameHeader.text = "YE LOST!";
-            postgameHeader.color = Color.red;
-
-            // Enable return button.
-            returnButton.gameObject.SetActive(true);
-
-            // Disable continue button.
-            continueButton.gameObject.SetActive(false);
-        }
-
-        // Enable image.
-        postgameBackground.gameObject.SetActive(true);
+        PostGame.I.GameOver(victory);
     }
+
+    // // Activate the post game overlay.
+    // public void GameOver(bool victory)
+    // {
+    //     // // Victory
+    //     // if (victory)
+    //     // {
+    //     //     // Load random background image.
+    //     //     string imageFilePath = "Victory/Win " + Random.Range(1, 101).ToString();
+    //     //     Utility.LoadImage(postgameBackground, imageFilePath);
+
+    //     //     // Set header.
+    //     //     postgameHeader.text = "GOOD VICTORY!";
+    //     //     postgameHeader.color = new Color(0.26f, 0.62f, 0.58f);
+
+    //     //     // Enable continue button.
+    //     //     continueButton.gameObject.SetActive(true);
+
+    //     //     // Disable return button.
+    //     //     returnButton.gameObject.SetActive(false);
+    //     // }
+    //     // // Defeat
+    //     // else
+    //     // {
+    //     //     // Load random background image.
+    //     //     string imageFilePath = "Defeat/Loss " + Random.Range(1, 101).ToString();
+    //     //     Utility.LoadImage(postgameBackground, imageFilePath);
+
+    //     //     // Set header text.
+    //     //     postgameHeader.text = "YE LOST!";
+    //     //     postgameHeader.color = Color.red;
+
+    //     //     // Enable return button.
+    //     //     returnButton.gameObject.SetActive(true);
+
+    //     //     // Disable continue button.
+    //     //     continueButton.gameObject.SetActive(false);
+    //     // }
+
+    //     // // Enable image.
+    //     // postgameBackground.gameObject.SetActive(true);
+    // }
 
 
     // + Buttons

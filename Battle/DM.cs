@@ -175,8 +175,8 @@ public class DM : MonoBehaviour
         if (MenuManager.I.gameState != 1) return;
 
         // Check for victory, in gatherer mode.
-        if (goodLeader.flowersGathered >= 42) GameOver(true);
-        if (evilLeader.flowersGathered >= 42) GameOver(false);
+        if (goodLeader.manaGathered >= 42) GameOver(true);
+        if (evilLeader.manaGathered >= 42) GameOver(false);
 
         // Increment time elapsed.
         gameTimer += Time.fixedDeltaTime;
@@ -409,6 +409,9 @@ public class DM : MonoBehaviour
         // Reset the battle map.
         ResetBattleMap();
 
+        // Activate UI.
+        UI.I.GameOver(victory);
+
         // If we won, increment our planet index so the star manager knows to move us forward.
         if (victory)
             StarManager.I.planetIndex++;
@@ -416,9 +419,6 @@ public class DM : MonoBehaviour
         // If we lost, reset our progress.
         else
             Utility.ResetSave();
-
-        // Activate UI.
-        UI.I.GameOver(victory);
     }
 
     // Reset the battle map by clearing old units and cards in the air.
@@ -496,7 +496,7 @@ public class DM : MonoBehaviour
         // Time.timeScale = 1f;
 
         // Close the victory screen.
-        UI.I.postgameBackground.gameObject.SetActive(false);
+        PostGame.I.background.gameObject.SetActive(false);
 
         // Close the battle map.
         gameObject.SetActive(false);

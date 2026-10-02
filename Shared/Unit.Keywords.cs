@@ -111,12 +111,29 @@ public partial class Unit
         if (keywords.Contains("Demolition") && target.cardType == "Structure")
             healthLost *= 2f;
 
+        // Track damage dealt.
+        damageDealt += healthLost;
+        GetLeader().damageDealt += healthLost;
+
         return healthLost;
     }
 
     // On receive damage.
     public float OnReceiveDamage(Unit source, float healthLost)
     {
+        // Return.
         return healthLost;
+    }
+
+    // On receiving healing.
+    public float OnHeal(float healthGained, Unit source = null)
+    {
+        // Track healing.
+        // (Unless we're vital cause leaders handle that.)
+        if (role != "Base")
+            GetLeader().healingDone += healthGained;
+
+        // Return.
+        return healthGained;
     }
 }

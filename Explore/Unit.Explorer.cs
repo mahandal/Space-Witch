@@ -109,7 +109,23 @@ public partial class Unit
         animator.speed = Random.Range(0.5f, 1f);
     }
 
-    // Load the given unit's stats into this explorer.
+    // Load the given unit into this unit.
+    public void LoadUnit(Unit unit)
+    {
+        // Reset level.
+        level = 1;
+        
+        // Delegate to below.
+        LoadUnit(unit.myName);
+
+        // Copy mvp stats.
+        timeAlive = unit.timeAlive;
+        manaGathered = unit.manaGathered;
+        damageDealt = unit.damageDealt;
+        kills = unit.kills;
+    }
+
+    // Load the given unit's stats into this unit.
     public void LoadUnit(string unitName)
     {
         // Get the progenitor unit.

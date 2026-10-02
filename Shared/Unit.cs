@@ -33,8 +33,20 @@ public partial class Unit : MonoBehaviour
     public string role;
 
     // This unit's level.
-    // (For Gatherer mode, for now...)
     public int level = 1;
+
+    [Header("MVP Stats")]
+    // How long this unit has been alive.
+    public float timeAlive = 0f;
+
+    // How much mana this unit has gathered.
+    public int manaGathered = 0;
+
+    // How much damage this unit has dealt.
+    public float damageDealt = 0f;
+
+    // How many foes this unit has slain.
+    public int kills = 0;
 
 
     [Header("Core Stats")]
@@ -387,7 +399,8 @@ public partial class Unit : MonoBehaviour
             return;
         }
 
-        
+        // Count time alive.
+        timeAlive += Time.fixedDeltaTime;
 
         // OnTick
         OnTick();
@@ -412,7 +425,6 @@ public partial class Unit : MonoBehaviour
                 hurtTimer = 0f;
             }
         }
-
         
 
         // Spells.
@@ -501,8 +513,8 @@ public partial class Unit : MonoBehaviour
             // Check if it is time to generate mana.
             if (farmTimer <= 0f)
             {
-                // Gain mana (scaling with level!)
-                GetLeader().mana += level;
+                // Gain mana.
+                GetLeader().GenerateMana();
 
                 // Feedback for player.
                 if (good)
@@ -566,6 +578,15 @@ public partial class Unit : MonoBehaviour
             return DM.I.goodLeader;
         else
             return DM.I.evilLeader;
+    }
+
+    // Return the enemy leader.
+    public Leader GetEnemyLeader()
+    {
+        if (good)
+            return DM.I.evilLeader;
+        else
+            return DM.I.goodLeader;
     }
 
     // + Stunned
@@ -698,8 +719,8 @@ public partial class Unit : MonoBehaviour
             GetLeader().mana += item.manaCost;
 
             // Count flowers.
-            if (item.myName == "Violet Flower")
-                GetLeader().flowersGathered++;
+            manaGathered += item.manaCost;
+            GetLeader().manaGathered += item.manaCost;
 
             // Feedback for player.
             if (good)
@@ -779,7 +800,7 @@ public partial class Unit : MonoBehaviour
         target.LoseHealth(damage, this);
     }
 
-    IEnumerator FadeLaser()
+    private IEnumerator FadeLaser()
     {
         yield return new WaitForSeconds(0.1f);
         attackLine.enabled = false;
@@ -825,15 +846,12 @@ public partial class Unit : MonoBehaviour
         return nearbyEnemies;
     }
 
-    // Fully heal.
-    public void FullHeal()
-    {
-        currentHealth = maxHealth;
-    }
-
     // Gain health.
     public void GainHealth(float healthGained, Unit source = null)
     {
+        // On heal.
+        healthGained = OnHeal(healthGained, source);
+
         // Vital(?)
         if (GetLeader().vitalUnits.Contains(this))
         {
@@ -894,10 +912,6 @@ public partial class Unit : MonoBehaviour
             healthLost = source.OnDealDamage(this, healthLost);
         healthLost = OnReceiveDamage(source, healthLost);
 
-        // // Getting stunned?
-        // if (source != null && source.keywords.Contains("Stuns"))
-        //     Stun();
-
         // Vital units
         if (keywords.Contains("Vital"))
         {
@@ -920,6 +934,10 @@ public partial class Unit : MonoBehaviour
             // Set our killer as our target, for vengeance death effects.
             target = source;
 
+            // Track stats.
+            if (source != null)
+                source.kills++;
+
             // Begin dying.
             BeginDying();
 
@@ -932,6 +950,10 @@ public partial class Unit : MonoBehaviour
     // Begin dying.
     public void BeginDying()
     {
+        // Track stats.
+        GetLeader().losses++;
+        GetEnemyLeader().kills++;
+
         // Unstun, if we were stunned.
         if (state == 3)
             Unstun();
@@ -1012,6 +1034,9 @@ public partial class Unit : MonoBehaviour
             else
                 GetLeader().items.Remove(this);
         }
+
+        // Check if we're an mvp candidate.
+        GetLeader().MVP(this);
             
         // Clean up game object.
         Destroy(gameObject);
@@ -1032,15 +1057,19 @@ public partial class Unit : MonoBehaviour
         maxHealth *= 1.2f;
         currentHealth *= 1.2f;
 
-        // Increase range by 20%, unless yer a bulwark and want to keep close.
-        if (role != "Bulwark")
-            range *= 1.2f;
-
         // Increase vision by 20%.
         vision *= 1.2f;
 
         // Increase size by 2%.
         transform.localScale *= 1.02f;
+
+        // Increase range by 20%, unless yer a bulwark and want to keep close.
+        if (role != "Bulwark")
+            range *= 1.2f;
+
+        // Increase production speed
+        timePerSpawn *= 0.8f;
+        farmTime *= 0.8f;
 
         // The way of the gatherer has special rules!
         if (wayOfTheGatherer)
@@ -1090,7 +1119,7 @@ public partial class Unit : MonoBehaviour
     {
         // Full heal!
         if (fullHeal)
-            FullHeal();
+            currentHealth = maxHealth;
 
         // + Explore
         if (GM.I.gameObject.activeSelf)

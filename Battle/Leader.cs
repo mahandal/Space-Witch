@@ -18,6 +18,44 @@ public partial class Leader : MonoBehaviour
     // The star this leader calls home.
     public Star homeStar;
 
+    [Header("Stat Tracking")]
+    // This side's current best MVP candidate.
+    public Unit mvpCandidate;
+
+    // + Mana
+    // How much mana this leader has generated passively.
+    public int manaGenerated = 0;
+
+    // How much mana this leader has gathered.
+    public int manaGathered = 0;
+
+    // + Cards
+
+    // How many units this leader has played.
+    public int unitsPlayed = 0;
+
+    // How many spells this leader has played.
+    public int spellsPlayed = 0;
+
+    // How many items this leader has played.
+    public int itemsPlayed = 0;
+
+    // How many structures this leader has played.
+    public int structuresPlayed = 0;
+
+    // + Combat
+    // How much damage our side has dealt in total.
+    public float damageDealt = 0;
+
+    // How much healing our side has done in total.
+    public float healingDone = 0;
+
+    // How many units our side has slain in total.
+    public int kills = 0;
+
+    // How many units our side has lost in total.
+    public int losses = 0;
+
 
     [Header("Health")]
     // How much health this leader has remaining.
@@ -30,9 +68,6 @@ public partial class Leader : MonoBehaviour
     // Hard-coded to include dragon statues.
     public List<Unit> vitalUnits = new List<Unit>();
 
-    [Header("Flowers")]
-    // How many flowers this leader has gathered.
-    public int flowersGathered = 0;
 
     [Header("Powers")]
     // How many power charges this leader currently has.
@@ -130,6 +165,18 @@ public partial class Leader : MonoBehaviour
         // Reset bools.
         reservesDepleted = false;
 
+        // + Reset stats.
+        manaGenerated = 0;
+        manaGathered = 0;
+        unitsPlayed = 0;
+        spellsPlayed = 0;
+        itemsPlayed = 0;
+        structuresPlayed = 0;
+        damageDealt = 0;
+        healingDone = 0;
+        kills = 0;
+        losses = 0;
+
         // + Starting health.
         maxHealth = DM.I.startingHealth;
         currentHealth = maxHealth;
@@ -144,9 +191,6 @@ public partial class Leader : MonoBehaviour
 
         // Set our starting health.
         SetHealth(maxHealth);
-
-        // Reset flowers gathered.
-        flowersGathered = 0;
 
         // Reset power charges.
         powerCharges = 0;
@@ -318,7 +362,7 @@ public partial class Leader : MonoBehaviour
         if (manaTimer <= 0f)
         {
             // Gain mana!
-            mana++;
+            GenerateMana();
             
             // Reset mana timer.
             manaTimer = secondsPerMana;
@@ -611,6 +655,12 @@ public partial class Leader : MonoBehaviour
         // Activate!
         newUnit.gameObject.SetActive(true);
 
+        // Track card type played.
+        if (newUnit.cardType == "Unit") unitsPlayed++;
+        if (newUnit.cardType == "Spell") spellsPlayed++;
+        if (newUnit.cardType == "Item") itemsPlayed++;
+        if (newUnit.cardType == "Structure") structuresPlayed++;
+
         // Return.
         return newUnit;
     }
@@ -775,6 +825,27 @@ public partial class Leader : MonoBehaviour
             return DM.I.GetAllEvilUnits();
     }
 
+    // + Mana
+    // Generate a mana.
+    public void GenerateMana(int m = 1)
+    {
+        // Increase mana.
+        mana += m;
+
+        // Track mana generated.
+        manaGenerated += m;
+    }
+
+    // Gather a mana.
+    public void GatherMana(int m = 1)
+    {
+        // Increase mana.
+        mana += m;
+
+        // Track mana gathered.
+        manaGathered += m;
+    }
+
     // + Health
     // Lose health.
     // Used whenever a unit deals damage to this leader.
@@ -788,7 +859,7 @@ public partial class Leader : MonoBehaviour
                 LoseHealth(source.currentHealth);
             // Gatherer - Lose flowers.
             if (DM.I.way == "Gatherer")
-                flowersGathered -= 1;
+                manaGathered -= 1;
 
             // Charm (without healing).
             source.ChangeSides(false);
@@ -821,6 +892,9 @@ public partial class Leader : MonoBehaviour
         // Defeat?
         if (currentHealth <= 0f)
         {
+            // Set health cleanly to 0.
+            currentHealth = 0;
+
             // When a good leader dies, that's a loss!
             // When an evil leader dies, that's a win!
             if (good)
@@ -833,6 +907,9 @@ public partial class Leader : MonoBehaviour
     // Gain health.
     public void GainHealth(float healthGained)
     {
+        // Track healing.
+        healingDone += healthGained;
+
         // Gain health.
         currentHealth += healthGained;
 
@@ -949,5 +1026,43 @@ public partial class Leader : MonoBehaviour
         // Visuals!
         if (good)
             UI.I.ReinforcementsArrived();
+    }
+
+    // + Remember the dead.
+    public bool MVP(Unit unit)
+    {
+        // Get score.
+        int score = MVPScore(unit);
+
+        // New MVP?
+        if (score > MVPScore(mvpCandidate))
+        {
+            // Load unit.
+            mvpCandidate.LoadUnit(unit);
+
+            // Return.
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    // MVP!
+    public int MVPScore(Unit unit)
+    {
+        // Initialize.
+        int score = 0;
+
+        // Add mana.
+        score += unit.manaGathered;
+
+        // Add damage dealt.
+        score += Mathf.RoundToInt(unit.damageDealt / 100f);
+
+        // Add kills.
+        score += unit.kills;
+
+        // Return.
+        return score;
     }
 }

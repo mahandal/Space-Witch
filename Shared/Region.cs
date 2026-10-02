@@ -65,8 +65,6 @@ public class Region : MonoBehaviour
     // Called when another collider enters this collider.
     void OnTriggerEnter2D(Collider2D col)
     {
-        Debug.Log(name + " entered by " + col.name);
-
         // Get unit.
         Unit unit = col.GetComponent<Unit>();
 

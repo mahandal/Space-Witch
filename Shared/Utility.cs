@@ -1,12 +1,72 @@
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
+using System;
 using System.Collections.Generic;
 using System.Text;
+using TMPro;
 
 public class Utility : MonoBehaviour
 {
     // + Simple helper functions.
+
+    // Read a unit's name and extract its level.
+
+    // Convert a float representing time into a formatted string.
+    public static string TimeString(float time)
+    {
+        TimeSpan t = TimeSpan.FromSeconds(time);
+        string timeString = t.TotalHours >= 1
+            ? $"{(int)t.TotalHours}:{t.Minutes:00}:{t.Seconds:00}"
+            : $"{t.Minutes}:{t.Seconds:00}";
+
+        return timeString;
+    }
+
+    // Increment an int stored as a string and return the int.
+    public static int IncrementString(string s, int amount = 1, int maxValue = int.MaxValue)
+    {
+        // Attempt to parse the string into an int.
+        if (int.TryParse(s, out int value))
+        {
+            // Get new value.
+            int newValue = value + amount;
+
+            // Cap at max.
+            if (newValue > maxValue)
+                newValue = maxValue;
+
+            // Return new value
+            return newValue;
+        }
+        else
+        {
+            Debug.LogWarning($"INVALID INPUT: '{s}' is not an integer.");
+            return 404;
+        }
+    }
+
+    // Increment a TMP_Text object
+    public static void IncrementText(TMP_Text text, int amount = 1, int maxValue = int.MaxValue)
+    {
+        // Attempt to parse the text object into an int.
+        if (int.TryParse(text.text, out int value))
+        {
+            // Get new value.
+            int newValue = value + amount;
+
+            // Cap at max.
+            if (newValue > maxValue)
+                newValue = maxValue;
+
+            // Assign to text object.
+            text.text = newValue.ToString();
+        }
+        else
+        {
+            Debug.LogWarning($"INVALID INPUT: '{text.text}' on {text.name} is not an integer.");
+        }
+    }
 
     // Convert an int to roman numeral format.
     public static string ToRomanNumeral(int number)
@@ -45,7 +105,7 @@ public class Utility : MonoBehaviour
         while (n > 1)
         {
             n--;
-            int k = Random.Range(0, n + 1);
+            int k = UnityEngine.Random.Range(0, n + 1);
             T value = shuffled[k];
             shuffled[k] = shuffled[n];
             shuffled[n] = value;

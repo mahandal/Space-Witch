@@ -78,7 +78,7 @@ public partial class Leader
         powerCharges--;
 
         // Gain mana.
-        mana += target.manaCost;
+        GatherMana(target.manaCost);
 
         // Gain health.
         GainHealth(target.currentHealth);
@@ -156,7 +156,7 @@ public partial class Leader
         victim.BeginDying();
 
         // Gain mana.
-        mana += victim.manaCost;
+        GatherMana(victim.manaCost);
 
         // Gain health.
         GainHealth(victim.currentHealth);
