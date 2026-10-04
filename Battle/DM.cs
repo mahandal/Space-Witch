@@ -496,7 +496,7 @@ public class DM : MonoBehaviour
         // Time.timeScale = 1f;
 
         // Close the victory screen.
-        PostGame.I.background.gameObject.SetActive(false);
+        UI.I.postGame.gameObject.SetActive(false);
 
         // Close the battle map.
         gameObject.SetActive(false);

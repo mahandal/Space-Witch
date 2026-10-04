@@ -61,6 +61,16 @@ public class PostGame : MonoBehaviour
     // The text saying 'From level 2 to level 3'
     public TMP_Text mvpLevelUpText;
 
+    [Header("Stardust")]
+    // The canvas group for stardust.
+    public CanvasGroup stardustCanvasGroup;
+
+    // The text object for yer old stardust count.
+    public TMP_Text oldStardust;
+
+    // The text object for yer new stardust count.
+    public TMP_Text newStardust;
+
 
     // + GOOD
 
@@ -250,6 +260,7 @@ public class PostGame : MonoBehaviour
         // Hide canvas groups.
         mvpCanvasGroup.gameObject.SetActive(false);
         mvpLevelCanvasGroup.gameObject.SetActive(false);
+        stardustCanvasGroup.gameObject.SetActive(false);
         neutralMetaCanvasGroup.gameObject.SetActive(false);
         goodMetaCanvasGroup.gameObject.SetActive(false);
         evilMetaCanvasGroup.gameObject.SetActive(false);
@@ -359,6 +370,14 @@ public class PostGame : MonoBehaviour
         // + Score
         goodScore.text = "0";
         good_score = CalculateScore(g);
+
+        // + Stardust
+        // Set text.
+        oldStardust.text = MenuManager.I.saveData.stardust.ToString();
+        newStardust.text = MenuManager.I.saveData.stardust.ToString();
+
+        // Add score to stardust.
+        MenuManager.I.saveData.stardust += good_score;
 
 
         // +++ Evil
@@ -516,17 +535,24 @@ public class PostGame : MonoBehaviour
         // After 6 seconds, reveal score.
         if (showTimer >= 6f)
         {
-            // Activate game objects.
+            // Activate score game objects.
             if (!goodScoreCanvasGroup.gameObject.activeSelf)
                 goodScoreCanvasGroup.gameObject.SetActive(true);
             if (!evilScoreCanvasGroup.gameObject.activeSelf)
                 evilScoreCanvasGroup.gameObject.SetActive(true);
+
+            // Activate stardust game object.
+            if (!stardustCanvasGroup.gameObject.activeSelf)
+                stardustCanvasGroup.gameObject.SetActive(true);
 
             // Good
             Utility.IncrementText(goodScore, 1, good_score);
 
             // Evil
             Utility.IncrementText(evilScore, 1, evil_score);
+
+            // Stardust
+            Utility.IncrementText(newStardust, 1, MenuManager.I.saveData.stardust);
         }
 
         // After 7 seconds, reveal mvp.

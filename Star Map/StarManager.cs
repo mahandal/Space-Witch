@@ -59,12 +59,9 @@ public class StarManager : MonoBehaviour
     // The background image for the planet.
     public Image planetBackground;
 
-    [Header("Recruitment (for fighting)")]
-    // The parent object for the recruitment screen.
-    public GameObject recruitmentScreen;
-
-    // Recruitment packs.
-    public List<Pack> packs;
+    [Header("Recruitment (for fighting!)")]
+    // Recruitment screen.
+    public Recruitment recruitment;
 
     [Header("Victory")]
     public CanvasGroup victory;
@@ -86,14 +83,14 @@ public class StarManager : MonoBehaviour
         // Hide what should not be.
         planetScreen.SetActive(false);
         victory.gameObject.SetActive(false);
-        recruitmentScreen.SetActive(false);
+        recruitment.gameObject.SetActive(false);
     }
 
     // Open the star map screen.
     public void GoToStarMap(bool fromMainMenu = false)
     {
         // Disable recruitment screen.
-        recruitmentScreen.SetActive(false);
+        recruitment.gameObject.SetActive(false);
 
         // Find which star we are on.
         currentStar = FindCurrentStar();
@@ -329,37 +326,6 @@ public class StarManager : MonoBehaviour
         planetScreen.SetActive(true);
     }
 
-    // Get a list of names of the cards available on the current planet.
-    // public List<string> GetPlanetCards(bool includeHomeCards = false)
-    // {
-    //     // Get current planet.
-    //     Planet p = GetCurrentPlanet();
-
-    //     // If we're not including home cards, just return the planet's list of cards.
-    //     if (!includeHomeCards)
-    //         return p.availableCards;
-
-    //     // Initialize a new list of card names.
-    //     List<string> cardNames = new List<string>();
-
-    //     // Iterate once per card on planet.
-    //     for (int i = 0; i < p.availableCards.Count; i++)
-    //     {
-    //         // Roll whether to use the local card or pull from your home star.
-    //         // Note: Local card actually pulls from current star, not planet.
-    //         int coinFlip = Random.Range(0, 2);
-    //         if (coinFlip == 0)
-    //             cardNames.Add(currentStar.cards[i]);
-    //         else if (coinFlip == 1)
-    //             cardNames.Add(DM.I.goodLeader.homeStar.cards[i]);
-    //         else
-    //             Debug.LogError("Do I not know how unity's random range works?");
-    //     }
-
-    //     // Return.
-    //     return cardNames;
-    // }
-
     // Calculate the starting health for each leader, using the current star and planet.
     public int GetStartingHealth()
     {
@@ -404,49 +370,8 @@ public class StarManager : MonoBehaviour
     // Skip exploring, jump straight to the action!
     public void B_Fight()
     {
-        // + Generate new packs.
-
-        // Get leader bio.
-        LeaderBio leaderBio = MainMenu.I.leaderBios[MenuManager.I.saveData.leaderName];
-
-        // // Get home star.
-        // Star homeStar = leaderBio.homeStar;
-
-        // Generate home pack.
-        packs[0].GeneratePack(leaderBio.reinforcements, planetIndex);
-        
-        // Generate local pack.
-        packs[1].GeneratePack(currentStar.cards, planetIndex);
-
-        // Generate mercenary pack.
-        packs[2].GeneratePack(Constance.I.mercenaries);
-
-        // Go to the recruitment screen.
-        recruitmentScreen.SetActive(true);
-    }
-
-    // Recruit a pack of cards and begin a battle.
-    public void B_Recruit(int option)
-    {
-        // Get the chosen pack.
-        Pack pack = packs[option];
-
-        // Add each card from the pack to our decklist.
-        foreach(MiniCard card in pack.minicards)
-        {
-            // Check if minicard is active.
-            if (card.gameObject.activeSelf)
-            {
-                // Get name.
-                string cardName = card.nameText.text;
-
-                // Add to decklist.
-                MenuManager.I.saveData.decklist.Add(cardName);
-            }
-        }
-       
-        // Begin the battle!
-        DM.I.BeginHunt();
+        // Set up the recruitment screen!
+        recruitment.OpenRecruitmentScreen();
     }
 
     // Exit the game.

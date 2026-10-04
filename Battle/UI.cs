@@ -95,18 +95,9 @@ public class UI : MonoBehaviour
     public Image tooltipHealthFill;
 
     [Header("Post game")]
-    // // The image in the background of the post game.
-    // // Also the parent object of the rest of the post game screen.
-    // public Image postgameBackground;
+    // Post game handled within.
+    public PostGame postGame;
 
-    // // The post game header saying "GOOD VICTORY!" or something similar.
-    // public TMP_Text postgameHeader;
-
-    // // Button to continue onward, visible after a victory.
-    // public Button continueButton;
-
-    // // Button to return to the main menu, visible after defeat.
-    // public Button returnButton;
 
     [Header("Fog of War")]
     public SpriteRenderer fogOfWar;
@@ -134,7 +125,8 @@ public class UI : MonoBehaviour
     public void BeginBattle()
     {
         // Hide what should not be.
-        PostGame.I.gameObject.SetActive(false);
+        // PostGame.I.gameObject.SetActive(false);
+        postGame.gameObject.SetActive(false);
         HideTooltip();
         reservesDepleted.gameObject.SetActive(false);
         reinforcementsArrived.gameObject.SetActive(false);
@@ -387,7 +379,7 @@ public class UI : MonoBehaviour
     // (Delegate to PostGame.cs)
     public void GameOver(bool victory)
     {
-        PostGame.I.GameOver(victory);
+        postGame.GameOver(victory);
     }
 
     // // Activate the post game overlay.
