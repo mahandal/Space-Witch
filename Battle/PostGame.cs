@@ -439,13 +439,20 @@ public class PostGame : MonoBehaviour
         // Show timer.
         showTimer += Time.fixedDeltaTime;
 
-        // For the first second, fade in the background.
+        // Fade in the background.
         if (showTimer < 1f)
         {
-            float a = showTimer / 2f;
+            float a = showTimer;
             background.color = new Color (a, a, a, 1f);
-        } else {
-            background.color = new Color(0.5f, 0.5f, 0.5f, 1f);
+        }
+        // Fade out the background.
+        else if (showTimer < 8f)
+        {
+            float a = 1f - (showTimer / 10f);
+            background.color = new Color (a, a, a, 1f);
+        }
+        else {
+            background.color = new Color(0.2f, 0.2f, 0.2f, 1f);
         }
 
         // After 1 second, reveal neutral meta data.
@@ -476,14 +483,14 @@ public class PostGame : MonoBehaviour
                 evilManaCanvasGroup.gameObject.SetActive(true);
 
             // Good
-            Utility.IncrementText(goodManaGenerated, 1, g.manaGenerated);
-            Utility.IncrementText(goodManaGathered, 1, g.manaGathered);
-            Utility.IncrementText(goodManaTotal, 1, g.manaGathered + g.manaGenerated); 
+            Utility.IncrementText(goodManaGenerated, g.manaGenerated);
+            Utility.IncrementText(goodManaGathered, g.manaGathered);
+            Utility.IncrementText(goodManaTotal, g.manaGathered + g.manaGenerated); 
 
             // Evil
-            Utility.IncrementText(evilManaGenerated, 1, e.manaGenerated);
-            Utility.IncrementText(evilManaGathered, 1, e.manaGathered);
-            Utility.IncrementText(evilManaTotal, 1, e.manaGathered + e.manaGenerated); 
+            Utility.IncrementText(evilManaGenerated, e.manaGenerated);
+            Utility.IncrementText(evilManaGathered, e.manaGathered);
+            Utility.IncrementText(evilManaTotal, e.manaGathered + e.manaGenerated); 
         }
 
         // After 4 seconds, reveal good and evil cards.
@@ -496,18 +503,18 @@ public class PostGame : MonoBehaviour
                 evilCardCanvasGroup.gameObject.SetActive(true);
 
             // Good
-            Utility.IncrementText(goodUnitCount, 1, g.unitsPlayed);
-            Utility.IncrementText(goodSpellCount, 1, g.spellsPlayed);
-            Utility.IncrementText(goodItemCount, 1, g.itemsPlayed);
-            Utility.IncrementText(goodStructureCount, 1, g.structuresPlayed);
-            Utility.IncrementText(goodCardTotal, 1, g.unitsPlayed + g.spellsPlayed + g.itemsPlayed + g.structuresPlayed);
+            Utility.IncrementText(goodUnitCount, g.unitsPlayed);
+            Utility.IncrementText(goodSpellCount, g.spellsPlayed);
+            Utility.IncrementText(goodItemCount, g.itemsPlayed);
+            Utility.IncrementText(goodStructureCount, g.structuresPlayed);
+            Utility.IncrementText(goodCardTotal, g.unitsPlayed + g.spellsPlayed + g.itemsPlayed + g.structuresPlayed);
 
             // Evil
-            Utility.IncrementText(evilUnitCount, 1, e.unitsPlayed);
-            Utility.IncrementText(evilSpellCount, 1, e.spellsPlayed);
-            Utility.IncrementText(evilItemCount, 1, e.itemsPlayed);
-            Utility.IncrementText(evilStructureCount, 1, e.structuresPlayed);
-            Utility.IncrementText(evilCardTotal, 1, e.unitsPlayed + e.spellsPlayed + e.itemsPlayed + e.structuresPlayed);
+            Utility.IncrementText(evilUnitCount, e.unitsPlayed);
+            Utility.IncrementText(evilSpellCount, e.spellsPlayed);
+            Utility.IncrementText(evilItemCount, e.itemsPlayed);
+            Utility.IncrementText(evilStructureCount, e.structuresPlayed);
+            Utility.IncrementText(evilCardTotal, e.unitsPlayed + e.spellsPlayed + e.itemsPlayed + e.structuresPlayed);
         }
 
         // After 5 seconds, reveal good and evil combat.
@@ -520,16 +527,16 @@ public class PostGame : MonoBehaviour
                 evilCombatCanvasGroup.gameObject.SetActive(true);
 
             // Good
-            Utility.IncrementText(goodDamage, 1, Mathf.RoundToInt(g.damageDealt));
-            Utility.IncrementText(goodHealing, 1, Mathf.RoundToInt(g.healingDone));
-            Utility.IncrementText(goodKills, 1, g.kills);
-            Utility.IncrementText(goodLosses, 1, g.losses);
+            Utility.IncrementText(goodDamage, Mathf.RoundToInt(g.damageDealt));
+            Utility.IncrementText(goodHealing, Mathf.RoundToInt(g.healingDone));
+            Utility.IncrementText(goodKills, g.kills);
+            Utility.IncrementText(goodLosses, g.losses);
 
             // Evil
-            Utility.IncrementText(evilDamage, 1, Mathf.RoundToInt(e.damageDealt));
-            Utility.IncrementText(evilHealing, 1, Mathf.RoundToInt(e.healingDone));
-            Utility.IncrementText(evilKills, 1, e.kills);
-            Utility.IncrementText(evilLosses, 1, e.losses);
+            Utility.IncrementText(evilDamage, Mathf.RoundToInt(e.damageDealt));
+            Utility.IncrementText(evilHealing, Mathf.RoundToInt(e.healingDone));
+            Utility.IncrementText(evilKills, e.kills);
+            Utility.IncrementText(evilLosses, e.losses);
         }
 
         // After 6 seconds, reveal score.
@@ -546,13 +553,13 @@ public class PostGame : MonoBehaviour
                 stardustCanvasGroup.gameObject.SetActive(true);
 
             // Good
-            Utility.IncrementText(goodScore, 1, good_score);
+            Utility.IncrementText(goodScore, good_score);
 
             // Evil
-            Utility.IncrementText(evilScore, 1, evil_score);
+            Utility.IncrementText(evilScore, evil_score);
 
             // Stardust
-            Utility.IncrementText(newStardust, 1, MenuManager.I.saveData.stardust);
+            Utility.IncrementText(newStardust, MenuManager.I.saveData.stardust);
         }
 
         // After 7 seconds, reveal mvp.

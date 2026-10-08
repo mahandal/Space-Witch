@@ -51,7 +51,7 @@ public class Recruitment : MonoBehaviour
 
         // Generate mercenary pack.
         packs[2].GeneratePack(Constance.I.mercenaries);
-        packCosts[2] = Random.Range(0, 1000);
+        packCosts[2] = Random.Range(0, 100);
         packCostTexts[2].text = "0";
 
         // Randomize re-roll cost.
@@ -68,15 +68,15 @@ public class Recruitment : MonoBehaviour
         // + Increment texts toward target values.
 
         // Stardust
-        Utility.IncrementText(stardustText, 1, MenuManager.I.saveData.stardust);
+        Utility.IncrementText(stardustText, MenuManager.I.saveData.stardust);
 
         // Packs
-        Utility.IncrementText(packCostTexts[0], 1, packCosts[0]);
-        Utility.IncrementText(packCostTexts[1], 1, packCosts[1]);
-        Utility.IncrementText(packCostTexts[2], 1, packCosts[2]);
+        Utility.IncrementText(packCostTexts[0], packCosts[0]);
+        Utility.IncrementText(packCostTexts[1], packCosts[1]);
+        Utility.IncrementText(packCostTexts[2], packCosts[2]);
 
         // Re-roll
-        Utility.IncrementText(rerollCostText, 1, rerollCost);
+        Utility.IncrementText(rerollCostText, rerollCost);
     }
 
     // + Buttons

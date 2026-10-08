@@ -46,18 +46,48 @@ public class Utility : MonoBehaviour
         }
     }
 
-    // Increment a TMP_Text object
-    public static void IncrementText(TMP_Text text, int amount = 1, int maxValue = int.MaxValue)
+    // Increment the value within a TMP_Text object, assuming it contains an integer, toward a given value.
+    // Amount incremented depends on difference between current value and target value.
+    public static void IncrementText(TMP_Text text, int targetValue)
     {
         // Attempt to parse the text object into an int.
         if (int.TryParse(text.text, out int value))
         {
+            // Find difference between current value and target value.
+            int difference = targetValue - value;
+
+            // If we've reached the target, return.
+            if (difference == 0)
+                return;
+
+            // + Decide how much to increment.
+            // Default to 1.
+            int amount = 1;
+
+            // 100: Increase to 2
+            if (difference > 100)
+                amount = 2;
+            // 500: Increase to 3
+            if (difference > 500)
+                amount = 3;
+            // 1,000: Increase to 4
+            if (difference > 1000)
+                amount = 4;
+            // 5,000: Increase to 5
+            if (difference > 5000)
+                amount = 5;
+            // 10,000: Increase to 11
+            if (difference > 10000)
+                amount = 11;
+            // 100,000: Increase to 111
+            if (difference > 100000)
+                amount = 111;
+            // 1,000,000: Increase to 1,111
+            if (difference > 1000000)
+                amount = 1111;
+
             // Get new value.
             int newValue = value + amount;
-
-            // Cap at max.
-            if (newValue > maxValue)
-                newValue = maxValue;
 
             // Assign to text object.
             text.text = newValue.ToString();
