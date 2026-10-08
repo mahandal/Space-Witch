@@ -177,6 +177,11 @@ public partial class Leader : MonoBehaviour
         kills = 0;
         losses = 0;
 
+        // Reset mvp
+        mvpCandidate.manaGathered = 0;
+        mvpCandidate.damageDealt = 0;
+        mvpCandidate.kills = -1;
+
         // + Starting health.
         maxHealth = DM.I.startingHealth;
         currentHealth = maxHealth;
