@@ -135,6 +135,9 @@ public class Progenitors : MonoBehaviour
     // Have to check the type to find the right dictionary.
     public Unit GetProgenitor(Card card)
     {
+        // Null check!
+        if (card == null) return null;
+        
         // Units.
         if (card.cardType == "Unit")
             return units[card.myName];
