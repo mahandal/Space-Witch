@@ -657,6 +657,11 @@ public partial class Leader : MonoBehaviour
         // Set deploy time.
         newUnit.deployTimer = newUnit.deployTime;
 
+        // Goblin bomb variance.
+        // TBD: Scale!
+        if (newUnit.GetBaseName() == "Goblin Bomb")
+            newUnit.deployTimer *= Random.Range(0.5f, 2f);
+
         // Activate!
         newUnit.gameObject.SetActive(true);
 
