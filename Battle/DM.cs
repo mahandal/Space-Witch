@@ -155,15 +155,26 @@ public class DM : MonoBehaviour
     public Card Grimoire(string cardName)
     {
         // Split the name into parts.
+        // Note: Level is available here in parts[1] but we don't need it.
         string[] parts = cardName.Split(' ', 3);
 
         // Check if the card name has a level.
         if (parts[0] == "Level")
+            cardName = parts[2];
+
+        // Check if card is is in grimoire.
+        if (grimoire.ContainsKey(cardName))
         {
-            // Note: Level is available here in parts[1] but we don't need it.
-            return grimoire[parts[2]];
-        } else {
             return grimoire[cardName];
+        }
+        // Check if card is a summon.
+        else if (grimoire.ContainsKey("Summon " + cardName))
+        {
+            return grimoire["Summon " + cardName];
+        }
+        else
+        {
+            return null;
         }
     }
 
