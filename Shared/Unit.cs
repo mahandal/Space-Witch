@@ -931,7 +931,7 @@ public partial class Unit : MonoBehaviour
         // Death.
         if (currentHealth <= 0)
         {
-            // Set our killer as our target, for vengeance death effects.
+            // Set our killer as our target, for vengeance death effects and stat tracking.
             target = source;
 
             // Track stats.
@@ -952,7 +952,9 @@ public partial class Unit : MonoBehaviour
     {
         // Track stats.
         GetLeader().losses++;
-        GetEnemyLeader().kills++;
+
+        if (target != null && target.good != good)
+            GetEnemyLeader().kills++;
 
         // Unstun, if we were stunned.
         if (state == 3)
