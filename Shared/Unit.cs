@@ -532,18 +532,6 @@ public partial class Unit : MonoBehaviour
         // - Movement
         if (state == 1)
         {
-            // Water
-            // float waterMultiplier = 1f;
-            // if (laneIndex == 2)
-            // {
-            //     // Aquatic creatures move faster in water!
-            //     if (keywords.Contains("Aquatic"))
-            //         waterMultiplier = 2f;
-            //     // Everyone else moves slower.
-            //     else
-            //         waterMultiplier = 0.5f;
-            // }
-
             // Speed multipliers.
             float speedMultipliers = SpeedModifiers();
 
