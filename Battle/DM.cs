@@ -469,6 +469,8 @@ public class DM : MonoBehaviour
             item.Death();
         }
 
+        // + Neutral
+
         // Flowers
         // (Need temp list so we don't edit the list while iterating through it.)
         List<Unit> tempFlowers = new List<Unit>(flowers);
