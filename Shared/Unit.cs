@@ -999,9 +999,7 @@ public partial class Unit : MonoBehaviour
         if (role == "Base")
         {
             // Reset to deploying.
-            deployTimer = deployTime;
-            state = 0;
-            visionCircle.gameObject.SetActive(false);
+            ReDeploy();
 
             // Avoid destroying bases.
             return;
@@ -1031,6 +1029,19 @@ public partial class Unit : MonoBehaviour
             
         // Clean up game object.
         Destroy(gameObject);
+    }
+
+    // Redeploy
+    public void ReDeploy()
+    {
+        // Reset deploy timer.
+        deployTimer = deployTime;
+
+        // Set state.
+        state = 0;
+
+        // Remove vision.
+        visionCircle.gameObject.SetActive(false);
     }
 
     // + Levels

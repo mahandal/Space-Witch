@@ -216,6 +216,10 @@ public partial class Leader : MonoBehaviour
         // Deploy base.
         for (int i = 0; i < vitalUnits.Count; i++)
         {
+            // Re-deploy.
+            vitalUnits[i].ReDeploy();
+
+            // Set deploy timer.
             vitalUnits[i].deployTimer = vitalUnits[i].deployTime;
         }
 
