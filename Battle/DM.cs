@@ -186,8 +186,8 @@ public class DM : MonoBehaviour
         if (MenuManager.I.gameState != 1) return;
 
         // Check for victory, in gatherer mode.
-        if (goodLeader.manaGathered >= 42) GameOver(true);
-        if (evilLeader.manaGathered >= 42) GameOver(false);
+        // if (goodLeader.manaGathered >= 42) GameOver(true);
+        // if (evilLeader.manaGathered >= 42) GameOver(false);
 
         // Increment time elapsed.
         gameTimer += Time.fixedDeltaTime;
