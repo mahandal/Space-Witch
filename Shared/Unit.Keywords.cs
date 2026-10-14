@@ -112,9 +112,12 @@ public partial class Unit
             healthLost *= 2f;
 
         // Track damage dealt.
-        damageDealt += healthLost;
-        GetLeader().damageDealt += healthLost;
-
+        if (target != this)
+        {
+            damageDealt += healthLost;
+            GetLeader().damageDealt += healthLost;
+        }
+        
         return healthLost;
     }
 
