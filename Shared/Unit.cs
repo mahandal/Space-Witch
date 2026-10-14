@@ -109,7 +109,6 @@ public partial class Unit : MonoBehaviour
     public Tile currentTile;
 
     // What lane this unit is in.
-    // Assumed to be set on spawn.
     public int laneIndex = 0;
 
     // This unit's current state.
@@ -543,7 +542,6 @@ public partial class Unit : MonoBehaviour
 
             // Update current tile.
             currentTile = GetCurrentTile();
-            
         }
     }
 
@@ -554,6 +552,9 @@ public partial class Unit : MonoBehaviour
         // Get the closest tile's position in grid.
         int tileX = Mathf.Clamp(Mathf.FloorToInt(transform.position.x), 0, DM.I.gridWidth - 1);
         laneIndex = Mathf.Clamp(Mathf.FloorToInt(transform.position.y), 0, DM.I.gridHeight - 1);
+
+        // Set sprite sorting order.
+        spriteRenderer.sortingOrder = 600 - Mathf.RoundToInt(transform.position.y * 100f);
 
         // Index into DM's grid and return the tile.
         return DM.I.grid[tileX, laneIndex];
@@ -917,7 +918,7 @@ public partial class Unit : MonoBehaviour
         currentHealth -= healthLost;
 
         // Death.
-        if (currentHealth <= 0)
+        if (currentHealth <= 0 && state != -1)
         {
             // Set our killer as our target, for vengeance death effects and stat tracking.
             target = source;

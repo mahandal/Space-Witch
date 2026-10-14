@@ -50,9 +50,13 @@ public class Region : MonoBehaviour
             return;
         }
 
-        // Hide sprite renderer.
+        // Do we have a visual?
+        spriteRenderer = GetComponent<SpriteRenderer>();
         if (spriteRenderer != null)
-            spriteRenderer.enabled = false;
+        {
+            // Set sprite sorting order.
+            spriteRenderer.sortingOrder = 600 - Mathf.RoundToInt(transform.position.y * 100f);
+        }
 
         // Increment region count.
         regionCount++;
