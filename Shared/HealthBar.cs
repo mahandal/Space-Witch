@@ -4,20 +4,27 @@ using UnityEngine.UI;
 public class HealthBar : MonoBehaviour
 {
     [Header("Manual Machinery")]
-    // The unit this health bar is attached to, for battle mode.
+    // The unit this health bar is attached to.
     public Unit unit;
 
     // The green bar representing how much health this unit has left.
+    // (red for evil)
     public Image greenBar;
 
     [Header("Automated Machinery")]
+    // Canvas to set sorting order.
+    public Canvas canvas;
+
     // A canvas group to scale opacity.
     public CanvasGroup canvasGroup;
 
     // Awaken!
     void Awake()
     {
+        canvas = GetComponent<Canvas>();
         canvasGroup = GetComponent<CanvasGroup>();
+
+        canvas.sortingOrder = 800;
     }
 
     void FixedUpdate()
@@ -27,6 +34,14 @@ public class HealthBar : MonoBehaviour
 
         // Set fill.
         greenBar.fillAmount = percentHealth;
+
+        // Set color.
+        if (unit.role == "Treasure")
+            greenBar.color = new Color (1f, 0f, 1f, 0.5f);
+        else if (unit.good)
+            greenBar.color = new Color (0f, 1f, 0f, 0.5f);
+        else
+            greenBar.color = new Color (1f, 0f, 0f, 0.5f);
 
         // Battle mode
         if (DM.I.gameObject.activeSelf)

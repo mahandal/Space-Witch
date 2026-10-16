@@ -475,8 +475,16 @@ public class UI : MonoBehaviour
         // Get their percent health.
         float healthPercent = unit.currentHealth / unit.maxHealth;
 
-        // Set health fill.
+        // Set health fill amount.
         tooltipHealthFill.fillAmount = healthPercent;
+
+        // Set health fill color.
+        if (unit.role == "Treasure")
+            tooltipHealthFill.color = new Color(1f, 0f, 1f, 1f);
+        else if (unit.good)
+            tooltipHealthFill.color = new Color (0f, 1f, 0f, 1f);
+        else
+            tooltipHealthFill.color = new Color (1f, 0f, 0f, 1f);
 
         // Reveal the tooltip.
         tooltip.alpha = 1f;
