@@ -608,6 +608,8 @@ public partial class Leader : MonoBehaviour
 
         // Get unit's position offset (i.e. how far above the ground it stands).
         float offset = progenitor.transform.position.y % 1f;
+        if (offset >= 0.5f)
+            offset = 1 - offset;
 
         // Modify offset by a slight random factor, so stacked units can be seen.
         offset += Random.Range(-0.1f, 0.1f);

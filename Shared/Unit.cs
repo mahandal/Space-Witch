@@ -451,6 +451,8 @@ public partial class Unit : MonoBehaviour
             int d100 = Random.Range(1, 101);
             if (d100 == 100)
                 Unstun();
+            else if (d100 == 99 && keywords.Contains("Dwarf"))
+                Unstun();
             else
                 return;
         }
@@ -550,8 +552,8 @@ public partial class Unit : MonoBehaviour
     public Tile GetCurrentTile()
     {
         // Get the closest tile's position in grid.
-        int tileX = Mathf.Clamp(Mathf.FloorToInt(transform.position.x), 0, DM.I.gridWidth - 1);
-        laneIndex = Mathf.Clamp(Mathf.FloorToInt(transform.position.y), 0, DM.I.gridHeight - 1);
+        int tileX = Mathf.Clamp(Mathf.RoundToInt(transform.position.x), 0, DM.I.gridWidth - 1);
+        laneIndex = Mathf.Clamp(Mathf.RoundToInt(transform.position.y), 0, DM.I.gridHeight - 1);
 
         // Set sprite sorting order.
         spriteRenderer.sortingOrder = 600 - Mathf.RoundToInt(transform.position.y * 100f);
