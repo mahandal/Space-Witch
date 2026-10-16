@@ -242,11 +242,18 @@ public class Utility : MonoBehaviour
 
     // + Scene loading
 
-    // Re-load the Game scene.
+    // Load the Game scene.
     public static void LoadGameScene()
     {
         // Load the scene.
         SceneManager.LoadScene("Game");
+    }
+
+    // Load the Load screen.
+    public static void LoadLoadScreen()
+    {
+        // Load the scene.
+        SceneManager.LoadScene("Load Screen");
     }
 
     // Exit the game.
