@@ -99,9 +99,26 @@ public partial class Unit
     // On deal damage.
     public float OnDealDamage(Unit target, float healthLost)
     {
-        // Stun
-        if (keywords.Contains("Stuns"))
+        // Bash
+        if (keywords.Contains("Bash"))
+        {
+            // Roll to stun.
+            int d100 = Random.Range(1, 101);
+
+            // Dwarves resist stuns.
+            if (target.keywords.Contains("Dwarf"))
+                d100 -= 25;
+
+            // 50% chance to stun.
+            if (d100 > 50)
+                target.Stun();
+        }
+
+        // Mega Bash
+        if (keywords.Contains("Mega Bash"))
+        {
             target.Stun();
+        }
 
         // Vampire
         if (keywords.Contains("Vampire"))
