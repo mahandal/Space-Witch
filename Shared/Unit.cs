@@ -631,7 +631,7 @@ public partial class Unit : MonoBehaviour
                 continue;
             
             // Check if they are within our range.
-            float distance = Vector3.Distance(transform.position, enemy.transform.position);
+            float distance = Mathf.Abs(enemy.transform.position.x - transform.position.x);
             if (distance <= range)
             {
                 // If we have no target, set this enemy as our new target.
@@ -640,7 +640,7 @@ public partial class Unit : MonoBehaviour
                     target = enemy;
                 } else {
                     // If this enemy is closer than our current target, set it as our new target.
-                    float distanceToTarget = Vector3.Distance(transform.position, target.transform.position);
+                    float distanceToTarget = Mathf.Abs(target.transform.position.x - transform.position.x);
                     if (distance < distanceToTarget)
                         target = enemy;
                 }
@@ -779,7 +779,7 @@ public partial class Unit : MonoBehaviour
         if (target == null) return;
 
         // Check if target is in range.
-        float distance = Vector3.Distance(transform.position, target.transform.position);
+        float distance = Mathf.Abs(target.transform.position.x - transform.position.x);
 
         // Fail if target has left our range.
         if (distance > range) return;
@@ -942,7 +942,8 @@ public partial class Unit : MonoBehaviour
     public void BeginDying()
     {
         // Track stats.
-        GetLeader().losses++;
+        if (role != "Treasure")
+            GetLeader().losses++;
 
         if (target != null && target.good != good)
             GetEnemyLeader().kills++;
@@ -1054,28 +1055,28 @@ public partial class Unit : MonoBehaviour
         // Gain a level.
         level++;
 
-        // Increase damage by 20%.
-        damage *= 1.2f;
+        // Increase damage.
+        damage *= Utility.LevelScalar();
 
-        // Increase health by 20%.
-        maxHealth *= 1.2f;
-        currentHealth *= 1.2f;
+        // Increase health.
+        maxHealth *= Utility.LevelScalar();
+        currentHealth *= Utility.LevelScalar();
 
-        // Increase vision by 20%.
-        vision *= 1.2f;
+        // Increase vision.
+        vision *= Utility.LevelScalar();
 
         // Increase size by 2%.
         transform.localScale *= 1.02f;
 
-        // Increase range by 20%, unless yer a bulwark and want to keep close.
+        // Increase range, unless yer a bulwark and want to keep close.
         if (role != "Bulwark")
-            range *= 1.2f;
+            range *= Utility.LevelScalar();
 
-        // Increase production speed
-        timePerSpawn *= 0.8f;
-        farmTime *= 0.8f;
+        // Increase production speed.
+        timePerSpawn /= Utility.LevelScalar();
+        farmTime /= Utility.LevelScalar();
 
-        // The way of the gatherer has special rules!
+        // The way of the gatherer has special rules!?
         if (wayOfTheGatherer)
         {
             // Teleport back to base.
