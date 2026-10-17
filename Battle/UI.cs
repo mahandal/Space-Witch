@@ -258,15 +258,20 @@ public class UI : MonoBehaviour
         // Time to hide VERSUS?
         if (DM.I.gameTimer >= 4f && versus.gameObject.activeSelf)
         {
-            // Reveal neutral.
-            neutral.SetActive(true);
+            
 
             // Fade versus.
             versus.alpha -= 0.01f;
 
             // Faded?
             if (versus.alpha <= 0f)
+            {
+                // Hide versus.
                 versus.gameObject.SetActive(false);
+
+                // Reveal neutral.
+                neutral.SetActive(true);
+            }
         }
     }
 
