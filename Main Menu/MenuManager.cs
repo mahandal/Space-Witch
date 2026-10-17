@@ -65,6 +65,9 @@ public class MenuManager : MonoBehaviour
         // Initialize GM.
         gm.Initialize();
 
+        // Load save data.
+        saveData = Utility.GetSaveData();
+
         // Start on the main menu.
         GoToMainMenu();
     }
