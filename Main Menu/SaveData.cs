@@ -10,10 +10,13 @@ public class SaveData
     public int stardust = 0;
 
     // The name of the leader we are playing as.
-    public string leaderName = "";
+    public string leaderName = "Dreaming Soul";
 
     // The name of the current star we are on.
     public string currentStarName = "";
+
+    // Our current planet index.
+    public int currentPlanetIndex = 1;
 
     // How many credits we have.
     public int credits = 0;

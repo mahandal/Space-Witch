@@ -232,6 +232,9 @@ public class Utility : MonoBehaviour
         // Update our saveData's current star.
         MenuManager.I.saveData.currentStarName = StarManager.I.currentStar.myName;
 
+        // Update our save data's current planet index.
+        MenuManager.I.saveData.currentPlanetIndex = StarManager.I.planetIndex;
+
         // Update our save data's leader name.
         MenuManager.I.saveData.leaderName = DM.I.goodLeader.myName;
 
@@ -257,6 +260,7 @@ public class Utility : MonoBehaviour
 
         // Reset our current planet.
         StarManager.I.planetIndex = 1;
+        MenuManager.I.saveData.currentPlanetIndex = 1;
 
         // Reset our leader's name.
         // (only visible if ye check yer save data before selecting a leader)

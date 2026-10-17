@@ -19,6 +19,9 @@ public class MainMenu : MonoBehaviour
     // Parent object of the leader details screen.
     public GameObject leaderDetailsScreen;
 
+    // + Buttons
+    public Button continueButton;
+
     [Header("MM: Leader Details")]
     // + Manual machinery for the leader details screen.
 
@@ -88,6 +91,12 @@ public class MainMenu : MonoBehaviour
 
         // Reset leader details screen position.
         leaderSelectScreen.transform.localPosition = leaderSelectStartPosition;
+
+        // Check if we have a save to continue from.
+        if (MenuManager.I.saveData.leaderName == "Dreaming Soul")
+            continueButton.gameObject.SetActive(false);
+        else
+            continueButton.gameObject.SetActive(true);
 
         // Activate the main menu object.
         // gameObject.SetActive(true);
@@ -224,15 +233,17 @@ public class MainMenu : MonoBehaviour
     // Continue from your previous save.
     public void B_ContinueAdventure()
     {
-        // Fetch save data.
-        MenuManager.I.saveData = Utility.GetSaveData();
+        // // Fetch save data.
+        // MenuManager.I.saveData = Utility.GetSaveData();
+
+        // Set planet index.
+        StarManager.I.planetIndex = MenuManager.I.saveData.currentPlanetIndex;
 
         // Get bio for player's leader.
         LeaderBio bio = leaderBios[MenuManager.I.saveData.leaderName];
 
         // Load the player's leader.
         DM.I.goodLeader.LoadBio(bio);
-        // InitializeGoodLeader(bio);
 
         // Go to star map!
         StarManager.I.GoToStarMap(true);

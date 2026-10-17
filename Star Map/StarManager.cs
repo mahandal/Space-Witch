@@ -99,8 +99,8 @@ public class StarManager : MonoBehaviour
 
         // Set our current planet index to past the current star's planet count,
         // so we go to the star map instead of the planet screen.
-        if (fromMainMenu)
-            planetIndex = currentStar.planets.Count;
+        // if (fromMainMenu)
+        //     planetIndex = currentStar.planets.Count;
 
         // Check if we just beat the final planet on this star and should return to the star map.
 

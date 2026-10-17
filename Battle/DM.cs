@@ -203,7 +203,7 @@ public class DM : MonoBehaviour
         {
             // GG!
             GameOver(true);
-            
+
             // All good!
             return;
         }
@@ -439,13 +439,17 @@ public class DM : MonoBehaviour
         // Activate UI.
         UI.I.GameOver(victory);
 
-        // If we won, increment our planet index so the star manager knows to move us forward.
+        // If we won, increment our planet index and save.
         if (victory)
+        {
             StarManager.I.planetIndex++;
-            // Utility.SaveGame();
+            Utility.SaveGame();
+        }
         // If we lost, reset our progress.
         else
+        {
             Utility.ResetSave();
+        }
     }
 
     // Reset the battle map by clearing old units and cards in the air.
