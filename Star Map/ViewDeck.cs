@@ -92,18 +92,19 @@ public class ViewDeck : MonoBehaviour
     public void RevealPageButtons()
     {
         // + Previous
+        // Can't go back from the first page.
         if (pageIndex == 0)
             previousPage.gameObject.SetActive(false);
         else
             previousPage.gameObject.SetActive(true);
 
         // + Next
-        nextPage.gameObject.SetActive(true);
-
         // To use the next page button, you need at least this many cards in your deck.
-        int cardsNeeded = (pageIndex + 1) * minicards.Count;
+        int cardsNeeded = (pageIndex + 1) * minicards.Count + 1;
 
-        if (cardsNeeded > MenuManager.I.saveData.decklist.Count)
+        if (MenuManager.I.saveData.decklist.Count >= cardsNeeded)
+            nextPage.gameObject.SetActive(true);
+        else
             nextPage.gameObject.SetActive(false);
     }
 
