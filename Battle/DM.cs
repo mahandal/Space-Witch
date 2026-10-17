@@ -12,6 +12,9 @@ public class DM : MonoBehaviour
     // The time elapsed of the current battle.
     public float gameTimer = 0f;
 
+    // The maximum duration of the current battle.
+    public float timeLimit = -1f;
+
     // Which way is the player following?
     public string way = "Hunter";
     
@@ -114,6 +117,9 @@ public class DM : MonoBehaviour
         // Reset game timer.
         gameTimer = 0f;
 
+        // Set new time limit.
+        timeLimit = StarManager.I.GetTimeLimit();
+
         // Set new starting health.
         startingHealth = StarManager.I.GetStartingHealth();
 
@@ -191,6 +197,16 @@ public class DM : MonoBehaviour
 
         // Increment time elapsed.
         gameTimer += Time.fixedDeltaTime;
+
+        // Time limit?
+        if (gameTimer >= timeLimit)
+        {
+            // GG!
+            GameOver(true);
+            
+            // All good!
+            return;
+        }
         
         // Count down our flower timer.
         flowerTimer -= Time.fixedDeltaTime;

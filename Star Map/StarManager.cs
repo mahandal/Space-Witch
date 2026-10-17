@@ -341,6 +341,16 @@ public class StarManager : MonoBehaviour
         return startingHealth;
     }
 
+    // Get the time limit for the current planet.
+    public float GetTimeLimit()
+    {
+        // Get current planet.
+        Planet p = GetCurrentPlanet();
+
+        // Return time limit.
+        return p.timeLimit;
+    }
+
     // + End game
 
     // Final Victory!

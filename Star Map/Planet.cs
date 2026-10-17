@@ -10,6 +10,9 @@ public class Planet : MonoBehaviour
     // Which evil leader ye fight at this planet.
     public string villain = "Morgause le Fey";
 
+    // How long ye need to survive in battle on this planet to earn victory.
+    public float timeLimit = 60f;
+
     // This planet's description.
     [TextArea(10, 30)]
     public string description;

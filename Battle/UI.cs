@@ -4,6 +4,13 @@ using TMPro;
 
 public class UI : MonoBehaviour
 {
+    [Header("Time")]
+    // The text object saying how much time is left on the clock.
+    public TMP_Text timeRemaining;
+
+    // Parent object of the neutral stuff in the middle.
+    public GameObject neutral;
+
     [Header("Power Charges")]
     // The text object showing how many power charges the player currently has.
     public TMP_Text powerCharges;
@@ -131,6 +138,7 @@ public class UI : MonoBehaviour
         reservesDepleted.gameObject.SetActive(false);
         reinforcementsArrived.gameObject.SetActive(false);
         versus.gameObject.SetActive(false);
+        neutral.SetActive(false);
 
         // Hide leader names and portraits to begin with.
         goodName.gameObject.SetActive(false);
@@ -196,6 +204,9 @@ public class UI : MonoBehaviour
         UpdatePowerCharges();
 
         // + Top bar
+        // Time
+        CountTime();
+
         // Hunter - Update health.
         if (DM.I.way == "Hunter")
             UpdateHealth();
@@ -203,6 +214,18 @@ public class UI : MonoBehaviour
         // Gatherer - Count flowers.
         if (DM.I.way == "Gatherer")
             CountFlowers();
+    }
+
+    void CountTime()
+    {
+        // Get time remaining.
+        float tr = DM.I.timeLimit - DM.I.gameTimer;
+
+        // Turn into time string.
+        string timeString = Utility.TimeString(tr);
+
+        // Set text.
+        timeRemaining.text = timeString;
     }
 
     // Dramatic intro saying leader names VERSUS each other.
@@ -235,6 +258,9 @@ public class UI : MonoBehaviour
         // Time to hide VERSUS?
         if (DM.I.gameTimer >= 4f && versus.gameObject.activeSelf)
         {
+            // Reveal neutral.
+            neutral.SetActive(true);
+
             // Fade versus.
             versus.alpha -= 0.01f;
 
