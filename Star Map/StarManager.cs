@@ -84,12 +84,14 @@ public class StarManager : MonoBehaviour
         planetScreen.SetActive(false);
         victory.gameObject.SetActive(false);
         recruitment.gameObject.SetActive(false);
+        recruitment.viewDeck.gameObject.SetActive(false);
+        recruitment.viewDeck.inspection.gameObject.SetActive(false);
     }
 
     // Open the star map screen.
     public void GoToStarMap(bool fromMainMenu = false)
     {
-        // Disable recruitment screen.
+        // Disable what should not be.
         recruitment.gameObject.SetActive(false);
 
         // Find which star we are on.

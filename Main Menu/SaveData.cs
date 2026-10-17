@@ -27,7 +27,7 @@ public class SaveData
     }
 
     // Level up a card in our deck.
-    public void LevelUp(string cardName)
+    public string LevelUp(string cardName)
     {
         // Get index.
         int index = decklist.IndexOf(cardName);
@@ -36,7 +36,7 @@ public class SaveData
         if (index < 0)
         {
             Debug.LogWarning("Failed to find " + cardName + " while leveling up!");
-            return;
+            return "";
         }
 
 
@@ -58,11 +58,20 @@ public class SaveData
 
             // Assign new name.
             decklist[index] = newName;
+
+            // Return.
+            return newName;
         }
         else
         {
-            // Level up to level 2.
-            decklist[index] = "Level 2 " + cardName;
+            // Add level to name.
+            string newName = "Level 2 " + cardName;
+
+            // Replace old slot.
+            decklist[index] = newName;
+
+            // Return.
+            return newName;
         }
     }
 }

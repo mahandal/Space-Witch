@@ -23,6 +23,9 @@ public class Recruitment : MonoBehaviour
     // Text object for the cost to re-roll.
     public TMP_Text rerollCostText;
 
+    [Header("View Deck")]
+    public ViewDeck viewDeck;
+
     // + Initialization
 
     // Open the recruitment screen.
@@ -81,7 +84,14 @@ public class Recruitment : MonoBehaviour
 
     // + Buttons
 
-     // Recruit a pack of cards and begin a battle.
+    // Go to the viewing deck to view yer deck.
+    public void B_ViewDeck()
+    {
+        // Enable viewing deck.
+        viewDeck.GoToViewDeck();
+    }
+
+    // Recruit a pack of cards and begin a battle.
     public void B_Recruit(int option)
     {
         // Option -1: Non!

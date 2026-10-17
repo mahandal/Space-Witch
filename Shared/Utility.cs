@@ -8,6 +8,14 @@ using TMPro;
 
 public class Utility : MonoBehaviour
 {
+    // + Level Scaling
+    public static float LevelScalar(int level = 1)
+    {
+        // Gain 20% in some stats per level above the first.
+        return 1f + (0.2f * (level - 1));
+    }
+
+
     // + Simple helper functions.
 
     // Read a unit's name and extract its level.
@@ -85,6 +93,24 @@ public class Utility : MonoBehaviour
             // 1,000,000: Increase to 1,111
             if (difference > 1000000)
                 amount = 1111;
+
+            // Negative
+            if (difference < 0)
+                amount = -1;
+            if (difference < -100)
+                amount = -2;
+            if (difference < -500)
+                amount = -3;
+            if (difference < -1000)
+                amount = -4;
+            if (difference < -5000)
+                amount = -5;
+            if (difference < -10000)
+                amount = -11;
+            if (difference < -100000)
+                amount = -111;
+            if (difference < -1000000)
+                amount = -1111;
 
             // Get new value.
             int newValue = value + amount;
@@ -200,8 +226,7 @@ public class Utility : MonoBehaviour
     }
 
     // Save our current progress.
-    // Note: This is where we update our save data's current star, but NOT where we update its deck list.
-    // (The deck list is edited in CardOnPlanet, and tbd in the shop.)
+    // Note: This is where we update our save data's current star, but its decklist is set throughout!
     public static void SaveGame()
     {
         // Update our saveData's current star.
@@ -223,6 +248,20 @@ public class Utility : MonoBehaviour
     // Reset save data.
     public static void ResetSave()
     {
+        // Remember stardust.
+        int stardust = MenuManager.I.saveData.stardust;
+
+        // Reset our current star.
+        StarManager.I.currentStar = StarManager.I.startingStar;
+        StarManager.I.currentStarName = "";
+
+        // Reset our current planet.
+        StarManager.I.planetIndex = 1;
+
+        // Reset our leader's name.
+        // (only visible if ye check yer save data before selecting a leader)
+        DM.I.goodLeader.myName = "Dreaming Soul";
+
         // Get file path.
         string path = GetSaveFilePath();
 
@@ -232,12 +271,11 @@ public class Utility : MonoBehaviour
         // Reset our save data object.
         MenuManager.I.saveData = new SaveData();
 
-        // Reset our current star.
-        StarManager.I.currentStar = StarManager.I.startingStar;
-        StarManager.I.currentStarName = "";
+        // Set stardust.
+        MenuManager.I.saveData.stardust = stardust;
 
-        // Reset our current planet.
-        StarManager.I.planetIndex = 1;
+        // Save.
+        SaveGame();
     }
 
     // + Scene loading
