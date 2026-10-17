@@ -142,6 +142,7 @@ public class LoadScreen : MonoBehaviour
         rumors.Add("Warriors fight to earn a place in Honoro's Hall after life!");
         rumors.Add("Glugoni is god of feasts and festivity. His sign is a spilled goblet. He appears as a jovial walrus wearing a chef's hat and apron.");
         rumors.Add("Bouldo is god of masonry, smithing, and crafting of all kinds. His sign is a hammer and nail. He appears as a wheel or a tire.");
+        rumors.Add("Womga the Wanderer is god of exploration and travel. Her sign is a falling leaf. She appears as a butterfly.");
     }
 
     public void HintOrRumor()
