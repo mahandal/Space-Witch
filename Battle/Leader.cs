@@ -727,12 +727,14 @@ public partial class Leader : MonoBehaviour
         // -30% size
         // +30% speed
         // +30% vision
+        // +30% range
         if (homeStar.myName == "Gorr")
         {
             cardPlayed.maxHealth *= 0.7f;
             cardPlayed.currentHealth *= 0.7f;
             cardPlayed.speed *= 1.3f;
             cardPlayed.vision *= 1.3f;
+            cardPlayed.range *= 1.3f;
             cardPlayed.transform.localScale *= 0.7f;
         }
 
