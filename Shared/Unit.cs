@@ -787,6 +787,9 @@ public partial class Unit : MonoBehaviour
         // Handle keywords and other attack triggers.
         OnAttack();
 
+        // Check we're still alive and well.
+        if (currentHealth <= 0 || target == null) return;
+
         // Deal damage to our target.
         target.LoseHealth(damage, this);
     }

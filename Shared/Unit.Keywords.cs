@@ -16,11 +16,16 @@ public partial class Unit
 
         // Poisoned
         if (keywords.Contains("Poisoned"))
-            LoseHealth(maxHealth * 0.1f * Time.fixedDeltaTime, this, true);
+        {
+            // Count stacks of poison.
+            int stacks = Utility.CountStringsInList(keywords, "Poisoned");
+
+            // Lose health.
+            LoseHealth(maxHealth * 0.1f * stacks * Time.fixedDeltaTime, this, true);
+        }
 
         // Troll regeneration.
-        // Note: the 'else' makes poison super effective against trolls!
-        else if (keywords.Contains("Troll"))
+        if (keywords.Contains("Troll"))
             GainHealth(maxHealth * 0.1f * Time.fixedDeltaTime);
     }
 
@@ -66,13 +71,20 @@ public partial class Unit
     // Called when this unit gets to the Attack() frame in its attack animation.
     public void OnAttack()
     {
-        // Bloodthirst?
+        // Bloodthirst
         if (keywords.Contains("Bloodthirst"))
         {
             damage *= 1.01f;
         }
 
-        // Cleave?
+        // Blood Oath
+        if (keywords.Contains("Blood Oath"))
+        {
+            // Deal half damage to yerself.
+            LoseHealth(damage / 2f);
+        }
+
+        // Cleave
         if (keywords.Contains("Cleave"))
         {
             // Iterate through each other enemy unit nearby.
@@ -83,7 +95,7 @@ public partial class Unit
             }
         }
 
-        // Laser?
+        // Laser
         if (keywords.Contains("Laser"))
         {
             // Draw a red line to our target.
@@ -120,13 +132,18 @@ public partial class Unit
             target.Stun();
         }
 
+        // Demolition
+        if (keywords.Contains("Demolition") && target.cardType == "Structure")
+            healthLost *= 2f;
+
         // Vampire
         if (keywords.Contains("Vampire"))
             GainHealth(healthLost);
 
-        // Demolition
-        if (keywords.Contains("Demolition") && target.cardType == "Structure")
-            healthLost *= 2f;
+        // Venomous
+        if (keywords.Contains("Venomous") && target.cardType != "Structure")
+            target.keywords.Add("Poisoned");
+        
 
         // Track damage dealt.
         if (target != this)

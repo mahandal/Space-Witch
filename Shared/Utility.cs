@@ -4,6 +4,7 @@ using UnityEngine.SceneManagement;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Linq;
 using TMPro;
 
 public class Utility : MonoBehaviour
@@ -17,8 +18,11 @@ public class Utility : MonoBehaviour
 
 
     // + Simple helper functions.
-
-    // Read a unit's name and extract its level.
+    // Count instances of a string in a list.
+    public static int CountStringsInList(List<string> list, string stringToFind)
+    {
+        return list.Count(s => s == stringToFind);
+    }
 
     // Convert a float representing time into a formatted string.
     public static string TimeString(float time)
