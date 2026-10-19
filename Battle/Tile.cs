@@ -95,23 +95,4 @@ public class Tile : MonoBehaviour
     {
         image.color = Color.clear;
     }
-
-    // void OnMouseEnter()
-    // {
-    //     // Set as hovered tile.
-    //     InputManager.I.hoveredTile = this;
-
-    //     // Highlight.
-    //     image.color = hoverColor;
-    // }
-
-    // void OnMouseExit()
-    // {
-    //     // Clear hovered tile.
-    //     if (InputManager.I.hoveredTile == this)
-    //         InputManager.I.hoveredTile = null;
-
-    //     // Clear highlight.
-    //     image.color = Color.clear;
-    // }
 }
