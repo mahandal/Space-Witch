@@ -137,7 +137,7 @@ public partial class Unit
             healthLost *= 2f;
 
         // Vampire
-        if (keywords.Contains("Vampire"))
+        if (keywords.Contains("Vampire") && target != this)
             GainHealth(healthLost);
 
         // Venomous
