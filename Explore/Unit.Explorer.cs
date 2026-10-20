@@ -192,6 +192,9 @@ public partial class Unit
             // Create duplicate.
             Unit item = Object.Instantiate(p);
 
+            // Align.
+            item.good = good;
+
             // Level up.
             item.LevelTo(item.GetLevel());
 
