@@ -1,9 +1,14 @@
 using UnityEngine;
+using UnityEngine.InputSystem;
 using UnityEngine.UI;
 using TMPro;
 
 public class UI : MonoBehaviour
 {
+    [Header("Cursors")]
+    // The cursor that appears when selling.
+    public GameObject sellCursor;
+
     [Header("Time")]
     // The text object saying how much time is left on the clock.
     public TMP_Text timeRemaining;
@@ -115,7 +120,7 @@ public class UI : MonoBehaviour
     // + Initialization
 
     // Awaken!
-    void Awake()
+    public void Initialize()
     {
         // Singleton.
         if (I == null)
@@ -203,6 +208,9 @@ public class UI : MonoBehaviour
         // Update power charges.
         UpdatePowerCharges();
 
+        // + Cursors
+        Cursors();
+
         // + Top bar
         // Time
         CountTime();
@@ -214,6 +222,14 @@ public class UI : MonoBehaviour
         // Gatherer - Count flowers.
         if (DM.I.way == "Gatherer")
             CountFlowers();
+    }
+
+    // Custom cursors.
+    void Cursors()
+    {
+        // Sell
+        if (InputBattle.I.selectedButton == "Sell")
+            sellCursor.transform.position = Mouse.current.position.ReadValue();
     }
 
     void CountTime()
@@ -455,6 +471,17 @@ public class UI : MonoBehaviour
     //     // postgameBackground.gameObject.SetActive(true);
     // }
 
+    // + Cursor
+    // Reset cursor.
+    public void ResetCursor()
+    {
+        // Hide sell cursor.
+        sellCursor.SetActive(false);
+
+        // Reveal main cursor.
+        Cursor.visible = true;
+    }
+
 
     // + Buttons
 
@@ -467,8 +494,12 @@ public class UI : MonoBehaviour
             InputBattle.I.Deselect();
             return;
         }
-        
-        // TBD: Change cursor
+
+        // Hide main cursor.
+        Cursor.visible = false;
+
+        // Reveal sell cursor.
+        sellCursor.SetActive(true);
 
         // Set selected button.
         InputBattle.I.selectedButton = "Sell";

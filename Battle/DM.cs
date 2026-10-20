@@ -53,6 +53,12 @@ public class DM : MonoBehaviour
     public int tileSize = 1;
 
     [Header("Machinery")]
+    // Input.
+    public InputBattle input;
+
+    // UI.
+    public UI ui;
+
     // The progenitor manager.
     public Progenitors progenitors;
 
@@ -87,6 +93,12 @@ public class DM : MonoBehaviour
 
         // Initialize grid.
         InitializeGrid();
+
+        // Initialize UI.
+        ui.Initialize();
+
+        // Initialize input.
+        input.Initialize();
     }
 
     // Begin a battle, following the way of the hunter.

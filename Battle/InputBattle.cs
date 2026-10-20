@@ -21,14 +21,17 @@ public class InputBattle : MonoBehaviour
     // Singleton.
     public static InputBattle I;
 
-    // Awaken!
-    void Awake()
+    // Initialize
+    public void Initialize()
     {
         // Singleton.
         if (I == null)
             I = this;
         else
             Destroy(this);
+
+        // Deselect.
+        Deselect();
     }
 
     // Update for inputs.
@@ -80,7 +83,8 @@ public class InputBattle : MonoBehaviour
             else if (selectedButton == "Sell")
             {
                 // Hovering a structure?
-                if (hoveredUnit != null && hoveredUnit.cardType == "Structure" && hoveredUnit.state == 1)
+                if (hoveredUnit != null && hoveredUnit.cardType == "Structure" &&
+                    hoveredUnit.state == 1 && hoveredUnit.role != "Base")
                 {
                     // Sell!
                     hoveredUnit.GetLeader().GatherMana(hoveredUnit.manaCost);
@@ -166,6 +170,9 @@ public class InputBattle : MonoBehaviour
 
         // Clear hovered tile.
         hoveredTile = null;
+
+        // Reset cursor.
+        UI.I.ResetCursor();
     }
 
 
