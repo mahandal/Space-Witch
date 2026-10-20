@@ -1,4 +1,6 @@
 using UnityEngine;
+using System.Collections;
+using System.Collections.Generic;
 
 public partial class Unit
 {
@@ -106,6 +108,12 @@ public partial class Unit
             // Fade the laser after a brief delay.
             StartCoroutine(FadeLaser());
         }
+    }
+
+    private IEnumerator FadeLaser()
+    {
+        yield return new WaitForSeconds(0.1f);
+        attackLine.enabled = false;
     }
 
     // On deal damage.

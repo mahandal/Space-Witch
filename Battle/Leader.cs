@@ -616,11 +616,11 @@ public partial class Leader : MonoBehaviour
         // Set alignment.
         newUnit.good = good;
 
-        // Evil is backwards!
+        // Set direction.
         if (good)
-            newUnit.transform.eulerAngles = new Vector3(0f, 0f, 0f);
+            newUnit.SetDirection(1);
         else
-            newUnit.transform.eulerAngles = new Vector3(0, 180f, 0);
+            newUnit.SetDirection(-1);
 
         // Hide (to deploy in).
         Utility.SetOpacity(newUnit.spriteRenderer, 0f);

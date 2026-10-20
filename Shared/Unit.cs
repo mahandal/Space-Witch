@@ -8,9 +8,10 @@ public partial class Unit : MonoBehaviour
 {
     [Header("Meta")]
     // Whether this unit is good or evil.
-    // Also whether this unit is facing right or left, for movement, attacks, and animations.
-    // (Unit animations are facing right by default, and mirrored for units facing left.)
     public bool good = true;
+
+    // Which direction this unit is facing.
+    public int direction = 1;
     
     // This unit's name.
     public string myName;
@@ -567,11 +568,13 @@ public partial class Unit : MonoBehaviour
             // Speed multipliers.
             float speedMultipliers = SpeedModifiers();
 
-            // Direction
-            if (good)
-                transform.position += Vector3.right * speed * speedMultipliers * Time.fixedDeltaTime;
-            else
-                transform.position -= Vector3.right * speed * speedMultipliers * Time.fixedDeltaTime;
+            // Move
+            transform.position += Vector3.right * direction * speed * speedMultipliers * Time.fixedDeltaTime;
+
+            // if (good)
+                // transform.position += Vector3.right * speed * speedMultipliers * Time.fixedDeltaTime;
+            // else
+                // transform.position -= Vector3.right * speed * speedMultipliers * Time.fixedDeltaTime;
 
             // Update current tile.
             currentTile = GetCurrentTile();
@@ -634,6 +637,19 @@ public partial class Unit : MonoBehaviour
         animator.SetInteger("State", state);
     }
 
+    // + Direction
+    public void SetDirection(int newDirection)
+    {
+        // Set direction.
+        direction = newDirection;
+
+        // Rotate to face direction.
+        if (newDirection == 1)
+            transform.eulerAngles = new Vector3(0f, 0f, 0f);
+        else
+            transform.eulerAngles = new Vector3(0, 180f, 0);
+    }
+
     // + Vision
 
     // Look for an enemy unit to attack.
@@ -656,9 +672,9 @@ public partial class Unit : MonoBehaviour
             if (enemy.cardType == "Spell" || enemy.cardType == "Item") continue;
 
             // Ignore units behind us.
-            if (good && transform.position.x > enemy.transform.position.x)
+            if (direction == 1 && transform.position.x > enemy.transform.position.x)
                 continue;
-            if (!good && transform.position.x < enemy.transform.position.x)
+            if (direction == -1 && transform.position.x < enemy.transform.position.x)
                 continue;
             
             // Check if they are within our range.
@@ -747,7 +763,6 @@ public partial class Unit : MonoBehaviour
             // Feedback for player.
             if (good)
                 Fading.Create(item.transform.position);
-                // RisingText.Create(item.transform.position);
         }
         else
         {
@@ -823,12 +838,6 @@ public partial class Unit : MonoBehaviour
 
         // Deal damage to our target.
         target.LoseHealth(damage, this);
-    }
-
-    private IEnumerator FadeLaser()
-    {
-        yield return new WaitForSeconds(0.1f);
-        attackLine.enabled = false;
     }
 
     // Get a list of all enemy units near the target.
@@ -1117,17 +1126,6 @@ public partial class Unit : MonoBehaviour
         {
             LevelUp();
         }
-    }
-
-    // Teleport this unit to its base.
-    public void TeleportToBase()
-    {
-        // Good goes to 0, the furthest left column.
-        // Evil goes to the furthest right column.
-        if (good)
-            transform.position = new Vector3(0f, transform.position.y, transform.position.z);
-        else
-            transform.position = new Vector3(DM.I.gridWidth, transform.position.y, transform.position.z);
     }
 
     // + Magic
