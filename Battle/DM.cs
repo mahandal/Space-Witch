@@ -235,7 +235,12 @@ public class DM : MonoBehaviour
             // Grow a flower!
             GrowFlower();
 
-            // Reset flower timer.
+            // Reduce flower time?
+            int d100 = Random.Range(1, 101);
+            if (d100 == 100)
+                timePerFlower *= 0.99f;
+
+            // Reset flower timer
             flowerTimer = timePerFlower;
         }
     }
