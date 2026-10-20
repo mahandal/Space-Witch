@@ -458,6 +458,22 @@ public class UI : MonoBehaviour
 
     // + Buttons
 
+    // Button pressed: Sell
+    public void B_Sell()
+    {
+        // Stop selling?
+        if (InputBattle.I.selectedButton == "Sell")
+        {
+            InputBattle.I.Deselect();
+            return;
+        }
+        
+        // TBD: Change cursor
+
+        // Set selected button.
+        InputBattle.I.selectedButton = "Sell";
+    }
+
     // Button pressed: Trash Can
     public void B_TrashCan()
     {

@@ -68,71 +68,87 @@ public class InputBattle : MonoBehaviour
         if (Keyboard.current.escapeKey.wasPressedThisFrame)
             Deselect();
 
-        // Left click attempts to play card.
-        if (Mouse.current.leftButton.wasPressedThisFrame && selectedCard != null && hoveredTile != null)
-            DM.I.goodLeader.AttemptPlayCard(selectedCard.index, hoveredTile);
-
-        // + Leader abilities
-        // Left clicked on a unit?
-        else if (Mouse.current.leftButton.wasPressedThisFrame && hoveredUnit != null)
+        // +++ Left Click
+        if (Mouse.current.leftButton.wasPressedThisFrame)
         {
-            // Can't target enemy territory.
-            if (DM.I.goodLeader.IsInEnemyTerritory(hoveredUnit))
+            // + Playing a card
+            if (selectedCard != null && hoveredTile != null)
             {
-                return;
+                DM.I.goodLeader.AttemptPlayCard(selectedCard.index, hoveredTile);
             }
-            // Dying units.
-            else if (hoveredUnit.state == -1)
+            // + Selling a structure
+            else if (selectedButton == "Sell")
             {
-                return;
+                // Hovering a structure?
+                if (hoveredUnit != null && hoveredUnit.cardType == "Structure" && hoveredUnit.state == 1)
+                {
+                    // Sell!
+                    hoveredUnit.GetLeader().GatherMana(hoveredUnit.manaCost);
+                    hoveredUnit.BeginDying();
+                }
             }
-            // Deploying units
-            else if (hoveredUnit.state == 0)
+            // + Leader abilities
+            // Left clicked on a unit?
+            else if (hoveredUnit != null)
             {
-                // Guinevere
-                // (Handled in CardInHand)
-                // if (DM.I.goodLeader.myName == "Guinevere")
-                //     DM.I.goodLeader.GuinevereSing(hoveredUnit);
-            }
-            // Items?
-            else if (hoveredUnit.cardType == "Item")
-            {
-                // Shruk
-                if (DM.I.goodLeader.myName == "Shruk")
-                    DM.I.goodLeader.ShrukEat(hoveredUnit);
-            }
-            // Clicking on friendlies:
-            else if (hoveredUnit.good)
-            {
-                // Sybil
-                if (DM.I.goodLeader.myName == "Sybil Solisi")
-                    DM.I.goodLeader.SybilHeal(hoveredUnit);
-                // Gatama
-                else if (DM.I.goodLeader.myName == "Gatama the Seer")
-                    DM.I.goodLeader.GatamaHeal(hoveredUnit);
-                // Lancelot
-                else if (DM.I.goodLeader.myName == "Lancelot")
-                    DM.I.goodLeader.Sacrifice(hoveredUnit);
-            } else {
-                // Clicking on enemies:
-                // Morgan le Fey
-                if (DM.I.goodLeader.myName == "Morgan le Fey")
-                    DM.I.goodLeader.MorganCharm(hoveredUnit);
+                // Can't target enemy territory.
+                if (DM.I.goodLeader.IsInEnemyTerritory(hoveredUnit))
+                {
+                    return;
+                }
+                // Dying units.
+                else if (hoveredUnit.state == -1)
+                {
+                    return;
+                }
+                // Deploying units
+                else if (hoveredUnit.state == 0)
+                {
+                    // Guinevere
+                    // (Handled in CardInHand)
+                    // if (DM.I.goodLeader.myName == "Guinevere")
+                    //     DM.I.goodLeader.GuinevereSing(hoveredUnit);
+                }
+                // Items?
+                else if (hoveredUnit.cardType == "Item")
+                {
+                    // Shruk
+                    if (DM.I.goodLeader.myName == "Shruk")
+                        DM.I.goodLeader.ShrukEat(hoveredUnit);
+                }
+                // Clicking on friendlies:
+                else if (hoveredUnit.good)
+                {
+                    // Sybil
+                    if (DM.I.goodLeader.myName == "Sybil Solisi")
+                        DM.I.goodLeader.SybilHeal(hoveredUnit);
+                    // Gatama
+                    else if (DM.I.goodLeader.myName == "Gatama the Seer")
+                        DM.I.goodLeader.GatamaHeal(hoveredUnit);
+                    // Lancelot
+                    else if (DM.I.goodLeader.myName == "Lancelot")
+                        DM.I.goodLeader.Sacrifice(hoveredUnit);
+                } else {
+                    // Clicking on enemies:
+                    // Morgan le Fey
+                    if (DM.I.goodLeader.myName == "Morgan le Fey")
+                        DM.I.goodLeader.MorganCharm(hoveredUnit);
 
-                // Wubalin Brightforge
-                else if (DM.I.goodLeader.myName == "Wubalin Brightforge")
-                    DM.I.goodLeader.WubalinShoot(hoveredUnit);
+                    // Wubalin Brightforge
+                    else if (DM.I.goodLeader.myName == "Wubalin Brightforge")
+                        DM.I.goodLeader.WubalinShoot(hoveredUnit);
 
 
-                // Markaus Allstrong
-                else if (DM.I.goodLeader.myName == "Markaus Allstrong")
-                    DM.I.goodLeader.MarkausPunch(hoveredUnit);
+                    // Markaus Allstrong
+                    else if (DM.I.goodLeader.myName == "Markaus Allstrong")
+                        DM.I.goodLeader.MarkausPunch(hoveredUnit);
 
-                // Penelope
-                else if (DM.I.goodLeader.myName == "Penelope")
-                    DM.I.goodLeader.PenEat(hoveredUnit);
+                    // Penelope
+                    else if (DM.I.goodLeader.myName == "Penelope")
+                        DM.I.goodLeader.PenEat(hoveredUnit);
+                }
             }
-        }
+        } 
     }
 
     // Deselect anything ye've currently selected.
