@@ -219,8 +219,14 @@ public class DM : MonoBehaviour
         // Time limit?
         if (gameTimer >= timeLimit)
         {
+            // See who won!?
+            int good_score = PostGame.I.CalculateScore(goodLeader);
+            int evil_score = PostGame.I.CalculateScore(evilLeader);
+
+            bool didYeWin = good_score >= evil_score;
+
             // GG!
-            GameOver(true);
+            GameOver(didYeWin);
 
             // All good!
             return;
