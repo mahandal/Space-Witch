@@ -695,7 +695,7 @@ public class PostGame : MonoBehaviour
         int score = 0;
 
         // + Health.
-        score += Mathf.RoundToInt(leader.currentHealth / 13f);
+        score += Mathf.RoundToInt(leader.currentHealth / 10f);
 
         // + Mana.
         score += leader.manaGenerated;
