@@ -571,13 +571,39 @@ public partial class Unit : MonoBehaviour
             // Move
             transform.position += Vector3.right * direction * speed * speedMultipliers * Time.fixedDeltaTime;
 
-            // if (good)
-                // transform.position += Vector3.right * speed * speedMultipliers * Time.fixedDeltaTime;
-            // else
-                // transform.position -= Vector3.right * speed * speedMultipliers * Time.fixedDeltaTime;
-
             // Update current tile.
             currentTile = GetCurrentTile();
+
+            // + Civilian
+            if (keywords.Contains("Civilian"))
+                Civilian();
+        }
+    }
+
+    // Civilians turn around when leaving their territory, or upon returning back to base.
+    private void Civilian()
+    {
+        if (good)
+        {
+            // + Good
+            // Check if ye've left yer territory.
+            if (direction == 1 && currentTile.claim < 1)
+                SetDirection(-1);
+
+            // Check if ye've reached yer base.
+            if (direction == -1 && currentTile.structure != null && currentTile.structure.role == "Base")
+                SetDirection(1);
+        }
+        else
+        {
+            // + Evil
+            // Check if ye've left yer territory.
+            if (direction == -1 && currentTile.claim > -1)
+                SetDirection(1);
+
+            // Check if ye've reached yer base.
+            if (direction == 1 && currentTile.structure != null && currentTile.structure.role == "Base")
+                SetDirection(-1);
         }
     }
 
