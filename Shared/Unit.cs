@@ -36,6 +36,9 @@ public partial class Unit : MonoBehaviour
     // This unit's level.
     public int level = 1;
 
+    // A list of items this unit has equipped, picked up, and/or consumed.
+    public List<string> equipped = new List<string>();
+
     [Header("MVP Stats")]
     // How long this unit has been alive.
     public float timeAlive = 0f;
@@ -794,6 +797,50 @@ public partial class Unit : MonoBehaviour
         {
             // Get a bit bigger.
             transform.localScale *= 1f + (0.01f * item.manaCost);
+
+            // Add to list of equipped items.
+            equipped.Add(item.myName);
+        }
+
+        // + Food poisoning
+        if (item.role == "Food")
+        {
+            // Count up tummy threat level.
+            int tummyThreat = 0;
+
+            foreach (string e in equipped)
+            {
+                // Get card of equipped item.
+                Unit p = Progenitors.I.GetProgenitor(e);
+
+                // + Food
+                if (p.role == "Food")
+                    tummyThreat++;
+                if (p.GetBaseName() == "Chocolate Chip Cookie")
+                    tummyThreat++;
+            }
+
+            // Roll a d100.
+            int d100 = Random.Range(1, 101);
+
+            // Logres special ability!
+            if (GetLeader().homeStar.myName == "Logres")
+                d100 += Random.Range(1, 101);
+
+            // Compare roll to tummy threat.
+            if (d100 < tummyThreat)
+                keywords.Add("Poisoned");
+
+            // Ogres!
+            if (d100 >= 100 && GetBaseName() == "Ogrite")
+            {
+                // Grow into an ogre!
+                LoadUnit("Ogre");
+
+                // Reset direction.
+                if (good) SetDirection(1);
+                if (!good) SetDirection(-1);
+            }
         }
 
         // + Gain stats.

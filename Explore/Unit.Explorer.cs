@@ -160,12 +160,44 @@ public partial class Unit
         if (cardType == "Unit")
             attackTime = CalculateAttackTime();
 
+        // Set scale.
+        transform.localScale = p.transform.localScale;
+
         // Set collider size.
         collider.offset = p.collider.offset;
         collider.size = p.collider.size;
 
         // Level up?
         LevelTo(GetLevel());
+
+        // Re-equip items.
+        ReEquip();
+    }
+
+    // Re-equip all yer items.
+    private void ReEquip()
+    {
+        // Create temporary list of what ye've equipped.
+        List <string> tempEquipped = new List<string>(equipped);
+
+        // Clear yer list of equipped items.
+        equipped.Clear();
+
+        // Equip each item.
+        foreach (string e in tempEquipped)
+        {
+            // Get progenitor.
+            Unit p = Progenitors.I.GetProgenitor(e);
+
+            // Create duplicate.
+            Unit item = Object.Instantiate(p);
+
+            // Level up.
+            item.LevelTo(item.GetLevel());
+
+            // Equip.
+            PickUp(item);
+        }
     }
 
     // +++ Exploring!
