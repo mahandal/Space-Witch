@@ -258,9 +258,8 @@ public class CardInHand : MonoBehaviour, IPointerEnterHandler, IPointerExitHandl
     // Select this card.
     public void Select()
     {
-        // Deselect previous card.
-        if (InputBattle.I.selectedCard != null)
-            InputBattle.I.selectedCard.Deselect();
+        // Deselect previous card (or button).
+        InputBattle.I.Deselect();
 
         // Set this as selected card.
         InputBattle.I.selectedCard = this;
