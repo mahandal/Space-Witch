@@ -805,34 +805,14 @@ public partial class Unit : MonoBehaviour
         // + Food poisoning
         if (item.role == "Food")
         {
-            // Count up tummy threat level.
-            int tummyThreat = 0;
-
-            foreach (string e in equipped)
-            {
-                // Get card of equipped item.
-                Unit p = Progenitors.I.GetProgenitor(e);
-
-                // + Food
-                if (p.role == "Food")
-                    tummyThreat++;
-                if (p.GetBaseName() == "Chocolate Chip Cookie")
-                    tummyThreat++;
-            }
+            if (good != item.good)
+                keywords.Add("Poisoned");
 
             // Roll a d100.
             int d100 = Random.Range(1, 101);
 
-            // Logres special ability!
-            if (GetLeader().homeStar.myName == "Logres")
-                d100 += Random.Range(1, 101);
-
-            // Compare roll to tummy threat.
-            if (d100 < tummyThreat)
-                keywords.Add("Poisoned");
-
             // Ogres!
-            if (d100 >= 100 && GetBaseName() == "Ogrite")
+            if (d100 >= 50 && GetBaseName() == "Ogrite")
             {
                 // Grow into an ogre!
                 LoadUnit("Ogre");
@@ -1058,7 +1038,7 @@ public partial class Unit : MonoBehaviour
     public void BeginDying()
     {
         // Track stats.
-        if (role != "Treasure")
+        if (cardType != "Item")
             GetLeader().losses++;
 
         if (target != null && target.good != good)
