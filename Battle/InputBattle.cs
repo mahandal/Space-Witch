@@ -14,6 +14,10 @@ public class InputBattle : MonoBehaviour
     // The currently selected card.
     public CardInHand selectedCard;
 
+    [Header("Selected Button")]
+    // The currently selected button.
+    public string selectedButton;
+
     // Singleton.
     public static InputBattle I;
 
@@ -56,9 +60,13 @@ public class InputBattle : MonoBehaviour
         if (Keyboard.current.digit5Key.wasPressedThisFrame)
             DM.I.goodLeader.hand[4].Select();
 
-        // Right click deselects card.
-        if (Mouse.current.rightButton.wasPressedThisFrame && selectedCard != null)
-            selectedCard.Deselect();
+        // Right click deselects.
+        if (Mouse.current.rightButton.wasPressedThisFrame)
+            Deselect();
+
+        // Escape also deselects.
+        if (Keyboard.current.escapeKey.wasPressedThisFrame)
+            Deselect();
 
         // Left click attempts to play card.
         if (Mouse.current.leftButton.wasPressedThisFrame && selectedCard != null && hoveredTile != null)
@@ -125,6 +133,23 @@ public class InputBattle : MonoBehaviour
                     DM.I.goodLeader.PenEat(hoveredUnit);
             }
         }
+    }
+
+    // Deselect anything ye've currently selected.
+    public void Deselect()
+    {
+        // Clear selected card.
+        if (selectedCard != null)
+            selectedCard.Deselect();
+
+        // Clear selected button.
+        selectedButton = "";
+
+        // Clear hovered unit.
+        hoveredUnit = null;
+
+        // Clear hovered tile.
+        hoveredTile = null;
     }
 
 
