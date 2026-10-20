@@ -371,6 +371,10 @@ public class PostGame : MonoBehaviour
         // + Score
         goodScore.text = "0";
         good_score = CalculateScore(g);
+        evil_score = CalculateScore(e);
+
+        if (victory)
+            good_score += evil_score;
 
         // + Stardust
         // Set text.
@@ -421,7 +425,6 @@ public class PostGame : MonoBehaviour
 
         // + Score
         evilScore.text = "0";
-        evil_score = CalculateScore(e);
     }
 
 
