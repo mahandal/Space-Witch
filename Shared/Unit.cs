@@ -1223,7 +1223,10 @@ public partial class Unit : MonoBehaviour
                 good = false;
 
                 // Set rotation.
-                transform.eulerAngles = new Vector3(0f, 180f, 0f);
+                // transform.eulerAngles = new Vector3(0f, 180f, 0f);
+
+                // Set direction.
+                SetDirection(-1);
 
                 // Hide vision.
                 visionCircle.gameObject.SetActive(false);
@@ -1240,7 +1243,10 @@ public partial class Unit : MonoBehaviour
                 good = true;
 
                 // Set rotation.
-                transform.eulerAngles = new Vector3(0f, 0f, 0f);
+                // transform.eulerAngles = new Vector3(0f, 0f, 0f);
+
+                // Set direction.
+                SetDirection(1);
 
                 // Reveal vision.
                 visionCircle.gameObject.SetActive(true);
