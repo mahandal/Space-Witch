@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
 using TMPro;
+using System.Collections.Generic;
 
 public class UI : MonoBehaviour
 {
@@ -78,6 +79,9 @@ public class UI : MonoBehaviour
 
     // The name in the tooltip.
     public TMP_Text tooltipName;
+
+    // Icons of hovered unit's equipped items.
+    public List<Image> tooltipEquippedIcons;
 
     // The mana cost in the tooltip.
     public TMP_Text tooltipMana;
@@ -543,6 +547,26 @@ public class UI : MonoBehaviour
 
         // Load the background image.
         Utility.LoadImage(tooltipBackgroundImage, "Cards/" + unit.GetBaseName());
+
+        // Load images for equipped items.
+        for (int i = 0; i < tooltipEquippedIcons.Count; i++)
+        {
+            // Item in slot?
+            if (unit.equipped.Count > i)
+            {
+                // Get base name.
+                string baseName = Utility.ExtractBaseName(unit.equipped[i]);
+
+                // Load image.
+                Utility.LoadImage(tooltipEquippedIcons[i], "Cards/" + baseName);
+
+                // Reveal.
+                tooltipEquippedIcons[i].gameObject.SetActive(true);
+            } else {
+                // No item, hide image.
+                tooltipEquippedIcons[i].gameObject.SetActive(false);
+            }
+        }
 
         // Set the current health.
         tooltipCurrentHealth.text = unit.currentHealth.ToString("0");

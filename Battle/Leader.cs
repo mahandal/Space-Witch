@@ -779,6 +779,10 @@ public partial class Leader : MonoBehaviour
         // Return false for null units.
         if (unit == null) return false;
 
+        // Return false if unit's current tile is null.
+        // Note: This shouldn't really happen except for brief moments maybe?
+        if (unit.currentTile == null) return false;
+
         // Check claim.
         if (good)
             return unit.currentTile.claim > 0;
@@ -789,9 +793,6 @@ public partial class Leader : MonoBehaviour
     // Returns true if the given unit is in our enemy's territory.
     public bool IsInEnemyTerritory(Unit unit)
     {
-        // Return false for null units.
-        if (unit == null) return false;
-
         if (good)
             return DM.I.evilLeader.IsInOurTerritory(unit);
         else

@@ -18,6 +18,40 @@ public class Utility : MonoBehaviour
 
 
     // + Simple helper functions.
+
+    // Extract base name from string.
+    public static string ExtractBaseName(string cardName)
+    {
+        // Split name into parts.
+        string[] parts = cardName.Split(' ', 3);
+
+        // Check if the card name has a level.
+        if (parts[0] == "Level")
+        {
+            // Extract parts.
+            string baseName = parts[2];
+
+            return baseName;
+        }
+        else
+        {
+            return cardName;
+        }
+    }
+
+    // Extract level from string.
+    public static int ExtractLevel(string cardName)
+    {
+        // Split name into parts.
+        string[] parts = cardName.Split(' ', 3);
+
+        // Check if the card name has a level.
+        if (parts[0] == "Level")
+            return int.Parse(parts[1]);
+        else
+            return 1;
+    }
+
     // Count instances of a string in a list.
     public static int CountStringsInList(List<string> list, string stringToFind)
     {
