@@ -506,7 +506,7 @@ public partial class Leader : MonoBehaviour
                 return false;
 
             // Structures may not be played on yer base.
-            if (tile.structure != null && tile.structure.role == "Base")
+            if (card.cardType == "Structure" && tile.structure != null && tile.structure.role == "Base")
                 return false;
         }
 
