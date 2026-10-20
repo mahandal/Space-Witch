@@ -83,12 +83,13 @@ public class InputBattle : MonoBehaviour
             else if (selectedButton == "Sell")
             {
                 // Hovering a structure?
-                if (hoveredUnit != null && hoveredUnit.cardType == "Structure" &&
-                    hoveredUnit.state == 1 && hoveredUnit.role != "Base")
+                Unit structure = hoveredTile.structure;
+
+                if (structure != null && structure.state == 1 && structure.role != "Base")
                 {
                     // Sell!
-                    hoveredUnit.GetLeader().GatherMana(hoveredUnit.manaCost);
-                    hoveredUnit.BeginDying();
+                    structure.GetLeader().GatherMana(structure.manaCost);
+                    structure.BeginDying();
                 }
             }
             // + Leader abilities
