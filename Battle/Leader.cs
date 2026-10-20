@@ -495,21 +495,18 @@ public partial class Leader : MonoBehaviour
         // Check card type to see if the tile is valid.
         if (card.cardType == "Spell")
         {
-            // Spells may be played anywhere outside of your enemy's deployment zone.
-            if (IsInEnemyDeploymentZone(tile))
+            // Spells may be played anywhere outside of your enemy's territory.
+            if (IsEnemyTerritory(tile))
                 return false;
         }
         else
         {
-            // Units, structures, and equipment must be played in your deployment zone.
-            if (!IsInDeploymentZone(tile))
+            // Units, structures, and equipment must be played in your territory.
+            if (!IsOurTerritory(tile))
                 return false;
-        }
 
-        // Structures and items check if there is already a structure there.
-        if (card.cardType == "Structure" || card.cardType == "Item")
-        {
-            if (tile.structure != null)
+            // Structures may not be played on yer base.
+            if (tile.structure != null && tile.structure.role == "Base")
                 return false;
         }
 
@@ -521,9 +518,6 @@ public partial class Leader : MonoBehaviour
         // Play the card!
         PlayCard(index, tile);
 
-        // // Remove card from hand, drawing a new card after 1 second.
-        // cardInHand.Hide();
-
         // Deselect card.
         if (cardInHand == InputBattle.I.selectedCard)
             InputBattle.I.selectedCard.Deselect();
@@ -533,7 +527,7 @@ public partial class Leader : MonoBehaviour
     }
 
     // Play a card from our hand to the given tile.
-    // Note: Validity is checked already in AttemptPlayCard
+    // Note: Validity is checked already in AttemptPlayCard.
     public void PlayCard(int index, Tile tile)
     {
         // Get the card in hand.
@@ -542,7 +536,7 @@ public partial class Leader : MonoBehaviour
         // Spawn the unit corresponding to the selected card.
         Unit newUnit = SpawnUnit(cardInHand.myName, tile);
 
-        // Throw card into play.
+        // Throw card toward unit.
         cardInHand.Throw(newUnit);
 
         // Remove card from hand, drawing a new card after 1 second.
@@ -597,14 +591,6 @@ public partial class Leader : MonoBehaviour
 
         // Set name.
         newUnit.myName = unitName;
-
-        // If card is a structure, link tile to structure.
-        if (card.cardType == "Structure")
-            tile.structure = newUnit;
-
-        // If card is an item, remember it in our list of items.
-        if (card.cardType == "Item")
-            items.Add(newUnit);
 
         // Get unit's position offset (i.e. how far above the ground it stands).
         float offset = progenitor.transform.position.y % 1f;
@@ -667,6 +653,22 @@ public partial class Leader : MonoBehaviour
         // TBD: Scale!
         if (newUnit.GetBaseName() == "Goblin Bomb")
             newUnit.deployTimer *= Random.Range(0.5f, 2f);
+
+        // + Structures
+        if (card.cardType == "Structure")
+        {
+            // Check if tile is available.
+            if (tile.structure == null)
+            {
+                // Tile is available!
+                tile.structure = newUnit;
+            }
+        }
+
+        // + Items
+        // If card is an item, remember it in our list of items.
+        if (card.cardType == "Item")
+            items.Add(newUnit);
 
         // Activate!
         newUnit.gameObject.SetActive(true);
@@ -770,48 +772,70 @@ public partial class Leader : MonoBehaviour
             LoseHealth(cardPlayed.manaCost);
     }
 
-    // + Deployment zones
-    // Returns true if the given unit is in our deployment zone.
-    public bool IsInDeploymentZone(Unit unit)
+    // + Territory
+    // Returns true if the given unit is in our territory.
+    public bool IsInOurTerritory(Unit unit)
     {
         // Return false for null units.
         if (unit == null) return false;
 
-        // Check from the left for good, from the right for evil.
+        // Check claim.
         if (good)
-            return unit.transform.position.x < numColumnsDeployable;
+            return unit.currentTile.claim > 0;
         else
-            return unit.transform.position.x >= DM.I.gridWidth - numColumnsDeployable;
+            return unit.currentTile.claim < 0;
     }
 
-    // Returns true if the given unit is in our enemy's deployment zone.
-    public bool IsInEnemyDeploymentZone(Unit unit)
+    // Returns true if the given unit is in our enemy's territory.
+    public bool IsInEnemyTerritory(Unit unit)
     {
         // Return false for null units.
         if (unit == null) return false;
 
         if (good)
-            return DM.I.evilLeader.IsInDeploymentZone(unit);
+            return DM.I.evilLeader.IsInOurTerritory(unit);
         else
-            return DM.I.goodLeader.IsInDeploymentZone(unit);
+            return DM.I.goodLeader.IsInOurTerritory(unit);
     }
 
-    // Returns true if the given tile is in our deployment zone.
-    public bool IsInDeploymentZone(Tile tile)
+    // Returns true if the given tile is part of our territory.
+    public bool IsOurTerritory(Tile tile)
     {
         if (good)
-            return tile.x < numColumnsDeployable;
+            return tile.claim > 0;
         else
-            return tile.x >= DM.I.gridWidth - numColumnsDeployable;
+            return tile.claim < 0;
     }
 
-    // Returns true if the given tile is in our enemy's deployment zone.
-    public bool IsInEnemyDeploymentZone(Tile tile)
+    // Returns true if the given tile is part of our enemy's territory.
+    public bool IsEnemyTerritory(Tile tile)
     {
         if (good)
-            return DM.I.evilLeader.IsInDeploymentZone(tile);
+            return DM.I.evilLeader.IsOurTerritory(tile);
         else
-            return DM.I.goodLeader.IsInDeploymentZone(tile);
+            return DM.I.goodLeader.IsOurTerritory(tile);
+    }
+
+    // Claim tiles.
+    public void ClaimTiles(Tile tile, int tilesClaimed)
+    {
+        // Get direction.
+        int direction = 1;
+        if (!good) direction = -1;
+
+        // Loop once for each tile claimed.
+        for (int i = 0; i < tilesClaimed; i++)
+        {
+            // Get tile.
+            Tile claimedTile = DM.I.GetTile(tile.x + (direction * i), tile.y);
+
+            // Null check?
+            if (claimedTile != null)
+            {
+                // Claim tile.
+                claimedTile.claim += direction;
+            }
+        }
     }
 
     // Returns true if the given tile is visible by at least one of our units.
@@ -881,18 +905,6 @@ public partial class Leader : MonoBehaviour
 
             // Charm (without healing).
             source.ChangeSides(false);
-        }
-
-        // Gatherer mode:
-        // Instead of dealing damage to bases, units teleport back to their base and gain a level.
-        if (DM.I.way == "Gatherer")
-        {
-            // King me!
-            if (source != null)
-                source.LevelUp(true);
-
-            // Avoid normal health loss.
-            return;
         }
 
         // Think faster when damaged.

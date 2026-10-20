@@ -68,8 +68,8 @@ public class InputBattle : MonoBehaviour
         // Left clicked on a unit?
         else if (Mouse.current.leftButton.wasPressedThisFrame && hoveredUnit != null)
         {
-            // Can't target enemy deployment zone.
-            if (DM.I.goodLeader.IsInEnemyDeploymentZone(hoveredUnit))
+            // Can't target enemy territory.
+            if (DM.I.goodLeader.IsInEnemyTerritory(hoveredUnit))
             {
                 return;
             }

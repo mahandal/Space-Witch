@@ -114,6 +114,12 @@ public class DM : MonoBehaviour
     // Start a battle!
     public void BeginBattle()
     {
+        // Reset tile claims.
+        foreach (Tile tile in grid)
+        {
+            tile.claim = 0;
+        }
+        
         // Reset game timer.
         gameTimer = 0f;
 
@@ -243,6 +249,16 @@ public class DM : MonoBehaviour
 
     // + Tiles
 
+    // Get a tile.
+    public Tile GetTile(int x, int y)
+    {
+        // Validity checks.
+        if (x < 0 || y < 0 || x >= gridWidth || y >= gridHeight) return null;
+
+        // Return tile.
+        return grid[x, y];
+    }
+
     // Initialize the grid.
     void InitializeGrid()
     {
@@ -259,14 +275,17 @@ public class DM : MonoBehaviour
             }
         }
 
-        // Connect dragon statues to their tiles.
+        // Connect dragon statues and vampire thrones to their tiles, and vice versa.
         for (int i = 0; i < gridHeight; i++)
         {
             // Good
             grid[0, i].structure = goodLeader.vitalUnits[i];
+            goodLeader.vitalUnits[i].currentTile = grid[0, i];
 
             // Evil
-            grid[gridWidth - 1, i].structure = evilLeader.vitalUnits[i];
+            int endX = gridWidth - 1;
+            grid[endX, i].structure = evilLeader.vitalUnits[i];
+            evilLeader.vitalUnits[i].currentTile = grid[endX, i];
         }
     }
 

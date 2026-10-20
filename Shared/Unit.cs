@@ -83,6 +83,10 @@ public partial class Unit : MonoBehaviour
     // Keywords
     public List<string> keywords = new List<string>();
 
+    [Header("Structures")]
+    // How many tiles this structure claims.
+    public int tilesClaimed = 0;
+
     [Header("Production")]
     // For units that produce other units periodically.
 
@@ -392,6 +396,30 @@ public partial class Unit : MonoBehaviour
                 // Enable vision for good.
                 if (good)
                     visionCircle.gameObject.SetActive(true);
+
+                // Claim tiles?
+                if (tilesClaimed > 0)
+                    GetLeader().ClaimTiles(currentTile, tilesClaimed);
+
+                // Structure on structure?
+                if (cardType == "Structure" && currentTile.structure != null && currentTile.structure != this)
+                {
+                    // Heal current structure.
+                    currentTile.structure.GainHealth(currentHealth);
+
+                    // Level up?
+                    if (currentTile.structure.GetBaseName() == GetBaseName())
+                    {
+                        // Roll.
+                        int d100 = Random.Range(1, 101);
+
+                        if (d100 < level)
+                            currentTile.structure.LevelUp();
+                    }
+
+                    // Crumble.
+                    BeginDying();
+                }
             }
 
             // Return.
@@ -405,6 +433,9 @@ public partial class Unit : MonoBehaviour
         OnTick();
 
         // Dying.
+        if (currentHealth <= 0)
+            state = -1;
+        
         if (state == -1)
             return;
 
@@ -1052,8 +1083,7 @@ public partial class Unit : MonoBehaviour
 
     // + Levels
     // Gain a level, increasing damage, health, range, vision, and size.
-    // If in battle, also teleports back to base and updates name.
-    public void LevelUp(bool wayOfTheGatherer = false)
+    public void LevelUp()
     {
         // Gain a level.
         level++;
@@ -1078,16 +1108,6 @@ public partial class Unit : MonoBehaviour
         // Increase production speed.
         timePerSpawn /= Utility.LevelScalar();
         farmTime /= Utility.LevelScalar();
-
-        // The way of the gatherer has special rules!?
-        if (wayOfTheGatherer)
-        {
-            // Teleport back to base.
-            TeleportToBase();
-
-            // Update name.
-            myName = "Level " + level + " " + GetBaseName();
-        }
     }
 
     // Level to the given level.

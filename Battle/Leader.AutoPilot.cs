@@ -66,8 +66,8 @@ public partial class Leader
         // Find the closest visible enemy unit.
         Unit closestEnemy = FindClosestVisibleEnemy();
 
-        // Check if they are within out deployment zone.
-        bool enemyNear = IsInDeploymentZone(closestEnemy);
+        // Check if they are within our territory.
+        bool enemyNear = IsInOurTerritory(closestEnemy);
 
         // Do we have an item to protect?
         // (but don't just stack items!)
@@ -198,7 +198,7 @@ public partial class Leader
                 return null;
             } else {
                 // Check if the closest visible enemy is too far away to target, even with a hex.
-                if (IsInEnemyDeploymentZone(closestEnemy))
+                if (IsInEnemyTerritory(closestEnemy))
                     return null;
 
                 // We have a target!
