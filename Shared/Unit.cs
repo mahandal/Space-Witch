@@ -1205,8 +1205,8 @@ public partial class Unit : MonoBehaviour
         // Increase size by 2%.
         transform.localScale *= 1.02f;
 
-        // Increase range, unless yer a bulwark and want to keep close.
-        if (role != "Bulwark")
+        // Increase range for hunters.
+        if (role == "Hunter")
             range *= Utility.LevelScalar();
 
         // Increase production speed.
