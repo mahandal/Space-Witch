@@ -301,25 +301,41 @@ public class StarManager : MonoBehaviour
         currentStar = stars[starIndex];
 
         // Roll random planet.
-        int endOfPlanetRange = Mathf.Min(currentStar.planets.Count, difficulty);
-        planetIndex = Random.Range(0, endOfPlanetRange);
+        if (difficulty == 0)
+            planetIndex = Random.Range(0, 2);
+        if (difficulty == 1)
+            planetIndex = Random.Range(2, 4);
+        if (difficulty == 2)
+            planetIndex = 4;
     }
 
     // Get a random planet.
     public Planet GetRandomPlanet(int difficulty = 2)
     {
         // Roll a random star, limited by difficulty.
-        int endOfRange = Mathf.Min(stars.Count, difficulty);
-        int starIndex = Random.Range(0, endOfRange);
+        int endOfStarRange = 2;
+        if (difficulty == 1)
+            endOfStarRange = 5;
+        if (difficulty == 2)
+            endOfStarRange = 8;
+
+        int starIndex = Random.Range(0, endOfStarRange);
 
         // Choose star.
         Star s = stars[starIndex];
 
         // Roll random planet.
-        int planetIndex = Random.Range(0, s.planets.Count);
+        int pIndex = Random.Range(0, s.planets.Count);
+
+        if (difficulty == 0)
+            pIndex = Random.Range(0, 2);
+        if (difficulty == 1)
+            pIndex = Random.Range(2, 4);
+        if (difficulty == 2)
+            pIndex = 4;
 
         // Return planet.
-        return s.planets[planetIndex];
+        return s.planets[pIndex];
     }
 
     // Get a list of all planets in the current sector.

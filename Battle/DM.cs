@@ -164,18 +164,34 @@ public class DM : MonoBehaviour
         }
 
         // + Skirmish
-        if (gameMode == "Skirmish")
+        // (and Goldfish!)
+        if (gameMode == "Skirmish" || gameMode == "Goldfish")
         {
-            // Set time limit.
-            timeLimit = Random.Range(300, 601);
+            // Set time limit and health.
+            if (MainMenu.I.skirmishDifficulty == 0)
+            {
+                timeLimit = Random.Range(180, 300);
+                startingHealth = Random.Range(100, 1500);
+            }
+            if (MainMenu.I.skirmishDifficulty == 1)
+            {
+                timeLimit = Random.Range(300, 600);
+                startingHealth = Random.Range(1000, 2500);
+            }
+            if (MainMenu.I.skirmishDifficulty == 2)
+            {
+                timeLimit = Random.Range(600, 1200);
+                startingHealth = Random.Range(2000, 5000);
+            }
 
-            // Set starting health.
-            startingHealth = Random.Range(100, 5000);
         }
 
         // Turn on auto pilot for evil.
-        // (leave it off for good!)
         evilLeader.autoPilot = true;
+
+        // Turn off evil's auto pilot when goldfishing.
+        if (gameMode == "Goldfish")
+            evilLeader.autoPilot = false;
 
         // Shared new battle initialization.
         goodLeader.NewBattle();

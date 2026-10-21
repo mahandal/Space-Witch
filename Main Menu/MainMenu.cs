@@ -363,6 +363,12 @@ public class MainMenu : MonoBehaviour
         // Set game mode.
         DM.I.gameMode = "Skirmish";
 
+        // Go to random planet.
+        StarManager.I.GoToRandomPlanet(skirmishDifficulty);
+
+        // Get random evil leader.
+        DM.I.evilLeader.LoadRandomVillain(skirmishDifficulty);
+
         // Get yer hero's biography.
         LeaderBio bio = leaderBios[skirmishHero];
 
@@ -370,47 +376,14 @@ public class MainMenu : MonoBehaviour
         DM.I.goodLeader.LoadBio(bio);
 
         // Randomize decks.
-        DM.I.goodLeader.deck = RandomDeck(2 - skirmishDifficulty);
-        DM.I.evilLeader.deck = RandomDeck(skirmishDifficulty);
-
-        // Get random evil leader.
-        DM.I.evilLeader.LoadRandomVillain(skirmishDifficulty);
-
-        // Go to random planet.
-        StarManager.I.GoToRandomPlanet(skirmishDifficulty);
+        DM.I.goodLeader.RandomizeDeck(2 - skirmishDifficulty);
+        DM.I.evilLeader.RandomizeDeck(skirmishDifficulty * skirmishDifficulty);
 
         // Begin battle!
         DM.I.BeginBattle();
     }
 
-    // Generate a random deck.
-    public List<string> RandomDeck(int powerLevel = 0)
-    {
-        // Initialize deck.
-        List<string> deck = new List<string>();
 
-        // Roll deck size.
-        int deckSize = Random.Range(1, 101);
-
-        // Loop once for each card.
-        for (int i = 0; i < deckSize; i++)
-        {
-            // Get a random mercenary.
-            string merc = Constance.I.RandomMerc();
-
-            // Get random level.
-            int level = Constance.I.RandomLevel(powerLevel);
-
-            // Add level to name.
-            merc = "Level " + level + " " + merc;
-
-            // Add to deck.
-            deck.Add(merc);
-        }
-
-        // Return.
-        return deck;
-    }
 
     // Select difficulty for skirmish.
     public void B_SkirmishDifficulty(int difficulty)
@@ -428,5 +401,31 @@ public class MainMenu : MonoBehaviour
             else
                 skirmishDifficulties[i].alpha = 0.1f;
         }
+    }
+
+
+    // + Learn
+
+    // Begin goldfishing!
+    public void B_Goldfish()
+    {
+        // Set game mode.
+        DM.I.gameMode = "Goldfish";
+        
+        // Get goldfish bio.
+        LeaderBio bio = leaderBios["Goldfish"];
+
+        // Go to random planet.
+        StarManager.I.GoToRandomPlanet(skirmishDifficulty);
+
+        // Load leaders.
+        DM.I.goodLeader.LoadBio(bio);
+        DM.I.evilLeader.LoadBio(bio);
+
+        // Randomize yer deck.
+        DM.I.goodLeader.RandomizeDeck(0);
+
+        // Begin battle!
+        DM.I.BeginBattle();
     }
 }

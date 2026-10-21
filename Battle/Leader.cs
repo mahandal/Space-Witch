@@ -1113,4 +1113,34 @@ public partial class Leader : MonoBehaviour
         // Return.
         return score;
     }
+
+    // + Deck
+    // Generate a random deck.
+    public void RandomizeDeck(int powerLevel = 0)
+    {
+        // Clear deck.
+        deck.Clear();
+
+        // Roll deck size.
+        int deckSize = Random.Range(1, 101);
+
+        // Loop once for each card.
+        for (int i = 0; i < deckSize; i++)
+        {
+            // Get a random mercenary.
+            // string merc = Constance.I.RandomMerc();
+
+            // Get a random card
+            string card = DrawReinforcement();
+
+            // Get random level.
+            int level = Constance.I.RandomLevel(powerLevel);
+
+            // Add level to name.
+            card = "Level " + level + " " + card;
+
+            // Add to deck.
+            deck.Add(card);
+        }
+    }
 }
