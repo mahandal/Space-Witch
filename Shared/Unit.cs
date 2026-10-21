@@ -12,6 +12,9 @@ public partial class Unit : MonoBehaviour
 
     // Which direction this unit is facing.
     public int direction = 1;
+
+    // How far this unit is willing to go.
+    public int aggression = 0;
     
     // This unit's name.
     public string myName;
@@ -577,9 +580,46 @@ public partial class Unit : MonoBehaviour
             // Update current tile.
             currentTile = GetCurrentTile();
 
-            // + Civilian
-            if (keywords.Contains("Civilian"))
+            // + Aggression
+            // Civilians
+            if (aggression < 0)
                 Civilian();
+
+            // Nomads
+            if (aggression == 0)
+                Nomad();
+
+            // Soldiers:
+            // March on!
+        }
+    }
+
+    // Nomads turn around when entering enemy territory, or upon returning back to base.
+    private void Nomad()
+    {
+        if (good)
+        {
+            // + Good
+            // Check if ye've entered enemy territory.
+            if (direction == 1 && currentTile.claim < 0)
+                SetDirection(-1);
+
+            // Check if ye've reached yer base.
+            if (direction == -1 && currentTile.structure != null &&
+                currentTile.structure.good == good && currentTile.structure.role == "Base")
+                SetDirection(1);
+        }
+        else
+        {
+            // + Evil
+            // Check if ye've entered enemy territory.
+            if (direction == -1 && currentTile.claim > 0)
+                SetDirection(1);
+
+            // Check if ye've reached yer base.
+            if (direction == 1 && currentTile.structure != null && 
+                currentTile.structure.good == good && currentTile.structure.role == "Base")
+                SetDirection(-1);
         }
     }
 
@@ -594,7 +634,8 @@ public partial class Unit : MonoBehaviour
                 SetDirection(-1);
 
             // Check if ye've reached yer base.
-            if (direction == -1 && currentTile.structure != null && currentTile.structure.role == "Base")
+            if (direction == -1 && currentTile.structure != null &&
+                currentTile.structure.good == good && currentTile.structure.role == "Base")
                 SetDirection(1);
         }
         else
@@ -605,7 +646,8 @@ public partial class Unit : MonoBehaviour
                 SetDirection(1);
 
             // Check if ye've reached yer base.
-            if (direction == 1 && currentTile.structure != null && currentTile.structure.role == "Base")
+            if (direction == 1 && currentTile.structure != null &&
+                currentTile.structure.good == good && currentTile.structure.role == "Base")
                 SetDirection(-1);
         }
     }

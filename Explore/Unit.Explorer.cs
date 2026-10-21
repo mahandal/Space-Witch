@@ -141,6 +141,7 @@ public partial class Unit
         deployTime = p.deployTime;
         cardType = p.cardType;
         role = p.role;
+        aggression = p.aggression;
 
         // Set stats.
         maxHealth = p.maxHealth;
