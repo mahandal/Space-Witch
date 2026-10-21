@@ -45,6 +45,22 @@ public class LeaderBio : MonoBehaviour
     // Which cards this leader has available as reinforcements.
     public List<string> reinforcements;
 
+    [Header("Cards")]
+    // This leader's tier one cards.
+    public List<string> t1_cards = new List<string>();
+
+    // This leader's tier two cards.
+    public List<string> t2_cards = new List<string>();
+
+    // This leader's tier three cards.
+    public List<string> t3_cards = new List<string>();
+
+    // This leader's tier four cards.
+    public List<string> t4_cards = new List<string>();
+
+    // This leader's tier five cards.
+    public List<string> t5_cards = new List<string>();
+
 
     // + Initialization
     // Start

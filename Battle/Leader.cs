@@ -115,7 +115,7 @@ public partial class Leader : MonoBehaviour
     public int numColumnsDeployable = 4;
 
     [Header("Reinforcements")]
-    // A list of which cards may potentially reinforce this leader.
+    // A list of which cards may reinforce this leader.
     public List<string> reinforcements;
 
     // A flag tracking whether we have ran out of cards in our deck yet.
@@ -222,6 +222,23 @@ public partial class Leader : MonoBehaviour
 
         // Set our mana timer.
         ResetManaTimer();
+
+        // + Reinforcements.
+        if (good)
+        {
+            // Get leader bio.
+            LeaderBio bio = MainMenu.I.leaderBios[myName];
+
+            // Initialize reinforcements to tier one.
+            reinforcements = bio.t1_cards;
+            
+            // Add more tiers at higher planet index.
+            if (StarManager.I.planetIndex >= 1) Utility.Append(reinforcements, bio.t2_cards);
+            if (StarManager.I.planetIndex >= 2) Utility.Append(reinforcements, bio.t3_cards);
+            if (StarManager.I.planetIndex >= 3) Utility.Append(reinforcements, bio.t4_cards);
+            if (StarManager.I.planetIndex >= 4) Utility.Append(reinforcements, bio.t5_cards);
+        }
+            
 
         // Shuffle our deck!
         deck = Utility.Shuffle(deck);
@@ -992,22 +1009,6 @@ public partial class Leader : MonoBehaviour
     // Draw a random card to reinforce your army.
     public string DrawReinforcement()
     {
-        // Evil uses their full reinforcement list.
-        List<string> availableCards = reinforcements;
-
-        // Good limits to match evil.
-        if (good)
-        {
-            // Initialize new list.
-            availableCards = new List<string>();
-
-            // Loop through once for each card in evil's reinforcement list.
-            for(int i = 0; i < DM.I.evilLeader.reinforcements.Count; i++)
-            {
-                // Add matching good reinforcement.
-                availableCards.Add(reinforcements[i]);
-            }
-        }
         // + Shuffle
         // Build a weighted list of cards, using 1/manaCost as the weight.
         // This makes lower mana cost cards proportionally more likely to be drawn.
@@ -1020,10 +1021,10 @@ public partial class Leader : MonoBehaviour
         List<(Card, float)> cardWeights = new List<(Card, float)>();
 
         // Loop through each available card.
-        foreach (string name in availableCards)
+        foreach (string cardName in reinforcements)
         {
             // Get the card from the grimoire.
-            Card c = DM.I.Grimoire(name);
+            Card c = DM.I.Grimoire(cardName);
 
             // Initialize the card's weight.
             float weight = 1f;
@@ -1057,8 +1058,8 @@ public partial class Leader : MonoBehaviour
         }
 
         // Should not reach here!
-        Debug.LogWarning("Failed to select a random reinforcement card! Returning #1: " + availableCards[0]);
-        return availableCards[0];
+        Debug.LogWarning("Failed to select a random reinforcement card! Returning #1: " + reinforcements[0]);
+        return reinforcements[0];
     }
 
     // Reinforcements arrive!

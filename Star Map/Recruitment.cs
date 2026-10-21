@@ -40,7 +40,12 @@ public class Recruitment : MonoBehaviour
         LeaderBio leaderBio = MainMenu.I.leaderBios[MenuManager.I.saveData.leaderName];
 
         // Generate home pack.
-        packs[0].GeneratePack(leaderBio.reinforcements, StarManager.I.planetIndex);
+        List<string> availableCards = leaderBio.t1_cards;
+        if (StarManager.I.planetIndex >= 1) Utility.Append(availableCards, leaderBio.t2_cards);
+        if (StarManager.I.planetIndex >= 2) Utility.Append(availableCards, leaderBio.t3_cards);
+        if (StarManager.I.planetIndex >= 3) Utility.Append(availableCards, leaderBio.t4_cards);
+        if (StarManager.I.planetIndex >= 4) Utility.Append(availableCards, leaderBio.t5_cards);
+        packs[0].GeneratePack(availableCards, StarManager.I.planetIndex);
         if (MenuManager.I.saveData.stardust < 10)
             packCosts[0] = Random.Range(0, MenuManager.I.saveData.stardust);
         else

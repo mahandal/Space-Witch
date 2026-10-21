@@ -19,6 +19,15 @@ public class Utility : MonoBehaviour
 
     // + Simple helper functions.
 
+    // Append a list of strings to another.
+    public static void Append(List<string> a, List<string> b)
+    {
+        foreach (string s in b)
+        {
+            a.Add(s);
+        }
+    }
+
     // Extract base name from string.
     public static string ExtractBaseName(string cardName)
     {
