@@ -42,19 +42,6 @@ public class Progenitors : MonoBehaviour
         InitializeProgenitors();
     }
 
-    // // Awaken!
-    // void Awake()
-    // {
-    //     // Singleton.
-    //     if (I == null)
-    //         I = this;
-    //     else
-    //         Destroy(this);
-
-    //     // Initialize progenitors.
-    //     InitializeProgenitors();
-    // }
-
     // Look through each of this object's children and add them to their dictionary.
     public void InitializeProgenitors()
     {
