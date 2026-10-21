@@ -7,23 +7,57 @@ using System.Collections;
 public class MainMenu : MonoBehaviour
 {
     [Header("Design")]
+    // How fast we slide up to see the heroes for campaign mode.
     public float slideSpeed = 10f;
 
-    [Header("Manual Machinery")]
+    [Header("Skirmish")]
+    // Which hero ye use for skirmishes.
+    public string skirmishHero = "Morgan le Fey";
+
+    // Which difficulty yer skirmishes are set to.
+    // 0 = Easy
+    // 1 = Medium
+    // 2 = Hard
+    public int skirmishDifficulty = 0;
+
+    // The portrait of yer hero for skirmishes.
+    public Image skirmishPortrait;
+
+    // Parent object of hero wheel used to select skirmish hero.
+    public GameObject heroWheel;
+
+    // Whether the wheel of heroes is spinning or nay.
+    public bool wheelSpinning = false;
+
+    // How much longer the wheel will spin for.
+    public float wheelSpinTime = 6f;
+
+    // How fast the wheel of heroes spins.
+    public float wheelSpinSpeed = 1f;
+
+    // The fastest speed the wheel has spun at.
+    public float peakSpinSpeed = 1f;
+
+    // The buttons to choose yer difficulty for skirmishes.
+    public List<CanvasGroup> skirmishDifficulties;
+
+    [Header("Campaign Leader Selection")]
     // Parent object of the leader selection screen.
     public GameObject leaderSelectScreen;
 
     // A canvas group for all portraits (including names) in the leader selection screen.
     public CanvasGroup leaderPortraits;
 
-    // Parent object of the leader details screen.
-    public GameObject leaderDetailsScreen;
+    
 
     // + Buttons
     public Button continueButton;
 
-    [Header("MM: Leader Details")]
+    [Header("Campaign Leader Details")]
     // + Manual machinery for the leader details screen.
+
+    // Parent object of the leader details screen.
+    public GameObject leaderDetailsScreen;
 
     // The background image.
     public Image leaderDetailsBackground;
@@ -85,6 +119,7 @@ public class MainMenu : MonoBehaviour
         leaderSelectScreen.SetActive(false);
         leaderPortraits.alpha = 0f;
         leaderDetailsScreen.SetActive(false);
+        heroWheel.SetActive(false);
 
         // Remember leader select's start position.
         leaderSelectStartPosition = leaderSelectScreen.transform.localPosition;
@@ -97,6 +132,9 @@ public class MainMenu : MonoBehaviour
             continueButton.gameObject.SetActive(false);
         else
             continueButton.gameObject.SetActive(true);
+
+        // Start on easy skirmish.
+        B_SkirmishDifficulty(0);
 
         // Activate the main menu object.
         // gameObject.SetActive(true);
@@ -121,9 +159,32 @@ public class MainMenu : MonoBehaviour
             // Fade in leader portraits.
             leaderPortraits.alpha += 0.001f;
         }
+
+        // Wheel spinning?
+        if (wheelSpinTime > 0f)
+        {
+            // Decrement wheel spin time.
+            wheelSpinTime -= Time.fixedDeltaTime;
+
+            // Increase wheel spin speed if timer is over 6 seconds.
+            if (wheelSpinTime > 6f)
+            {
+                wheelSpinSpeed += Time.fixedDeltaTime;
+                peakSpinSpeed = wheelSpinSpeed;
+            } else {
+                // Slow to a halt.
+                float t = Mathf.Clamp01(wheelSpinTime / 6f);
+                wheelSpinSpeed = peakSpinSpeed * t * t;   
+            }
+
+            // Rotate wheel.
+            heroWheel.transform.eulerAngles -= new Vector3 (0, 0, wheelSpinSpeed);
+        }
     }
 
-    // + Buttons
+    // +++ Buttons
+
+    // + Campaign
 
     // Go to the leader details screen, from the leader selection screen.
     // Called when you click on a leader's portrait.
@@ -214,6 +275,9 @@ public class MainMenu : MonoBehaviour
     // Button pressed to play with the leader you have selected.
     public void B_Play()
     {
+        // Set game mode to campaign.
+        DM.I.gameMode = "Campaign";
+
         // Reset save.
         Utility.ResetSave();
 
@@ -247,5 +311,122 @@ public class MainMenu : MonoBehaviour
 
         // Go to star map!
         StarManager.I.GoToStarMap(true);
+    }
+
+
+    // + Skirmish
+
+    // Choose yer hero!
+    public void B_SkirmishHeroOpen()
+    {
+        // Close if open.
+        if (heroWheel.activeSelf)
+        {
+            heroWheel.SetActive(false);
+            return;
+        }
+
+        // Open yer wheel of heroes!
+        heroWheel.SetActive(true);
+    }
+
+    // Spin yer wheel of heroes!
+    public void B_Spin()
+    {
+        // Roll length of spin.
+        wheelSpinTime = Random.Range(6f, 30f);
+    }
+
+    // Stop spinning yer wheel of heroes!
+    public void B_Stop()
+    {
+        // End spin time.
+        wheelSpinTime = 0f;
+    }
+
+    // Called by clicking a portrait on yer hero wheel.
+    public void B_SkirmishHeroChoose(string heroName)
+    {
+        // Set skirmish hero.
+        skirmishHero = heroName;
+
+        // Load portrait.
+        Utility.LoadImage(skirmishPortrait, "Leaders/" + skirmishHero);
+
+        // Close hero wheel.
+        heroWheel.SetActive(false);
+    }
+
+    // Begin a skirmish!
+    public void B_QuickPlay()
+    {
+        // Set game mode.
+        DM.I.gameMode = "Skirmish";
+
+        // Get yer hero's biography.
+        LeaderBio bio = leaderBios[skirmishHero];
+
+        // Load yer hero for battle mode.
+        DM.I.goodLeader.LoadBio(bio);
+
+        // Randomize decks.
+        DM.I.goodLeader.deck = RandomDeck(2 - skirmishDifficulty);
+        DM.I.evilLeader.deck = RandomDeck(skirmishDifficulty);
+
+        // Get random evil leader.
+        DM.I.evilLeader.LoadRandomVillain(skirmishDifficulty);
+
+        // Go to random planet.
+        StarManager.I.GoToRandomPlanet(skirmishDifficulty);
+
+        // Begin battle!
+        DM.I.BeginBattle();
+    }
+
+    // Generate a random deck.
+    public List<string> RandomDeck(int powerLevel = 0)
+    {
+        // Initialize deck.
+        List<string> deck = new List<string>();
+
+        // Roll deck size.
+        int deckSize = Random.Range(1, 101);
+
+        // Loop once for each card.
+        for (int i = 0; i < deckSize; i++)
+        {
+            // Get a random mercenary.
+            string merc = Constance.I.RandomMerc();
+
+            // Get random level.
+            int level = Constance.I.RandomLevel(powerLevel);
+
+            // Add level to name.
+            merc = "Level " + level + " " + merc;
+
+            // Add to deck.
+            deck.Add(merc);
+        }
+
+        // Return.
+        return deck;
+    }
+
+    // Select difficulty for skirmish.
+    public void B_SkirmishDifficulty(int difficulty)
+    {
+        // Set difficulty.
+        skirmishDifficulty = difficulty;
+
+        // Highlight selected difficulty.
+        for (int i = 0; i < skirmishDifficulties.Count; i++)
+        {
+            // Highlight chosen.
+            if (i == difficulty)
+                skirmishDifficulties[i].alpha = 1f;
+            // Fade the rest.
+            else
+                skirmishDifficulties[i].alpha = 0.1f;
+        }
     }
 }

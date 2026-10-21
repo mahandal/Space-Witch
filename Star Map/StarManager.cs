@@ -9,6 +9,9 @@ public class StarManager : MonoBehaviour
     // The parent object of all stars.
     public Transform starParent;
 
+    // A list of all stars.
+    public List<Star> stars;
+
     // Which star you have selected.
     public Star selectedStar;
 
@@ -281,6 +284,43 @@ public class StarManager : MonoBehaviour
 
 
     // + Planets
+
+    // Go to a random planet.
+    public void GoToRandomPlanet(int difficulty = 2)
+    {
+        // Roll a random star, limited by difficulty.
+        int endOfStarRange = 2;
+        if (difficulty == 1)
+            endOfStarRange = 5;
+        if (difficulty == 2)
+            endOfStarRange = 8;
+
+        int starIndex = Random.Range(0, endOfStarRange);
+
+        // Choose star.
+        currentStar = stars[starIndex];
+
+        // Roll random planet.
+        int endOfPlanetRange = Mathf.Min(currentStar.planets.Count, difficulty);
+        planetIndex = Random.Range(0, endOfPlanetRange);
+    }
+
+    // Get a random planet.
+    public Planet GetRandomPlanet(int difficulty = 2)
+    {
+        // Roll a random star, limited by difficulty.
+        int endOfRange = Mathf.Min(stars.Count, difficulty);
+        int starIndex = Random.Range(0, endOfRange);
+
+        // Choose star.
+        Star s = stars[starIndex];
+
+        // Roll random planet.
+        int planetIndex = Random.Range(0, s.planets.Count);
+
+        // Return planet.
+        return s.planets[planetIndex];
+    }
 
     // Get a list of all planets in the current sector.
     public List<Planet> GetAllPlanets()

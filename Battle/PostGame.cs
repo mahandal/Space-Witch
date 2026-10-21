@@ -585,15 +585,15 @@ public class PostGame : MonoBehaviour
         // After 8 seconds, reveal mvp level up and continue and return buttons.
         if (showTimer >= 8f)
         {
-            // If we won, reveal continue button.
-            // If we lost, reveal return button.
-            if (victorious)
+            // If we won in campaign mode, reveal continue button.
+            // If we lost or played a skirmish, reveal return button.
+            if (victorious && DM.I.gameMode == "Campaign")
                 continueButton.gameObject.SetActive(true);
             else
                 returnButton.gameObject.SetActive(true);
 
-            // MVP levels up if they are good and already in your deck.
-            if (mvp.good && mvp.level > 1)
+            // MVP levels up in campaign mode if they are good and already in your deck.
+            if (DM.I.gameMode == "Campaign" && mvp.good && mvp.level > 1)
             {
                 // Prevent double leveling.
                 if (!mvpLevelCanvasGroup.gameObject.activeSelf)

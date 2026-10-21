@@ -1052,7 +1052,7 @@ public partial class Unit : MonoBehaviour
         if (target != null && target.keywords.Contains("Charming"))
         {
             // Charm.
-            ChangeSides();
+            ChangeSides(true);
 
             // Return.
             return;
@@ -1194,7 +1194,7 @@ public partial class Unit : MonoBehaviour
     }
 
     // Change sides.
-    public void ChangeSides(bool fullHeal = true)
+    public void ChangeSides(bool fullHeal = false)
     {
         // Full heal!
         if (fullHeal)
@@ -1222,9 +1222,6 @@ public partial class Unit : MonoBehaviour
                 // Set bool.
                 good = false;
 
-                // Set rotation.
-                // transform.eulerAngles = new Vector3(0f, 180f, 0f);
-
                 // Set direction.
                 SetDirection(-1);
 
@@ -1241,9 +1238,6 @@ public partial class Unit : MonoBehaviour
 
                 // Set bool.
                 good = true;
-
-                // Set rotation.
-                // transform.eulerAngles = new Vector3(0f, 0f, 0f);
 
                 // Set direction.
                 SetDirection(1);

@@ -142,8 +142,24 @@ public partial class Leader : MonoBehaviour
         powerChargeTime = bio.powerChargeTime;
     }
 
+    // Load a random villain.
+    public void LoadRandomVillain(int difficulty = 5)
+    {
+        // Get random planet.
+        Planet p = StarManager.I.GetRandomPlanet(difficulty);
+
+        // Get the local villain's name.
+        string evilLeaderName = p.villain;
+
+        // Get the bio for the evil leader using their name.
+        LeaderBio evilBio = MainMenu.I.leaderBios[evilLeaderName];
+
+        // Load evil bio.
+        LoadBio(evilBio);
+    }
+
     // Load the local villain.
-    public void LoadVillain()
+    public void LoadLocalVillain()
     {
         // Get current planet.
         Planet p = StarManager.I.GetCurrentPlanet();
@@ -598,7 +614,8 @@ public partial class Leader : MonoBehaviour
             offset = 1 - offset;
 
         // Modify offset by a slight random factor, so stacked units can be seen.
-        offset += Random.Range(-0.1f, 0.1f);
+        if (newUnit.cardType != "Structure")
+            offset += Random.Range(-0.1f, 0.1f);
 
         // Get position.
         // (also offset horizontally by 0.5f to spawn in the center of the tile)

@@ -41,23 +41,8 @@ public class Pack : MonoBehaviour
             // Get card name.
             string cardName = availableCards[cardIndex];
 
-            // + Level
-            // Default to level 2.
-            int level = 2;
-
-            // Roll for higher level.
-            int d100 = Random.Range(1, 101);
-
-            // 80% level 2
-            // 15% level 3
-            // 4% level 4
-            // 1% level 5
-            if (d100 > 80 && d100 < 95)
-                level = 3;
-            else if (d100 >= 95 && d100 < 100)
-                level = 4;
-            else if (d100 == 100)
-                level = 5;
+            // Get random level.
+            int level = Constance.I.RandomLevel();
 
             // Add level to name.
             cardName = "Level " + level + " " + cardName;

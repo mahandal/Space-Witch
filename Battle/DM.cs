@@ -15,6 +15,11 @@ public class DM : MonoBehaviour
     // The maximum duration of the current battle.
     public float timeLimit = -1f;
 
+    // Game Mode:
+    // - Campaign
+    // - Skirmish
+    public string gameMode = "Campaign";
+
     // Which way is the player following?
     public string way = "Hunter";
     
@@ -135,27 +140,38 @@ public class DM : MonoBehaviour
         // Reset game timer.
         gameTimer = 0f;
 
-        // Set new time limit.
-        timeLimit = StarManager.I.GetTimeLimit();
-
-        // Set new starting health.
-        startingHealth = StarManager.I.GetStartingHealth();
-
         // Set seconds per mana.
         secondsPerMana = StarManager.I.currentStar.secondsPerMana;
         timePerFlower = StarManager.I.currentStar.timePerFlower;
 
-        // + Initialize each leader.
+        // + Campaign
+        if (gameMode == "Campaign")
+        {
+            // Set time limit.
+            timeLimit = StarManager.I.GetTimeLimit();
 
-        // Load evil leader's name and portrait.
-        evilLeader.LoadVillain();
+            // Set starting health.
+            startingHealth = StarManager.I.GetStartingHealth();
 
-        // Copy your decklist into your deck.
-        goodLeader.deck = new List<string>(MenuManager.I.saveData.decklist);
+            // Load local evil leader's name and portrait.
+            evilLeader.LoadLocalVillain();
 
-        // Give evil an empty deck for now.
-        evilLeader.deck = new List<string>();
-        // evilLeader.InitializeRandomDeck();
+            // Copy your decklist into your deck.
+            goodLeader.deck = new List<string>(MenuManager.I.saveData.decklist);
+
+            // Give evil an empty deck.
+            evilLeader.deck = new List<string>();
+        }
+
+        // + Skirmish
+        if (gameMode == "Skirmish")
+        {
+            // Set time limit.
+            timeLimit = Random.Range(300, 601);
+
+            // Set starting health.
+            startingHealth = Random.Range(100, 5000);
+        }
 
         // Turn on auto pilot for evil.
         // (leave it off for good!)
