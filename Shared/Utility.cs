@@ -10,7 +10,7 @@ using TMPro;
 public class Utility : MonoBehaviour
 {
     // + Level Scaling
-    public static float LevelScalar(int level = 1)
+    public static float LevelScalar(int level = 2)
     {
         // Gain 20% in some stats per level above the first.
         return 1f + (0.2f * (level - 1));
