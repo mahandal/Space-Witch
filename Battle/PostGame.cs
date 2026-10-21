@@ -324,7 +324,7 @@ public class PostGame : MonoBehaviour
         // + Neutral
         // Time
         float timeRemaining = DM.I.timeLimit - DM.I.gameTimer;
-        time.text = Utility.TimeString(timeRemaining);
+        time.text = Utility.TimeString(timeRemaining) + "/" + Utility.TimeString(DM.I.timeLimit);
 
         // Planet
         planet.text = StarManager.I.GetCurrentPlanet().myName;
