@@ -164,8 +164,7 @@ public class DM : MonoBehaviour
         }
 
         // + Skirmish
-        // (and Goldfish!)
-        if (gameMode == "Skirmish" || gameMode == "Goldfish")
+        if (gameMode == "Skirmish")
         {
             // Set time limit and health.
             if (MainMenu.I.skirmishDifficulty == 0)
@@ -183,7 +182,13 @@ public class DM : MonoBehaviour
                 timeLimit = Random.Range(600, 1200);
                 startingHealth = Random.Range(2000, 5000);
             }
+        }
 
+        // + Goldfish
+        if (gameMode == "Goldfish")
+        {
+            timeLimit = Random.Range(180, 1200);
+            startingHealth = Random.Range(100, 5000);
         }
 
         // Turn on auto pilot for evil.
