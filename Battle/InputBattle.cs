@@ -96,13 +96,8 @@ public class InputBattle : MonoBehaviour
             // Left clicked on a unit?
             else if (hoveredUnit != null)
             {
-                // Can't target enemy territory.
-                if (DM.I.goodLeader.IsInEnemyTerritory(hoveredUnit))
-                {
-                    return;
-                }
                 // Dying units.
-                else if (hoveredUnit.state == -1)
+                if (hoveredUnit.state == -1)
                 {
                     return;
                 }
