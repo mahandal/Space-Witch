@@ -100,9 +100,18 @@ public partial class Unit
         // Laser
         if (keywords.Contains("Laser"))
         {
-            // Draw a red line to our target.
-            attackLine.SetPosition(0, transform.position);
+            // + Draw a red line to our target.
+
+            // Get start position.
+            // (for now just go three quarters of the way up the sprite and call that good!)
+            Bounds b = spriteRenderer.bounds;
+            Vector3 attackOrigin = new Vector3(transform.position.x, b.min.y + b.size.y * 0.75f, transform.position.z);
+            attackLine.SetPosition(0, attackOrigin);
+
+            // Set end position.
             attackLine.SetPosition(1, target.transform.position);
+
+            // Enable.
             attackLine.enabled = true;
 
             // Fade the laser after a brief delay.

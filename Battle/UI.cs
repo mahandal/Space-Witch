@@ -569,7 +569,8 @@ public class UI : MonoBehaviour
         }
 
         // Set the current health.
-        tooltipCurrentHealth.text = unit.currentHealth.ToString("0");
+        int currentHealth = Mathf.CeilToInt(unit.currentHealth);
+        tooltipCurrentHealth.text = currentHealth.ToString("0");
 
         // Set the max health.
         tooltipMaxHealth.text = unit.maxHealth.ToString("0");

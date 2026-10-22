@@ -868,7 +868,7 @@ public partial class Leader : MonoBehaviour
             if (claimedTile != null)
             {
                 // Claim tile.
-                claimedTile.claim += direction;
+                claimedTile.claim = direction;
             }
         }
     }

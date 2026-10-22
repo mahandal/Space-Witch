@@ -12,9 +12,12 @@ public class MenuManager : MonoBehaviour
     //  21 = Postgame
     public int gameState = -2;
 
-    [Header("Menus")]
+    [Header("Managers")]
     // Constance.
     public Constance constance;
+
+    // DJ.
+    public DJ dj;
 
     // The main menu.
     public MainMenu mainMenu;
@@ -52,6 +55,9 @@ public class MenuManager : MonoBehaviour
 
         // Initialize Constance.
         constance.Initialize();
+
+        // Initialize DJ.
+        dj.Initialize();
 
         // Initialize main menu.
         mainMenu.Initialize();

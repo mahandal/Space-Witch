@@ -29,7 +29,7 @@ public class Tile : MonoBehaviour
 
     // - Colors
     // The color shown when hovered.
-    public Color hoverColor = new Color(1f, 1f, 1f, 1f);
+    // public Color hoverColor = new Color(1f, 1f, 1f, 1f);
 
     // Outline color for valid tiles.
     public Color validColor = new Color(0f, 1f, 0f, 0.1f);
@@ -97,13 +97,33 @@ public class Tile : MonoBehaviour
         }
     }
 
+    // Highlight tile.
+    // Called when hovered.
     public void Highlight()
     {
-        image.color = hoverColor;
+        // Set color based off claim.
+        if (claim > 0)
+            image.color = new Color(0f, 1f, 0f, 0.2f);
+        if (claim == 0)
+            image.color = new Color(1f, 1f, 1f, 0.2f);
+        if (claim < 0)
+            image.color = new Color(1f, 0f, 0f, 0.2f);
+
+        // image.color = hoverColor;
     }
 
+    // Unhighlight tile.
+    // Called post hover.
     public void Unhighlight()
     {
-        image.color = Color.clear;
+        // Set color based off claim.
+        if (claim > 0)
+            image.color = new Color(0f, 0.5f, 0f, 0.02f);
+        if (claim == 0)
+            image.color = new Color(0.5f, 0.5f, 0.5f, 0.02f);
+        if (claim < 0)
+            image.color = new Color(0.5f, 0f, 0f, 0.02f);
+
+        // image.color = Color.clear;
     }
 }

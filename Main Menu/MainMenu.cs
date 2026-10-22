@@ -133,8 +133,9 @@ public class MainMenu : MonoBehaviour
         else
             continueButton.gameObject.SetActive(true);
 
-        // Start on easy skirmish.
-        B_SkirmishDifficulty(0);
+        // Load player prefs.
+        B_SkirmishHeroChoose(PlayerPrefs.GetString("skirmishHero", "Morgan le Fey"));
+        B_SkirmishDifficulty(PlayerPrefs.GetInt("skirmishDifficulty", 0));
 
         // Activate the main menu object.
         // gameObject.SetActive(true);
@@ -190,6 +191,9 @@ public class MainMenu : MonoBehaviour
     // Called when you click on a leader's portrait.
     public void B_LeaderPortrait(string leaderName)
     {
+        // SFX
+        DJ.I.PlaySound("Snap");
+
         // Get the bio for this leader.
         LeaderBio bio = leaderBios[leaderName];
 
@@ -256,6 +260,9 @@ public class MainMenu : MonoBehaviour
     // Go back from examining a leader's details to the leader selection screen.
     public void B_BackFromDetails()
     {
+        // SFX
+        DJ.I.PlaySound("Snap");
+
         // Enable the leader select screen.
         leaderSelectScreen.SetActive(true);
 
@@ -267,6 +274,9 @@ public class MainMenu : MonoBehaviour
     // Go to the leader selection screen.
     public void B_NewGame()
     {
+        // SFX
+        DJ.I.PlaySound("Snap 2");
+
         // Go to leader select screen.
         leaderSelectScreen.SetActive(true);
         slidingToLeaderSelectScreen = true;
@@ -275,6 +285,9 @@ public class MainMenu : MonoBehaviour
     // Button pressed to play with the leader you have selected.
     public void B_Play()
     {
+        // SFX
+        DJ.I.PlaySound("Snap 2");
+
         // Set game mode to campaign.
         DM.I.gameMode = "Campaign";
 
@@ -297,6 +310,9 @@ public class MainMenu : MonoBehaviour
     // Continue from your previous save.
     public void B_ContinueAdventure()
     {
+        // SFX
+        DJ.I.PlaySound("Snap");
+
         // // Fetch save data.
         // MenuManager.I.saveData = Utility.GetSaveData();
 
@@ -319,6 +335,9 @@ public class MainMenu : MonoBehaviour
     // Choose yer hero!
     public void B_SkirmishHeroOpen()
     {
+        // SFX
+        DJ.I.PlaySound("Snap");
+
         // Close if open.
         if (heroWheel.activeSelf)
         {
@@ -333,6 +352,9 @@ public class MainMenu : MonoBehaviour
     // Spin yer wheel of heroes!
     public void B_Spin()
     {
+        // SFX
+        DJ.I.PlaySound("Snap");
+
         // Roll length of spin.
         wheelSpinTime = Random.Range(6f, 30f);
     }
@@ -340,6 +362,9 @@ public class MainMenu : MonoBehaviour
     // Stop spinning yer wheel of heroes!
     public void B_Stop()
     {
+        // SFX
+        DJ.I.PlaySound("Snap");
+
         // End spin time.
         wheelSpinTime = 0f;
     }
@@ -347,8 +372,14 @@ public class MainMenu : MonoBehaviour
     // Called by clicking a portrait on yer hero wheel.
     public void B_SkirmishHeroChoose(string heroName)
     {
+        // SFX
+        DJ.I.PlaySound("Snap");
+
         // Set skirmish hero.
         skirmishHero = heroName;
+
+        // Save to player prefs.
+        PlayerPrefs.SetString("skirmishHero", heroName);
 
         // Load portrait.
         Utility.LoadImage(skirmishPortrait, "Leaders/" + skirmishHero);
@@ -360,6 +391,9 @@ public class MainMenu : MonoBehaviour
     // Begin a skirmish!
     public void B_QuickPlay()
     {
+        // SFX
+        DJ.I.PlaySound("Snap 2");
+
         // Set game mode.
         DM.I.gameMode = "Skirmish";
 
@@ -388,8 +422,14 @@ public class MainMenu : MonoBehaviour
     // Select difficulty for skirmish.
     public void B_SkirmishDifficulty(int difficulty)
     {
+        // SFX
+        DJ.I.PlaySound("Snap");
+
         // Set difficulty.
         skirmishDifficulty = difficulty;
+
+        // Save to player prefs.
+        PlayerPrefs.SetInt("skirmishDifficulty", skirmishDifficulty);
 
         // Highlight selected difficulty.
         for (int i = 0; i < skirmishDifficulties.Count; i++)
@@ -409,6 +449,9 @@ public class MainMenu : MonoBehaviour
     // Begin goldfishing!
     public void B_Goldfish()
     {
+        // SFX
+        DJ.I.PlaySound("Snap 2");
+
         // Set game mode.
         DM.I.gameMode = "Goldfish";
         
