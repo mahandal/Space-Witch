@@ -94,6 +94,9 @@ public class StarManager : MonoBehaviour
     // Open the star map screen.
     public void GoToStarMap(bool fromMainMenu = false)
     {
+        // Hit it!
+        DJ.HitIt("Star Map");
+
         // Disable what should not be.
         recruitment.gameObject.SetActive(false);
 
@@ -371,6 +374,9 @@ public class StarManager : MonoBehaviour
     // Load the given planet into the planet screen.
     public void LoadPlanet(Planet p)
     {
+        // DJ, hit it!
+        DJ.HitIt("Planet");
+
         // Set name.
         planetName.text = p.myName;
 

@@ -99,7 +99,10 @@ public class MenuManager : MonoBehaviour
     // Go to the main menu.
     public void GoToMainMenu()
     {
-        // First, disable all menus.
+        // DJ, hit it!
+        DJ.HitIt("Main Menu");
+
+        // Disable all menus.
         DisableAllMenus();
         
         // Set game state.
@@ -115,7 +118,10 @@ public class MenuManager : MonoBehaviour
     // Go to the battle map.
     public void GoToBattleMap()
     {
-        // First, disable all menus.
+        // DJ, hit it!
+        DJ.HitIt("Battle");
+
+        // Disable all menus.
         DisableAllMenus();
 
         // Also disable all battle maps.
@@ -137,7 +143,7 @@ public class MenuManager : MonoBehaviour
     // Go to the explore map.
     public void GoToExplore()
     {
-        // First, disable all menus.
+        // Disable all menus.
         DisableAllMenus();
 
         // Also disable all explore maps.

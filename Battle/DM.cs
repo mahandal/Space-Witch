@@ -492,6 +492,12 @@ public class DM : MonoBehaviour
     // + Game Over
     public void GameOver(bool victory)
     {
+        // DJ, hit it!
+        if (victory)
+            DJ.HitIt("Victory");
+        else
+            DJ.HitIt("Defeat");
+        
         // Avoid repeat calls.
         if (MenuManager.I.gameState >= 21)
             return;

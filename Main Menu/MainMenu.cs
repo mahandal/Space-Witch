@@ -277,6 +277,9 @@ public class MainMenu : MonoBehaviour
         // SFX
         DJ.I.PlaySound("Snap 2");
 
+        // DJ, hit it!
+        DJ.HitIt("Select Leader");
+
         // Go to leader select screen.
         leaderSelectScreen.SetActive(true);
         slidingToLeaderSelectScreen = true;

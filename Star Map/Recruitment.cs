@@ -31,6 +31,9 @@ public class Recruitment : MonoBehaviour
     // Open the recruitment screen.
     public void OpenRecruitmentScreen()
     {
+        // DJ, hit it!
+        DJ.HitIt("Recruitment");
+
         // Load stardust count.
         stardustText.text = "0";
 

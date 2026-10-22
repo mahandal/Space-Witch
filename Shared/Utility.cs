@@ -119,45 +119,53 @@ public class Utility : MonoBehaviour
             // Default to 1.
             int amount = 1;
 
-            // 100: Increase to 2
+            // 100: Increase to 4
             if (difference > 100)
-                amount = 2;
-            // 500: Increase to 3
-            if (difference > 500)
-                amount = 3;
-            // 1,000: Increase to 4
-            if (difference > 1000)
                 amount = 4;
-            // 5,000: Increase to 5
-            if (difference > 5000)
-                amount = 5;
-            // 10,000: Increase to 11
-            if (difference > 10000)
+            // 500: Increase to 8
+            if (difference > 500)
+                amount = 8;
+            // 1,000: Increase to 11
+            if (difference > 1000)
                 amount = 11;
-            // 100,000: Increase to 111
-            if (difference > 100000)
+            // 5,000: Increase to 22
+            if (difference > 5000)
+                amount = 22;
+            // 10,000: Increase to 111
+            if (difference > 10000)
                 amount = 111;
-            // 1,000,000: Increase to 1,111
-            if (difference > 1000000)
+            // 100,000: Increase to 1,111
+            if (difference > 100000)
                 amount = 1111;
+            // 1,000,000: Increase to 11,111
+            if (difference > 1000000)
+                amount = 11111;
 
             // Negative
             if (difference < 0)
                 amount = -1;
             if (difference < -100)
-                amount = -2;
-            if (difference < -500)
-                amount = -3;
-            if (difference < -1000)
                 amount = -4;
-            if (difference < -5000)
-                amount = -5;
-            if (difference < -10000)
+            if (difference < -500)
+                amount = -8;
+            if (difference < -1000)
                 amount = -11;
-            if (difference < -100000)
+            if (difference < -5000)
+                amount = -22;
+            if (difference < -10000)
                 amount = -111;
-            if (difference < -1000000)
+            if (difference < -100000)
                 amount = -1111;
+            if (difference < -1000000)
+                amount = -11111;
+
+            // Sound effect
+            if (Mathf.Abs(amount) == 1)
+                DJ.I.PlaySound("SFX - Tick");
+            else if (Mathf.Abs(amount) < 100)
+                DJ.I.PlaySound("SFX - Tick 2");
+            else
+                DJ.I.PlaySound("SFX - Tick 3");
 
             // Get new value.
             int newValue = value + amount;
