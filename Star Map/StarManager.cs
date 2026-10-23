@@ -374,8 +374,8 @@ public class StarManager : MonoBehaviour
     // Load the given planet into the planet screen.
     public void LoadPlanet(Planet p)
     {
-        // DJ, hit it!
-        DJ.HitIt("Planet");
+        // DJ play planet's ambience.
+        DJ.I.PlayAmbience("Ambience - " + p.myName);
 
         // Set name.
         planetName.text = p.myName;

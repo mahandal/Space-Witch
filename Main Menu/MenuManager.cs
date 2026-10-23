@@ -118,8 +118,11 @@ public class MenuManager : MonoBehaviour
     // Go to the battle map.
     public void GoToBattleMap()
     {
-        // DJ, hit it!
-        DJ.HitIt("Battle");
+        // Get current planet.
+        Planet p = StarManager.I.GetCurrentPlanet();
+
+        // DJ play planet's ambience.
+        DJ.I.PlayAmbience("Ambience - " + p.myName);
 
         // Disable all menus.
         DisableAllMenus();
@@ -129,9 +132,6 @@ public class MenuManager : MonoBehaviour
 
         // Set game state.
         gameState = 1;
-
-        // Get current planet.
-        Planet p = StarManager.I.GetCurrentPlanet();
 
         // Load the appropriate battle map.
         p.battleMap.SetActive(true);
