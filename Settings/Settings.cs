@@ -1,8 +1,20 @@
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.Audio;
 
 public class Settings : MonoBehaviour
 {
+    [Header("Volume")]
+    // Audio mixer.
+    public AudioMixer mixer;
+
+    // Audio sliders.
+    public SettingSlider masterSlider;
+    public SettingSlider ambienceSlider;
+    public SettingSlider musicSlider;
+    public SettingSlider narratorSlider;
+    public SettingSlider sfxSlider;
+
     // Singleton.
     public static Settings I;
 
@@ -14,6 +26,13 @@ public class Settings : MonoBehaviour
 
         // Start off.
         gameObject.SetActive(false);
+
+        // Sliders.
+        masterSlider.Initialize();
+        ambienceSlider.Initialize();
+        musicSlider.Initialize();
+        narratorSlider.Initialize();
+        sfxSlider.Initialize();
     }
 
     // + Buttons
@@ -21,9 +40,12 @@ public class Settings : MonoBehaviour
     // Return to the main menu.
     public void B_ReturnToMainMenu()
     {
+        // SFX
+        DJ.I.PlaySound("Snap 2");
+
         // Unfreeze time.
         Time.timeScale = 1f;
-        
+
         // Re-load the game scene so everything is reset.
         Utility.LoadGameScene();
     }
@@ -31,6 +53,9 @@ public class Settings : MonoBehaviour
     // Open the settings menu.
     public void B_OpenSettings()
     {
+        // SFX
+        DJ.I.PlaySound("Snap");
+
         // Freeze time.
         Time.timeScale = 0f;
 
@@ -41,6 +66,9 @@ public class Settings : MonoBehaviour
     // Close the settings menu.
     public void B_CloseSettings()
     {
+        // SFX
+        DJ.I.PlaySound("Snap");
+        
         // Unfreeze time.
         Time.timeScale = 1f;
 
