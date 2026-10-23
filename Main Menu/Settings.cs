@@ -5,6 +5,13 @@ public class Settings : MonoBehaviour
 {
     // + Buttons
 
+    // Return to the main menu.
+    public void B_ReturnToMainMenu()
+    {
+        // Re-load the game scene so everything is reset.
+        Utility.LoadGameScene();
+    }
+
     // Open the settings menu.
     public void B_OpenSettings()
     {
