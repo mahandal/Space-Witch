@@ -3,11 +3,27 @@ using UnityEngine.UI;
 
 public class Settings : MonoBehaviour
 {
+    // Singleton.
+    public static Settings I;
+
+    // + Initialization
+    public void Initialize()
+    {
+        // Singleton.
+        I = this;
+
+        // Start off.
+        gameObject.SetActive(false);
+    }
+
     // + Buttons
 
     // Return to the main menu.
     public void B_ReturnToMainMenu()
     {
+        // Unfreeze time.
+        Time.timeScale = 1f;
+        
         // Re-load the game scene so everything is reset.
         Utility.LoadGameScene();
     }

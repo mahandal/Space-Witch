@@ -12,12 +12,15 @@ public class MenuManager : MonoBehaviour
     //  21 = Postgame
     public int gameState = -2;
 
-    [Header("Managers")]
+    [Header("Menus")]
     // Constance.
     public Constance constance;
 
     // DJ.
     public DJ dj;
+
+    // Settings.
+    public Settings settings;
 
     // The main menu.
     public MainMenu mainMenu;
@@ -59,6 +62,9 @@ public class MenuManager : MonoBehaviour
         // Initialize DJ.
         dj.Initialize();
 
+        // Initialize settings.
+        settings.Initialize();
+
         // Initialize main menu.
         mainMenu.Initialize();
 
@@ -83,6 +89,9 @@ public class MenuManager : MonoBehaviour
     // Disable all menus.
     public void DisableAllMenus()
     {
+        // Disable settings menu.
+        settings.gameObject.SetActive(false);
+        
         // Disable the main menu.
         mainMenu.gameObject.SetActive(false);
 
