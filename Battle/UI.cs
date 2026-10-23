@@ -15,7 +15,7 @@ public class UI : MonoBehaviour
     public TMP_Text timeRemaining;
 
     // Parent object of the neutral stuff in the middle.
-    public GameObject neutral;
+    public CanvasGroup neutral;
 
     [Header("Power Charges")]
     // The text object showing how many power charges the player currently has.
@@ -147,7 +147,10 @@ public class UI : MonoBehaviour
         reservesDepleted.gameObject.SetActive(false);
         reinforcementsArrived.gameObject.SetActive(false);
         versus.gameObject.SetActive(false);
-        neutral.SetActive(false);
+        // neutral.SetActive(false);
+
+        // Reset opacity of time.
+        neutral.alpha = 0f;
 
         // Hide leader names and portraits to begin with.
         goodName.gameObject.SetActive(false);
@@ -278,19 +281,17 @@ public class UI : MonoBehaviour
         // Time to hide VERSUS?
         if (DM.I.gameTimer >= 4f && versus.gameObject.activeSelf)
         {
-            
-
-            // Fade versus.
+            // Fade out versus.
             versus.alpha -= 0.01f;
+
+            // Fade in neutral.
+            neutral.alpha += 0.01f;
 
             // Faded?
             if (versus.alpha <= 0f)
             {
                 // Hide versus.
                 versus.gameObject.SetActive(false);
-
-                // Reveal neutral.
-                neutral.SetActive(true);
             }
         }
     }
