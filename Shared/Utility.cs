@@ -161,11 +161,11 @@ public class Utility : MonoBehaviour
 
             // Sound effect
             if (Mathf.Abs(amount) == 1)
-                DJ.I.PlaySound("SFX - Tick");
+                DJ.I.PlaySound("Tick");
             else if (Mathf.Abs(amount) < 100)
-                DJ.I.PlaySound("SFX - Tick 2");
+                DJ.I.PlaySound("Tick 2");
             else
-                DJ.I.PlaySound("SFX - Tick 3");
+                DJ.I.PlaySound("Tick 3");
 
             // Get new value.
             int newValue = value + amount;

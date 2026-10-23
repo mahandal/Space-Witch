@@ -24,6 +24,9 @@ public class SettingSlider : MonoBehaviour
    // Set the volume for a channel.
    public void B_SetVolume()
    {
+        // SFX
+        DJ.I.PlaySound("Tick", whatFor);
+
         // Read slider.
         float volume = slider.value;
 

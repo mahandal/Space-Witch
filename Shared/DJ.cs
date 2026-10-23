@@ -6,10 +6,11 @@ public class DJ : MonoBehaviour
     // Singleton.
     public static DJ I;
 
-    [Header("Ambience")]
+    [Header("Sources")]
+    public AudioSource masterSource;
     public AudioSource ambienceSource;
-
-    [Header("SFX")]
+    public AudioSource musicSource;
+    public AudioSource narratorSource;
     public AudioSource sfxSource;
 
     [Header("Audio clips")]
@@ -48,13 +49,31 @@ public class DJ : MonoBehaviour
         // TBD: Play music!
     }
 
-    // Play a sound effect.
-    public void PlaySound(string soundName)
+    // Play a sound effect, on the SFX channel by default.
+    public void PlaySound(string soundName, string audioChannel = "SFX")
     {
         if (library.TryGetValue(soundName, out AudioClip clip))
-            sfxSource.PlayOneShot(clip);
+        {
+            // Master
+            // if (audioChannel == "Master")
+            //     masterSource.PlayOneShot(clip);
+            // Ambience
+            if (audioChannel == "Ambience")
+                ambienceSource.PlayOneShot(clip);
+            // Music
+            if (audioChannel == "Music")
+                musicSource.PlayOneShot(clip);
+            // Narrator
+            if (audioChannel == "Narrator")
+                narratorSource.PlayOneShot(clip);
+            // SFX
+            if (audioChannel == "SFX")
+                sfxSource.PlayOneShot(clip);
+        }
         else
+        {
             Debug.LogWarning($"DJ: no sound named \"{soundName}\"");
+        }
     }
 
     // Play an ambience track.
