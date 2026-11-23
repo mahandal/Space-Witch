@@ -281,27 +281,30 @@ public class CardInHand : MonoBehaviour, IPointerEnterHandler, IPointerExitHandl
     // Load a card into this position (by name).
     public void LoadCard(string cardName)
     {
-        // Get the card from the grimoire.
-        Card card = DM.I.Grimoire(cardName);
+        // Get the progenitor.
+        Unit p = Progenitors.I.GetProgenitor(cardName);
 
         // Set name.
         myName = cardName;
         nameText.text = myName;
 
         // Set mana cost.
-        manaText.text = card.manaCost.ToString();
-        manaCost = card.manaCost;
+        manaText.text = p.manaCost.ToString();
+        manaCost = p.manaCost;
 
         // Set deployment time.
-        timeText.text = card.deployTime.ToString();
+        if (p.keywords.Contains("Chaotic"))
+            timeText.text = p.deployTime.ToString() + " - " + (p.deployTime * 2f).ToString();
+        else
+            timeText.text = p.deployTime.ToString();
 
         // Set role.
-        roleText.text = card.role;
+        Utility.SetRoleText(p, roleText);
 
         // Load images.
-        Utility.LoadImage(image, "Cards/" + card.myName);
-        Utility.LoadImage(backgroundImage, "Cards/" + card.myName);
-        Utility.LoadImage(roleIcon, "Roles/" + card.role);
+        Utility.LoadImage(image, "Cards/" + p.myName);
+        Utility.LoadImage(backgroundImage, "Cards/" + p.myName);
+        Utility.LoadImage(roleIcon, "Roles/" + p.role);
 
         // Reveal the card!
         Reveal();

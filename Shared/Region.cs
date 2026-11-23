@@ -87,6 +87,10 @@ public class Region : MonoBehaviour
                 unit.speedModifiers[GetUID()] = 0.5f;
         }
 
+        // Sand
+        if (myType == "Sand")
+            unit.speedModifiers[GetUID()] = 0.5f;
+
         // Flora
         if (myType == "Flora")
             unit.speedModifiers[GetUID()] = 0.7f;
@@ -109,16 +113,9 @@ public class Region : MonoBehaviour
         if (myType == "Lava")
             unit.speedModifiers[GetUID()] = 0.3f;
 
-        // + Paths to Victory
-        if (unit == GM.I.player)
-        {
-            // Hunter
-            if (myType == "Way of the Hunter")
-                DM.I.BeginHunt();
-
-            if (myType == "Way of the Gatherer")
-                DM.I.BeginGathering();
-        }
+        // + Begin battle
+        if (unit == GM.I.player && myType == "Battle")
+            DM.I.BeginBattle();
     }
 
 

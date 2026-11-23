@@ -713,6 +713,13 @@ public class PostGame : MonoBehaviour
         score += leader.kills;
         score += leader.losses;
 
+        // + Difficulty
+        if (MainMenu.I.difficulty < 0)
+            score /= -MainMenu.I.difficulty;
+
+        if (MainMenu.I.difficulty > 0)
+            score *= MainMenu.I.difficulty;
+
         // Return.
         return score;
     }

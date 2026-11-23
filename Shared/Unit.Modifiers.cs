@@ -44,6 +44,10 @@ public partial class Unit
             modifier *= value;
         }
 
+        // Minimum of 10%
+        if (modifier < 0.1f)
+            return 0.1f;
+
         // Return.
         return modifier;
     }

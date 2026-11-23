@@ -16,6 +16,10 @@ public class ViewDeck : MonoBehaviour
     // The index of the current page.
     public int pageIndex = 0;
 
+    [Header("Cards")]
+    // The player's current deck.
+    public List<string> deck = new List<string>();
+
     [Header("Buttons")]
     // The button taking you to the previous page of cards.
     public Button previousPage;
@@ -34,6 +38,12 @@ public class ViewDeck : MonoBehaviour
     // + Initialization
     public void GoToViewDeck()
     {
+        // Get deck.
+        if (DM.I.gameMode == "Campaign")
+            deck = MenuManager.I.saveData.decklist;
+        else
+            deck = DM.I.goodLeader.deck;
+
         // Load first page.
         LoadFirstPage();
 
@@ -59,7 +69,7 @@ public class ViewDeck : MonoBehaviour
     public void LoadCards()
     {
         // Get our deck list.
-        List<string> cardList = MenuManager.I.saveData.decklist;
+        // List<string> cardList = MenuManager.I.saveData.decklist;
 
         // Loop through each mini card.
         for (int i = 0; i < minicards.Count; i++)
@@ -68,10 +78,10 @@ public class ViewDeck : MonoBehaviour
             int cardIndex = i + (pageIndex * minicards.Count);
 
             // Check if there is a card to load.
-            if (cardIndex < cardList.Count)
+            if (cardIndex < deck.Count)
             {
                 // Get card name.
-                string cardName = cardList[cardIndex];
+                string cardName = deck[cardIndex];
 
                 // Load card.
                 minicards[i].LoadCard(cardName);
@@ -102,7 +112,7 @@ public class ViewDeck : MonoBehaviour
         // To use the next page button, you need at least this many cards in your deck.
         int cardsNeeded = (pageIndex + 1) * minicards.Count + 1;
 
-        if (MenuManager.I.saveData.decklist.Count >= cardsNeeded)
+        if (deck.Count >= cardsNeeded)
             nextPage.gameObject.SetActive(true);
         else
             nextPage.gameObject.SetActive(false);
@@ -156,7 +166,7 @@ public class ViewDeck : MonoBehaviour
         // Can't go forward past the last page.
         int cardsNeeded = (pageIndex + 1) * minicards.Count;
 
-        if (cardsNeeded > MenuManager.I.saveData.decklist.Count) return;
+        if (cardsNeeded > deck.Count) return;
 
         // Increment pageIndex.
         pageIndex++;

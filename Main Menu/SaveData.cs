@@ -7,7 +7,7 @@ using System.Collections.Generic;
 public class SaveData
 {
     // How much stardust we have.
-    public int stardust = 0;
+    public int stardust = 100;
 
     // The name of the leader we are playing as.
     public string leaderName = "Dreaming Soul";

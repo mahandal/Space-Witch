@@ -92,11 +92,8 @@ public class StarManager : MonoBehaviour
     }
 
     // Open the star map screen.
-    public void GoToStarMap(bool fromMainMenu = false)
+    public void OpenStarMap(bool fromMainMenu = false)
     {
-        // Hit it!
-        DJ.HitIt("Star Map");
-
         // Disable what should not be.
         recruitment.gameObject.SetActive(false);
 
@@ -143,13 +140,12 @@ public class StarManager : MonoBehaviour
         gameObject.SetActive(true);
 
         // Disable main menu, explore map, and battle map.
-        MainMenu.I.gameObject.SetActive(false);
-        DM.I.gameObject.SetActive(false);
-        GM.I.gameObject.SetActive(false);
-        // DM.I.battleMap.SetActive(false);
+        // MainMenu.I.gameObject.SetActive(false);
+        // DM.I.gameObject.SetActive(false);
+        // GM.I.gameObject.SetActive(false);
 
         // Set game state.
-        MenuManager.I.gameState = -1;
+        // MenuManager.I.gameState = -1;
     }
 
     // + Stars
@@ -288,15 +284,46 @@ public class StarManager : MonoBehaviour
 
     // + Planets
 
+    // Go to a specific planet.
+    public void GoToPlanet(string planetName)
+    {
+        // Loop through each star.
+        for (int i = 0; i < stars.Count; i++)
+        {
+            // Get star.
+            Star s = stars[i];
+
+            // Loop through each planet.
+            for (int j = 0; j < s.planets.Count; j++)
+            {
+                // Get planet.
+                Planet p = s.planets[j];
+
+                // Check if this is the one we're looking for.
+                if (p.myName == planetName)
+                {
+                    // Set star.
+                    currentStar = s;
+
+                    // Set planet index.
+                    planetIndex = j;
+                    
+                    // Return.
+                    return;
+                }
+            }
+        }
+    }
+
     // Go to a random planet.
     public void GoToRandomPlanet(int difficulty = 2)
     {
         // Roll a random star, limited by difficulty.
-        int endOfStarRange = 2;
-        if (difficulty == 1)
-            endOfStarRange = 5;
-        if (difficulty == 2)
-            endOfStarRange = 8;
+        int endOfStarRange = difficulty;
+        if (difficulty < 0)
+            endOfStarRange = 0;
+        if (difficulty > 4)
+            endOfStarRange = 4;
 
         int starIndex = Random.Range(0, endOfStarRange);
 
@@ -304,23 +331,27 @@ public class StarManager : MonoBehaviour
         currentStar = stars[starIndex];
 
         // Roll random planet.
-        if (difficulty == 0)
-            planetIndex = Random.Range(0, 2);
-        if (difficulty == 1)
-            planetIndex = Random.Range(2, 4);
-        if (difficulty == 2)
-            planetIndex = 4;
+        int endOfPlanetRange = difficulty;
+        if (difficulty < 0)
+            endOfPlanetRange = 0;
+        if (difficulty > 4)
+            endOfPlanetRange = 4;
+
+        int pIndex = Random.Range(0, endOfPlanetRange);
+
+        // Set planet index.
+        planetIndex = pIndex;
     }
 
     // Get a random planet.
     public Planet GetRandomPlanet(int difficulty = 2)
     {
         // Roll a random star, limited by difficulty.
-        int endOfStarRange = 2;
-        if (difficulty == 1)
-            endOfStarRange = 5;
-        if (difficulty == 2)
-            endOfStarRange = 8;
+        int endOfStarRange = difficulty;
+        if (difficulty < 0)
+            endOfStarRange = 0;
+        if (difficulty > 4)
+            endOfStarRange = 4;
 
         int starIndex = Random.Range(0, endOfStarRange);
 
@@ -328,14 +359,13 @@ public class StarManager : MonoBehaviour
         Star s = stars[starIndex];
 
         // Roll random planet.
-        int pIndex = Random.Range(0, s.planets.Count);
+        int endOfPlanetRange = difficulty;
+        if (difficulty < 0)
+            endOfPlanetRange = 0;
+        if (difficulty > 4)
+            endOfPlanetRange = 4;
 
-        if (difficulty == 0)
-            pIndex = Random.Range(0, 2);
-        if (difficulty == 1)
-            pIndex = Random.Range(2, 4);
-        if (difficulty == 2)
-            pIndex = 4;
+        int pIndex = Random.Range(0, endOfPlanetRange);
 
         // Return planet.
         return s.planets[pIndex];
@@ -374,8 +404,8 @@ public class StarManager : MonoBehaviour
     // Load the given planet into the planet screen.
     public void LoadPlanet(Planet p)
     {
-        // DJ play planet's ambience.
-        DJ.I.PlayAmbience("Ambience - " + p.myName);
+        // DJ, hit it!
+        DJ.HitIt(p);
 
         // Set name.
         planetName.text = p.myName;
@@ -445,7 +475,7 @@ public class StarManager : MonoBehaviour
     public void B_Fight()
     {
         // Set up the recruitment screen!
-        recruitment.OpenRecruitmentScreen();
+        MenuManager.I.GoToRecruitment();
     }
 
     // Exit the game.

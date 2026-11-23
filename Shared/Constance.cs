@@ -45,6 +45,10 @@ public class Constance : MonoBehaviour
         // Power level?
         level += powerLevel;
 
+        // Minimum of 1.
+        if (level < 1)
+            level = 1;
+
         // Return.
         return level;
     }

@@ -14,8 +14,8 @@ public class Spell : MonoBehaviour
         // + Find targets.
         List<Unit> targets = new List<Unit>();
 
-        // Hexes target enemies
-        if (spell.role == "Hex")
+        // Hexes and curses target enemies
+        if (spell.role == "Hex" || spell.role == "Curse")
         {
             // Get a list of all enemies.
             List<Unit> enemies = DM.I.GetAllEnemies(spell);

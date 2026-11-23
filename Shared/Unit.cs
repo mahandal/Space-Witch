@@ -14,6 +14,9 @@ public partial class Unit : MonoBehaviour
     public int direction = 1;
 
     // How far this unit is willing to go.
+    //  1 : Aggressive - Fights till the end.
+    //  0 : Adventurous - Avoids enemy territory.
+    // -1 : Friendly - Stays within yer territory.
     public int aggression = 0;
     
     // This unit's name.
@@ -55,6 +58,9 @@ public partial class Unit : MonoBehaviour
     // How many foes this unit has slain.
     public int kills = 0;
 
+    // How many tiles this unit has walked through.
+    public int tilesTraveled = 0;
+
 
     [Header("Core Stats")]
     // The maximum amount of health this unit can have.
@@ -90,10 +96,6 @@ public partial class Unit : MonoBehaviour
     // Keywords
     public List<string> keywords = new List<string>();
 
-    [Header("Structures")]
-    // How many tiles this structure claims.
-    public int tilesClaimed = 0;
-
     [Header("Production")]
     // For units that produce other units periodically.
 
@@ -128,6 +130,7 @@ public partial class Unit : MonoBehaviour
     // =  1: Moving
     // =  2: Attacking
     // =  3: Stunned
+    // =  4: Going home
     // = -1: Dying
     public int state = 0;
 
@@ -160,6 +163,9 @@ public partial class Unit : MonoBehaviour
     // (For lasers.)
     public LineRenderer attackLine;
 
+    // Audio source to play this unit's movement sounds.
+    public AudioSource movementAudioSource;
+
     // + Initialization
 
     // Initialize.
@@ -191,6 +197,9 @@ public partial class Unit : MonoBehaviour
         // Get attack time, for units.
         if (cardType == "Unit")
             attackTime = CalculateAttackTime();
+
+        // Add audio source.
+        movementAudioSource = DJ.I.CreateMovementAudioSource(this);
     }
 
     // Calculate this unit's attack time.
@@ -267,8 +276,14 @@ public partial class Unit : MonoBehaviour
                 // Get tile.
                 Tile tile = GetCurrentTile();
 
+                // Add difficulty to level.
+                if (good && MainMenu.I.difficulty < 0)
+                    level -= MainMenu.I.difficulty;
+                if (!good && MainMenu.I.difficulty > 0)
+                    level += MainMenu.I.difficulty;
+
                 // Deploy to tile.
-                GetLeader().SpawnUnit(myName, tile);
+                GetLeader().SpawnUnit(myName, tile, level, deployTime);
 
                 // Deactivate this unit.
                 gameObject.SetActive(false);
@@ -368,6 +383,9 @@ public partial class Unit : MonoBehaviour
     // + Upkeep
     void FixedUpdate()
     {
+        // Wait for battle.
+        if (MenuManager.I.gameState != 1) return;
+
         // Deploying.
         if (state == 0 && deployTimer > 0f)
         {
@@ -390,44 +408,7 @@ public partial class Unit : MonoBehaviour
 
             // Done?
             if (deployTimer <= 0f)
-            {
-                // Set state.
-                state = 1;
-
-                // Set health cleanly to max health.
-                currentHealth = maxHealth;
-
-                // Set color.
-                spriteRenderer.color = Color.white;
-
-                // Enable vision for good.
-                if (good)
-                    visionCircle.gameObject.SetActive(true);
-
-                // Claim tiles?
-                if (tilesClaimed > 0)
-                    GetLeader().ClaimTiles(currentTile, tilesClaimed);
-
-                // Structure on structure?
-                if (cardType == "Structure" && currentTile.structure != null && currentTile.structure != this)
-                {
-                    // Heal current structure.
-                    currentTile.structure.GainHealth(currentHealth);
-
-                    // Level up?
-                    if (currentTile.structure.GetBaseName() == GetBaseName())
-                    {
-                        // Roll.
-                        int d100 = Random.Range(1, 101);
-
-                        if (d100 < level)
-                            currentTile.structure.LevelUp();
-                    }
-
-                    // Crumble.
-                    BeginDying();
-                }
-            }
+                FinishDeploying();
 
             // Return.
             return;
@@ -445,6 +426,20 @@ public partial class Unit : MonoBehaviour
         
         if (state == -1)
             return;
+
+        // Going home?
+        if (state == 4)
+        {
+            // Move.
+            transform.position += Vector3.right * direction * speed * SpeedModifiers() * Time.fixedDeltaTime;
+
+            // Off screen?
+            if (transform.position.x < -7f || transform.position.x > DM.I.gridWidth + 7f)
+                Death();
+
+            // Return.
+            return;
+        }
 
         // Hurt?
         if (hurtTimer > 0)
@@ -519,6 +514,12 @@ public partial class Unit : MonoBehaviour
         // Animations.
         animator.SetInteger("State", state);
 
+        // Movement audio
+        if (state == 1 && !movementAudioSource.isPlaying)
+            movementAudioSource.Play();
+        else if (state != 1 && movementAudioSource.isPlaying)
+            movementAudioSource.Stop();
+
         // Hover
         if (this == InputBattle.I.hoveredUnit)
             Utility.SetOpacity(spriteRenderer, 0.5f);
@@ -553,11 +554,7 @@ public partial class Unit : MonoBehaviour
             if (farmTimer <= 0f)
             {
                 // Gain mana.
-                GetLeader().GenerateMana();
-
-                // Feedback for player.
-                if (good)
-                    Fading.Create(transform.position);
+                GetLeader().GenerateMana(1, this);
 
                 // Reset farm timer.
                 farmTimer = farmTime;
@@ -571,30 +568,27 @@ public partial class Unit : MonoBehaviour
         // - Movement
         if (state == 1)
         {
-            // Speed multipliers.
-            float speedMultipliers = SpeedModifiers();
-
             // Move
-            transform.position += Vector3.right * direction * speed * speedMultipliers * Time.fixedDeltaTime;
+            transform.position += Vector3.right * direction * speed * SpeedModifiers() * Time.fixedDeltaTime;
 
             // Update current tile.
-            currentTile = GetCurrentTile();
+            GetCurrentTile();
 
             // + Aggression
-            // Civilians
+            // Friendly
             if (aggression < 0)
                 Civilian();
 
-            // Nomads
+            // Adventurous
             if (aggression == 0)
                 Nomad();
 
-            // Soldiers:
+            // Aggressive:
             // March on!
         }
     }
 
-    // Nomads turn around when entering enemy territory, or upon returning back to base.
+    // Nomads turn around when entering enemy territory.
     private void Nomad()
     {
         if (good)
@@ -605,9 +599,10 @@ public partial class Unit : MonoBehaviour
                 SetDirection(-1);
 
             // Check if ye've reached yer base.
-            if (direction == -1 && currentTile.structure != null &&
+            if (direction == -1 && state != 4 && currentTile.structure != null &&
                 currentTile.structure.good == good && currentTile.structure.role == "Base")
-                SetDirection(1);
+                GoHome();
+                // SetDirection(1);
         }
         else
         {
@@ -617,13 +612,28 @@ public partial class Unit : MonoBehaviour
                 SetDirection(1);
 
             // Check if ye've reached yer base.
-            if (direction == 1 && currentTile.structure != null && 
+            if (direction == 1 && state != 4 && currentTile.structure != null && 
                 currentTile.structure.good == good && currentTile.structure.role == "Base")
-                SetDirection(-1);
+                GoHome();
+                // SetDirection(-1);
         }
     }
 
-    // Civilians turn around when leaving their territory, or upon returning back to base.
+    // Civilians go home after returning to base.
+    private void GoHome()
+    {
+        // Set state.
+        state = 4;
+
+        // Leader gains mana.
+        // int manaGained = Mathf.RoundToInt(manaCost * (0.05f * tilesTraveled));
+
+        int manaRoll = Random.Range(0, DM.I.gridWidth * 2);
+        if (manaRoll < tilesTraveled)
+            GetLeader().GatherMana(manaCost, this);
+    }
+
+    // Civilians turn around when leaving their territory.
     private void Civilian()
     {
         if (good)
@@ -634,9 +644,10 @@ public partial class Unit : MonoBehaviour
                 SetDirection(-1);
 
             // Check if ye've reached yer base.
-            if (direction == -1 && currentTile.structure != null &&
+            if (direction == -1 && state != 4 && currentTile.structure != null &&
                 currentTile.structure.good == good && currentTile.structure.role == "Base")
-                SetDirection(1);
+                GoHome();
+                // SetDirection(1);
         }
         else
         {
@@ -646,25 +657,38 @@ public partial class Unit : MonoBehaviour
                 SetDirection(1);
 
             // Check if ye've reached yer base.
-            if (direction == 1 && currentTile.structure != null &&
+            if (direction == 1 && state != 4 && currentTile.structure != null &&
                 currentTile.structure.good == good && currentTile.structure.role == "Base")
-                SetDirection(-1);
+                GoHome();
+                // SetDirection(-1);
         }
     }
 
     // Return this unit's current tile.
-    // Note: May get confused near boundaries between tiles!
     public Tile GetCurrentTile()
     {
         // Get the closest tile's position in grid.
-        int tileX = Mathf.Clamp(Mathf.RoundToInt(transform.position.x), 0, DM.I.gridWidth - 1);
+        int tileX = Mathf.Clamp(Mathf.FloorToInt(transform.position.x), 0, DM.I.gridWidth - 1);
         laneIndex = Mathf.Clamp(Mathf.RoundToInt(transform.position.y), 0, DM.I.gridHeight - 1);
 
         // Set sprite sorting order.
         spriteRenderer.sortingOrder = 600 - Mathf.RoundToInt(transform.position.y * 100f);
 
-        // Index into DM's grid and return the tile.
-        return DM.I.grid[tileX, laneIndex];
+        // Get tile.
+        Tile tile = DM.I.grid[tileX, laneIndex];
+
+        // Check if tile is new.
+        if (tile != currentTile)
+        {
+            // Increment tiles traveled.
+            tilesTraveled++;
+
+            // Set current tile.
+            currentTile = tile;
+        }
+
+        // Return.
+        return tile;
     }
 
     // Return this unit's leader.
@@ -684,6 +708,7 @@ public partial class Unit : MonoBehaviour
         else
             return DM.I.goodLeader;
     }
+
 
     // + Stunned
     // Stun.
@@ -728,7 +753,15 @@ public partial class Unit : MonoBehaviour
     public void LookForEnemy()
     {
         // Reset our target(?)
-        target = null;
+        if (target != null)
+        {
+            if (target.state < 1)
+                target = null;
+            float distance = Mathf.Abs(target.transform.position.x - transform.position.x);
+            if (distance > (range * 1.5f))
+                target = null;
+        }
+            
 
         // Get list of enemy units.
         List<Unit> enemyUnits = DM.I.GetEnemiesInLane(this);
@@ -810,8 +843,8 @@ public partial class Unit : MonoBehaviour
             // Ignore deploying and dead units.
             if (unit.state < 1) continue;
 
-            // Ignore items, structures, and spells.
-            if (unit.cardType != "Unit") continue;
+            // Ignore structures and items.
+            if (unit.cardType == "Structure" || unit.cardType == "Item") continue;
 
             // We got someone to pick us up!
             unit.PickUp(this);
@@ -825,15 +858,10 @@ public partial class Unit : MonoBehaviour
         if (item.role == "Treasure")
         {
             // Gain mana.
-            GetLeader().mana += item.manaCost;
+            GetLeader().GatherMana(item.manaCost, item);
 
             // Count flowers.
             manaGathered += item.manaCost;
-            GetLeader().manaGathered += item.manaCost;
-
-            // Feedback for player.
-            if (good)
-                Fading.Create(item.transform.position);
         }
         else
         {
@@ -848,12 +876,20 @@ public partial class Unit : MonoBehaviour
         if (item.role == "Food")
         {
             if (good != item.good)
+            {
+                // TBD: Figure out why food poisons yer own dudes sometimes!
+                // Debug.Log(item.myName + " is poisoning " + myName + " item.good: " + item.good + ". unit.good: " + good);
                 keywords.Add("Poisoned");
+            }
 
             // Roll a d100.
             int d100 = Random.Range(1, 101);
 
-            // Ogres!
+            // Ogres turn into Giants!
+            if (d100 == 100 && GetBaseName() == "Ogre")
+                LoadUnit("Giant");
+
+            // Ogrites turn into Ogres!
             if (d100 >= 50 && GetBaseName() == "Ogrite")
             {
                 // Grow into an ogre!
@@ -922,8 +958,13 @@ public partial class Unit : MonoBehaviour
         // Check if target is in range.
         float distance = Mathf.Abs(target.transform.position.x - transform.position.x);
 
-        // Fail if target has left our range.
-        if (distance > range) return;
+        // Fail if target has moved far enough out of our range.
+        if (distance > (range * 1.5f)) return;
+
+        // Attack is going through!
+
+        // Play sound effect.
+        DJ.I.PlayAttackSound(this);
 
         // Handle keywords and other attack triggers.
         OnAttack();
@@ -1079,6 +1120,9 @@ public partial class Unit : MonoBehaviour
     // Begin dying.
     public void BeginDying()
     {
+        // Sound effect.
+        DJ.I.PlayDeathSound(this);
+
         // Track stats.
         if (cardType != "Item")
             GetLeader().losses++;
@@ -1091,7 +1135,7 @@ public partial class Unit : MonoBehaviour
             Unstun();
         
         // Charming
-        if (target != null && target.keywords.Contains("Charming"))
+        if (target != null && target != this && target.keywords.Contains("Charming"))
         {
             // Charm.
             ChangeSides(true);
@@ -1172,6 +1216,54 @@ public partial class Unit : MonoBehaviour
         Destroy(gameObject);
     }
 
+    // + Deployment
+
+    // Finish deploying.
+    private void FinishDeploying()
+    {
+        // Set state.
+        state = 1;
+
+        // Set health cleanly to max health.
+        currentHealth = maxHealth;
+
+        // Set color.
+        spriteRenderer.color = Color.white;
+
+        // Enable vision for good.
+        if (good)
+            visionCircle.gameObject.SetActive(true);
+
+        // Claim tiles?
+        if (role == "Base")
+            GetLeader().ClaimTiles(currentTile, 4);
+        else if (cardType == "Structure")
+            GetLeader().ClaimTiles(currentTile, 2);
+
+        // Structure on structure?
+        if (cardType == "Structure" && currentTile.structure != null && currentTile.structure != this)
+        {
+            // Heal current structure.
+            currentTile.structure.GainHealth(currentHealth);
+
+            // Level up?
+            if (currentTile.structure.GetBaseName() == GetBaseName())
+            {
+                // Roll.
+                int d100 = Random.Range(1, 101);
+
+                if (d100 < level)
+                    currentTile.structure.LevelUp();
+            }
+
+            // Crumble.
+            BeginDying();
+        } else {
+            // Sound effect!
+            DJ.I.PlayDeployedSound(this);
+        }
+    }
+
     // Redeploy
     public void ReDeploy()
     {
@@ -1186,32 +1278,58 @@ public partial class Unit : MonoBehaviour
     }
 
     // + Levels
-    // Gain a level, increasing damage, health, range, vision, and size.
+    // Gain a level!
+    // UNITS:
+    // - Bulwarks gain health.
+    // - Hunters gain damage.
+    // - Scouts gain vision.
+    // - Mages gain range.
+    // STRUCTURES:
+    // - Walls gain health.
+    // - Turrets gain damage.
+    // - Farms farm faster.
+    // - Production produces faster.
+    // ITEMS:
+    // - Equipment gain damage.
+    // - Food gain health.
+    // SPELLS:
+    // - Hexes gain damage.
+    // - Curses gain range.
+    // - Summons gain health.
     public void LevelUp()
     {
         // Gain a level.
         level++;
 
-        // Increase damage.
-        damage *= Utility.LevelScalar();
-
-        // Increase health.
-        maxHealth *= Utility.LevelScalar();
-        currentHealth *= Utility.LevelScalar();
-
-        // Increase vision.
-        vision *= Utility.LevelScalar();
-
         // Increase size by 2%.
         transform.localScale *= 1.02f;
 
-        // Increase range for hunters.
-        if (role == "Hunter")
+        // Bulwarks, walls, food, and summons gain health.
+        if (role == "Bulwark" || role == "Wall" || role == "Food" || role == "Summon")
+        {
+            maxHealth *= Utility.LevelScalar();
+            currentHealth *= Utility.LevelScalar();
+        }
+
+        // Hunters, turrets, equipment, and hexes gain damage.
+        if (role == "Hunter" || role == "Turret" || role == "Equipment" || role == "Hex")
+            damage *= Utility.LevelScalar();
+
+        // Scouts gain vision.
+        if (role == "Scout")
+            vision *= Utility.LevelScalar();
+
+        // Mages and curses gain range.
+        if (role == "Mage" || role == "Curse")
             range *= Utility.LevelScalar();
 
-        // Increase production speed.
-        timePerSpawn /= Utility.LevelScalar();
-        farmTime /= Utility.LevelScalar();
+        // Production - Increase production speed.
+        if (role == "Production")
+            timePerSpawn /= Utility.LevelScalar();
+
+        // Farm - Increase farm speed.
+        if (role == "Farm")
+            farmTime /= Utility.LevelScalar();
     }
 
     // Level to the given level.
@@ -1222,6 +1340,7 @@ public partial class Unit : MonoBehaviour
             LevelUp();
         }
     }
+
 
     // + Magic
     // Cast a spell.

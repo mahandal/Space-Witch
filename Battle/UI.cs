@@ -11,6 +11,9 @@ public class UI : MonoBehaviour
     public GameObject sellCursor;
 
     [Header("Time")]
+    // Timer tracking intro versus sequence.
+    public float introTimer = -1f;
+
     // The text object saying how much time is left on the clock.
     public TMP_Text timeRemaining;
 
@@ -31,7 +34,10 @@ public class UI : MonoBehaviour
     // The mana symbol showing the player's progress toward gaining mana.
     public Image manaSymbol;
 
-    [Header("Health")]
+    [Header("Good")]
+    // The header saying 'GOOD'.
+    public TMP_Text goodHeader;
+
     // The fill for the good leader's health bar.
     public Image goodHealth;
 
@@ -40,6 +46,10 @@ public class UI : MonoBehaviour
 
     // The text for the good leader's max health.
     public TMP_Text goodMaxHealth;
+
+    [Header("Evil")]
+    // The header saying 'EVIL'.
+    public TMP_Text evilHeader;
 
     // The fill for the evil leader's health bar.
     public Image evilHealth;
@@ -54,6 +64,9 @@ public class UI : MonoBehaviour
     // The portrait showing who is leading the forces of good.
     public Image goodPortrait;
 
+    // Good portrait frame.
+    public Image goodPortraitFrame;
+
     // The text saying the name of the good leader.
     public TMP_Text goodName;
 
@@ -62,6 +75,9 @@ public class UI : MonoBehaviour
 
     // The portrait showing who is leading the forces of evil.
     public Image evilPortrait;
+
+    // Evil portrait frame.
+    public Image evilPortraitFrame;
 
     // The text saying the name of the evil leader.
     public TMP_Text evilName;
@@ -149,6 +165,24 @@ public class UI : MonoBehaviour
         versus.gameObject.SetActive(false);
         // neutral.SetActive(false);
 
+        // Tutorial hides alignment headers and fog of war.
+        if (DM.I.gameMode == "Tutorial")
+        {
+            // Hide headers.
+            goodHeader.gameObject.SetActive(false);
+            evilHeader.gameObject.SetActive(false);
+
+            // Hide fog of war.
+            fogOfWar.gameObject.SetActive(false);
+        } else {
+            // Reveal headers.
+            goodHeader.gameObject.SetActive(true);
+            evilHeader.gameObject.SetActive(true);
+
+            // Activate fog of war.
+            fogOfWar.gameObject.SetActive(true);
+        }
+
         // Reset opacity of time.
         neutral.alpha = 0f;
 
@@ -172,30 +206,15 @@ public class UI : MonoBehaviour
         // Update power charges.
         UpdatePowerCharges();
 
-        // + Ways
-        // Hunter
-        if (DM.I.way == "Hunter")
-        {
-            // Set health bar colors.
-            goodHealth.color = Color.green;
-            evilHealth.color = Color.red;
+        // + Health
+        // Set health bar colors.
+        goodHealth.color = Color.green;
+        evilHealth.color = Color.red;
 
-            // Set max health text.
-            goodMaxHealth.text = DM.I.goodLeader.maxHealth.ToString("0");
-            evilMaxHealth.text = DM.I.evilLeader.maxHealth.ToString("0");
-        }
-
-        // Gatherer
-        if (DM.I.way == "Gatherer")
-        {
-            // Set health bar colors.
-            goodHealth.color = Color.violet;
-            evilHealth.color = Color.violet;
-
-            // Set goal text.
-            goodMaxHealth.text = "42";
-            evilMaxHealth.text = "42";
-        }
+        // Set max health text.
+        goodMaxHealth.text = DM.I.goodLeader.maxHealth.ToString("0");
+        evilMaxHealth.text = DM.I.evilLeader.maxHealth.ToString("0");
+        
     }
 
     // + Battle
@@ -206,8 +225,11 @@ public class UI : MonoBehaviour
         // Versus sequence
         Versus();
 
+        // Wait for game to start.
+        if (MenuManager.I.gameState != 1) return;
+
         // Update reinforcements.
-        UpdateReinforcements();
+        // UpdateReinforcements();
 
         // Update mana.
         UpdateMana();
@@ -222,13 +244,8 @@ public class UI : MonoBehaviour
         // Time
         CountTime();
 
-        // Hunter - Update health.
-        if (DM.I.way == "Hunter")
-            UpdateHealth();
-
-        // Gatherer - Count flowers.
-        if (DM.I.way == "Gatherer")
-            CountFlowers();
+        // Update health.
+        UpdateHealth();
     }
 
     // Custom cursors.
@@ -252,34 +269,69 @@ public class UI : MonoBehaviour
     }
 
     // Dramatic intro saying leader names VERSUS each other.
-    // 
     void Versus()
     {
+        // Increment intro timer.
+        introTimer += Time.fixedDeltaTime;
+
         // Time to reveal the good leader?
-        if (DM.I.gameTimer >= 1f && !goodPortrait.gameObject.activeSelf)
+        if (introTimer >= 1f && !goodPortrait.gameObject.activeSelf)
         {
             // Reveal the good leader.
             goodPortrait.gameObject.SetActive(true);
             goodName.gameObject.SetActive(true);
+
+            // Narrate their name.
+            DJ.I.NarrateName(DM.I.goodLeader);
+
+            // Set frame opacity to 0.
+            goodPortraitFrame.color = new Color (1f, 1f, 1f, 0f);
+        }
+
+        // Fade in good portrait frame.
+        if (introTimer >= 1f)
+        {
+            float a = (introTimer - 1f) / 2f;
+            goodPortraitFrame.color = new Color (1f, 1f, 1f, a);
         }
 
         // Time to reveal VERSUS?
-        if (DM.I.gameTimer >= 2f && DM.I.gameTimer < 3f && !versus.gameObject.activeSelf)
+        if (introTimer >= 3f && introTimer < 4f && !versus.gameObject.activeSelf)
         {
             versus.gameObject.SetActive(true);
             versus.alpha = 1f;
+
+            // Narrate VERSUS.
+            DJ.I.Narrate("Versus");
         }
 
         // Time to reveal the evil leader?
-        if (DM.I.gameTimer >= 3f && !evilPortrait.gameObject.activeSelf)
+        if (introTimer >= 5f && !evilPortrait.gameObject.activeSelf)
         {
             // Reveal the evil leader.
             evilPortrait.gameObject.SetActive(true);
             evilName.gameObject.SetActive(true);
+
+            // Narrate their name.
+            DJ.I.NarrateName(DM.I.evilLeader);
+
+            // Set frame opacity to 0.
+            evilPortraitFrame.color = new Color (1f, 0f, 0f, 0f);
+
+            // Tutorial
+            if (DM.I.gameMode == "Tutorial")
+                Tutorial.I.Begin();
+        }
+
+        // Fade in evil portrait frame.
+        if (introTimer >= 5f)
+        {
+            float a = (introTimer - 5f) / 2f;
+            evilPortraitFrame.color = new Color (1f, 0f, 0f, a);
         }
 
         // Time to hide VERSUS?
-        if (DM.I.gameTimer >= 4f && versus.gameObject.activeSelf)
+        if (introTimer >= 6f && versus.gameObject.activeSelf)
         {
             // Fade out versus.
             versus.alpha -= 0.01f;
@@ -294,6 +346,10 @@ public class UI : MonoBehaviour
                 versus.gameObject.SetActive(false);
             }
         }
+
+        // Time to begin the game?
+        if (introTimer >= 7f && MenuManager.I.gameState != 1)
+            MenuManager.I.gameState = 1;
     }
 
     // Update the player's power charge bar to show progress toward gaining a power charge,
@@ -538,7 +594,7 @@ public class UI : MonoBehaviour
         tooltipTime.text = unit.deployTime.ToString();
 
         // Set the role.
-        tooltipRole.text = unit.role;
+        Utility.SetRoleText(unit, tooltipRole);
 
         // Load the image for the role.
         Utility.LoadImage(tooltipRoleImage, "Roles/" + unit.role);

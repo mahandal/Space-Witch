@@ -23,6 +23,9 @@ public partial class Leader
         // Check charges.
         if (powerCharges <= 0) return;
 
+        // SFX!
+        DJ.I.PlaySound("Shamrock Sharpshooter attack");
+
         // Spend charge.
         powerCharges--;
 
@@ -78,7 +81,7 @@ public partial class Leader
         powerCharges--;
 
         // Gain mana.
-        GatherMana(target.manaCost);
+        GatherMana(target.manaCost, target);
 
         // Gain health.
         GainHealth(target.currentHealth);
@@ -156,7 +159,7 @@ public partial class Leader
         victim.BeginDying();
 
         // Gain mana.
-        GatherMana(victim.manaCost);
+        GatherMana(victim.manaCost, victim);
 
         // Gain health.
         GainHealth(victim.currentHealth);

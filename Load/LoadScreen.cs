@@ -103,7 +103,8 @@ public class LoadScreen : MonoBehaviour
         hints.Add("Scouts tend to have low mana costs and deploy times and high speed and vision. Use them to scout ahead!");
         hints.Add("Bulwarks tend to have high health and armor, and slow move speed. They are expected to be the bulk of most battles");
         hints.Add("Hunters tend to deal high damage at long range. Or at least longer range than a bulwark!");
-        hints.Add("Production generates incredible value, over time...");
+        hints.Add("Productions produce units over time.");
+        hints.Add("Farms generate mana over time.");
         hints.Add("Units with the same movement speed stay in formation while marching across the map.");
         hints.Add("Play hunters behind bulwarks!");
         hints.Add("The keyword 'Cleave' lets a unit cut through any number of foes what stand in its way!");
@@ -136,7 +137,7 @@ public class LoadScreen : MonoBehaviour
         rumors.Add("There are twenty six old gods, one for each letter of the alphabet. Or rather, tis the other way round...");
         rumors.Add("Migue Qigue is a new mermaid demigod, beloved for his humble generosity.");
         rumors.Add("Solara is god of sunshine, warmer of worlds and light above all. Her sign is a sun. She appears as a glowing eagle.");
-        rumors.Add("Arcano is god of magic, teacher of wizards and guide to the gifted. His sign is a crossed wand and staff. He appears as a wrinkly old man with a long, long beard.");
+        rumors.Add("Arcano is god of magic, teacher of wizards and guide to the gifted. His sign is a crossed wand and staff. He appears as a thick grey cloud, especially during thunder storms.");
         rumors.Add("Natura is god of forests, devoted divine of druids. Her sign is a deep rooted tree. She appears as a deer, simple and sweet.");
         rumors.Add("Honoro is god of battle, hero of heroes and champion of champions! His sign is a sword and shield. He appears as a tall man with the head of a lion.");
         rumors.Add("Warriors fight to earn a place in Honoro's Hall after life!");

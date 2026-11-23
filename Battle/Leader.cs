@@ -118,28 +118,37 @@ public partial class Leader : MonoBehaviour
     // A list of which cards may reinforce this leader.
     public List<string> reinforcements;
 
-    // A flag tracking whether we have ran out of cards in our deck yet.
-    public bool reservesDepleted = false;
-
-    // How long it will take for reinforcements to arrive, when you run out of cards in your deck.
-    public float timeUntilReinforcements = 30f;
-
-    // The timer tracking how long until reinforcements arrive.
-    // Begins ticking down when you run out of cards in your deck.
-    public float reinforcementTimer = 30f;
-
     // + Initialization
 
     // Fill in this leader from a bio.
     public void LoadBio(LeaderBio bio)
     {
+        // Meta
         myName = bio.myName;
         homeStar = bio.homeStar;
+
+        // Signature cards
         signatureCards = bio.signatureCards;
         signatureCooldowns = bio.signatureCooldowns;
-        reinforcements = bio.reinforcements;
+
+        // Reinforcements
+        reinforcements = new List<string>(bio.t1_cards);
+        
+        // Add more tiers at higher planet index.
+        if (StarManager.I.planetIndex >= 1) Utility.Append(reinforcements, bio.t2_cards);
+        if (StarManager.I.planetIndex >= 2) Utility.Append(reinforcements, bio.t3_cards);
+        if (StarManager.I.planetIndex >= 3) Utility.Append(reinforcements, bio.t4_cards);
+        if (StarManager.I.planetIndex >= 4) Utility.Append(reinforcements, bio.t5_cards);
+
+        // Power charges
         maxPowerCharges = bio.maxPowerCharges;
         powerChargeTime = bio.powerChargeTime;
+
+        // Personality
+        aggression = bio.aggression;
+        fear = bio.fear;
+        greed = bio.greed;
+        chaos = bio.chaos;
     }
 
     // Load a random villain.
@@ -178,9 +187,6 @@ public partial class Leader : MonoBehaviour
     // Reset our health and mana, shuffle our deck, and draw a starting hand.
     public void NewBattle()
     {
-        // Reset bools.
-        reservesDepleted = false;
-
         // + Reset stats.
         manaGenerated = 0;
         manaGathered = 0;
@@ -200,15 +206,20 @@ public partial class Leader : MonoBehaviour
 
         // + Starting health.
         maxHealth = DM.I.startingHealth;
-        currentHealth = maxHealth;
+
+        // + Difficulty
+        // Gain +30% health per difficulty level.
+        if (MainMenu.I.difficulty < 0 && good)
+            maxHealth = Mathf.RoundToInt(maxHealth * (1 + 0.3f * -MainMenu.I.difficulty));
+        if (MainMenu.I.difficulty > 0 && !good)
+            maxHealth = Mathf.RoundToInt(maxHealth * (1 + 0.3f * MainMenu.I.difficulty));
 
         // + Hero Ability: Wubalin Brightforge
         // Gain +30% health.
         if (homeStar.myName == "Bedegraine")
-        {
-            maxHealth = Mathf.RoundToInt(DM.I.startingHealth * 1.3f);
-            currentHealth = maxHealth;
-        }
+            maxHealth = Mathf.RoundToInt(maxHealth * 1.3f);
+
+        // +
 
         // Set our starting health.
         SetHealth(maxHealth);
@@ -220,25 +231,12 @@ public partial class Leader : MonoBehaviour
         // Set our starting mana.
         mana = 0;
 
+        // Tutorial
+        if (DM.I.gameMode == "Tutorial")
+            mana = 2;
+
         // Set our mana timer.
         ResetManaTimer();
-
-        // + Reinforcements.
-        if (good)
-        {
-            // Get leader bio.
-            LeaderBio bio = MainMenu.I.leaderBios[myName];
-
-            // Initialize reinforcements to tier one.
-            reinforcements = bio.t1_cards;
-            
-            // Add more tiers at higher planet index.
-            if (StarManager.I.planetIndex >= 1) Utility.Append(reinforcements, bio.t2_cards);
-            if (StarManager.I.planetIndex >= 2) Utility.Append(reinforcements, bio.t3_cards);
-            if (StarManager.I.planetIndex >= 3) Utility.Append(reinforcements, bio.t4_cards);
-            if (StarManager.I.planetIndex >= 4) Utility.Append(reinforcements, bio.t5_cards);
-        }
-            
 
         // Shuffle our deck!
         deck = Utility.Shuffle(deck);
@@ -272,20 +270,6 @@ public partial class Leader : MonoBehaviour
             // Hide card to begin with.
             signatureDisplayCards[i].canvasGroup.alpha = 0f;
         }
-
-
-        // + Reinforcement times:
-        // Meaning how long you wait between your deck running out and reinforcements arriving.
-        // Evil has no deck so they just wait at the beginning of the game for a second.
-
-        // Set time until reinforcements randomly.
-        if (good)
-            timeUntilReinforcements = Random.Range(7f, 13f);
-        else
-            timeUntilReinforcements = 1f;
-
-        // Set reinforcement timer.
-        reinforcementTimer = timeUntilReinforcements;
     }
 
     // Set our secondsPerMana for our manaTimer.
@@ -347,12 +331,17 @@ public partial class Leader : MonoBehaviour
         }
     }
 
+    // + Running the game
+
     // Fixed update.
     void FixedUpdate()
     {
         // Wait for battle.
         if (MenuManager.I.gameState != 1) return;
-        if (DM.I.gameTimer < 1f) return;
+        if (DM.I.gameTimer < 8f) return;
+
+        // Tutorial
+        if (!good && DM.I.gameMode == "Tutorial") return;
 
         // + Signature Cards
         // Loop through each signature card.
@@ -410,22 +399,18 @@ public partial class Leader : MonoBehaviour
             manaTimer = secondsPerMana;
         }
 
-        // + Reinforcements
-
-        // Are we counting down our reinforcement timer?
-        if (reservesDepleted && reinforcementTimer > 0f)
-        {
-            // Count down time until reinforcements arrive.
-            reinforcementTimer -= Time.fixedDeltaTime;
-
-            // Is it time for a second front?
-            if (reinforcementTimer <= 0f)
-                ReinforcementsArrive();
-        }
-
         // + Auto Pilot
         if (autoPilot)
             AutoPilot();
+    }
+
+    // Get the other leader.
+    public Leader GetOpposingLeader()
+    {
+        if (good)
+            return DM.I.evilLeader;
+        else
+            return DM.I.goodLeader;
     }
 
     // + Drawing cards
@@ -451,35 +436,12 @@ public partial class Leader : MonoBehaviour
         {
             // No cards left in yer deck.
 
-            // Check if ye have reinforcements.
-            if (reinforcementTimer <= 0f)
-            {
-                // Get a random reinforcement.
-                cardName = DrawReinforcement();
+            // Get a random reinforcement.
+            cardName = DrawReinforcement();
 
-                // Load the card into your hand!
-                cardInHand.LoadCard(cardName);
-            }
-            else
-            {
-                // Check if we just depleted our reserves.
-                if (!reservesDepleted)
-                {
-                    // Set bool.
-                    reservesDepleted = true;
-
-                    // Set mana timer equal to our reinforcement timer.
-                    secondsPerMana = reinforcementTimer;
-                    manaTimer = reinforcementTimer;
-
-                    // UI popup.
-                    if (good)
-                        UI.I.ReservesDepleted();
-                }
-
-                // Hide until reinforcements arrive.
-                cardInHand.Hide(reinforcementTimer + index + 1); 
-            }
+            // Load the card into your hand!
+            cardInHand.LoadCard(cardName);
+            
         }
     }
 
@@ -589,8 +551,17 @@ public partial class Leader : MonoBehaviour
         // Get card.
         Card card = DM.I.Grimoire(cardName);
 
+        // Get level.
+        int level = 1;
+
+        if (good && MainMenu.I.difficulty < 0)
+            level = -MainMenu.I.difficulty;
+
+        if (!good && MainMenu.I.difficulty > 0)
+            level = MainMenu.I.difficulty;
+
         // Spawn the unit.
-        Unit newUnit = SpawnUnit(cardName, tile);
+        Unit newUnit = SpawnUnit(cardName, tile, level);
 
         // Return here if we failed to play a card for whatever reason.
         if (newUnit == null) return;
@@ -608,7 +579,7 @@ public partial class Leader : MonoBehaviour
     // Spawn a new Unit.
     // Note: In this case Unit refers to the class which includes all card types: Units, Structures, Items, and Spells.
     // Used when playing a card, when production buildings produce, when leader abilities play free cards, etc...
-    public Unit SpawnUnit(string unitName, Tile tile, int level = 1)
+    public Unit SpawnUnit(string unitName, Tile tile, int level = 1, float deployTime = -1)
     {
         // Null check.
         if (tile == null) return null;
@@ -650,6 +621,10 @@ public partial class Leader : MonoBehaviour
         // Set alignment.
         newUnit.good = good;
 
+        // Evil is always aggressive!
+        if (!good)
+            newUnit.aggression = 1;
+
         // Set direction.
         if (good)
             newUnit.SetDirection(1);
@@ -677,16 +652,14 @@ public partial class Leader : MonoBehaviour
         // Add slight variance to range so units don't stack up so much.
         newUnit.range = newUnit.range * Random.Range(0.9f, 1.1f);
 
+        // Set deploy time.
+        if (deployTime > 0)
+            newUnit.deployTimer = deployTime;
+        else
+            newUnit.deployTimer = newUnit.deployTime;
+
         // OnPlayed triggers.
         OnPlayed(newUnit);
-
-        // Set deploy time.
-        newUnit.deployTimer = newUnit.deployTime;
-
-        // Goblin bomb variance.
-        // TBD: Scale!
-        if (newUnit.GetBaseName() == "Goblin Bomb")
-            newUnit.deployTimer *= Random.Range(0.5f, 2f);
 
         // + Structures
         if (card.cardType == "Structure")
@@ -712,6 +685,9 @@ public partial class Leader : MonoBehaviour
         if (newUnit.cardType == "Spell") spellsPlayed++;
         if (newUnit.cardType == "Item") itemsPlayed++;
         if (newUnit.cardType == "Structure") structuresPlayed++;
+
+        // SFX.
+        DJ.I.PlaySound("Deploying", transform.position);
 
         // Return.
         return newUnit;
@@ -804,6 +780,10 @@ public partial class Leader : MonoBehaviour
         // Damned: Leader loses life equal to the card's mana cost.
         if (cardPlayed.keywords.Contains("Damned"))
             LoseHealth(cardPlayed.manaCost);
+
+        // Chaotic: Deploy time varies
+        if (cardPlayed.keywords.Contains("Chaotic"))
+            cardPlayed.deployTime *= Random.Range(1f, 2f);
     }
 
     // + Territory
@@ -864,12 +844,15 @@ public partial class Leader : MonoBehaviour
             // Get tile.
             Tile claimedTile = DM.I.GetTile(tile.x + (direction * i), tile.y);
 
-            // Null check?
-            if (claimedTile != null)
-            {
-                // Claim tile.
-                claimedTile.claim = direction;
-            }
+            // Ignore null tiles.
+            if (claimedTile == null) continue;
+
+            // Ignore tiles with enemy structures already in them.
+            if (claimedTile.structure != null && claimedTile.structure.good != good) continue;
+
+            // Claim tile.
+            // claimedTile.claim = direction;
+            claimedTile.Claim(direction);
         }
     }
 
@@ -903,24 +886,32 @@ public partial class Leader : MonoBehaviour
     }
 
     // + Mana
-    // Generate a mana.
-    public void GenerateMana(int m = 1)
+    // Generate a mana, with feedback at the location of the given unit.
+    public void GenerateMana(int m = 1, Unit locationUnit = null)
     {
         // Increase mana.
         mana += m;
 
         // Track mana generated.
         manaGenerated += m;
+
+        // Feedback for player.
+        if (good && locationUnit != null)
+            Fading.Create(locationUnit.transform.position, m);
     }
 
     // Gather a mana.
-    public void GatherMana(int m = 1)
+    public void GatherMana(int m = 1, Unit locationUnit = null)
     {
         // Increase mana.
         mana += m;
 
         // Track mana gathered.
         manaGathered += m;
+
+        // Feedback for player.
+        if (good && locationUnit != null)
+            Fading.Create(locationUnit.transform.position, m);
     }
 
     // + Health
@@ -928,15 +919,18 @@ public partial class Leader : MonoBehaviour
     // Used whenever a unit deals damage to this leader.
     public void LoseHealth(float healthLost, Unit source = null)
     {
+        // + Personality
+        // Gain fear.
+        fear += Mathf.CeilToInt(healthLost / 10f);
+
+        // Opposing leader gains aggression.
+        GetOpposingLeader().aggression += Mathf.CeilToInt(healthLost / 10f);
+
         // + Lancelot
         if (myName == "Lancelot" && source != null)
         {
-            // Hunter - Lose health.
-            if (DM.I.way == "Hunter")
-                LoseHealth(source.currentHealth);
-            // Gatherer - Lose flowers.
-            if (DM.I.way == "Gatherer")
-                manaGathered -= 1;
+            // Lose health.
+            LoseHealth(source.currentHealth);
 
             // Charm (without healing).
             source.ChangeSides(false);
@@ -1009,73 +1003,95 @@ public partial class Leader : MonoBehaviour
     // Draw a random card to reinforce your army.
     public string DrawReinforcement()
     {
-        // + Shuffle
-        // Build a weighted list of cards, using 1/manaCost as the weight.
-        // This makes lower mana cost cards proportionally more likely to be drawn.
-        // e.g. a 2 mana card is 5x as likely as a 10 mana card.
+        // Get a random card.
+        string cardName = GetRandomReinforcement();
 
-        // Count the total weight of all cards.
-        float totalWeight = 0f;
+        // Get power level.
+        int powerLevel = -1;
 
-        // Create a list of cards, paired with their weights.
-        List<(Card, float)> cardWeights = new List<(Card, float)>();
+        if (good && MainMenu.I.difficulty < 0)
+            powerLevel -= MainMenu.I.difficulty;
+        if (!good && MainMenu.I.difficulty > 0)
+            powerLevel += MainMenu.I.difficulty;
 
-        // Loop through each available card.
-        foreach (string cardName in reinforcements)
-        {
-            // Get the card from the grimoire.
-            Card c = DM.I.Grimoire(cardName);
+        // Get random level.
+        int level = Constance.I.RandomLevel(powerLevel);
 
-            // Initialize the card's weight.
-            float weight = 1f;
+        // Add level to name.
+        cardName = "Level " + level + " " + cardName;
 
-            // Avoid dividing by zero.
-            if (c.manaCost != 0)
-                weight = 1f / c.manaCost;
-
-            // Add the card and its weight to our list.
-            cardWeights.Add((c, weight));
-
-            // Count up our total weight.
-            totalWeight += weight;
-        }
-
-        // Roll randomly along the total weight.
-        float roll = Random.Range(0f, totalWeight);
-
-        // Count how far into the card weights we have looked.
-        float cumulative = 0f;
-
-        // Look through each card.
-        foreach (var (c, weight) in cardWeights)
-        {
-            // Accumulate weight.
-            cumulative += weight;
-
-            // Check if we have reached our roll yet.
-            if (roll < cumulative)
-                return c.myName;
-        }
-
-        // Should not reach here!
-        Debug.LogWarning("Failed to select a random reinforcement card! Returning #1: " + reinforcements[0]);
-        return reinforcements[0];
+        // Return.
+        return cardName;
     }
 
-    // Reinforcements arrive!
-    // Called 30 seconds after you run out of cards in your deck.
-    public void ReinforcementsArrive()
+    // Get a random card from yer reinforcements.
+    public string GetRandomReinforcement()
     {
-        // Draw 5 cards(?)
-        // DrawStartingHand();
+        // Get index.
+        int index = Random.Range(0, reinforcements.Count);
 
-        // Reset mana timer.
-        ResetManaTimer();
+        // Get card at index.
+        string cardName = reinforcements[index];
 
-        // Visuals!
-        if (good)
-            UI.I.ReinforcementsArrived();
+        // Return.
+        return cardName;
     }
+
+    // Get a random reinforcement, weighted by mana.
+    // public string GetReinforcementWeighted()
+    // {
+    //     // + Shuffle
+    //     // Build a weighted list of cards, using 1/manaCost as the weight.
+    //     // This makes lower mana cost cards proportionally more likely to be drawn.
+    //     // e.g. a 2 mana card is 5x as likely as a 10 mana card.
+
+    //     // Count the total weight of all cards.
+    //     float totalWeight = 0f;
+
+    //     // Create a list of cards, paired with their weights.
+    //     List<(Card, float)> cardWeights = new List<(Card, float)>();
+
+    //     // Loop through each available card.
+    //     foreach (string cardName in reinforcements)
+    //     {
+    //         // Get the card from the grimoire.
+    //         Card c = DM.I.Grimoire(cardName);
+
+    //         // Initialize the card's weight.
+    //         float weight = 1f;
+
+    //         // Avoid dividing by zero.
+    //         if (c.manaCost != 0)
+    //             weight = 1f / c.manaCost;
+
+    //         // Add the card and its weight to our list.
+    //         cardWeights.Add((c, weight));
+
+    //         // Count up our total weight.
+    //         totalWeight += weight;
+    //     }
+
+    //     // Roll randomly along the total weight.
+    //     float roll = Random.Range(0f, totalWeight);
+
+    //     // Count how far into the card weights we have looked.
+    //     float cumulative = 0f;
+
+    //     // Look through each card.
+    //     foreach (var (c, weight) in cardWeights)
+    //     {
+    //         // Accumulate weight.
+    //         cumulative += weight;
+
+    //         // Check if we have reached our roll yet.
+    //         if (roll < cumulative)
+    //             return c.myName;
+    //     }
+
+    //     // Should not reach here!
+    //     Debug.LogWarning("Failed to select a random reinforcement card! Returning #1: " + reinforcements[0]);
+    //     return reinforcements[0];
+    // }
 
     // + Remember the dead.
     public bool MVP(Unit unit)
@@ -1111,6 +1127,9 @@ public partial class Leader : MonoBehaviour
         // Add kills.
         score += unit.kills;
 
+        // Add tiles traveled.
+        // score += unit.tilesTraveled;
+
         // Return.
         return score;
     }
@@ -1134,11 +1153,11 @@ public partial class Leader : MonoBehaviour
             // Get a random card
             string card = DrawReinforcement();
 
-            // Get random level.
-            int level = Constance.I.RandomLevel(powerLevel);
+            // // Get random level.
+            // int level = Constance.I.RandomLevel(powerLevel);
 
-            // Add level to name.
-            card = "Level " + level + " " + card;
+            // // Add level to name.
+            // card = "Level " + level + " " + card;
 
             // Add to deck.
             deck.Add(card);

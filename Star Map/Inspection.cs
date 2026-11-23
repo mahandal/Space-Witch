@@ -20,6 +20,9 @@ public class Inspection : MonoBehaviour
 
 
 	[Header("Machinery")]
+	// Dummy unit.
+	public Unit inspectedUnit;
+
 	// Card details
 	public Image cardArt;
 	public TMP_Text cardName;
@@ -68,7 +71,7 @@ public class Inspection : MonoBehaviour
     	cardName.text = _cardName;
     	description.text = p.description;
     	cardType.text = p.cardType;
-    	role.text = p.role;
+    	Utility.SetRoleText(p, role);
     	manaCost.text = p.manaCost.ToString("0");
         deployTime.text = p.deployTime.ToString("0");
         health.text = (p.maxHealth * Utility.LevelScalar(level)).ToString("0");
@@ -132,7 +135,13 @@ public class Inspection : MonoBehaviour
     public void B_SendHome()
     {
     	// Remove from decklist.
-    	MenuManager.I.saveData.decklist.Remove(cardName.text);
+    	viewDeck.deck.Remove(cardName.text);
+    	if (DM.I.gameMode == "Campaign")
+    	{
+			MenuManager.I.saveData.decklist.Remove(cardName.text);
+    	} else {
+    		DM.I.goodLeader.deck.Remove(cardName.text);
+    	}
 
     	// Gain stardust.
     	MenuManager.I.saveData.stardust += stardustGained;

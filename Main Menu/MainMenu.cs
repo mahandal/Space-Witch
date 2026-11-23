@@ -1,8 +1,10 @@
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using System;
 using System.Collections.Generic;
 using System.Collections;
+using System.Linq;
 
 public class MainMenu : MonoBehaviour
 {
@@ -10,21 +12,31 @@ public class MainMenu : MonoBehaviour
     // How fast we slide up to see the heroes for campaign mode.
     public float slideSpeed = 10f;
 
+    [Header("Difficulty")]
+    // What difficulty are we on?
+    public int difficulty = 1;
+
+    // Input field to set difficulty.
+    public TMP_InputField difficultyInput;
+
     [Header("Skirmish")]
     // Which hero ye use for skirmishes.
     public string skirmishHero = "Morgan le Fey";
-
-    // Which difficulty yer skirmishes are set to.
-    // 0 = Easy
-    // 1 = Medium
-    // 2 = Hard
-    public int skirmishDifficulty = 0;
 
     // The portrait of yer hero for skirmishes.
     public Image skirmishPortrait;
 
     // Parent object of hero wheel used to select skirmish hero.
     public GameObject heroWheel;
+
+    // The image of yer selected map for skirmishes.
+    public Image skirmishMap;
+
+    // Parent object of map selection screen.
+    public GameObject mapSelectionScreen;
+
+    // A list of which maps are selected for skirmish mode.
+    public List<string> selectedMaps = new List<string>();
 
     // Whether the wheel of heroes is spinning or nay.
     public bool wheelSpinning = false;
@@ -120,6 +132,7 @@ public class MainMenu : MonoBehaviour
         leaderPortraits.alpha = 0f;
         leaderDetailsScreen.SetActive(false);
         heroWheel.SetActive(false);
+        mapSelectionScreen.SetActive(false);
 
         // Remember leader select's start position.
         leaderSelectStartPosition = leaderSelectScreen.transform.localPosition;
@@ -135,10 +148,25 @@ public class MainMenu : MonoBehaviour
 
         // Load player prefs.
         B_SkirmishHeroChoose(PlayerPrefs.GetString("skirmishHero", "Morgan le Fey"));
-        B_SkirmishDifficulty(PlayerPrefs.GetInt("skirmishDifficulty", 0));
+        // SetDifficulty(PlayerPrefs.GetInt("Difficulty", 1));
+        difficultyInput.text = PlayerPrefs.GetInt("Difficulty", 1).ToString();
+        LoadSelectedMaps();
+        LoadSkirmishMapImage();
 
         // Activate the main menu object.
         // gameObject.SetActive(true);
+    }
+
+    public void SaveSelectedMaps()
+    {
+        PlayerPrefs.SetString("SelectedMaps", string.Join("|", selectedMaps));
+        PlayerPrefs.Save();
+    }
+
+    public void LoadSelectedMaps()
+    {
+        string saved = PlayerPrefs.GetString("SelectedMaps", "");
+        selectedMaps = saved.Split("|", StringSplitOptions.RemoveEmptyEntries).ToList();
     }
 
     // + Transitions
@@ -170,7 +198,7 @@ public class MainMenu : MonoBehaviour
             // Increase wheel spin speed if timer is over 6 seconds.
             if (wheelSpinTime > 6f)
             {
-                wheelSpinSpeed += Time.fixedDeltaTime;
+                wheelSpinSpeed += Time.fixedDeltaTime * 13f;
                 peakSpinSpeed = wheelSpinSpeed;
             } else {
                 // Slow to a halt.
@@ -192,7 +220,8 @@ public class MainMenu : MonoBehaviour
     public void B_LeaderPortrait(string leaderName)
     {
         // SFX
-        DJ.I.PlaySound("Snap");
+        // DJ.I.PlaySound("Snap");
+        DJ.I.Narrate(leaderName);
 
         // Get the bio for this leader.
         LeaderBio bio = leaderBios[leaderName];
@@ -224,31 +253,6 @@ public class MainMenu : MonoBehaviour
         {
             leaderSignatureCards[i].LoadCard(bio.signatureCards[i]);
         }
-
-        // Other cards
-
-        // Get leader's full card list.
-        // List<string> leaderCardList = bio.homeStar.cards;
-
-        // // Count the index of the current displayed mini card we are loading.
-        // int otherIndex = 0;
-
-        // // Loop through each card in the leader's card list.
-        // foreach (string cardName in leaderCardList)
-        // {
-        //     // Ignore signature cards.
-        //     if (!bio.signatureCards.Contains(cardName))
-        //     {
-        //         // Load the card.
-        //         leaderOtherCards[otherIndex].LoadCard(cardName);
-
-        //         // Increment our index tracking which mini card to load into.
-        //         otherIndex++;
-
-        //         // Break?
-        //         if (otherIndex >= leaderOtherCards.Count) break;
-        //     }
-        // }
 
         // Enable the leader details screen.
         leaderDetailsScreen.SetActive(true);
@@ -307,7 +311,8 @@ public class MainMenu : MonoBehaviour
         MenuManager.I.saveData.decklist.Add(bio.leaderUnit);
 
         // Go to star map!
-        StarManager.I.GoToStarMap(true);
+        // StarManager.I.GoToStarMap(true);
+        MenuManager.I.GoToStarMap();
     }
 
     // Continue from your previous save.
@@ -329,11 +334,46 @@ public class MainMenu : MonoBehaviour
         DM.I.goodLeader.LoadBio(bio);
 
         // Go to star map!
-        StarManager.I.GoToStarMap(true);
+        // StarManager.I.GoToStarMap(true);
+        MenuManager.I.GoToStarMap();
     }
 
 
     // + Skirmish
+
+    // Choose yer map!
+    public void B_SkirmishMapOpen()
+    {
+        // SFX
+        DJ.I.PlaySound("Snap");
+
+        // Open the map selection screen.
+        mapSelectionScreen.SetActive(true);
+    }
+
+    public void B_SkirmishMapClose()
+    {
+        // SFX
+        DJ.I.PlaySound("Snap");
+
+        // Load skirmish map image.
+        LoadSkirmishMapImage();
+
+        // Close the map selection screen.
+        mapSelectionScreen.SetActive(false);
+    }
+
+    // Load the skirmish map preview.
+    private void LoadSkirmishMapImage()
+    {
+        // If ye have multiple maps selected, load random map image.
+        if (selectedMaps.Count > 1)
+            Utility.LoadImage(skirmishMap, "Planets/Random Map");
+        else if (selectedMaps.Count == 0)
+            Utility.LoadImage(skirmishMap, "Planets/No Map");
+        else if (selectedMaps.Count == 1)
+            Utility.LoadImage(skirmishMap, "Planets/" + selectedMaps[0]);
+    }
 
     // Choose yer hero!
     public void B_SkirmishHeroOpen()
@@ -359,7 +399,7 @@ public class MainMenu : MonoBehaviour
         DJ.I.PlaySound("Snap");
 
         // Roll length of spin.
-        wheelSpinTime = Random.Range(6f, 30f);
+        wheelSpinTime = UnityEngine.Random.Range(1f, 13f);
     }
 
     // Stop spinning yer wheel of heroes!
@@ -401,10 +441,11 @@ public class MainMenu : MonoBehaviour
         DM.I.gameMode = "Skirmish";
 
         // Go to random planet.
-        StarManager.I.GoToRandomPlanet(skirmishDifficulty);
+        // StarManager.I.GoToRandomPlanet(skirmishDifficulty);
+        GoToRandomPlanet();
 
         // Get random evil leader.
-        DM.I.evilLeader.LoadRandomVillain(skirmishDifficulty);
+        DM.I.evilLeader.LoadRandomVillain(difficulty);
 
         // Get yer hero's biography.
         LeaderBio bio = leaderBios[skirmishHero];
@@ -412,42 +453,97 @@ public class MainMenu : MonoBehaviour
         // Load yer hero for battle mode.
         DM.I.goodLeader.LoadBio(bio);
 
-        // Randomize decks.
-        DM.I.goodLeader.RandomizeDeck(2 - skirmishDifficulty);
-        DM.I.evilLeader.RandomizeDeck(skirmishDifficulty * skirmishDifficulty);
+        // Reset good deck.
+        DM.I.goodLeader.deck = new List<string>();
+
+        // Randomize evil deck.
+        DM.I.evilLeader.RandomizeDeck(difficulty);
+
+        // Go to Recruitment.
+        MenuManager.I.GoToRecruitment();
 
         // Begin battle!
-        DM.I.BeginBattle();
+        // DM.I.BeginBattle();
     }
 
+    // Go to a random planet, from out list of selected maps for skirmishes.
+    private void GoToRandomPlanet()
+    {
+        // Fail if no maps selected.
+        if (selectedMaps.Count == 0) return;
 
+        // Get random map.
+        string mapName = selectedMaps[UnityEngine.Random.Range(0, selectedMaps.Count)];
 
-    // Select difficulty for skirmish.
-    public void B_SkirmishDifficulty(int difficulty)
+        // Go to planet.
+        StarManager.I.GoToPlanet(mapName);
+    }
+
+    // Set yer difficulty!
+    public void SetDifficulty(string newDifficulty)
     {
         // SFX
-        DJ.I.PlaySound("Snap");
+        DJ.I.PlaySound("Tick");
 
+        // Attempt to parse the string into an int.
+        // The text field is limited to integers but still can be "" or "-" (to support negative numbers).
+        if (int.TryParse(newDifficulty, out int value))
+            SetDifficulty(value);
+    }
+
+    public void SetDifficulty(int newDifficulty)
+    {
         // Set difficulty.
-        skirmishDifficulty = difficulty;
+        difficulty = newDifficulty;
 
         // Save to player prefs.
-        PlayerPrefs.SetInt("skirmishDifficulty", skirmishDifficulty);
-
-        // Highlight selected difficulty.
-        for (int i = 0; i < skirmishDifficulties.Count; i++)
-        {
-            // Highlight chosen.
-            if (i == difficulty)
-                skirmishDifficulties[i].alpha = 1f;
-            // Fade the rest.
-            else
-                skirmishDifficulties[i].alpha = 0.1f;
-        }
+        PlayerPrefs.SetInt("Difficulty", difficulty);
     }
 
 
     // + Learn
+
+    // Open Granga's Guide to the Galaxy.
+    public void B_GGG()
+    {
+        // SFX
+        DJ.I.PlaySound("Snap");
+
+        // Open GGG
+        GGG.I.Open();
+    }
+
+    // Begin the tutorial!
+    public void B_Tutorial()
+    {
+        // SFX
+        DJ.I.PlaySound("Snap 2");
+
+        // Set game mode.
+        DM.I.gameMode = "Tutorial";
+
+        // Go to Bimblebrook.
+        StarManager.I.GoToPlanet("Avalon V - Bimblebrook");
+
+        // Get Merlin's bio.
+        LeaderBio merlinBio = leaderBios["Merlin"];
+
+        // Get yer hero's biography.
+        LeaderBio yerBio = leaderBios[skirmishHero];
+
+        // Load yer hero for battle mode.
+        DM.I.goodLeader.LoadBio(yerBio);
+
+        // Load leaders.
+        DM.I.goodLeader.LoadBio(yerBio);
+        DM.I.evilLeader.LoadBio(merlinBio);
+
+        // Load yer deck.
+        DM.I.goodLeader.deck = Tutorial.I.EasyDeck();
+
+        // Begin battle!
+        DM.I.BeginBattle();
+    }
 
     // Begin goldfishing!
     public void B_Goldfish()
@@ -462,7 +558,7 @@ public class MainMenu : MonoBehaviour
         LeaderBio bio = leaderBios["Goldfish"];
 
         // Go to random planet.
-        StarManager.I.GoToRandomPlanet(skirmishDifficulty);
+        StarManager.I.GoToRandomPlanet(difficulty);
 
         // Load leaders.
         DM.I.goodLeader.LoadBio(bio);
@@ -470,6 +566,44 @@ public class MainMenu : MonoBehaviour
 
         // Randomize yer deck.
         DM.I.goodLeader.RandomizeDeck(0);
+
+        // Begin battle!
+        DM.I.BeginBattle();
+    }
+
+    // Spectate a game played by AI.
+    public void B_Spectate()
+    {
+        // SFX
+        DJ.I.PlaySound("Snap 2");
+
+        // Set game mode.
+        DM.I.gameMode = "Spectate";
+
+        // Go to random planet.
+        StarManager.I.GoToRandomPlanet(difficulty);
+
+        // Get random evil leader.
+        DM.I.evilLeader.LoadRandomVillain(difficulty);
+
+        // Get yer hero's biography.
+        LeaderBio bio = leaderBios[skirmishHero];
+
+        // Load yer hero for battle mode.
+        DM.I.goodLeader.LoadBio(bio);
+
+        // Initialize good's reinforcements to tier one.
+        // DM.I.goodLeader.reinforcements = new List<string>(bio.t1_cards);
+        
+        // // Add more tiers at higher planet index.
+        // if (StarManager.I.planetIndex >= 1) Utility.Append(DM.I.goodLeader.reinforcements, bio.t2_cards);
+        // if (StarManager.I.planetIndex >= 2) Utility.Append(DM.I.goodLeader.reinforcements, bio.t3_cards);
+        // if (StarManager.I.planetIndex >= 3) Utility.Append(DM.I.goodLeader.reinforcements, bio.t4_cards);
+        // if (StarManager.I.planetIndex >= 4) Utility.Append(DM.I.goodLeader.reinforcements, bio.t5_cards);
+
+        // Randomize decks.
+        DM.I.goodLeader.RandomizeDeck(-difficulty);
+        DM.I.evilLeader.RandomizeDeck(difficulty);
 
         // Begin battle!
         DM.I.BeginBattle();

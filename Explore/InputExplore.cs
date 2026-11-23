@@ -24,14 +24,8 @@ public class InputExplore : MonoBehaviour
     {
         // + Get mouse position in world coordinates.
 
-        // Convert our mouse position to 3d coordinates.
-        Vector3 mouseScreen = Mouse.current.position.ReadValue();
-
-        // Set the mouse's z to opposite the camera's, for some reason?
-        mouseScreen.z = -Camera.main.transform.position.z;
-
-        // Convert our mouse's 3d coordinates to 2d coordinates.
-        Vector2 mouseWorld = Camera.main.ScreenToWorldPoint(mouseScreen);
+        // Get our mouse coordinates.
+        Vector2 mouseWorld = Utility.GetMouseCoords();
 
         // Hover to show tooltips.
         HoverTooltip(mouseWorld);

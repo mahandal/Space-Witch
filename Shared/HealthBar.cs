@@ -47,7 +47,7 @@ public class HealthBar : MonoBehaviour
         if (DM.I.gameObject.activeSelf)
         {
             // Death?
-            if (unit.currentHealth <= 0 || unit.state == -1)
+            if (unit.state == -1)
             {
                 // Don't destroy dragon statue health bars.
                 if (unit.myName == "Dragon Statue") return;

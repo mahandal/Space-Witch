@@ -48,7 +48,7 @@ public class Fading : MonoBehaviour
 
     // Create a new one.
     // For now always creates a mana symbol. Can scale out if needed!
-    public static Fading Create(Vector3 position, float _speed = 1f, float _duration = 3f)
+    public static Fading Create(Vector3 position, float size = 1f, float _speed = 1f, float _duration = 3f)
     {
         // Initialize new fading object.
         Fading newFade;
@@ -65,6 +65,9 @@ public class Fading : MonoBehaviour
 
         // Move into position.
         newFade.transform.position = position;
+
+        // Set size.
+        newFade.transform.localScale *= 1f + size * 0.1f;
 
         // Set speed.
         newFade.speed = _speed;

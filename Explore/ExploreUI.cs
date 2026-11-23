@@ -226,7 +226,7 @@ public class ExploreUI : MonoBehaviour
 
         // Load progenitor's details.
         interactCardType.text = e.cardType;
-        interactRole.text = e.role;
+        Utility.SetRoleText(e, interactRole);
         interactManaCost.text = e.manaCost.ToString("0");
         interactDeployTime.text = e.deployTime.ToString("0");
         interactHealth.text = e.maxHealth.ToString("0");

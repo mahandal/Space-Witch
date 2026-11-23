@@ -204,6 +204,29 @@ public partial class Unit
         }
     }
 
+    // Combine a unit's aggression and role.
+    public string GetRole()
+    {
+        // Non-units just use their role.
+        if (cardType != "Unit")
+            return role;
+
+        // Aggressive
+        if (aggression == 1)
+            return "Aggressive " + role;
+
+        // Adventurous
+        if (aggression == 0)
+            return "Adventurous " + role;
+
+        // Peaceful
+        if (aggression == -1)
+            return "Peaceful " + role;
+
+        // Non?
+        return role;
+    }
+
     // +++ Exploring!
 
     // Fixed update.

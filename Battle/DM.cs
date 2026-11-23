@@ -18,10 +18,9 @@ public class DM : MonoBehaviour
     // Game Mode:
     // - Campaign
     // - Skirmish
+    // - Goldfish
+    // - Spectate
     public string gameMode = "Campaign";
-
-    // Which way is the player following?
-    public string way = "Hunter";
     
 
     [Header("Violet Flowers")]
@@ -106,35 +105,13 @@ public class DM : MonoBehaviour
         input.Initialize();
     }
 
-    // Begin a battle, following the way of the hunter.
-    // Called from Explore/Region.cs and Star Map/StarManager.cs
-    public void BeginHunt()
-    {
-        // Set way.
-        way = "Hunter";
-
-        // Begin battle.
-        BeginBattle();
-    }
-
-    // Begin a battle, following the way of the gatherer.
-    // Called from Explore/Region.cs
-    public void BeginGathering()
-    {
-        // Set way.
-        way = "Gatherer";
-
-        // Begin battle.
-        BeginBattle();
-    }
-
     // Start a battle!
     public void BeginBattle()
     {
         // Reset tile claims.
         foreach (Tile tile in grid)
         {
-            tile.claim = 0;
+            tile.Claim(0);
         }
         
         // Reset game timer.
@@ -143,6 +120,19 @@ public class DM : MonoBehaviour
         // Set seconds per mana.
         secondsPerMana = StarManager.I.currentStar.secondsPerMana;
         timePerFlower = StarManager.I.currentStar.timePerFlower;
+
+        // Turn on auto pilot for evil.
+        evilLeader.autoPilot = true;
+
+        // Turn off auto pilot for good.
+        goodLeader.autoPilot = false;
+
+        // + Tutorial
+        if (gameMode == "Tutorial")
+        {
+            timeLimit = 60;
+            startingHealth = 100;
+        }
 
         // + Campaign
         if (gameMode == "Campaign")
@@ -163,25 +153,15 @@ public class DM : MonoBehaviour
             evilLeader.deck = new List<string>();
         }
 
-        // + Skirmish
-        if (gameMode == "Skirmish")
+        // + Skirmish (and Spectate)
+        if (gameMode == "Skirmish" || gameMode == "Spectate")
         {
-            // Set time limit and health.
-            if (MainMenu.I.skirmishDifficulty == 0)
-            {
-                timeLimit = Random.Range(180, 300);
-                startingHealth = Random.Range(100, 1500);
-            }
-            if (MainMenu.I.skirmishDifficulty == 1)
-            {
-                timeLimit = Random.Range(300, 600);
-                startingHealth = Random.Range(1000, 2500);
-            }
-            if (MainMenu.I.skirmishDifficulty == 2)
-            {
-                timeLimit = Random.Range(600, 1200);
-                startingHealth = Random.Range(2000, 5000);
-            }
+            // Randomize time limit.
+            timeLimit = Random.Range(120, 240);
+
+            // Randomize starting health.
+            // Note: Difficulty adds to health in leader's NewBattle.
+            startingHealth = Random.Range(100, 5000);
         }
 
         // + Goldfish
@@ -191,12 +171,24 @@ public class DM : MonoBehaviour
             startingHealth = Random.Range(100, 5000);
         }
 
-        // Turn on auto pilot for evil.
-        evilLeader.autoPilot = true;
-
         // Turn off evil's auto pilot when goldfishing.
         if (gameMode == "Goldfish")
             evilLeader.autoPilot = false;
+
+        // + Spectate
+        if (gameMode == "Spectate")
+        {
+            // Turn on good's auto pilot.
+            goodLeader.autoPilot = true;
+        }
+
+        // + Difficulty
+        if (MainMenu.I.difficulty > 0)
+        {
+            timeLimit *= 1f + (0.1f * MainMenu.I.difficulty);
+        }
+
+        // +
 
         // Shared new battle initialization.
         goodLeader.NewBattle();
@@ -245,10 +237,6 @@ public class DM : MonoBehaviour
     {
         // Wait for battle.
         if (MenuManager.I.gameState != 1) return;
-
-        // Check for victory, in gatherer mode.
-        // if (goodLeader.manaGathered >= 42) GameOver(true);
-        // if (evilLeader.manaGathered >= 42) GameOver(false);
 
         // Increment time elapsed.
         gameTimer += Time.fixedDeltaTime;
@@ -415,6 +403,15 @@ public class DM : MonoBehaviour
             // Create a list for that row for evil.
             evilUnits.Add(new List<Unit>());
         }
+    }
+
+    // Get the list of units for the given side in the given lane.
+    public List<Unit> GetUnitsInLane(int lane, bool good)
+    {
+        if (good)
+            return goodUnits[lane];
+        else
+            return evilUnits[lane];
     }
 
     // Get the list of enemies for the lane of the given unit.
@@ -614,7 +611,8 @@ public class DM : MonoBehaviour
         gameObject.SetActive(false);
 
         // Open the star map.
-        StarManager.I.GoToStarMap();
+        // StarManager.I.GoToStarMap();
+        MenuManager.I.GoToStarMap();
     }
 
     // Button press: Return!

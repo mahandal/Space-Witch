@@ -18,6 +18,12 @@ public class LeaderBio : MonoBehaviour
     [TextArea(5, 30)]
     public string statsDescription;
 
+    [Header("Personality")]
+    public int aggression = 30;
+    public int fear = 30;
+    public int greed = 30;
+    public int chaos = 10;
+
     [Header("Explore")]
     // The unit this leader plays as.
     public string leaderUnit;

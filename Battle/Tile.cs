@@ -44,10 +44,10 @@ public class Tile : MonoBehaviour
     void Awake()
     {
         // Get image.
-        image = GetComponent<Image>();
+        // image = GetComponent<Image>();
 
         // Hide.
-        image.color = Color.clear; 
+        // image.color = Color.clear; 
     }
 
     // Fixed update.
@@ -97,17 +97,29 @@ public class Tile : MonoBehaviour
         }
     }
 
+    // + Claim
+    public void Claim(int newClaim)
+    {
+        // Set claim.
+        claim = newClaim;
+
+        // Unhighlight to set color.
+        Unhighlight();
+    }
+
+    // + Highlight
+
     // Highlight tile.
     // Called when hovered.
     public void Highlight()
     {
         // Set color based off claim.
         if (claim > 0)
-            image.color = new Color(0f, 1f, 0f, 0.2f);
+            image.color = new Color(0f, 1f, 0f, 0.5f);
         if (claim == 0)
-            image.color = new Color(1f, 1f, 1f, 0.2f);
+            image.color = new Color(1f, 1f, 1f, 0.5f);
         if (claim < 0)
-            image.color = new Color(1f, 0f, 0f, 0.2f);
+            image.color = new Color(1f, 0f, 0f, 0.5f);
 
         // image.color = hoverColor;
     }
@@ -118,11 +130,11 @@ public class Tile : MonoBehaviour
     {
         // Set color based off claim.
         if (claim > 0)
-            image.color = new Color(0f, 0.5f, 0f, 0.02f);
+            image.color = new Color(0f, 0.5f, 0f, 0.2f);
         if (claim == 0)
-            image.color = new Color(0.5f, 0.5f, 0.5f, 0.02f);
+            image.color = new Color(0.5f, 0.5f, 0.5f, 0.2f);
         if (claim < 0)
-            image.color = new Color(0.5f, 0f, 0f, 0.02f);
+            image.color = new Color(0.5f, 0f, 0f, 0.2f);
 
         // image.color = Color.clear;
     }

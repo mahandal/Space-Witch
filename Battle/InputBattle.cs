@@ -85,10 +85,10 @@ public class InputBattle : MonoBehaviour
                 // Hovering a structure?
                 Unit structure = hoveredTile.structure;
 
-                if (structure != null && structure.state == 1 && structure.role != "Base")
+                if (structure != null && structure.state > 0 && structure.role != "Base")
                 {
                     // Sell!
-                    structure.GetLeader().GatherMana(structure.manaCost);
+                    structure.GetLeader().GatherMana(structure.manaCost, structure);
                     structure.BeginDying();
                 }
             }
@@ -176,19 +176,13 @@ public class InputBattle : MonoBehaviour
     // Sets hoveredUnit and hoveredTile.
     public void HoverTooltip()
     {
-        // Convert our mouse position to 3d coordinates.
-        Vector3 mouseScreen = Mouse.current.position.ReadValue();
-
-        // Set the mouse's z to opposite the camera's, for some reason?
-        mouseScreen.z = -Camera.main.transform.position.z;
-
         // Convert our mouse's 3d coordinates to 2d coordinates.
-        Vector2 mouseWorld = Camera.main.ScreenToWorldPoint(mouseScreen);
+        Vector2 mouseCoords = Utility.GetMouseCoords();
 
         // + Hovered tile
         // Convert to grid coordinates.
-        int tileX = Mathf.FloorToInt(mouseWorld.x);
-        int tileY = Mathf.FloorToInt(mouseWorld.y);
+        int tileX = Mathf.FloorToInt(mouseCoords.x);
+        int tileY = Mathf.FloorToInt(mouseCoords.y);
 
         // Check if within grid bounds.
         if (tileX >= 0 && tileX < DM.I.gridWidth && tileY >= 0 && tileY < DM.I.gridHeight)
@@ -219,7 +213,7 @@ public class InputBattle : MonoBehaviour
 
         // + Tooltip
         // Look for a collider near our mouse.
-        Collider2D[] hits = Physics2D.OverlapPointAll(mouseWorld, Constance.I.unitLayer);
+        Collider2D[] hits = Physics2D.OverlapPointAll(mouseCoords, Constance.I.unitLayer);
 
         // Check if we're hovering anything.
         if (hits.Length > 0)
@@ -240,8 +234,7 @@ public class InputBattle : MonoBehaviour
                     if (unit.state == 0) continue;
                     
                     // Get the distance between the unit and our mouse position.
-                    // Note: Idk if mouseScreen is gonna work for this right?
-                    float distance = Vector3.Distance(unit.transform.position, mouseScreen);
+                    float distance = Vector3.Distance(unit.transform.position, mouseCoords);
 
                     // Check if it is our new closest.
                     if (distance < closestDistance)

@@ -5,6 +5,9 @@ using TMPro;
 public class Recruitment : MonoBehaviour
 {
     [Header("Recruitment")]
+    // How many packs ye've chosen so far.
+    public int packCount = 0;
+
     // Text object for yer stardust count.
     public TMP_Text stardustText;
 
@@ -29,44 +32,48 @@ public class Recruitment : MonoBehaviour
     // + Initialization
 
     // Open the recruitment screen.
-    public void OpenRecruitmentScreen()
+    public void OpenRecruitmentScreen(bool resetPackCount = true)
     {
         // DJ, hit it!
-        DJ.HitIt("Recruitment");
+        // DJ.HitIt("Recruitment");
+
+        // Reset pack count.
+        if (resetPackCount)
+            packCount = 0;
 
         // Load stardust count.
         stardustText.text = "0";
 
         // + Generate new packs.
 
+        // Calculate the upper bound for pack cost.
+        int upperBound = 100 * (1 + packCount);
+
         // Get leader bio.
-        LeaderBio leaderBio = MainMenu.I.leaderBios[MenuManager.I.saveData.leaderName];
+        LeaderBio leaderBio = MainMenu.I.leaderBios[DM.I.goodLeader.myName];
 
         // Generate home pack.
-        List<string> availableCards = leaderBio.t1_cards;
+        List<string> availableCards = new List<string>(leaderBio.t1_cards);
         if (StarManager.I.planetIndex >= 1) Utility.Append(availableCards, leaderBio.t2_cards);
         if (StarManager.I.planetIndex >= 2) Utility.Append(availableCards, leaderBio.t3_cards);
         if (StarManager.I.planetIndex >= 3) Utility.Append(availableCards, leaderBio.t4_cards);
         if (StarManager.I.planetIndex >= 4) Utility.Append(availableCards, leaderBio.t5_cards);
         packs[0].GeneratePack(availableCards, StarManager.I.planetIndex);
-        if (MenuManager.I.saveData.stardust < 10)
-            packCosts[0] = Random.Range(0, MenuManager.I.saveData.stardust);
-        else
-            packCosts[0] = Random.Range(0, 10);
+        packCosts[0] = Random.Range(0, upperBound / 2);
         packCostTexts[0].text = "0";
         
         // Generate local pack.
         packs[1].GeneratePack(StarManager.I.currentStar.cards, StarManager.I.planetIndex);
-        packCosts[1] = Random.Range(0, 100);
+        packCosts[1] = Random.Range(0, upperBound);
         packCostTexts[1].text = "0";
 
         // Generate mercenary pack.
         packs[2].GeneratePack(Constance.I.mercenaries);
-        packCosts[2] = Random.Range(0, 100);
+        packCosts[2] = Random.Range(0, upperBound * 2);
         packCostTexts[2].text = "0";
 
         // Randomize re-roll cost.
-        rerollCost = Random.Range(0, 100);
+        rerollCost = Random.Range(0, upperBound);
         rerollCostText.text = "0";
 
         // Enable the recruitment screen.
@@ -99,14 +106,17 @@ public class Recruitment : MonoBehaviour
         viewDeck.GoToViewDeck();
     }
 
-    // Recruit a pack of cards and begin a battle.
+    // Recruit a pack of cards.
     public void B_Recruit(int option)
     {
+        // SFX
+        DJ.I.PlaySound("Snap");
+
         // Option -1: Non!
         if (option == -1)
         {
             // Begin the battle and return!
-            DM.I.BeginHunt();
+            DM.I.BeginBattle();
             return;
         }
 
@@ -114,13 +124,17 @@ public class Recruitment : MonoBehaviour
         if (packCosts[option] > MenuManager.I.saveData.stardust)
         {
             // TBD: Meep merp!
-            Debug.Log("Ye can't afford this one! Ye got " + MenuManager.I.saveData.stardust + " and ye need " + packCosts[option]);
-
+            
             // Return!
             return;
         } else {
             // Pay the price!
             MenuManager.I.saveData.stardust -= packCosts[option];
+
+            Utility.SaveGame();
+
+            // Increment pack count.
+            packCount++;
         }
 
         // Get the chosen pack.
@@ -136,12 +150,18 @@ public class Recruitment : MonoBehaviour
                 string cardName = card.nameText.text;
 
                 // Add to decklist.
-                MenuManager.I.saveData.decklist.Add(cardName);
+                if (DM.I.gameMode == "Campaign")
+                    MenuManager.I.saveData.decklist.Add(cardName);
+                else
+                    DM.I.goodLeader.deck.Add(cardName);
             }
         }
        
         // Begin the battle!
-        DM.I.BeginHunt();
+        if (DM.I.gameMode == "Campaign")
+            DM.I.BeginBattle();
+        else
+            OpenRecruitmentScreen(false);
     }
 
 
@@ -161,6 +181,6 @@ public class Recruitment : MonoBehaviour
         }
 
         // Reload recruitment screen.
-        OpenRecruitmentScreen();
+        OpenRecruitmentScreen(false);
     }
 }

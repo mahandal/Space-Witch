@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.InputSystem;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 using System;
@@ -12,12 +13,111 @@ public class Utility : MonoBehaviour
     // + Level Scaling
     public static float LevelScalar(int level = 2)
     {
-        // Gain 20% in some stats per level above the first.
-        return 1f + (0.2f * (level - 1));
+        // Gain 30% per level above the first.
+        return 1f + (0.3f * (level - 1));
     }
 
 
     // + Simple helper functions.
+
+    // Set a text object for a unit's role, combining their aggression and coloring accordingly.
+    public static void SetRoleText(Unit u, TMP_Text t)
+    {
+        // Units
+        if (u.cardType == "Unit")
+        {
+            // Aggressive.
+            if (u.aggression > 0)
+            {
+                t.text = "Aggressive " + u.role;
+                t.color = Color.red;
+            }
+
+            // Adventurous.
+            else if (u.aggression == 0)
+            {
+                t.text = "Adventurous " + u.role;
+                t.color = Color.yellow;
+            }
+
+            // Friendly.
+            else
+            {
+                t.text = "Friendly " + u.role;
+                t.color = Color.green;
+            }
+        }
+
+        // Spells
+        if (u.cardType == "Spell")
+        {
+            t.text = "(Spell) " + u.role;
+
+            // Summons
+            if (u.role == "Summon")
+                t.color = Color.cyan;
+
+            // Hex
+            if (u.role == "Hex")
+                t.color = Color.red;
+
+            // Curse
+            if (u.role == "Curse")
+                t.color = Color.magenta;
+        }
+
+        // Structures
+        if (u.cardType == "Structure")
+        {
+            t.text = "(Structure) " + u.role;
+
+            // Production
+            if (u.role == "Production")
+                t.color = Color.orange;
+
+            // Farm
+            if (u.role == "Farm")
+                t.color = Color.green;
+
+            // Turret
+            if (u.role == "Turret")
+                t.color = Color.red;
+
+            // Wall
+            if (u.role == "Wall")
+                t.color = Color.grey;
+        }
+
+        // Items
+        if (u.cardType == "Item")
+        {
+            t.text = "(Item) " + u.role;
+
+            // Food
+            if (u.role == "Food")
+                t.color = Color.green;
+
+            // Equipment
+            if (u.role == "Equipment")
+                t.color = Color.grey;
+        }
+    }
+
+    // Get the mouse cursor's position in grid coordinates.
+    public static Vector2 GetMouseCoords()
+    {
+        // Convert our mouse position to 3d coordinates.
+        Vector3 mouseScreen = Mouse.current.position.ReadValue();
+
+        // Set the mouse's z to opposite the camera's, for some reason?
+        mouseScreen.z = -Camera.main.transform.position.z;
+
+        // Convert our mouse's 3d coordinates to 2d coordinates.
+        Vector2 mouseGrid = Camera.main.ScreenToWorldPoint(mouseScreen);
+
+        // Return!
+        return mouseGrid;
+    }
 
     // Append a list of strings to another.
     public static void Append(List<string> a, List<string> b)
@@ -160,12 +260,13 @@ public class Utility : MonoBehaviour
                 amount = -11111;
 
             // Sound effect
-            if (Mathf.Abs(amount) == 1)
-                DJ.I.PlaySound("Tick");
-            else if (Mathf.Abs(amount) < 100)
-                DJ.I.PlaySound("Tick 2");
-            else
-                DJ.I.PlaySound("Tick 3");
+            // DJ.I.PlaySound("Tick 3");
+            // if (Mathf.Abs(amount) == 1)
+            //     DJ.I.PlaySound("Tick");
+            // else if (Mathf.Abs(amount) < 100)
+            //     DJ.I.PlaySound("Tick 2");
+            // else
+            //     DJ.I.PlaySound("Tick 3");
 
             // Get new value.
             int newValue = value + amount;

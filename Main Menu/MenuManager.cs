@@ -12,7 +12,10 @@ public class MenuManager : MonoBehaviour
     //  21 = Postgame
     public int gameState = -2;
 
-    [Header("Menus")]
+    [Header("Executives")]
+    // The player's saved data.
+    public SaveData saveData;
+
     // Constance.
     public Constance constance;
 
@@ -37,9 +40,11 @@ public class MenuManager : MonoBehaviour
     // (Also the parent object of battle mode.)
     public DM dm;
 
-    // The player's saved data.
-    public SaveData saveData;
+    // Granga's Guide to the Galaxy.
+    public GGG ggg;
 
+    // The tutorial.
+    public Tutorial tutorial;
 
     // Singleton.
     public static MenuManager I;
@@ -76,6 +81,12 @@ public class MenuManager : MonoBehaviour
 
         // Initialize GM.
         gm.Initialize();
+
+        // Initialize Granga's Guide to the Galaxy.
+        ggg.Initialize();
+
+        // Initialize tutorial.
+        tutorial.Initialize();
 
         // Load save data.
         saveData = Utility.GetSaveData();
@@ -124,14 +135,46 @@ public class MenuManager : MonoBehaviour
         mainMenu.gameObject.SetActive(true);
     }
 
+    // Go to the star map.
+    public void GoToStarMap()
+    {
+        // DJ, hit it!
+        DJ.HitIt("Star Map");
+
+        // Disable all menus.
+        DisableAllMenus();
+
+        // Set game state.
+        gameState = -1;
+
+        // Open star map.
+        starManager.OpenStarMap();
+    }
+
+    // Go to the recruitment screen.
+    public void GoToRecruitment()
+    {
+        // DJ, hit it!
+        DJ.HitIt("Recruitment");
+
+        // Disable main menu.
+        mainMenu.gameObject.SetActive(false);
+
+        // Enable star map.
+        starManager.gameObject.SetActive(true);
+
+        // Open recruitment screen.
+        starManager.recruitment.OpenRecruitmentScreen();
+    }
+
     // Go to the battle map.
     public void GoToBattleMap()
     {
         // Get current planet.
         Planet p = StarManager.I.GetCurrentPlanet();
 
-        // DJ play planet's ambience.
-        DJ.I.PlayAmbience("Ambience - " + p.myName);
+        // DJ, hit it!
+        DJ.HitIt(p);
 
         // Disable all menus.
         DisableAllMenus();
@@ -140,7 +183,7 @@ public class MenuManager : MonoBehaviour
         GM.I.DisableBattleMaps();
 
         // Set game state.
-        gameState = 1;
+        // gameState = 1;
 
         // Load the appropriate battle map.
         p.battleMap.SetActive(true);

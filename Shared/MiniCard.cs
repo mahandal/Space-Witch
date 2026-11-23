@@ -36,25 +36,28 @@ public class MiniCard : MonoBehaviour
     // Load a card.
     public void LoadCard(string cardName)
     {
-        // Get card.
-        Card card = DM.I.Grimoire(cardName);
+        // Get progenitor.
+        Unit p = Progenitors.I.GetProgenitor(cardName);
 
         // Set name.
         nameText.text = cardName;
 
         // Set mana cost.
-        manaText.text = card.manaCost.ToString();
+        manaText.text = p.manaCost.ToString();
 
         // Set deployment time.
-        timeText.text = card.deployTime.ToString();
+        if (p.keywords.Contains("Chaotic"))
+            timeText.text = p.deployTime.ToString() + " - " + (p.deployTime * 2f).ToString();
+        else
+            timeText.text = p.deployTime.ToString();
 
         // Set role.
-        roleText.text = card.role;
+        Utility.SetRoleText(p, roleText);
 
         // Load images.
-        Utility.LoadImage(art, "Cards/" + card.myName);
-        Utility.LoadImage(backgroundImage, "Cards/" + card.myName);
-        Utility.LoadImage(roleIcon, "Roles/" + card.role);
+        Utility.LoadImage(art, "Cards/" + p.myName);
+        Utility.LoadImage(backgroundImage, "Cards/" + p.myName);
+        Utility.LoadImage(roleIcon, "Roles/" + p.role);
     }
 
     // + Highlight

@@ -41,8 +41,14 @@ public class Pack : MonoBehaviour
             // Get card name.
             string cardName = availableCards[cardIndex];
 
+            // Get power level.
+            int powerLevel = 0;
+
+            if (MainMenu.I.difficulty < 0)
+                powerLevel = -MainMenu.I.difficulty;
+
             // Get random level.
-            int level = Constance.I.RandomLevel();
+            int level = Constance.I.RandomLevel(powerLevel);
 
             // Add level to name.
             cardName = "Level " + level + " " + cardName;

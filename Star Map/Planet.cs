@@ -7,6 +7,9 @@ public class Planet : MonoBehaviour
     // This planet's name.
     public string myName;
 
+    // Which song plays at this planet.
+    public string themeSong = "Bimblebrook";
+
     // Which evil leader ye fight at this planet.
     public string villain = "Morgause le Fey";
 

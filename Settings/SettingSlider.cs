@@ -25,7 +25,8 @@ public class SettingSlider : MonoBehaviour
    public void B_SetVolume()
    {
         // SFX
-        DJ.I.PlaySound("Tick", whatFor);
+        if (whatFor == "SFX")
+             DJ.I.PlaySound("Tick", whatFor);
 
         // Read slider.
         float volume = slider.value;
