@@ -8,6 +8,9 @@ public class Recruitment : MonoBehaviour
     // How many packs ye've chosen so far.
     public int packCount = 0;
 
+    // A list of which home cards are available to be recruited from.
+    public List<string> homeCards = new List<string>();
+
     // Text object for yer stardust count.
     public TMP_Text stardustText;
 
@@ -53,17 +56,17 @@ public class Recruitment : MonoBehaviour
         LeaderBio leaderBio = MainMenu.I.leaderBios[DM.I.goodLeader.myName];
 
         // Generate home pack.
-        List<string> availableCards = new List<string>(leaderBio.t1_cards);
-        if (StarManager.I.planetIndex >= 1) Utility.Append(availableCards, leaderBio.t2_cards);
-        if (StarManager.I.planetIndex >= 2) Utility.Append(availableCards, leaderBio.t3_cards);
-        if (StarManager.I.planetIndex >= 3) Utility.Append(availableCards, leaderBio.t4_cards);
-        if (StarManager.I.planetIndex >= 4) Utility.Append(availableCards, leaderBio.t5_cards);
-        packs[0].GeneratePack(availableCards, StarManager.I.planetIndex);
+        homeCards = new List<string>(leaderBio.t1_cards);
+        if (StarManager.I.planetIndex >= 1) Utility.Append(homeCards, leaderBio.t2_cards);
+        if (StarManager.I.planetIndex >= 2) Utility.Append(homeCards, leaderBio.t3_cards);
+        if (StarManager.I.planetIndex >= 3) Utility.Append(homeCards, leaderBio.t4_cards);
+        if (StarManager.I.planetIndex >= 4) Utility.Append(homeCards, leaderBio.t5_cards);
+        packs[0].GeneratePack(homeCards);
         packCosts[0] = Random.Range(0, upperBound / 2);
         packCostTexts[0].text = "0";
         
         // Generate local pack.
-        packs[1].GeneratePack(StarManager.I.currentStar.cards, StarManager.I.planetIndex);
+        packs[1].GeneratePack(StarManager.I.currentStar.cards);
         packCosts[1] = Random.Range(0, upperBound);
         packCostTexts[1].text = "0";
 

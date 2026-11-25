@@ -464,7 +464,10 @@ public class PostGame : MonoBehaviour
         {
             // Activate game object.
             if (!neutralMetaCanvasGroup.gameObject.activeSelf)
+            {
+                DJ.I.PlaySound("Section Reveal");
                 neutralMetaCanvasGroup.gameObject.SetActive(true);
+            }
         }
 
         // After 2 seconds, reveal good and evil meta data.
@@ -472,7 +475,10 @@ public class PostGame : MonoBehaviour
         {
             // Activate game objects.
             if (!goodMetaCanvasGroup.gameObject.activeSelf)
+            {
+                DJ.I.PlaySound("Section Reveal");
                 goodMetaCanvasGroup.gameObject.SetActive(true);
+            }
             if (!evilMetaCanvasGroup.gameObject.activeSelf)
                 evilMetaCanvasGroup.gameObject.SetActive(true);
         }
@@ -482,7 +488,10 @@ public class PostGame : MonoBehaviour
         {
             // Activate game objects.
             if (!goodManaCanvasGroup.gameObject.activeSelf)
+            {
+                DJ.I.PlaySound("Section Reveal");
                 goodManaCanvasGroup.gameObject.SetActive(true);
+            }
             if (!evilManaCanvasGroup.gameObject.activeSelf)
                 evilManaCanvasGroup.gameObject.SetActive(true);
 
@@ -502,7 +511,10 @@ public class PostGame : MonoBehaviour
         {
             // Activate game objects.
             if (!goodCardCanvasGroup.gameObject.activeSelf)
+            {
+                DJ.I.PlaySound("Section Reveal");
                 goodCardCanvasGroup.gameObject.SetActive(true);
+            }
             if (!evilCardCanvasGroup.gameObject.activeSelf)
                 evilCardCanvasGroup.gameObject.SetActive(true);
 
@@ -526,7 +538,10 @@ public class PostGame : MonoBehaviour
         {
             // Activate game objects.
             if (!goodCombatCanvasGroup.gameObject.activeSelf)
+            {
+                DJ.I.PlaySound("Section Reveal");
                 goodCombatCanvasGroup.gameObject.SetActive(true);
+            }
             if (!evilCombatCanvasGroup.gameObject.activeSelf)
                 evilCombatCanvasGroup.gameObject.SetActive(true);
 
@@ -548,7 +563,10 @@ public class PostGame : MonoBehaviour
         {
             // Activate score game objects.
             if (!goodScoreCanvasGroup.gameObject.activeSelf)
+            {
+                DJ.I.PlaySound("Section Reveal");
                 goodScoreCanvasGroup.gameObject.SetActive(true);
+            }
             if (!evilScoreCanvasGroup.gameObject.activeSelf)
                 evilScoreCanvasGroup.gameObject.SetActive(true);
 
@@ -580,11 +598,18 @@ public class PostGame : MonoBehaviour
 
             // Activate.
             mvpCanvasGroup.gameObject.SetActive(true);
+
+            // SFX
+            DJ.I.PlaySound("Section Reveal");
         }
 
         // After 8 seconds, reveal mvp level up and continue and return buttons.
         if (showTimer >= 8f)
         {
+            // SFX
+            if (showTimer < 8.5f)
+                DJ.I.PlaySound("Section Reveal");
+
             // If we won in campaign mode, reveal continue button.
             // If we lost or played a skirmish, reveal return button.
             if (victorious && DM.I.gameMode == "Campaign")

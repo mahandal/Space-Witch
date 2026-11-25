@@ -11,6 +11,9 @@ public class Spell : MonoBehaviour
     {
         Debug.Log("Casting a spell: " + spell.myName);
 
+        // SFX
+        DJ.I.PlaySpellCastSound(spell);
+
         // + Find targets.
         List<Unit> targets = new List<Unit>();
 

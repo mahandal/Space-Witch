@@ -36,7 +36,7 @@ public partial class Unit
     public void OnDeath()
     {
         // Prevent persisting into further battles.
-        if (MenuManager.I.gameState != 1) return;
+        if (MenuManager.I.currentMenu == "Post Game") return;
         
         // Skeleton
         if (keywords.Contains("Skeleton"))
@@ -82,8 +82,14 @@ public partial class Unit
         // Blood Oath
         if (keywords.Contains("Blood Oath"))
         {
-            // Deal half damage to yerself.
-            LoseHealth(damage / 2f);
+            // Count stacks of oath.
+            int stacks = Utility.CountStringsInList(keywords, "Blood Oath");
+
+            // Calculate self damage.
+            float selfDamage = (damage / 2f) * stacks;
+
+            // Deal damage to yerself.
+            LoseHealth(selfDamage);
         }
 
         // Cleave
@@ -136,10 +142,10 @@ public partial class Unit
 
             // Dwarves resist stuns.
             if (target.keywords.Contains("Dwarf"))
-                d100 -= 25;
+                d100 -= 10;
 
-            // 50% chance to stun.
-            if (d100 > 50)
+            // 25% chance to stun.
+            if (d100 > 75)
                 target.Stun();
         }
 
@@ -151,7 +157,7 @@ public partial class Unit
 
         // Demolition
         if (keywords.Contains("Demolition") && target.cardType == "Structure")
-            healthLost *= 2f;
+            healthLost *= 5f;
 
         // Vampire
         if (keywords.Contains("Vampire") && target != this)

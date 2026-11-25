@@ -10,11 +10,10 @@ public class Pack : MonoBehaviour
     public List<MiniCard> minicards;
 
     // Randomly generate a new pack of cards.
-    // Tier is an optional parameter used to limit which cards will be pulled.
-    public void GeneratePack(List<string> availableCards, int tier = -1)
+    public void GeneratePack(List<string> availableCards)
     {
         // Decide how many cards this pack will have.
-        int cardCount = Random.Range(1, tier + 5);
+        int cardCount = Random.Range(1, StarManager.I.planetIndex + 5);
 
         // Go through each minicard.
         for (int i = 0; i < minicards.Count; i++)
@@ -27,16 +26,9 @@ public class Pack : MonoBehaviour
                 minicards[i].gameObject.SetActive(false);
 
             // + Roll a random card.
-            // Use tier to limit which card we might pull.
-            // (+1 because Random.Range is max exclusive with ints)
-            int endIndex = tier + 1;
-
-            // Mercenary cards ignore tiers, always pulling from the whole list.
-            if (tier < 0)
-                endIndex = availableCards.Count;
 
             // Roll card index.
-            int cardIndex = Random.Range(0, endIndex);
+            int cardIndex = Random.Range(0, availableCards.Count);
 
             // Get card name.
             string cardName = availableCards[cardIndex];

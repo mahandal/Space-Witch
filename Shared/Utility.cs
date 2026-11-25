@@ -51,7 +51,7 @@ public class Utility : MonoBehaviour
         // Spells
         if (u.cardType == "Spell")
         {
-            t.text = "(Spell) " + u.role;
+            t.text = u.role;
 
             // Summons
             if (u.role == "Summon")
@@ -69,7 +69,7 @@ public class Utility : MonoBehaviour
         // Structures
         if (u.cardType == "Structure")
         {
-            t.text = "(Structure) " + u.role;
+            t.text = u.role;
 
             // Production
             if (u.role == "Production")
@@ -91,7 +91,7 @@ public class Utility : MonoBehaviour
         // Items
         if (u.cardType == "Item")
         {
-            t.text = "(Item) " + u.role;
+            t.text = u.role;
 
             // Food
             if (u.role == "Food")

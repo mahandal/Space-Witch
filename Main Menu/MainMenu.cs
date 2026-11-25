@@ -441,7 +441,6 @@ public class MainMenu : MonoBehaviour
         DM.I.gameMode = "Skirmish";
 
         // Go to random planet.
-        // StarManager.I.GoToRandomPlanet(skirmishDifficulty);
         GoToRandomPlanet();
 
         // Get random evil leader.
@@ -461,9 +460,6 @@ public class MainMenu : MonoBehaviour
 
         // Go to Recruitment.
         MenuManager.I.GoToRecruitment();
-
-        // Begin battle!
-        // DM.I.BeginBattle();
     }
 
     // Go to a random planet, from out list of selected maps for skirmishes.
@@ -558,7 +554,8 @@ public class MainMenu : MonoBehaviour
         LeaderBio bio = leaderBios["Goldfish"];
 
         // Go to random planet.
-        StarManager.I.GoToRandomPlanet(difficulty);
+        // StarManager.I.GoToRandomPlanet(difficulty);
+        GoToRandomPlanet();
 
         // Load leaders.
         DM.I.goodLeader.LoadBio(bio);
@@ -581,7 +578,8 @@ public class MainMenu : MonoBehaviour
         DM.I.gameMode = "Spectate";
 
         // Go to random planet.
-        StarManager.I.GoToRandomPlanet(difficulty);
+        // StarManager.I.GoToRandomPlanet(difficulty);
+        GoToRandomPlanet();
 
         // Get random evil leader.
         DM.I.evilLeader.LoadRandomVillain(difficulty);

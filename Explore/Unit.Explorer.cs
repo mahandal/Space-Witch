@@ -136,7 +136,7 @@ public partial class Unit
 
         // Set meta data.
         myName = unitName;
-        // description = p.description;
+        description = p.description;
         manaCost = p.manaCost;
         deployTime = p.deployTime;
         cardType = p.cardType;
@@ -149,17 +149,27 @@ public partial class Unit
         armor = p.armor;
         SetVision(p.vision);
         speed = p.speed;
+
+        // Attack
         damage = p.damage;
         attackTime = p.attackTime;
         SetRange(p.range);
+
+        // Farm time
+        farmTime = p.farmTime;
+
+        // Production
+        timePerSpawn = p.timePerSpawn;
+        producedUnit = p.producedUnit;
+
+        // Keywords
         keywords = p.keywords;
 
         // Set animator.
         animator.runtimeAnimatorController = p.animator.runtimeAnimatorController;
 
-        // Get attack time, for units.
-        if (cardType == "Unit")
-            attackTime = CalculateAttackTime();
+        // Get attack time.
+        attackTime = CalculateAttackTime();
 
         // Set scale.
         transform.localScale = p.transform.localScale;

@@ -87,7 +87,7 @@ public class Fading : MonoBehaviour
     void FixedUpdate()
     {
         // Pop when game is over.
-        if (MenuManager.I.gameState == 21)
+        if (MenuManager.I.currentMenu == "Post Game")
         {
             Destroy(gameObject);
             return;

@@ -25,7 +25,6 @@ public class Region : MonoBehaviour
 
     [Header("Machinery")]
     // A sprite renderer to show this region visually.
-    // Automatically hidden, so players should not see!
     public SpriteRenderer spriteRenderer;
 
     // A unique id.
@@ -56,6 +55,9 @@ public class Region : MonoBehaviour
         {
             // Set sprite sorting order.
             spriteRenderer.sortingOrder = 600 - Mathf.RoundToInt(transform.position.y * 100f);
+
+            // Set opacity
+            spriteRenderer.color = new Color (1f, 1f, 1f, 0.5f);
         }
 
         // Increment region count.
@@ -141,6 +143,9 @@ public class Region : MonoBehaviour
                 unit.GainHealth(2f * Time.fixedDeltaTime);
             else
                 unit.LoseHealth(2f * Time.fixedDeltaTime, null, true);
+
+            // Leader lava map.
+            unit.GetLeader().isLavaInLane[unit.laneIndex] = true;
         }
     }
 

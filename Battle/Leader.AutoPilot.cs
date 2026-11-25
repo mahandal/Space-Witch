@@ -16,6 +16,9 @@ public partial class Leader
     // Chaos increases how often this leader plays randomly.
     public int chaos = 10;
 
+    // A list of bools for each lane tracking whether we know there's lava there or not.
+    public List<bool> isLavaInLane = new List<bool>();
+
     [Header("Auto Pilot")]
     // The index of the next card the auto pilot wants to play.
     // Starts at 0, increments up each time the auto pilot plays a card.
@@ -334,7 +337,7 @@ public partial class Leader
         if (blockedByStructures)
             return FindForwardTile(row, c, false);
 
-        Debug.LogError("ERROR! Failed to find forward tile! Leader: " + myName + ". Card: " + c.myName + ". Row: " + row);
+        Debug.LogWarning("ERROR! Failed to find forward tile! Leader: " + myName + ". Card: " + c.myName + ". Row: " + row);
         return null;
     }
 
@@ -414,12 +417,15 @@ public partial class Leader
     public int FindStrongestLane()
     {
         // Initialize.
-        int strongestLane = -1;
-        int strongestPower = -1;
+        int strongestLane = 0;
+        int strongestPower = 0;
 
         // Loop through each lane.
         for (int i = 0; i < DM.I.gridHeight; i++)
         {
+            // Lava.
+            if (isLavaInLane[i] && homeStar.myName != "Corbenic") continue;
+
             // Calculate total mana cost of all units in lane.
             int totalPower = 0;
             foreach (Unit u in DM.I.GetUnitsInLane(i, good))

@@ -204,6 +204,13 @@ public partial class Leader : MonoBehaviour
         mvpCandidate.damageDealt = 0;
         mvpCandidate.kills = -1;
 
+        // Reset lava maps.
+        isLavaInLane = new List<bool>();
+        for (int i = 0; i < DM.I.gridHeight; i++)
+        {
+            isLavaInLane.Add(false);
+        }
+
         // + Starting health.
         maxHealth = DM.I.startingHealth;
 
@@ -322,12 +329,9 @@ public partial class Leader : MonoBehaviour
         // Draw 5 cards.
         for (int i = 0; i < 5; i ++)
         {
-            // // Draw a card.
-            // DrawCard(i);
-
-            // Hide each card for a moment, so they reveal one by one.
+            // Hide each card to begin with, then reveal them one by one.
             // Note: Drawing replacement cards is handled in CardInHand.
-            hand[i].Hide(0.2f + i * 0.2f);
+            hand[i].Hide(0.1f + i * 0.1f);
         }
     }
 
@@ -337,8 +341,7 @@ public partial class Leader : MonoBehaviour
     void FixedUpdate()
     {
         // Wait for battle.
-        if (MenuManager.I.gameState != 1) return;
-        if (DM.I.gameTimer < 8f) return;
+        if (MenuManager.I.currentMenu != "Battle") return;
 
         // Tutorial
         if (!good && DM.I.gameMode == "Tutorial") return;
@@ -437,7 +440,7 @@ public partial class Leader : MonoBehaviour
             // No cards left in yer deck.
 
             // Get a random reinforcement.
-            cardName = DrawReinforcement();
+            cardName = DrawReinforcement(-1);
 
             // Load the card into your hand!
             cardInHand.LoadCard(cardName);
@@ -1001,14 +1004,12 @@ public partial class Leader : MonoBehaviour
     // + Reinforcements
 
     // Draw a random card to reinforce your army.
-    public string DrawReinforcement()
+    public string DrawReinforcement(int powerLevel = 0)
     {
         // Get a random card.
         string cardName = GetRandomReinforcement();
 
         // Get power level.
-        int powerLevel = -1;
-
         if (good && MainMenu.I.difficulty < 0)
             powerLevel -= MainMenu.I.difficulty;
         if (!good && MainMenu.I.difficulty > 0)
@@ -1147,17 +1148,8 @@ public partial class Leader : MonoBehaviour
         // Loop once for each card.
         for (int i = 0; i < deckSize; i++)
         {
-            // Get a random mercenary.
-            // string merc = Constance.I.RandomMerc();
-
-            // Get a random card
-            string card = DrawReinforcement();
-
-            // // Get random level.
-            // int level = Constance.I.RandomLevel(powerLevel);
-
-            // // Add level to name.
-            // card = "Level " + level + " " + card;
+            // Get a random card from our reinforcements, scaling with power level.
+            string card = DrawReinforcement(powerLevel);
 
             // Add to deck.
             deck.Add(card);

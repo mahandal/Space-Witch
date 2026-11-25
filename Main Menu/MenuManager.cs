@@ -2,15 +2,16 @@ using UnityEngine;
 
 public class MenuManager : MonoBehaviour
 {
-    [Header("Game State")]
+    [Header("Current Menu")]
     // Which screen we are currently on:
-    // -2  = Main Menu
-    // -1  = Star Map
-    //  0  = Explore
-    //  1  = Battle
-    //  2  = Harmony
-    //  21 = Postgame
-    public int gameState = -2;
+    // - Main Menu
+    // - Star Map
+    // - Explore
+    // - Pre-Battle Intro
+    // - Battle
+    // - Post Game
+    public string currentMenu = "Main Menu";
+
 
     [Header("Executives")]
     // The player's saved data.
@@ -124,9 +125,9 @@ public class MenuManager : MonoBehaviour
 
         // Disable all menus.
         DisableAllMenus();
-        
-        // Set game state.
-        gameState = -2;
+
+        // Set current menu.
+        currentMenu = "Main Menu";
 
         // Initialize the main menu.
         mainMenu.Initialize();
@@ -144,8 +145,8 @@ public class MenuManager : MonoBehaviour
         // Disable all menus.
         DisableAllMenus();
 
-        // Set game state.
-        gameState = -1;
+        // Set current menu.
+        currentMenu = "Star Map";
 
         // Open star map.
         starManager.OpenStarMap();
@@ -182,8 +183,8 @@ public class MenuManager : MonoBehaviour
         // Also disable all battle maps.
         GM.I.DisableBattleMaps();
 
-        // Set game state.
-        // gameState = 1;
+        // Set current menu to pre-battle intro.
+        currentMenu = "Pre-Battle Intro";
 
         // Load the appropriate battle map.
         p.battleMap.SetActive(true);
@@ -200,9 +201,9 @@ public class MenuManager : MonoBehaviour
 
         // Also disable all explore maps.
         GM.I.DisableExploreMaps();
-        
-        // Set game state.
-        gameState = 0;
+
+        // Set current menu.
+        currentMenu = "Explore";
 
         // Get current planet.
         Planet p = StarManager.I.GetCurrentPlanet();

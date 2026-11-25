@@ -157,11 +157,11 @@ public class DM : MonoBehaviour
         if (gameMode == "Skirmish" || gameMode == "Spectate")
         {
             // Randomize time limit.
-            timeLimit = Random.Range(120, 240);
+            timeLimit = Random.Range(60, 600);
 
             // Randomize starting health.
             // Note: Difficulty adds to health in leader's NewBattle.
-            startingHealth = Random.Range(100, 5000);
+            startingHealth = Random.Range(500, 5000);
         }
 
         // + Goldfish
@@ -190,12 +190,12 @@ public class DM : MonoBehaviour
 
         // +
 
-        // Shared new battle initialization.
-        goodLeader.NewBattle();
-        evilLeader.NewBattle();
-
         // Go to the battle map.
         MenuManager.I.GoToBattleMap();
+
+        // Leaders prepare for battle.
+        goodLeader.NewBattle();
+        evilLeader.NewBattle();
 
         // UI
         UI.I.BeginBattle();
@@ -236,7 +236,7 @@ public class DM : MonoBehaviour
     void FixedUpdate()
     {
         // Wait for battle.
-        if (MenuManager.I.gameState != 1) return;
+        if (MenuManager.I.currentMenu != "Battle") return;
 
         // Increment time elapsed.
         gameTimer += Time.fixedDeltaTime;
@@ -496,16 +496,17 @@ public class DM : MonoBehaviour
             DJ.HitIt("Defeat");
         
         // Avoid repeat calls.
-        if (MenuManager.I.gameState >= 21)
+        if (MenuManager.I.currentMenu == "Post Game")
             return;
             
-        // Set game state.
-        MenuManager.I.gameState = 21;
+        // Set current menu.
+        MenuManager.I.currentMenu = "Post Game";
 
         // // Pause time.
         // Time.timeScale = 0f;
 
         // Disable ai.
+        goodLeader.autoPilot = false;
         evilLeader.autoPilot = false;
         // UI.I.B_AutoPilotOff();
 
@@ -598,12 +599,6 @@ public class DM : MonoBehaviour
     // Continue your adventure, after winning a battle.
     public void B_Continue()
     {
-        // Safety guard(?)
-        if (MenuManager.I.gameState != 21) return;
-
-        // Re-enable time.
-        // Time.timeScale = 1f;
-
         // Close the victory screen.
         UI.I.postGame.gameObject.SetActive(false);
 
@@ -611,7 +606,6 @@ public class DM : MonoBehaviour
         gameObject.SetActive(false);
 
         // Open the star map.
-        // StarManager.I.GoToStarMap();
         MenuManager.I.GoToStarMap();
     }
 
@@ -619,18 +613,6 @@ public class DM : MonoBehaviour
     // Return to the main menu, after losing a battle.
     public void B_Return()
     {
-        // Safety guard(?)
-        if (MenuManager.I.gameState != 21) return;
-        
-        // Re-enable time.
-        // Time.timeScale = 1f;
-
-        // Close the defeat screen.
-        // UI.I.defeatBackground.gameObject.SetActive(false);
-
-        // // Go to the main menu.
-        // MenuManager.I.GoToMainMenu();
-
         // Re-load game scene.
         Utility.LoadGameScene();
     }

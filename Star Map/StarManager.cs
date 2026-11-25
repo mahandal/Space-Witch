@@ -138,14 +138,6 @@ public class StarManager : MonoBehaviour
 
         // Enable star map.
         gameObject.SetActive(true);
-
-        // Disable main menu, explore map, and battle map.
-        // MainMenu.I.gameObject.SetActive(false);
-        // DM.I.gameObject.SetActive(false);
-        // GM.I.gameObject.SetActive(false);
-
-        // Set game state.
-        // MenuManager.I.gameState = -1;
     }
 
     // + Stars

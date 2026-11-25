@@ -152,6 +152,17 @@ public class DJ : MonoBehaviour
         PlaySound(soundName, unit.transform.position);
     }
 
+    // Play a spell's cast sound.
+    public void PlaySpellCastSound(Unit spell)
+    {
+        // Get sound name.
+        string soundName = spell.GetBaseName() + " cast";
+
+        // If sound found, play sound.
+        if (library.TryGetValue(soundName, out AudioClip clip))
+            PlaySound(soundName, spell.transform.position);
+    }
+
     // Play a unit's death sound.
     public void PlayDeathSound(Unit unit)
     {
@@ -160,7 +171,10 @@ public class DJ : MonoBehaviour
 
         // If no sound found, use default.
         if (!library.TryGetValue(soundName, out AudioClip clip))
+        {
+            Debug.Log("No death sound found for " + unit.myName);
             soundName = "Death";
+        }
 
         PlaySound(soundName, unit.transform.position);
     }

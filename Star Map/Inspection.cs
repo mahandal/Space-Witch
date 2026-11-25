@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using System.Collections.Generic;
 
 // Handle card inspection.
 public class Inspection : MonoBehaviour
@@ -20,13 +21,22 @@ public class Inspection : MonoBehaviour
 
 
 	[Header("Machinery")]
+	// A reference to the viewing deck to go back and forth.
+	public ViewDeck viewDeck;
+
 	// Dummy unit.
 	public Unit inspectedUnit;
 
-	// Card details
+	// Main image in the middle.
 	public Image cardArt;
+
+	// Card's name at the top.
 	public TMP_Text cardName;
+
+	// Card's description on the left.
 	public TMP_Text description;
+
+	// +++ Stats
 	public TMP_Text cardType;
 	public TMP_Text role;
 	public TMP_Text manaCost;
@@ -35,13 +45,28 @@ public class Inspection : MonoBehaviour
 	public TMP_Text armor;
 	public TMP_Text vision;
 	public TMP_Text speed;
+
+	// + Attack
+	public GameObject attackParent;
 	public TMP_Text damage;
 	public TMP_Text attackTime;
 	public TMP_Text range;
 
-	// A reference to the viewing deck to go back and forth.
-	public ViewDeck viewDeck;
+	// + Farm
+	public GameObject farmParent;
+	public TMP_Text farmTime;
 
+	// + Production
+	public GameObject productionParent;
+	public TMP_Text productionTime;
+	public TMP_Text producedUnitName;
+	public Image producedUnitPortrait;
+
+	// + Keywords
+	public List<TMP_Text> keywords;
+	public GameObject keywordDescriptionBox;
+	public TMP_Text keywordDescription;
+	public TMP_Text keywordHeader;
 
 
 	// + Initialization
@@ -50,52 +75,80 @@ public class Inspection : MonoBehaviour
 	// Begin inspecting a card.
     public void InspectCard(string _cardName)
     {
-    	// + Get level.
-    	int level = 1;
+    	// Load dummy unit.
+        inspectedUnit.LoadUnit(_cardName);
 
-    	// Split name into parts.
-        string[] parts = _cardName.Split(' ', 3);
+        // Load portrait.
+        Utility.LoadImage(cardArt, "Cards/" + inspectedUnit.GetBaseName());
 
-        // Check if the card name has a level.
-        if (parts[0] == "Level")
-            level = int.Parse(parts[1]);
-    
+        // Meta
+        cardName.text = _cardName;
+    	description.text = inspectedUnit.description;
 
-    	// Get progenitor.
-    	Unit p = Progenitors.I.GetProgenitor(_cardName);
+    	// +++ Stats
+    	cardType.text = inspectedUnit.cardType;
+    	Utility.SetRoleText(inspectedUnit, role);
+    	manaCost.text = inspectedUnit.manaCost.ToString("0");
+        deployTime.text = inspectedUnit.deployTime.ToString("0");
+        health.text = inspectedUnit.maxHealth.ToString("0");
+        armor.text = inspectedUnit.armor.ToString("0");
+        vision.text = inspectedUnit.vision.ToString("0.0");
+        speed.text = inspectedUnit.speed.ToString("0.0");
 
-    	// Load portrait.
-        Utility.LoadImage(cardArt, "Cards/" + p.GetBaseName());
+        // + Attack
+        // Enable attack info for units and turrets.
+        attackParent.SetActive(inspectedUnit.cardType == "Unit" || inspectedUnit.role == "Turret");
 
-    	// Fill in card details.
-    	cardName.text = _cardName;
-    	description.text = p.description;
-    	cardType.text = p.cardType;
-    	Utility.SetRoleText(p, role);
-    	manaCost.text = p.manaCost.ToString("0");
-        deployTime.text = p.deployTime.ToString("0");
-        health.text = (p.maxHealth * Utility.LevelScalar(level)).ToString("0");
-        armor.text = p.armor.ToString("0");
-        vision.text = (p.vision  * Utility.LevelScalar(level)).ToString("0.0");
-        speed.text = p.speed.ToString("0.0");
-        damage.text = (p.damage * Utility.LevelScalar(level)).ToString("0.0");
-        attackTime.text = "per " + p.attackTime.ToString("0.0") + " seconds";
+        damage.text = inspectedUnit.damage.ToString("0.0");
+        attackTime.text = "per " + inspectedUnit.attackTime.ToString("0.0") + " seconds";
+        range.text = inspectedUnit.range.ToString("0.0");
 
-        // Bulwarks don't gain range with levels.
-        if (p.role == "Bulwark")
-		    range.text = p.range.ToString("0.0");
-		else
-			range.text = (p.range  * Utility.LevelScalar(level)).ToString("0.0");
+        // + Farm
+        // Enable farm info
+        farmParent.SetActive(inspectedUnit.farmTime > 0);
+
+        farmTime.text = inspectedUnit.farmTime.ToString("0.0");
+
+        // + Production
+        productionParent.SetActive(inspectedUnit.timePerSpawn > 0);
+
+        productionTime.text = inspectedUnit.timePerSpawn.ToString("0.0");
+        producedUnitName.text = inspectedUnit.producedUnit;
+        Utility.LoadImage(producedUnitPortrait, "Cards/" + Utility.ExtractBaseName(inspectedUnit.producedUnit));
+
+        // + Keywords
+        B_CloseKeyword();
+        for (int i = 0; i < keywords.Count; i++)
+        {
+        	// Check if unit has a keyword in this slot.
+        	if (i < inspectedUnit.keywords.Count)
+        	{
+        		// Set text.
+        		keywords[i].text = inspectedUnit.keywords[i];
+
+        		// Activate game object.
+        		keywords[i].gameObject.SetActive(true);
+
+        		// Chaotic?
+        		if (inspectedUnit.keywords[i] == "Chaotic")
+        			deployTime.text += " - " + (inspectedUnit.deployTime * 2).ToString("0");
+        	} else {
+        		// No keyword.
+        		keywords[i].gameObject.SetActive(false);
+        	}
+        }
+
+        // + Stardust
 
 		// Set stardust.
 		stardust.text = MenuManager.I.saveData.stardust.ToString();
 
 		// Set cost to level.
-		cost = (int)Mathf.Pow(10, level);
+		cost = (int)Mathf.Pow(10, inspectedUnit.level);
 		costText.text = cost.ToString();
 
 		// Set stardust gained from sending home.
-		stardustGained = Mathf.RoundToInt((p.manaCost + p.deployTime) * level);
+		stardustGained = Mathf.RoundToInt((inspectedUnit.manaCost + inspectedUnit.deployTime) * inspectedUnit.level);
 		stardustGainedText.text = stardustGained.ToString();
 
 		// Activate.
@@ -104,6 +157,39 @@ public class Inspection : MonoBehaviour
 
 
     // + Buttons
+
+    // Select a keyword.
+    public void B_Keyword(int index)
+    {
+    	// SFX
+    	DJ.I.PlaySound("Snap");
+
+    	// Get keyword.
+    	string keyword = keywords[index].text;
+
+    	// Set header.
+    	keywordHeader.text = keyword;
+
+    	// Get the keyword's description.
+    	string description = GGG.I.GetKeywordDescription(keyword);
+
+    	// Set keyword's description.
+    	keywordDescription.text = description;
+
+    	// Open the keyword description box.
+    	keywordDescriptionBox.SetActive(true);
+    }
+
+    // Close the keyword description box.
+    public void B_CloseKeyword()
+    {
+    	// SFX
+    	DJ.I.PlaySound("Snap");
+
+    	// Close the keyword description box.
+    	keywordDescriptionBox.SetActive(false);
+    }
+
     // Go back to the viewing deck.
     public void B_ViewDeck()
     {

@@ -10,10 +10,11 @@ public class UI : MonoBehaviour
     // The cursor that appears when selling.
     public GameObject sellCursor;
 
-    [Header("Time")]
+    [Header("Intro")]
     // Timer tracking intro versus sequence.
     public float introTimer = -1f;
 
+    [Header("Time")]
     // The text object saying how much time is left on the clock.
     public TMP_Text timeRemaining;
 
@@ -157,7 +158,6 @@ public class UI : MonoBehaviour
     public void BeginBattle()
     {
         // Hide what should not be.
-        // PostGame.I.gameObject.SetActive(false);
         postGame.gameObject.SetActive(false);
         HideTooltip();
         reservesDepleted.gameObject.SetActive(false);
@@ -214,7 +214,14 @@ public class UI : MonoBehaviour
         // Set max health text.
         goodMaxHealth.text = DM.I.goodLeader.maxHealth.ToString("0");
         evilMaxHealth.text = DM.I.evilLeader.maxHealth.ToString("0");
-        
+     
+        // Initialize current health text to 0.
+        goodCurrentHealth.text = "0";
+        evilCurrentHealth.text = "0";
+
+        // + Core
+        // Reset intro timer.
+        introTimer = 0f;
     }
 
     // + Battle
@@ -225,8 +232,8 @@ public class UI : MonoBehaviour
         // Versus sequence
         Versus();
 
-        // Wait for game to start.
-        if (MenuManager.I.gameState != 1) return;
+        // Wait for battle.
+        if (MenuManager.I.currentMenu != "Battle") return;
 
         // Update reinforcements.
         // UpdateReinforcements();
@@ -288,11 +295,24 @@ public class UI : MonoBehaviour
             goodPortraitFrame.color = new Color (1f, 1f, 1f, 0f);
         }
 
-        // Fade in good portrait frame.
+        // Fade in good portrait frame and health.
         if (introTimer >= 1f)
         {
-            float a = (introTimer - 1f) / 2f;
-            goodPortraitFrame.color = new Color (1f, 1f, 1f, a);
+            // Get percent completed.
+            float percentGoodLeaderIntroduced = (introTimer - 1f) / 2f;
+
+            // Cap at 100%
+            if (percentGoodLeaderIntroduced > 1f) percentGoodLeaderIntroduced = 1f;
+
+            // Fade in frame.
+            goodPortraitFrame.color = new Color (1f, 1f, 1f, percentGoodLeaderIntroduced);
+
+            // Set hp fill.
+            goodHealth.fillAmount = percentGoodLeaderIntroduced;
+
+            // Set current health.
+            float currentHealth = DM.I.goodLeader.maxHealth * percentGoodLeaderIntroduced;
+            goodCurrentHealth.text = currentHealth.ToString("0");
         }
 
         // Time to reveal VERSUS?
@@ -323,11 +343,24 @@ public class UI : MonoBehaviour
                 Tutorial.I.Begin();
         }
 
-        // Fade in evil portrait frame.
+        // Fade in evil portrait frame and health.
         if (introTimer >= 5f)
         {
-            float a = (introTimer - 5f) / 2f;
-            evilPortraitFrame.color = new Color (1f, 0f, 0f, a);
+            // Get percent introduced.
+            float percentEvilLeaderIntroduced = (introTimer - 5f) / 2f;
+
+            // Cap at 100%
+            if (percentEvilLeaderIntroduced > 1f) percentEvilLeaderIntroduced = 1f;
+
+            // Fade in frame.
+            evilPortraitFrame.color = new Color (1f, 0f, 0f, percentEvilLeaderIntroduced);
+
+            // Set hp fill.
+            evilHealth.fillAmount = percentEvilLeaderIntroduced;
+
+            // Set current health.
+            float currentHealth = DM.I.evilLeader.maxHealth * percentEvilLeaderIntroduced;
+            evilCurrentHealth.text = currentHealth.ToString("0");
         }
 
         // Time to hide VERSUS?
@@ -348,8 +381,8 @@ public class UI : MonoBehaviour
         }
 
         // Time to begin the game?
-        if (introTimer >= 7f && MenuManager.I.gameState != 1)
-            MenuManager.I.gameState = 1;
+        if (introTimer >= 7f && MenuManager.I.currentMenu == "Pre-Battle Intro")
+            MenuManager.I.currentMenu = "Battle";
     }
 
     // Update the player's power charge bar to show progress toward gaining a power charge,
@@ -431,57 +464,6 @@ public class UI : MonoBehaviour
         evilHealth.fillAmount = evilPercent;
     }
 
-    // Fade out reinforcement popups.
-    public void UpdateReinforcements()
-    {
-        // Check if we need reinforcements.
-        if (DM.I.goodLeader.deck.Count == 0)
-        {
-            // Reserves depleted?
-            if (reservesDepleted.gameObject.activeSelf)
-            {
-                // Fade out.
-                reservesDepleted.alpha -= 0.01f;
-
-                // Done?
-                if (reservesDepleted.alpha <= 0f)
-                    reservesDepleted.gameObject.SetActive(false);
-            }
-
-            // Reinforcements arrived?
-            if (reinforcementsArrived.gameObject.activeSelf)
-            {
-                // Fade out.
-                reinforcementsArrived.alpha -= 0.01f;
-
-                // Done?
-                if (reinforcementsArrived.alpha <= 0f)
-                    reinforcementsArrived.gameObject.SetActive(false);
-            }
-        }
-
-    }
-
-    // Reveal the 'Reserves Depleted' popup.
-    public void ReservesDepleted()
-    {
-        // Set alpha to 1.
-        reservesDepleted.alpha = 1f;
-
-        // Activate game object.
-        reservesDepleted.gameObject.SetActive(true);
-    }
-
-    // Reveal the 'Reinforcements Arrived' popup.
-    public void ReinforcementsArrived()
-    {
-        // Set alpha to 1.
-        reinforcementsArrived.alpha = 1f;
-
-        // Activate game object.
-        reinforcementsArrived.gameObject.SetActive(true);
-    }
-
 
     // + Post game
     // (Delegate to PostGame.cs)
@@ -489,48 +471,6 @@ public class UI : MonoBehaviour
     {
         postGame.GameOver(victory);
     }
-
-    // // Activate the post game overlay.
-    // public void GameOver(bool victory)
-    // {
-    //     // // Victory
-    //     // if (victory)
-    //     // {
-    //     //     // Load random background image.
-    //     //     string imageFilePath = "Victory/Win " + Random.Range(1, 101).ToString();
-    //     //     Utility.LoadImage(postgameBackground, imageFilePath);
-
-    //     //     // Set header.
-    //     //     postgameHeader.text = "GOOD VICTORY!";
-    //     //     postgameHeader.color = new Color(0.26f, 0.62f, 0.58f);
-
-    //     //     // Enable continue button.
-    //     //     continueButton.gameObject.SetActive(true);
-
-    //     //     // Disable return button.
-    //     //     returnButton.gameObject.SetActive(false);
-    //     // }
-    //     // // Defeat
-    //     // else
-    //     // {
-    //     //     // Load random background image.
-    //     //     string imageFilePath = "Defeat/Loss " + Random.Range(1, 101).ToString();
-    //     //     Utility.LoadImage(postgameBackground, imageFilePath);
-
-    //     //     // Set header text.
-    //     //     postgameHeader.text = "YE LOST!";
-    //     //     postgameHeader.color = Color.red;
-
-    //     //     // Enable return button.
-    //     //     returnButton.gameObject.SetActive(true);
-
-    //     //     // Disable continue button.
-    //     //     continueButton.gameObject.SetActive(false);
-    //     // }
-
-    //     // // Enable image.
-    //     // postgameBackground.gameObject.SetActive(true);
-    // }
 
     // + Cursor
     // Reset cursor.
@@ -591,7 +531,7 @@ public class UI : MonoBehaviour
         tooltipMana.text = unit.manaCost.ToString();
 
         // Set the deployment time.
-        tooltipTime.text = unit.deployTime.ToString();
+        tooltipTime.text = unit.deployTime.ToString("0");
 
         // Set the role.
         Utility.SetRoleText(unit, tooltipRole);

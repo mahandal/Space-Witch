@@ -1,7 +1,7 @@
 using UnityEngine;
 
 // Granga's Guide to the Galaxy
-public class GGG : MonoBehaviour
+public partial class GGG : MonoBehaviour
 {
     // Singleton
     public static GGG I;

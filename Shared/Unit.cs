@@ -194,9 +194,8 @@ public partial class Unit : MonoBehaviour
         // Get collider.
         collider = GetComponent<BoxCollider2D>();
 
-        // Get attack time, for units.
-        if (cardType == "Unit")
-            attackTime = CalculateAttackTime();
+        // Get attack time.
+        attackTime = CalculateAttackTime();
 
         // Add audio source.
         movementAudioSource = DJ.I.CreateMovementAudioSource(this);
@@ -384,7 +383,7 @@ public partial class Unit : MonoBehaviour
     void FixedUpdate()
     {
         // Wait for battle.
-        if (MenuManager.I.gameState != 1) return;
+        if (MenuManager.I.currentMenu != "Battle") return;
 
         // Deploying.
         if (state == 0 && deployTimer > 0f)
@@ -527,7 +526,7 @@ public partial class Unit : MonoBehaviour
             Utility.SetOpacity(spriteRenderer, 1f);
 
         // Production
-        if (producedUnit != "" && timePerSpawn > 0)
+        if (timePerSpawn > 0)
         {
             // Decrement spawn timer.
             spawnTimer -= Time.fixedDeltaTime;
@@ -581,15 +580,15 @@ public partial class Unit : MonoBehaviour
 
             // Adventurous
             if (aggression == 0)
-                Nomad();
+                Adventurer();
 
             // Aggressive:
             // March on!
         }
     }
 
-    // Nomads turn around when entering enemy territory.
-    private void Nomad()
+    // Adventurers turn around when entering enemy territory.
+    private void Adventurer()
     {
         if (good)
         {
@@ -626,11 +625,7 @@ public partial class Unit : MonoBehaviour
         state = 4;
 
         // Leader gains mana.
-        // int manaGained = Mathf.RoundToInt(manaCost * (0.05f * tilesTraveled));
-
-        int manaRoll = Random.Range(0, DM.I.gridWidth * 2);
-        if (manaRoll < tilesTraveled)
-            GetLeader().GatherMana(manaCost, this);
+        GetLeader().GatherMana(manaCost, this);
     }
 
     // Civilians turn around when leaving their territory.
@@ -753,10 +748,11 @@ public partial class Unit : MonoBehaviour
     public void LookForEnemy()
     {
         // Reset our target(?)
+        if (target != null && target.state < 1)
+            target = null;
+
         if (target != null)
         {
-            if (target.state < 1)
-                target = null;
             float distance = Mathf.Abs(target.transform.position.x - transform.position.x);
             if (distance > (range * 1.5f))
                 target = null;
