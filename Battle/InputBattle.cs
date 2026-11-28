@@ -71,6 +71,10 @@ public class InputBattle : MonoBehaviour
         if (Keyboard.current.escapeKey.wasPressedThisFrame)
             Deselect();
 
+        // E inspects
+        if (Keyboard.current.eKey.wasPressedThisFrame && hoveredUnit != null)
+            Inspection.I.InspectUnit(hoveredUnit);
+
         // +++ Left Click
         if (Mouse.current.leftButton.wasPressedThisFrame)
         {

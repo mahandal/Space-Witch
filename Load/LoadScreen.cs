@@ -101,7 +101,7 @@ public class LoadScreen : MonoBehaviour
         hints.Add("Play cheap units to gather violet flowers!");
         hints.Add("Roles are broad categories meant to help understand how to play cards.");
         hints.Add("Scouts tend to have low mana costs and deploy times and high speed and vision. Use them to scout ahead!");
-        hints.Add("Bulwarks tend to have high health and armor, and slow move speed. They are expected to be the bulk of most battles");
+        hints.Add("Bulwarks tend to have high health and armor, and slow move speed. They are expected to be the bulk of most battles.");
         hints.Add("Hunters tend to deal high damage at long range. Or at least longer range than a bulwark!");
         hints.Add("Productions produce units over time.");
         hints.Add("Farms generate mana over time.");

@@ -40,6 +40,10 @@ public class DM : MonoBehaviour
     [System.NonSerialized]
     public List<List<Unit>> evilUnits = new List<List<Unit>>();
 
+    // Graveyards
+    public List<Unit> goodGraveyard = new List<Unit>();
+    public List<Unit> evilGraveyard = new List<Unit>();
+
     [Header("Grid")]
     [System.NonSerialized]
     public Tile [,] grid;
@@ -394,6 +398,10 @@ public class DM : MonoBehaviour
     // Initialize the lists for each row for each side tracking each active unit.
     void InitUnitLists()
     {
+        // Initialize lists.
+        goodUnits = new List<List<Unit>>();
+        evilUnits = new List<List<Unit>>();
+
         // Loop through each row.
         for (int i = 0; i < gridHeight; i++)
         {
@@ -467,6 +475,15 @@ public class DM : MonoBehaviour
         return allEvilUnits;
     }
 
+    // Get a list of all friendly units, from the perspective of the given unit.
+    public List<Unit> GetAllFriends(Unit protagonist)
+    {
+        if (protagonist.good)
+            return GetAllGoodUnits();
+        else
+            return GetAllEvilUnits();
+    }
+
     // Get a list of all enemy units, from the perspective of the given unit.
     public List<Unit> GetAllEnemies(Unit protagonist)
     {
@@ -474,6 +491,42 @@ public class DM : MonoBehaviour
             return GetAllEvilUnits();
         else
             return GetAllGoodUnits();
+    }
+
+    // Get a list of all dead friends within range.
+    public List<Unit> GetDeadFriends(Unit protagonist, float range)
+    {
+        // List of dead friends in range.
+        List<Unit> returnList = new List<Unit>();
+
+        // Initialize graveyard to good graveyard.
+        List<Unit> graveyard = goodGraveyard;
+
+        // Evil?
+        if (!protagonist.good)
+            graveyard = evilGraveyard;
+
+        // Loop through each unit in graveyard.
+        foreach (Unit unit in graveyard)
+        {
+            // Check if they are within range.
+            float distance = Vector3.Distance(protagonist.transform.position, unit.transform.position);
+
+            if (distance <= range)
+                returnList.Add(unit);
+        }
+
+        // Return!
+        return returnList;
+    }
+
+    // + Graveyard
+    public void RemoveFromGraveyard(Unit unit)
+    {
+        if (unit.good)
+            goodGraveyard.Remove(unit);
+        else
+            evilGraveyard.Remove(unit);
     }
 
     // + Cards
@@ -539,32 +592,47 @@ public class DM : MonoBehaviour
         // Units
         foreach (Unit unit in GetAllGoodUnits())
         {
-            unit.Death();
+            Object.Destroy(unit.gameObject);
         }
 
         // Items
-        List<Unit> goodItems = new List<Unit>(goodLeader.items);
-        foreach (Unit item in goodItems)
+        foreach (Unit item in goodLeader.items)
         {
-            item.Death();
+            Object.Destroy(item.gameObject);
         }
+        goodLeader.items.Clear();
+
+        // Graveyard
+        foreach (Unit unit in goodGraveyard)
+        {
+            Object.Destroy(unit.gameObject);
+        }
+        goodGraveyard.Clear();
 
         // + Evil
 
         // Units
         foreach (Unit unit in GetAllEvilUnits())
         {
-            unit.Death();
-            // if (unit.myName != "Dragon Statue")
-            //     unit.Death();
+            Object.Destroy(unit.gameObject);
         }
 
         // Items
-        List<Unit> evilItems = new List<Unit>(evilLeader.items);
-        foreach (Unit item in evilItems)
+        foreach (Unit item in evilLeader.items)
         {
-            item.Death();
+            Object.Destroy(item.gameObject);
         }
+        evilLeader.items.Clear();
+
+        // Graveyard
+        foreach (Unit unit in evilGraveyard)
+        {
+            Object.Destroy(unit.gameObject);
+        }
+        evilGraveyard.Clear();
+
+        // Now that units are cleared, reset unit lists.
+        InitUnitLists();
 
         // + Neutral
 
@@ -573,8 +641,10 @@ public class DM : MonoBehaviour
         List<Unit> tempFlowers = new List<Unit>(flowers);
         foreach (Unit flower in tempFlowers)
         {
-            flower.Death();
+            // flower.Death();
+            Object.Destroy(flower.gameObject);
         }
+        flowers.Clear();
 
         // Cards in the air.
         foreach (CardInHand cardInTheAir in cardsInTheAir)

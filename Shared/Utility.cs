@@ -20,6 +20,47 @@ public class Utility : MonoBehaviour
 
     // + Simple helper functions.
 
+    // Level up a card in a deck.
+    public static bool LevelCardInDeck(List<string> decklist, string cardName)
+    {
+        // Get index.
+        int index = decklist.IndexOf(cardName);
+
+        // Failed to find?
+        if (index < 0)
+            return false;
+
+        // Split name into parts.
+        string[] parts = cardName.Split(' ', 3);
+
+        // Check if the card name has a level.
+        if (parts[0] == "Level")
+        {
+            // Extract parts.
+            string level = parts[1];
+            string baseName = parts[2];
+
+            // Increment level.
+            int newLevel = Utility.IncrementString(level);
+
+            // Combine name.
+            string newName = "Level " + newLevel + " " + baseName;
+
+            // Assign new name.
+            decklist[index] = newName;
+        }
+        else
+        {
+            // Add level to name.
+            string newName = "Level 2 " + cardName;
+
+            // Replace old slot.
+            decklist[index] = newName;
+        }
+
+        return true;
+    }
+
     // Set a text object for a unit's role, combining their aggression and coloring accordingly.
     public static void SetRoleText(Unit u, TMP_Text t)
     {
@@ -52,6 +93,10 @@ public class Utility : MonoBehaviour
         if (u.cardType == "Spell")
         {
             t.text = u.role;
+
+            // Blessings
+            if (u.role == "Blessing")
+                t.color = Color.green;
 
             // Summons
             if (u.role == "Summon")
@@ -100,6 +145,10 @@ public class Utility : MonoBehaviour
             // Equipment
             if (u.role == "Equipment")
                 t.color = Color.grey;
+
+            // Trap
+            if (u.role == "Trap")
+                t.color = Color.red;
         }
     }
 

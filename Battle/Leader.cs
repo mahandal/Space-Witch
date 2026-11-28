@@ -493,9 +493,9 @@ public partial class Leader : MonoBehaviour
         // Check card type to see if the tile is valid.
         if (card.cardType == "Spell")
         {
-            // Spells may be played anywhere outside of your enemy's territory.
-            if (IsEnemyTerritory(tile))
-                return false;
+            // Spells may be played anywhere!
+            // if (IsEnemyTerritory(tile))
+            //     return false;
         }
         else
         {

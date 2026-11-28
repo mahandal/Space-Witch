@@ -137,22 +137,13 @@ public partial class Unit
         // Bash
         if (keywords.Contains("Bash"))
         {
-            // Roll to stun.
-            int d100 = Random.Range(1, 101);
-
-            // Dwarves resist stuns.
-            if (target.keywords.Contains("Dwarf"))
-                d100 -= 10;
-
-            // 25% chance to stun.
-            if (d100 > 75)
-                target.Stun();
+            target.Stun(Random.Range(0.1f, 1f));
         }
 
         // Mega Bash
         if (keywords.Contains("Mega Bash"))
         {
-            target.Stun();
+            target.Stun(Random.Range(1f, 6f));
         }
 
         // Demolition

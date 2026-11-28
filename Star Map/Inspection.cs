@@ -6,26 +6,12 @@ using System.Collections.Generic;
 // Handle card inspection.
 public class Inspection : MonoBehaviour
 {
-	[Header("Stardust")]
-	// Yer current stardust count.
-	public TMP_Text stardust;
-
-	// Cost to level up.
-	public int cost;
-	public TMP_Text costText;
-
-	// Stardust gained from sending home.
-	public int stardustGained;
-	public TMP_Text stardustGainedText;
-
-
-
 	[Header("Machinery")]
-	// A reference to the viewing deck to go back and forth.
-	public ViewDeck viewDeck;
-
-	// Dummy unit.
+	// Dummy unit to load stats.
 	public Unit inspectedUnit;
+
+	// A reference to the viewing deck to reload when closing.
+	public ViewDeck viewDeck;
 
 	// Main image in the middle.
 	public Image cardArt;
@@ -68,8 +54,15 @@ public class Inspection : MonoBehaviour
 	public TMP_Text keywordDescription;
 	public TMP_Text keywordHeader;
 
+	// Singleton
+	public static Inspection I;
 
 	// + Initialization
+	public void Initialize()
+	{
+		// Singleton
+		I = this;
+	}
 
 	// + Inspection
 	// Begin inspecting a card.
@@ -78,78 +71,72 @@ public class Inspection : MonoBehaviour
     	// Load dummy unit.
         inspectedUnit.LoadUnit(_cardName);
 
-        // Load portrait.
-        Utility.LoadImage(cardArt, "Cards/" + inspectedUnit.GetBaseName());
+        // Delegate to below.
+        InspectUnit(inspectedUnit);
+    }
+
+    // Inspect a unit.
+    public void InspectUnit(Unit unit)
+    {
+    	// Load portrait.
+        Utility.LoadImage(cardArt, "Cards/" + unit.GetBaseName());
 
         // Meta
-        cardName.text = _cardName;
-    	description.text = inspectedUnit.description;
+        cardName.text = unit.myName;
+    	description.text = unit.description;
 
     	// +++ Stats
-    	cardType.text = inspectedUnit.cardType;
-    	Utility.SetRoleText(inspectedUnit, role);
-    	manaCost.text = inspectedUnit.manaCost.ToString("0");
-        deployTime.text = inspectedUnit.deployTime.ToString("0");
-        health.text = inspectedUnit.maxHealth.ToString("0");
-        armor.text = inspectedUnit.armor.ToString("0");
-        vision.text = inspectedUnit.vision.ToString("0.0");
-        speed.text = inspectedUnit.speed.ToString("0.0");
+    	cardType.text = unit.cardType;
+    	Utility.SetRoleText(unit, role);
+    	manaCost.text = unit.manaCost.ToString("0");
+        deployTime.text = unit.deployTime.ToString("0");
+        health.text = unit.maxHealth.ToString("0");
+        armor.text = unit.armor.ToString("0");
+        vision.text = unit.vision.ToString("0.0");
+        speed.text = unit.speed.ToString("0.0");
 
         // + Attack
         // Enable attack info for units and turrets.
-        attackParent.SetActive(inspectedUnit.cardType == "Unit" || inspectedUnit.role == "Turret");
+        attackParent.SetActive(unit.cardType == "Unit" || unit.role == "Turret");
 
-        damage.text = inspectedUnit.damage.ToString("0.0");
-        attackTime.text = "per " + inspectedUnit.attackTime.ToString("0.0") + " seconds";
-        range.text = inspectedUnit.range.ToString("0.0");
+        damage.text = unit.damage.ToString("0.0");
+        attackTime.text = "per " + unit.attackTime.ToString("0.0") + " seconds";
+        range.text = unit.range.ToString("0.0");
 
         // + Farm
         // Enable farm info
-        farmParent.SetActive(inspectedUnit.farmTime > 0);
+        farmParent.SetActive(unit.farmTime > 0);
 
-        farmTime.text = inspectedUnit.farmTime.ToString("0.0");
+        farmTime.text = unit.farmTime.ToString("0.0");
 
         // + Production
-        productionParent.SetActive(inspectedUnit.timePerSpawn > 0);
+        productionParent.SetActive(unit.timePerSpawn > 0);
 
-        productionTime.text = inspectedUnit.timePerSpawn.ToString("0.0");
-        producedUnitName.text = inspectedUnit.producedUnit;
-        Utility.LoadImage(producedUnitPortrait, "Cards/" + Utility.ExtractBaseName(inspectedUnit.producedUnit));
+        productionTime.text = unit.timePerSpawn.ToString("0.0");
+        producedUnitName.text = unit.producedUnit;
+        Utility.LoadImage(producedUnitPortrait, "Cards/" + Utility.ExtractBaseName(unit.producedUnit));
 
         // + Keywords
         B_CloseKeyword();
         for (int i = 0; i < keywords.Count; i++)
         {
         	// Check if unit has a keyword in this slot.
-        	if (i < inspectedUnit.keywords.Count)
+        	if (i < unit.keywords.Count)
         	{
         		// Set text.
-        		keywords[i].text = inspectedUnit.keywords[i];
+        		keywords[i].text = unit.keywords[i];
 
         		// Activate game object.
         		keywords[i].gameObject.SetActive(true);
 
         		// Chaotic?
-        		if (inspectedUnit.keywords[i] == "Chaotic")
-        			deployTime.text += " - " + (inspectedUnit.deployTime * 2).ToString("0");
+        		if (unit.keywords[i] == "Chaotic")
+        			deployTime.text += " - " + (unit.deployTime * 2).ToString("0");
         	} else {
         		// No keyword.
         		keywords[i].gameObject.SetActive(false);
         	}
         }
-
-        // + Stardust
-
-		// Set stardust.
-		stardust.text = MenuManager.I.saveData.stardust.ToString();
-
-		// Set cost to level.
-		cost = (int)Mathf.Pow(10, inspectedUnit.level);
-		costText.text = cost.ToString();
-
-		// Set stardust gained from sending home.
-		stardustGained = Mathf.RoundToInt((inspectedUnit.manaCost + inspectedUnit.deployTime) * inspectedUnit.level);
-		stardustGainedText.text = stardustGained.ToString();
 
 		// Activate.
 		gameObject.SetActive(true);
@@ -190,49 +177,13 @@ public class Inspection : MonoBehaviour
     	keywordDescriptionBox.SetActive(false);
     }
 
-    // Go back to the viewing deck.
-    public void B_ViewDeck()
+    // Close the inspection screen, going back to wherever ye were before.
+    public void B_Back()
     {
-    	// Re-load viewing deck.
-    	viewDeck.LoadCards();
+    	// SFX
+    	DJ.I.PlaySound("Snap");
 
     	// Disable inspection.
     	gameObject.SetActive(false);
-    }
-
-    // Spend stardust to level up the current card.
-    public void B_LevelUp()
-    {
-    	// Check if ye've enough stardust.
-    	if (MenuManager.I.saveData.stardust < cost)
-    		return;
-
-    	// Spend stardust.
-    	MenuManager.I.saveData.stardust -= cost;
-
-    	// Level up.
-    	string leveledCard = MenuManager.I.saveData.LevelUp(cardName.text);
-
-    	// Re-load card.
-    	InspectCard(leveledCard);
-    }
-
-    // Send home the current card, giving ye stardust in exchange.
-    public void B_SendHome()
-    {
-    	// Remove from decklist.
-    	viewDeck.deck.Remove(cardName.text);
-    	if (DM.I.gameMode == "Campaign")
-    	{
-			MenuManager.I.saveData.decklist.Remove(cardName.text);
-    	} else {
-    		DM.I.goodLeader.deck.Remove(cardName.text);
-    	}
-
-    	// Gain stardust.
-    	MenuManager.I.saveData.stardust += stardustGained;
-
-    	// Return to viewing deck.
-    	B_ViewDeck();
     }
 }

@@ -13,11 +13,11 @@ s = "This unit moves faster in water.";
 
         // Bash
         if (keyword == "Bash")
-s = "This unit has a 25% chance to stun enemies for a random duration with its attacks.";
+s = "With each attack, this unit stuns enemies for a random duration equally distributed from 0.1 seconds to 1 second.";
 
         // Mega Bash
         if (keyword == "Mega Bash")
-s = "This unit stuns enemies for a random duration with its attacks.";
+s = "With each attack, this unit stuns enemies for a random duration equally distributed from 1 second to 6 seconds.";
 
         // Bloodthirst
         if (keyword == "Bloodthirst")
@@ -53,7 +53,7 @@ s = "The blood of dragons is hot as molten lava, and indeed lava is their prefer
 
         // Dwarf
         if (keyword == "Dwarf")
-s = "Dwarves are sturdy creatures, particularly adept at resisting stuns.";
+s = "Dwarves are sturdy creatures, particularly adept at resisting stuns. (50% stun resistance)";
 
         // Laser
         if (keyword == "Laser")

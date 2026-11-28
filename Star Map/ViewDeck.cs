@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.InputSystem;
 using UnityEngine.UI;
 using System.Collections.Generic;
 using TMPro;
@@ -7,11 +8,14 @@ using TMPro;
 public class ViewDeck : MonoBehaviour
 {
     [Header("Mini-Cards")]
+    // The mini cards in the middle.
+    public List<MiniCard> minicards;
+
     // The index of the currently selected card.
     public int selectedCardIndex = -1;
 
-    // The mini cards in the middle.
-    public List<MiniCard> minicards;
+    // The name of the currently selected card.
+    public string selectedCardName = "";
 
     // The index of the current page.
     public int pageIndex = 0;
@@ -20,7 +24,7 @@ public class ViewDeck : MonoBehaviour
     // The player's current deck.
     public List<string> deck = new List<string>();
 
-    [Header("Buttons")]
+    [Header("Next/Prev")]
     // The button taking you to the previous page of cards.
     public Button previousPage;
 
@@ -31,8 +35,17 @@ public class ViewDeck : MonoBehaviour
     // Text object for yer stardust count.
     public TMP_Text stardustText;
 
-    [Header("Inspection")]
-    public Inspection inspection;
+    [Header("Selected Buttons")]
+    // Parent object of level up and send home buttons, to hide when not selecting a card.
+    public GameObject selectedParent;
+
+    // Cost to level up.
+    public int cost;
+    public TMP_Text costText;
+
+    // Stardust gained from sending home.
+    public int stardustGained;
+    public TMP_Text stardustGainedText;
 
 
     // + Initialization
@@ -43,6 +56,9 @@ public class ViewDeck : MonoBehaviour
             deck = MenuManager.I.saveData.decklist;
         else
             deck = DM.I.goodLeader.deck;
+
+        // Deselect.
+        Deselect();
 
         // Load first page.
         LoadFirstPage();
@@ -68,9 +84,6 @@ public class ViewDeck : MonoBehaviour
     // Load the mini-cards in the middle.
     public void LoadCards()
     {
-        // Get our deck list.
-        // List<string> cardList = MenuManager.I.saveData.decklist;
-
         // Loop through each mini card.
         for (int i = 0; i < minicards.Count; i++)
         {
@@ -96,6 +109,18 @@ public class ViewDeck : MonoBehaviour
 
         // Next/Previous page buttons
         RevealPageButtons();
+
+        // Level up/Send home buttons
+        RevealSelectedButtons();
+    }
+
+    // Reveal or hide the level up and send home buttons, depending on if we are selecting a card or not.
+    public void RevealSelectedButtons()
+    {
+        if (selectedCardIndex >= 0)
+            selectedParent.SetActive(true);
+        else
+            selectedParent.SetActive(false);
     }
 
     // Reveal or hide the previous page and next page buttons, depending on if we have enough cards to use them.
@@ -126,30 +151,112 @@ public class ViewDeck : MonoBehaviour
         Utility.IncrementText(stardustText, MenuManager.I.saveData.stardust);
     }
 
+    void Update()
+    {
+        // Right click deselects.
+        if (Mouse.current.rightButton.wasPressedThisFrame)
+            Deselect();
+
+        // Escape also deselects.
+        if (Keyboard.current.escapeKey.wasPressedThisFrame)
+            Deselect();
+    }
+
 
     // + Cards
+    // Deselect
+    public void Deselect()
+    {
+        // Reset selected card.
+        if (selectedCardIndex >= 0)
+            minicards[selectedCardIndex].Unhighlight();
+        selectedCardIndex = -1;
+        selectedCardName = "";
+        selectedParent.SetActive(false);
+    }
+
     // Select the mini card at the given index.
     public void SelectCard(int index)
     {
+        // Deselect previous card.
+        Deselect();
+
         // Set selected card index.
         selectedCardIndex = index;
 
-        // Inspect card.
-        InspectCard(index);
+        // Use inspection's dummy unit.
+        Unit inspectedUnit = Inspection.I.inspectedUnit;
+
+        // Get card name.
+        selectedCardName = minicards[index].nameText.text;
+
+        // Load dummy unit.
+        inspectedUnit.LoadUnit(selectedCardName, true);
+
+        // Set stardust.
+        stardustText.text = MenuManager.I.saveData.stardust.ToString();
+
+        // Set cost to level.
+        cost = (int)Mathf.Pow(10, inspectedUnit.level);
+        costText.text = cost.ToString();
+
+        // Set stardust gained from sending home.
+        stardustGained = Mathf.RoundToInt((inspectedUnit.manaCost + inspectedUnit.deployTime) * inspectedUnit.level);
+        stardustGainedText.text = stardustGained.ToString();
+
+        // Reveal buttons
+        selectedParent.SetActive(true);
+
+        // Highlight
+        minicards[selectedCardIndex].Highlight();
     }
 
     // Inspect a card.
-    public void InspectCard(int index)
+    public void InspectCard()
     {
-        // Get card name.
-        string cardName = minicards[index].nameText.text;
-
         // Open the inspect card screen.
-        inspection.InspectCard(cardName);
+        Inspection.I.InspectCard(selectedCardName);
     }
 
 
     // + Buttons
+    // Spend stardust to level up the current card.
+    public void B_LevelUp()
+    {
+        // Check if ye've enough stardust.
+        if (MenuManager.I.saveData.stardust < cost)
+            return;
+
+        // Spend stardust.
+        MenuManager.I.saveData.stardust -= cost;
+
+        // Level up.
+        // string leveledCard = MenuManager.I.saveData.LevelUp(selectedCardName);
+        Utility.LevelCardInDeck(deck, selectedCardName);
+
+        // Re-load cards.
+        LoadCards();
+
+        // Re-select card.
+        SelectCard(selectedCardIndex);
+    }
+
+    // Send home the current card, giving ye stardust in exchange.
+    public void B_SendHome()
+    {
+        // Remove from decklist.
+        deck.Remove(selectedCardName);
+
+        // Gain stardust.
+        MenuManager.I.saveData.stardust += stardustGained;
+
+        // Deselect.
+        Deselect();
+
+        // Re-load cards.
+        LoadCards();
+    }
+
     // Go back to the recruitment screen.
     public void B_Back()
     {

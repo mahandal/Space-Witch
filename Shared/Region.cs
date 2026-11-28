@@ -57,7 +57,7 @@ public class Region : MonoBehaviour
             spriteRenderer.sortingOrder = 600 - Mathf.RoundToInt(transform.position.y * 100f);
 
             // Set opacity
-            spriteRenderer.color = new Color (1f, 1f, 1f, 0.5f);
+            spriteRenderer.color = new Color (1f, 1f, 1f, 0.8f);
         }
 
         // Increment region count.

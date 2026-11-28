@@ -72,13 +72,4 @@ public class MiniCard : MonoBehaviour
     {
         highlight.gameObject.SetActive(false);
     }
-
-    // + Button
-    // Select this button to examine it.
-    public void B_CardPressed()
-    {
-        Debug.Log(nameText.text + " pressed!");
-
-        // TBD: Examine cards?
-    }
 }

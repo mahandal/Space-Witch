@@ -34,51 +34,90 @@ public class Spell : MonoBehaviour
                     targets.Add(enemy);
             }
         }
-        // TBD: Beneficial spells. Blessings?
 
-        // + Cast spell
-
-        // Charm
-        if (spell.GetBaseName() == "Charm")
+        // Blessings
+        if (spell.role == "Blessing")
         {
-            Debug.Log("Casting Charm!");
+            // Get a list of all our friends in range.
+            List<Unit> friends = DM.I.GetAllFriends(spell);
 
-            // Charm all targets!
-            foreach (Unit newFriend in targets)
+            // Iterate through each friend.
+            foreach (Unit friend in friends)
             {
-                Debug.Log(newFriend.myName + " was charmed!");
-                newFriend.ChangeSides();
+                // Check if they are close enough.
+                float distance = Vector3.Distance(spell.transform.position, friend.transform.position);
+
+                if (distance <= spell.range)
+                {
+                    // Add to list of targets.
+                    targets.Add(friend);
+
+                    // Target picks up blessing like an item.
+                    friend.PickUp(spell);
+                }
             }
         }
 
-        // Toxic spores
-        if (spell.GetBaseName() == "Toxic Spores")
+        // +++ Cast spell
+
+        // + Blessings
+
+        // Blessings giving stats are handled above like items.
+
+        // Blink
+        if (spell.GetBaseName() == "Blink")
         {
-            // Poison all targets.
+            // Move units forward a tile.
             foreach (Unit target in targets)
             {
-                target.keywords.Add("Poisoned");
+                if (target.cardType == "Unit")
+                    TeleportForward(target, 1f);
             }
         }
 
-        // Fireball
-        if (spell.GetBaseName() == "Fireball")
+        // Promotion
+        if (spell.GetBaseName() == "Promotion")
         {
-            // Damage all targets.
-            foreach (Unit target in targets)
+            // Promote each target to the next level.
+            foreach (Unit unit in targets)
             {
-                target.LoseHealth(spell.damage, spell);
+                unit.LevelUp();
             }
         }
 
-        // Goblin Bomb
-        if (spell.GetBaseName() == "Goblin Bomb")
+        // Resurrection
+        if (spell.GetBaseName() == "Resurrection")
         {
-            // Damage all targets.
+            // Get all friendly dead units in range.
+            targets = DM.I.GetDeadFriends(spell, spell.range);
+
+            // Resurrect each target.
             foreach (Unit target in targets)
             {
-                target.LoseHealth(spell.damage, spell);
+                // Re-spawn.
+                Unit newUnit = spell.GetLeader().SpawnUnit(target.myName, target.currentTile);
+
+                // Show its full deployment.
+                newUnit.showFullDeployment = true;
+
+                // Remove from graveyard.
+                DM.I.RemoveFromGraveyard(target);
             }
+        }
+
+        // + Summons
+
+        // Summon Ghost
+        if (spell.GetBaseName() == "Summon Ghost")
+        {
+            // Change from spell to unit.
+            spell.myName = "Ghost";
+            spell.cardType = "Unit";
+            spell.role = "Hunter";
+
+            // Add level to name.
+            if (spell.level > 1)
+                spell.myName = "Level " + spell.level + " Ghost";
         }
 
         // Summon Hunger Demon
@@ -107,17 +146,76 @@ public class Spell : MonoBehaviour
                 spell.myName = "Level " + spell.level + " Water Elemental";
         }
 
-        // Summon Ghost
-        if (spell.GetBaseName() == "Summon Ghost")
-        {
-            // Change from spell to unit.
-            spell.myName = "Ghost";
-            spell.cardType = "Unit";
-            spell.role = "Hunter";
+        // + Curses
 
-            // Add level to name.
-            if (spell.level > 1)
-                spell.myName = "Level " + spell.level + " Ghost";
+        // Charm
+        if (spell.GetBaseName() == "Charm")
+        {
+            // Charm all targets!
+            foreach (Unit newFriend in targets)
+            {
+                newFriend.ChangeSides();
+            }
         }
+
+        // Polymorph
+        if (spell.GetBaseName() == "Polymorph")
+        {
+            // Transform all units into deer!
+            foreach (Unit target in targets)
+            {
+                if (target.cardType == "Unit")
+                    target.LoadUnit("Deer");
+            }
+        }
+
+        // Toxic spores
+        if (spell.GetBaseName() == "Toxic Spores")
+        {
+            // Poison all targets.
+            foreach (Unit target in targets)
+            {
+                target.keywords.Add("Poisoned");
+            }
+        }
+
+        // + Hexes
+
+        // Fireball
+        if (spell.GetBaseName() == "Fireball")
+        {
+            // Damage all targets.
+            foreach (Unit target in targets)
+            {
+                target.LoseHealth(spell.damage, spell);
+            }
+        }
+
+        // Goblin Bomb
+        if (spell.GetBaseName() == "Goblin Bomb")
+        {
+            // Damage all targets.
+            foreach (Unit target in targets)
+            {
+                target.LoseHealth(spell.damage, spell);
+            }
+        }
+    }
+
+    // Teleport a unit forward a given distance.
+    public static void TeleportForward(Unit unit, float distance)
+    {
+        // Add distance to position, multiplied by direction.
+        float newX = unit.transform.position.x + distance * unit.direction;
+
+        // Minimum of 1.
+        if (newX < 1)
+            newX = 1f;
+
+        // Maximum of gridWidth - 2.
+        if (newX > DM.I.gridWidth - 2)
+            newX = DM.I.gridWidth - 2;
+
+        unit.transform.position = new Vector3(newX, unit.transform.position.y, unit.transform.position.z);
     }
 }

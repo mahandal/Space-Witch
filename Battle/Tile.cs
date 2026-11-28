@@ -62,9 +62,8 @@ public class Tile : MonoBehaviour
             // Check if we are playing a spell.
             if (card.cardType == "Spell")
             {
-                // Highlight all good and neutral tiles.
-                if (claim >= 0)
-                    outline.color = validColor;
+                // Highlight all tiles.
+                outline.color = validColor;
             }
             // All other card types require playing in one of your tiles.
             else if (claim > 0)

@@ -30,7 +30,7 @@ public partial class Leader
         powerCharges--;
 
         // Stun.
-        target.Stun();
+        target.Stun(Random.Range(1f, 6f));
 
         // Deal 10 damage.
         target.LoseHealth(20);
@@ -69,18 +69,8 @@ public partial class Leader
         // Deal damage.
         target.LoseHealth(2);
 
-        // + Bash.
-
-        // Roll to stun.
-        int d100 = Random.Range(1, 101);
-
-        // Dwarves resist stuns.
-        if (target.keywords.Contains("Dwarf"))
-            d100 -= 10;
-
-        // 25% chance to stun.
-        if (d100 > 75)
-            target.Stun();
+        // Bash.
+        target.Stun(Random.Range(0.1f, 1f));
     }
 
     // + Shruk

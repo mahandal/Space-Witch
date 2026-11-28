@@ -88,7 +88,6 @@ public class StarManager : MonoBehaviour
         victory.gameObject.SetActive(false);
         recruitment.gameObject.SetActive(false);
         recruitment.viewDeck.gameObject.SetActive(false);
-        recruitment.viewDeck.inspection.gameObject.SetActive(false);
     }
 
     // Open the star map screen.

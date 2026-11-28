@@ -117,13 +117,7 @@ public partial class Unit : MonoBehaviour
     // The timer tracking time between generating mana.
     public float farmTimer = 0f;
 
-    [Header("Machinery")]
-    // Which tile this unit is currently in.
-    public Tile currentTile;
-
-    // What lane this unit is in.
-    public int laneIndex = 0;
-
+    [Header("State")]
     // This unit's current state.
     // States:
     // =  0: Deploying
@@ -137,15 +131,25 @@ public partial class Unit : MonoBehaviour
     // How many more seconds this until has until it finishes deploying.
     public float deployTimer = 1f;
 
+    // How many more seconds until our stun ends.
+    public float stunTimer = 0f;
+
+    // This unit's current target.
+    public Unit target;
+
+    // Which tile this unit is currently in.
+    public Tile currentTile;
+
+    // What lane this unit is in.
+    public int laneIndex = 0;
+
+    [Header("Machinery")]
     // Show our full deployment, rather than hiding for the first half of it.
     public bool showFullDeployment = false;
 
     // Hurt damage flash timer.
     // How many seconds until this returns to normal color.
     public float hurtTimer = 0f;
-
-    // This unit's current target.
-    public Unit target;
 
     // This unit's vision circle.
     public SpriteMask visionCircle;
@@ -245,7 +249,7 @@ public partial class Unit : MonoBehaviour
             }
         }
 
-        Debug.LogWarning("Failed to find attack time for: " + myName);
+        // Debug.LogWarning("Failed to find attack time for: " + myName);
         return -1f;
     }
 
@@ -479,14 +483,18 @@ public partial class Unit : MonoBehaviour
         // Stunned?
         if (state == 3)
         {
-            // Roll to unstun.
-            int d100 = Random.Range(1, 101);
-            if (d100 == 100)
+            // Decrement stun timer.
+            stunTimer -= Time.fixedDeltaTime;
+
+            // Dwarves resist stuns.
+            if (keywords.Contains("Dwarf"))
+                stunTimer -= Time.fixedDeltaTime;
+
+            // Done?
+            if (stunTimer <= 0f)
                 Unstun();
-            else if (d100 == 99 && keywords.Contains("Dwarf"))
-                Unstun();
-            else
-                return;
+            
+            return;
         }
 
         // + Explorers branch here.
@@ -707,10 +715,13 @@ public partial class Unit : MonoBehaviour
 
     // + Stunned
     // Stun.
-    public void Stun()
+    public void Stun(float duration)
     {
         // Set state.
         state = 3;
+
+        // Set stun time.
+        stunTimer = duration;
 
         // Freeze animations.
         animator.speed = 0f;
@@ -862,7 +873,7 @@ public partial class Unit : MonoBehaviour
         else
         {
             // Get a bit bigger.
-            transform.localScale *= 1f + (0.01f * item.manaCost);
+            // transform.localScale *= 1f + (0.01f * item.manaCost);
 
             // Add to list of equipped items.
             equipped.Add(item.myName);
@@ -901,7 +912,6 @@ public partial class Unit : MonoBehaviour
 
         // Meta
         manaCost += item.manaCost;
-        deployTimer += item.deployTime;
 
         // Health.
         maxHealth += item.maxHealth;
@@ -917,8 +927,8 @@ public partial class Unit : MonoBehaviour
         if (item.vision > 0f)
             SetVision(vision + item.vision);
 
-        // Range.
-        range += item.range;
+        // Range?
+        // range += item.range;
 
         // Speed.
         speed += item.speed;
@@ -1205,11 +1215,28 @@ public partial class Unit : MonoBehaviour
                 GetLeader().items.Remove(this);
         }
 
+        
+
         // Check if we're an mvp candidate.
         GetLeader().MVP(this);
-            
-        // Clean up game object.
-        Destroy(gameObject);
+
+        // Clean up.
+        // Units are added to graveyard and deactivated.
+        // Everything else is destroyed here.
+        if (cardType == "Unit")
+        {
+            // Add to graveyard.
+            if (good)
+                DM.I.goodGraveyard.Add(this);
+            else
+                DM.I.evilGraveyard.Add(this);
+
+            // Deactivate game object.
+            gameObject.SetActive(false);
+        } else {
+            // Destroy.
+            Destroy(gameObject);
+        }
     }
 
     // + Deployment
@@ -1286,19 +1313,22 @@ public partial class Unit : MonoBehaviour
     // - Farms farm faster.
     // - Production produces faster.
     // ITEMS:
-    // - Equipment gain damage.
+    // - Equipment and traps gain damage.
     // - Food gain health.
     // SPELLS:
     // - Hexes gain damage.
-    // - Curses gain range.
+    // - Curses and blessings gain range.
     // - Summons gain health.
     public void LevelUp()
     {
         // Gain a level.
         level++;
 
+        // Set name.
+        myName = "Level " + level + " " + GetBaseName();
+
         // Increase size by 2%.
-        transform.localScale *= 1.02f;
+        // transform.localScale *= 1.02f;
 
         // Bulwarks, walls, food, and summons gain health.
         if (role == "Bulwark" || role == "Wall" || role == "Food" || role == "Summon")
@@ -1307,16 +1337,16 @@ public partial class Unit : MonoBehaviour
             currentHealth *= Utility.LevelScalar();
         }
 
-        // Hunters, turrets, equipment, and hexes gain damage.
-        if (role == "Hunter" || role == "Turret" || role == "Equipment" || role == "Hex")
+        // Hunters, turrets, equipment, traps, and hexes gain damage.
+        if (role == "Hunter" || role == "Turret" || role == "Equipment" || role == "Trap" || role == "Hex")
             damage *= Utility.LevelScalar();
 
         // Scouts gain vision.
         if (role == "Scout")
             vision *= Utility.LevelScalar();
 
-        // Mages and curses gain range.
-        if (role == "Mage" || role == "Curse")
+        // Mages, blessings and curses gain range.
+        if (role == "Mage" || role == "Blessing" || role == "Curse")
             range *= Utility.LevelScalar();
 
         // Production - Increase production speed.
@@ -1376,6 +1406,9 @@ public partial class Unit : MonoBehaviour
             // Good to evil?
             if (good)
             {
+                // Reset target.
+                target = null;
+
                 // Set bool.
                 good = false;
 
@@ -1392,6 +1425,9 @@ public partial class Unit : MonoBehaviour
                 DM.I.evilUnits[laneIndex].Add(this);
             } else {
                 // Evil to good?
+
+                // Reset target.
+                target = null;
 
                 // Set bool.
                 good = true;

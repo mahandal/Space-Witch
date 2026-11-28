@@ -631,7 +631,8 @@ public class PostGame : MonoBehaviour
                     mvpLevelCanvasGroup.gameObject.SetActive(true);
 
                     // Level up card in your deck.
-                    MenuManager.I.saveData.LevelUp(mvp.myName);
+                    Utility.LevelCardInDeck(MenuManager.I.saveData.decklist, mvp.myName);
+                    // MenuManager.I.saveData.LevelUp(mvp.myName);
                 }
             }
         }

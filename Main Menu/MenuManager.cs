@@ -17,6 +17,9 @@ public class MenuManager : MonoBehaviour
     // The player's saved data.
     public SaveData saveData;
 
+    // Yer grimoire.
+    public Grimoire grimoire;
+
     // Constance.
     public Constance constance;
 
@@ -43,6 +46,9 @@ public class MenuManager : MonoBehaviour
 
     // Granga's Guide to the Galaxy.
     public GGG ggg;
+
+    // Card inspection screen.
+    public Inspection inspection;
 
     // The tutorial.
     public Tutorial tutorial;
@@ -92,6 +98,12 @@ public class MenuManager : MonoBehaviour
         // Load save data.
         saveData = Utility.GetSaveData();
 
+        // Initialize grimoire.
+        grimoire.Initialize();
+
+        // Initialize inspection.
+        inspection.Initialize();
+
         // Start on the main menu.
         GoToMainMenu();
     }
@@ -115,6 +127,15 @@ public class MenuManager : MonoBehaviour
 
         // Disable battle map.
         dm.gameObject.SetActive(false);
+
+        // Disable Granga's Guide to the Galaxy.
+        ggg.gameObject.SetActive(false);
+
+        // Disable grimoire.
+        grimoire.gameObject.SetActive(false);
+
+        // Disable inspection.
+        inspection.gameObject.SetActive(false);
     }
 
     // Go to the main menu.

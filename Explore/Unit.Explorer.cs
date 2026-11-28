@@ -126,7 +126,7 @@ public partial class Unit
     }
 
     // Load the given unit's stats into this unit.
-    public void LoadUnit(string unitName)
+    public void LoadUnit(string unitName, bool resetLevel = false)
     {
         // Get the progenitor unit.
         Unit p = Progenitors.I.GetProgenitor(unitName);
@@ -179,6 +179,9 @@ public partial class Unit
         collider.size = p.collider.size;
 
         // Level up?
+        if (resetLevel)
+            level = 1;
+        
         LevelTo(GetLevel());
 
         // Re-equip items.
